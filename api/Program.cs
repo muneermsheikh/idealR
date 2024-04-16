@@ -1,11 +1,5 @@
-using System.Text;
-using api.Data;
 using api.Extensions;
-using api.Interfaces;
-using api.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +12,12 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+if(builder.Environment.IsDevelopment()) {
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseHttpsRedirection();
 
