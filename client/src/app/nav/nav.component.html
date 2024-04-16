@@ -1,24 +1,30 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
     <div class="container">
       <a class="navbar-brand" href="#">Overseas Recruitment</a>
     
-        <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="accountService.currentUser$|async">
-          <li class="nav-item">
-            <a class="nav-link"  href="#">Admin</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">H.R.</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link">Deployment</a>
-          </li>
-          <li class="nav-item" (click)="logout()">
-            <a class="nav-link">Log Out</a>
-          </li>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" >
+          <ng-container *ngIf="accountService.currentUser$|async">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/candidates" routerLinkActive="active">Candidates</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/orders" routerLinkActive="active">Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/process" routerLinkActive="active">Deployment</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
+              </li>
+              <li class="nav-item" (click)="logout()">
+                <a class="nav-link">Log Out</a>
+              </li>
+          </ng-container>
+         
         </ul>
 
-        <div class="dropdown" *ngIf="accountService.currentUser$|async" dropdown>
-          <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Welcome {{model.UserName}}</a>
+        <div class="dropdown" *ngIf="(accountService.currentUser$|async) as user" dropdown>
+          <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Welcome {{user.userName | titlecase}}</a>
           <div class="dropdown-menu" *dropdownMenu>
             <a class="dropdown-item" (click)="editprofile()">Edit Profile</a>
             <a class="dropdown-item" (click)="logout()">Log Out</a>
@@ -42,7 +48,7 @@
                 type="password"
               >
               
-              <button class="btn btn-outline-success" type="submit">Login</button>
+              <button class="btn btn-success" type="submit">Login</button>
         </form>
       </div>
   </nav>
