@@ -1,15 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using api.Extensions;
-
-namespace api.Entities
+namespace api.DTOs
 {
-    public class AppUser
+    public class CandidateDto
     {
         public int Id { get; set; }
         public string Gender { get; set; }
         public string UserName { get; set; }
-        public byte[] PasswordHash {get; set;}
-        public byte[] PasswordSalt {get; set;}
         public string KnownAs { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public DateTime Created { get; set; }=DateTime.UtcNow;
@@ -20,9 +15,7 @@ namespace api.Entities
         public string LookingFOR { get; set; }
         public String Introduction { get; set; }
 
-        public List<Photo> photos { get; set; }=new();
-        public int GetAge () {
-            return DateOfBirth.CalculateAge();
-        }
+        public List<PhotoDto> photos { get; set; }
+        public int Age {get; set;}
     }
 }
