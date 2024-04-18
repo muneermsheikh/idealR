@@ -2,6 +2,7 @@ using api.DTOs;
 using api.Entities;
 using api.Interfaces;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data
@@ -16,22 +17,38 @@ namespace api.Data
             _context = context;
         }
 
-        public async Task<CandidateDto> GetUserByIdAsync(int id)
+        
+        public async Task<MemberDto> GetCandidateAsync(string username)
         {
-            var user= await _context.Users.FindAsync(id);
-            return _mapper.Map<CandidateDto>(user);
+            return await _context.Users.Where(x => x.UserName == username)
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<CandidateDto> GetUserByUserNameAsync(string username)
+        public Task<IEnumerable<MemberDto>> GetCandidatesAsync()
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());
-            return _mapper.Map<CandidateDto>(user);
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<CandidateDto>> GetUsersAsync()
+        public async Task<MemberDto> GetUserByIdAsync(int id)
         {
-            var users = await _context.Users.Include(x => x.photos).OrderBy(x => x.UserName).ToListAsync();
-            return _mapper.Map<IEnumerable<CandidateDto>>(users);
+                return await _context.Users.Where(x => x.Id == id)
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<MemberDto> GetUserByUserNameAsync(string username)
+        {
+                return await _context.Users.Where(x => x.UserName == username)
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<MemberDto>> GetUsersAsync()
+        {
+                return await _context.Users
+                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()

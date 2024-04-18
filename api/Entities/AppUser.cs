@@ -17,12 +17,13 @@ namespace api.Entities
         public string City { get; set; }
         public string Country { get; set; }
         public string Interests { get; set; }
-        public string LookingFOR { get; set; }
+        public string LookingFor { get; set; }
         public String Introduction { get; set; }
 
         public List<Photo> photos { get; set; }=new();
-        public int GetAge () {
+        /* public int GetAge () {
             return DateOfBirth.CalculateAge();
         }
+        */
     }
 }

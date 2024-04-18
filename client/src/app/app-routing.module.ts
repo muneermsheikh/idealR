@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { CandidateListComponent } from './candidates/candidate-list/candidate-list.component';
-import { CandidateDetailsComponent } from './candidates/candidate-details/candidate-details.component';
 import { MessagesComponent } from './messages/messages/messages.component';
 import { authGuard } from './_guards/auth.guard';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { MemberListComponent } from './members/member-list/member-list.component';
+import { MemberDetailsComponent } from './members/member-details/member-details.component';
+
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -16,8 +17,8 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard,],
     children: [
-      {path: 'candidates', component: CandidateListComponent, canActivate: [authGuard]},
-      {path: 'candidates/:id', component: CandidateDetailsComponent},
+      {path: 'members', component: MemberListComponent, canActivate: [authGuard]},
+      {path: 'members/:username', component: MemberDetailsComponent},
       {path: 'messages', component:MessagesComponent},
       ]
   },

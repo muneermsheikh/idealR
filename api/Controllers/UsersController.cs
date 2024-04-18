@@ -1,10 +1,9 @@
-using api.Data;
 using api.DTOs;
 using api.Entities;
 using api.Interfaces;
+using api.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -20,23 +19,22 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
             var users = await _userRepository.GetUsersAsync();
             return Ok(users);
-
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CandidateDto>> GetUser(int id)
+        [HttpGet("byid/{id}")]
+        public async Task<ActionResult<MemberDto>> GetUser(int id)
         {
             return await _userRepository.GetUserByIdAsync(id);
             
         }
         
         
-        [HttpGet("{username}")]
-        public async Task<ActionResult<CandidateDto>> GetUserByUsername(string username)
+        [HttpGet("byusername/{username}")]
+        public async Task<ActionResult<MemberDto>> GetUserByUsername(string username)
         {
             return await _userRepository.GetUserByUserNameAsync(username);
         }
