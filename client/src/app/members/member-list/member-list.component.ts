@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { Pagination } from 'src/app/_models/pagination';
 import { UserParams } from 'src/app/_models/parameters/userParams';
@@ -12,7 +13,7 @@ import { MemberService } from 'src/app/_services/member.service';
 })
 export class MemberListComponent implements OnInit {
 
-  members: Member[]=[];
+  members$: Observable<Member[]> | undefined;
   userParams: UserParams|undefined;
   user?: User;
   pagination: Pagination | undefined;
@@ -23,27 +24,7 @@ export class MemberListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMembers();
+    this.members$ = this.memberService.getMembers();
   }
 
-  loadMembers() {
-
-    this.memberService.getMembers().subscribe({
-      next: response => this.members = response
-    })
-    /*
-    if (this.userParams) {
-      this.memberService.setUserParams(this.userParams);
-      this.memberService.getMembers(this.userParams).subscribe({
-        next: response => {
-          console.log('loadMembers response', response);
-          if (response.result && response.pagination) {
-            this.members = response.result;
-            this.pagination = response.pagination;
-          }
-        }
-      })
-    }
-    */
-  }
 }

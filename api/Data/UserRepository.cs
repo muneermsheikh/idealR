@@ -18,36 +18,32 @@ namespace api.Data
         }
 
         
-        public async Task<MemberDto> GetCandidateAsync(string username)
+        public async Task<AppUser> GetCandidateAsync(string username)
         {
             return await _context.Users.Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<MemberDto>> GetCandidatesAsync()
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<MemberDto> GetUserByIdAsync(int id)
+        public async Task<AppUser> GetUserByIdAsync(int id)
         {
                 return await _context.Users.Where(x => x.Id == id)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<MemberDto> GetUserByUserNameAsync(string username)
+        public async Task<AppUser> GetUserByUserNameAsync(string username)
         {
                 return await _context.Users.Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<MemberDto>> GetUsersAsync()
+        public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
                 return await _context.Users
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

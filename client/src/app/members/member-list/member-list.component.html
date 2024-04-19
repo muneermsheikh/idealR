@@ -5,11 +5,9 @@
 <label class="stdd w150">City</label>
 <label class="stdd w400">Interests</label>
 
-<div class="row mt-5" *ngIf="members.length==0">
-    No members on record
-</div>
-<div class="row" style="padding-left: 10px;" *ngIf="members.length > 0">
-    <div *ngFor="let member of members"> 
+
+<div class="row" style="padding-left: 10px;" >
+    <div *ngFor="let member of members$ |async"> 
         <app-member-card [member]="member" ></app-member-card>
     </div>
 </div>
