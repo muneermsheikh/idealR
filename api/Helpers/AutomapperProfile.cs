@@ -21,6 +21,7 @@ namespace api.Helpers
             
             CreateMap<MemberUpdateDto, MemberDto>();    //dimmy
             
+            CreateMap<RegisterDto, AppUser>();
         }
 
     }

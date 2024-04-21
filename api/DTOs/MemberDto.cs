@@ -15,5 +15,6 @@ namespace api.DTOs
         public string LookingFor { get; set; }
         public String Introduction { get; set; }
         public string photoUrl { get; set; }
+        public List<PhotoDto> Photos { get; set; }
         }
 }

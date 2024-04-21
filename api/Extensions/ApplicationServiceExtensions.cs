@@ -2,6 +2,7 @@ using System.Reflection.Metadata.Ecma335;
 using api.Data;
 using api.Interfaces;
 using api.Services;
+using API.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Extensions
@@ -22,6 +23,8 @@ namespace api.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //photo sservice and cloudinary services not added here pending creation of photos
+            services.AddScoped<LogUserActivity>();
             
             return services;
         }

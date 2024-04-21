@@ -2,6 +2,8 @@ using System.Security.Claims;
 using api.Data;
 using api.DTOs;
 using api.Entities;
+using api.Extensions;
+using api.Helpers;
 using api.Interfaces;
 using api.Params;
 using AutoMapper;
@@ -26,9 +28,23 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
+        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await _userRepository.GetUsersAsync();
+            var currentusernamestring = User.GetUsername();
+            var currentuser = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            userParams.CurrentUsername = currentuser.UserName;
+
+            /* if(string.IsNullOrEmpty(userParams.Gender)) {
+                userParams.Gender = currentuser.Gender=="male" ? "female" : "male";
+            }
+            */
+            if(string.IsNullOrEmpty(userParams.Gender)) userParams.Gender="male";
+            
+            var users = await _userRepository.GetMembersAsync(userParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, 
+                users.PageSize, users.TotalCount, users.TotalPages));
+                
             return Ok(users);
         }
 
@@ -41,7 +57,7 @@ namespace api.Controllers
         
         
         [HttpGet("byusername/{username}")]
-        public async Task<ActionResult<AppUser>> GetUserByUsername(string username)
+        public async Task<ActionResult<MemberDto>> GetUserByUsername(string username)
         {
             return await _userRepository.GetUserByUserNameAsync(username);
         }
