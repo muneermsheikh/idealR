@@ -25,6 +25,7 @@ namespace api.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //photo sservice and cloudinary services not added here pending creation of photos
             services.AddScoped<LogUserActivity>();
+            services.AddScoped<ILikesRepository, LIkesRepository>();
             
             return services;
         }

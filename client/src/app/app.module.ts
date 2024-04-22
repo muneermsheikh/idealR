@@ -23,6 +23,7 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { RegisterComponent } from './register/register.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
+import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
     MemberEditComponent,
     RegisterComponent,
     TextInputComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    MemberLikedListComponent
   ],
   imports: [
     BrowserModule,

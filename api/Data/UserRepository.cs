@@ -58,7 +58,7 @@ namespace api.Data
              
                 var paged = await PagedList<MemberDto>.CreateAsync(query.AsNoTracking()
                     .ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
-                    userParams.pageNumber, userParams.PageSize);
+                    userParams.PageNumber, userParams.PageSize);
                 return paged;
         }
 

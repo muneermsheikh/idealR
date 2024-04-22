@@ -21,9 +21,7 @@ namespace api.Entities
         public String Introduction { get; set; }
 
         public List<Photo> photos { get; set; }=new();
-        /* public int GetAge () {
-            return DateOfBirth.CalculateAge();
-        }
-        */
+        public List<UserLike> LikedByUsers { get; set; }
+        public List<UserLike> LikedUsers { get; set; }
     }
 }

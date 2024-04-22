@@ -10,6 +10,7 @@ import { MemberListComponent } from './members/member-list/member-list.component
 import { MemberDetailsComponent } from './members/member-details/member-details.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { preventUnsavedMemberEditGuard } from './_guards/prevent-unsaved-member-edit.guard';
+import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 
 
 const routes: Routes = [
@@ -23,7 +24,8 @@ const routes: Routes = [
       {path: 'members/:username', component: MemberDetailsComponent},
       {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedMemberEditGuard]},
       {path: 'messages', component:MessagesComponent},
-      ]
+      {path: 'memberlikes', component: MemberLikedListComponent}
+    ]
   },
   {path: 'errors', component: TestErrorComponent},
   {path: 'not-found', component: NotFoundComponent},
