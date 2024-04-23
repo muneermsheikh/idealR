@@ -26,6 +26,7 @@ namespace api.Extensions
             //photo sservice and cloudinary services not added here pending creation of photos
             services.AddScoped<LogUserActivity>();
             services.AddScoped<ILikesRepository, LIkesRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             
             return services;
         }

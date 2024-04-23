@@ -42,7 +42,8 @@ import { MemberLikedListComponent } from './members/member-liked-list/member-lik
     RegisterComponent,
     TextInputComponent,
     DatePickerComponent,
-    MemberLikedListComponent
+    MemberLikedListComponent,
+  
   ],
   imports: [
     BrowserModule,

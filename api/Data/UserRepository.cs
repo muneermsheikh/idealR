@@ -69,11 +69,11 @@ namespace api.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<MemberDto> GetUserByUserNameAsync(string username)
+        public async Task<AppUser> GetUserByUserNameAsync(string username)
         {
             var dto = await _context.Users
                 .Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                //.ProjectTo<AppUser>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
             return dto;
