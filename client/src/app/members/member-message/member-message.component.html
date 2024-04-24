@@ -2,7 +2,12 @@
     <div class="card-body">
     <div *ngIf="messages.length===0" >No messages...</div>
      
-        <ul *ngIf="messages.length > 0" class="chat">
+        <ul 
+            #scrollMe
+            style="overflow: scroll; height: 500px;"
+            [scrollTop] = "scrollMe.scrollHeight"
+
+            *ngIf="messages.length > 0" class="chat">
             <li *ngFor="let message of messages">
                 <div>
                     <span class="chat-img float-end">

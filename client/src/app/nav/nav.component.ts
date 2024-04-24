@@ -28,6 +28,7 @@ export class NavComponent implements OnInit{
       next: () => {
         this.router.navigateByUrl('/members');
         this.toastrService.success('logged in successfully');
+        this.model = {};
       }
     })
 
