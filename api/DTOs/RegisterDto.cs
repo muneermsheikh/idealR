@@ -14,6 +14,7 @@ namespace api.DTOs
         [StringLength(8, MinimumLength = 4)]
         public string Password { get; set; }
         public List<PhotoDto> Photos {get; set;}
+        public string Role { get; set; }
     }
 
 }

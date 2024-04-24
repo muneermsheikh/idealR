@@ -20,7 +20,9 @@ import { TimeagoModule } from 'ngx-timeago';
     }),
     BsDatepickerModule.forRoot(),
    ToastrModule.forRoot({
-      positionClass: 'toastr-bottom-right'
+      positionClass: 'toastr-top-right',
+      preventDuplicates: true,
+      
     }),
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
@@ -33,7 +35,8 @@ import { TimeagoModule } from 'ngx-timeago';
     BsDatepickerModule,
     PaginationModule,
     ButtonsModule,
-    TimeagoModule
+    TimeagoModule,
+    ToastrModule
   ]
 })
 export class SharedModule { }

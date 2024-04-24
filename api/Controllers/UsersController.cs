@@ -65,19 +65,13 @@ namespace api.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberupdateDto)
         {
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
             var user = await _userRepository.GetUserByUserNameAsync(username);
 
-            if (user==null) return NotFound();
+            if (user==null) return NotFound("User not found");
 
             _mapper.Map(memberupdateDto, user);
-            /* user.Introduction = memberupdateDto.Introduction;
-            user.LookingFor = memberupdateDto.LookingFor;
-            user.Interests = memberupdateDto.Interests;
-            user.City = memberupdateDto.City;
-            user.Country = memberupdateDto.Country;
-            */
-
+           
             if(await _userRepository.SaveAllAsync()) return NoContent();
 
             //if (await _userServices.UpdateMember(user)) return NoContent();

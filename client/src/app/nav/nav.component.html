@@ -19,6 +19,11 @@
               <li class="nav-item">
                 <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
               </li>
+              <!--*appHasRole="['Admin', 'AdminManager']" -->
+              <li 
+                  class="nav-item">
+                <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin</a>
+              </li>
               <li class="nav-item" (click)="logout()">
                 <a class="nav-link">Log Out</a>
               </li>

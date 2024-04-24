@@ -16,13 +16,14 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   login(model: any) {
+    console.log('accountservice login model:', model);
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map((response: User) => {
         const user = response;
-        console.log('user loggedin:', user);
         if(user) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
       })
     )
@@ -41,11 +42,23 @@ export class AccountService {
   }
 
   setCurrentUser(user: User) {
+    user.roles=[];
+    const roles = this.getDecodedToken(user.token);
+    //console.log('decoded token atob: ', roles.includes('admin'));
+    Array.isArray(roles) ? user.roles = roles.flat() : user.roles.push(roles);
+    
+    localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
+
   }
 
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+  }
+
+  getDecodedToken(token: string) {
+    var s = JSON.parse(atob(token.split('.')[1]));
+    return s;
   }
 }

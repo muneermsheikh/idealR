@@ -1,5 +1,8 @@
 using System.Text;
+using api.Data;
+using api.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Extensions
@@ -9,7 +12,15 @@ namespace api.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
             IConfiguration config)
         {
-            
+            services.AddIdentityCore<AppUser>(opt => {
+                opt.Password.RequireNonAlphanumeric=false;
+
+            })
+                .AddRoles<AppRole>()
+                .AddRoleManager<RoleManager<AppRole>>()
+                .AddEntityFrameworkStores<DataContext>();
+
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -22,6 +33,16 @@ namespace api.Extensions
                     };
                 });
             
+            services.AddAuthorization(opt => {
+                opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+                opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive"));
+                opt.AddPolicy("HRSupPolicy", policy => policy.RequireRole("HR Supervisor", "HR Executive", "Asst HR Executive"));
+                opt.AddPolicy("HRExecPolicy", policy => policy.RequireRole("HR Executive", "Asst HR Executive"));
+                opt.AddPolicy("AsstHRExecPolicy", policy => policy.RequireRole("Asst HR Executive"));
+                opt.AddPolicy("AdminManagerPolicy", policy => policy.RequireRole("Admin Manager"));
+                opt.AddPolicy("MarketingManagerPolicy", policy => policy.RequireRole("Marketing Manager"));
+            });
+
             return services;
         }
     }

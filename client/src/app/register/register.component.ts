@@ -35,7 +35,8 @@ export class RegisterComponent implements OnInit{
       city: ['', Validators.required],
       country: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
-      confirmPassword: ['', [Validators.required, this.matchValues('password')]]
+      confirmPassword: ['', [Validators.required, this.matchValues('password')]],
+      role: ['candidate', [Validators.required, Validators.minLength(8), Validators.maxLength(15)]]
     });
   
     this.registerForm.controls['password'].valueChanges.subscribe({
@@ -50,7 +51,7 @@ export class RegisterComponent implements OnInit{
   }
   
   register(){
-    console.log('entered register');
+
     this.toastr.info('entered register');
 
     const dob = this.GetDateOnly(this.registerForm.controls['dateOfBirth'].value);
