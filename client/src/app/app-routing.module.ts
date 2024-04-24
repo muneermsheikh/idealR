@@ -29,7 +29,9 @@ const routes: Routes = [
       {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedMemberEditGuard]},
       {path: 'messages', component:MessagesComponent},
       {path: 'memberlikes', component: MemberLikedListComponent},
-      {path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard]}
+      {path: 'admin', component: AdminPanelComponent
+        //, canActivate: [adminGuard]
+      }
     ]
   },
   {path: 'errors', component: TestErrorComponent},

@@ -9,6 +9,7 @@ import { MemberService } from 'src/app/_services/member.service';
 import { MemberMessageComponent } from '../member-message/member-message.component';
 import { MessageService } from 'src/app/_services/message.service';
 import { Message } from 'src/app/_models/message';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-member-details',
@@ -31,7 +32,7 @@ export class MemberDetailsComponent implements OnInit{
   messages: Message[] = [];
 
 
-  constructor(private memberService: MemberService, private route: ActivatedRoute, private messageService: MessageService) {}
+  constructor(private toastr: ToastrService, private route: ActivatedRoute, private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.route.data.subscribe({
@@ -48,15 +49,15 @@ export class MemberDetailsComponent implements OnInit{
   }
 
   selectTab(heading: string) {
-    console.log('memberTabs:', this.memberTabs);
-
+   
     if(this.memberTabs) {
       this.memberTabs.tabs.find(x => x.heading === heading)!.active=true;
     }
+
+    this.toastr.info(heading + ' clicked');
   }
 
   onTabActivated(data: TabDirective) {
-    console.log('onTabActivated:', this.activeTab?.heading);
     this.activeTab = data;
     if(this.activeTab.heading === 'Messages') this.loadMessages();
   }
@@ -67,6 +68,7 @@ export class MemberDetailsComponent implements OnInit{
         next: messages => this.messages = messages
       })
     }
+    this.toastr.info('messages loaded');
   }
 
 
