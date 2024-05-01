@@ -1,0 +1,10 @@
+namespace api.Params.HR
+{
+    public class CandidateParams: PaginationParams
+    {
+        public int Id { get; set; }
+        public string CandidateName { get; set; }
+        public string PassportNo { get; set; }
+        public int ProfessionId { get; set; }
+    }
+}

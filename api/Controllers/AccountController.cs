@@ -1,8 +1,5 @@
-using System.Security.Cryptography;
-using System.Text;
-using api.Data;
 using api.DTOs;
-using api.Entities;
+using api.Entities.Identity;
 using api.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;

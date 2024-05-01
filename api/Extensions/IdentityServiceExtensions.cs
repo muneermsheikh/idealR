@@ -1,6 +1,7 @@
 using System.Text;
 using api.Data;
 using api.Entities;
+using api.Entities.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +36,7 @@ namespace api.Extensions
             
             services.AddAuthorization(opt => {
                 opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-                opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive"));
+                opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
                 opt.AddPolicy("HRSupPolicy", policy => policy.RequireRole("HR Supervisor", "HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("HRExecPolicy", policy => policy.RequireRole("HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("AsstHRExecPolicy", policy => policy.RequireRole("Asst HR Executive"));

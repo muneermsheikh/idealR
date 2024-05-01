@@ -1,6 +1,7 @@
 using api.Data;
 using api.DTOs;
 using api.Entities;
+using api.Entities.Admin;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
@@ -33,13 +34,13 @@ namespace api.Controllers
 
             if(SourceUser.UserName == username) return BadRequest("You cannot like yourself");
 
-            var UserLike = await _likesRepository.GetUserLike(sourceUserId, LikedUser.Id);
+            var userLike = await _likesRepository.GetUserLike(sourceUserId, LikedUser.Id);
             
-            if(UserLike != null) return BadRequest("You have already liked the selected User");
+            if(userLike != null) return BadRequest("You have already liked the selected User");
 
-            UserLike = new UserLike{SourceUserId=sourceUserId, TargetUserId=LikedUser.Id};
+            userLike = new UserLike{SourceUserId=sourceUserId, TargetUserId=LikedUser.Id};
 
-            SourceUser.LikedUsers.Add(UserLike);
+            SourceUser.LikedUsers.Add(userLike);
 
             if(await _userRepository.SaveAllAsync()) return Ok();
 

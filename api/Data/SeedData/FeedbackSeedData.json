@@ -1,0 +1,43 @@
+[
+    {
+        "CustomerName": "Saudi Gulf Heavy Industries", "issuedOn": "2020-11-15T12:00:00",
+        "ReceivedOn": null, "HowReceived": null, "FeedbackItems": [
+            {"FeedbackGroup": "documentation", "FeedbackQNo": 1, "Response": null,
+                "FeedbackQuestion": "How satisfied you are with our documentations",
+                "textForLevel1": "Very satisfied", "textForLevel2": "Satisfied",
+                "textForLevel3": "Not satisfied", "textForLevel4": "Bad"
+            },
+            {"FeedbackGroup": "Response To Queries", "FeedbackQNo": 2, "Response": null,
+                "FeedbackQuestion": "How satisfied are you with our response to your queries",
+                "textForLevel1": "Very satisfied", "textForLevel2": "Satisfied",
+                "textForLevel3": "Not satisfied", "textForLevel4": "Bad"},
+            {"FeedbackGroup": "Response Time To Queries", "FeedbackQNo": 3, "Response": null,
+                "FeedbackQuestion": "How fast was our response time to your queries",
+                "textForLevel1": "Very fast", "textForLevel2": "fast",
+                "textForLevel3": "Slow", "textForLevel4": "Very Slow"},
+            {"FeedbackGroup": "Interview arrangements", "FeedbackQNo": 4, "Response": null,
+                "FeedbackQuestion": "How good were our interview arrangements",
+                "textForLevel1": "Very good", "textForLevel2": "good",
+                "textForLevel3": "not good", "textForLevel4": "bad"},
+            {"FeedbackGroup": "Candidate Skills", "FeedbackQNo": 5, "Response": null,
+                "FeedbackQuestion": "How satisfied are you with the skills of candidates presented to you",
+                "textForLevel1": "Very satisfied", "textForLevel2": "Satisfied",
+                "textForLevel3": "Not satisfied", "textForLevel4": "Bad"},
+            {"FeedbackGroup": "Processing time", "FeedbackQNo": 6, "Response": null,
+                "FeedbackQuestion": "How fast did we deploy your selected candidates",
+                "textForLevel1": "Very fast", "textForLevel2": "fast",
+                "textForLevel3": "slow", "textForLevel4": "very slow"},
+            {"FeedbackGroup": "Marketing Services", "FeedbackQNo": 7, "Response": null,
+                "FeedbackQuestion": "How satisfied are you with the services of our marketing personnel",
+                "textForLevel1": "Very satisfied", "textForLevel2": "Satisfied",
+                "textForLevel3": "Not satisfied", "textForLevel4": "Bad"},
+            {"FeedbackGroup": "Overall", "FeedbackQNo": 8, "Response": null,
+                "FeedbackQuestion": "How satisfied are you with our overall services",
+                "textForLevel1": "Very satisfied", "textForLevel2": "Satisfied",
+                "textForLevel3": "Not satisfied", "textForLevel4": "Bad"},
+            {"FeedbackGroup": "Recommendation to others", "FeedbackQNo": 9, "Response": null,
+                "FeedbackQuestion": "Would you recommend us to your other associates for availing recruitment services from us?",
+                "textForLevel1": "Yes", "textForLevel2": "No"}
+        ]
+    }
+]

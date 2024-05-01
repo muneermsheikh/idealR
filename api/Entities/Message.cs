@@ -1,3 +1,5 @@
+using api.Entities.Identity;
+
 namespace api.Entities
 {
     public class Message

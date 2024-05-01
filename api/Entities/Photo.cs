@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Entities.Identity;
 
 namespace api.Entities
 {

@@ -1,0 +1,85 @@
+[
+    {"FirstName": "Abdul Mateen", "SecondName":"Abdul Waheed", "FamilyName": "Khan","KnownAs": "Mateen", 
+         "PlaceOfBirth": "Lucknow", "AadharNo": "293824334560", "Position": "HR Executive",
+         "Gender": "M", "DateOfBirth": "1985-12-15T10:00:10", "DateOfJoining": "2018-01-15T10:00:00",
+         "Nationality": "Indian", "Email": "mateen@gmail.com",  "UserName":"AbdulMateen",
+         "Qualifications": "B.Com, DME", "Department": "Production",
+         "HRSkills": [
+              {"ProfessionId": 1, "IndustryId": 1, "SkillLevel": 0}, 
+              {"ProfessionId": 2, "IndustryId": 1, "SkillLevel": 2}
+         ],
+         "Address":"25, 32 raman raghav road", 
+         "Address2":"opposite national bank",
+         "City": "Bangalore",
+         "Country": "India"
+    },
+    {"FirstName": "Sanjay", "SecondName":"Rajaram", "FamilyName": "Patil","KnownAs": "Sanjay", 
+         "PlaceOfBirth": "Kolhapur", "AadharNo": "233852334560", "Position": "Document Controller-Admin",
+         "Gender": "M", "DateOfBirth": "1985-12-16T10:00:10", "DateOfJoining": "2019-02-15T00:00:00",
+         "Nationality": "Indian", "Email": "sanjaypatil@gmail.com",  "UserName":"Sanjay",
+         "Qualifications": "SSC", "Department": "Production",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevel": 1}, 
+              {"ProfessionId": 2, "IndustryId": 1, "SkillLevel": 2}
+         ],
+         "Address":"12/56 BD Chawls", 
+         "Address2":"worli",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Shahid", "SecondName":"Mohammed Yusuf", "FamilyName": "Khan","KnownAs": "Mateen", 
+         "PlaceOfBirth": "Patna", "AadharNo": "293824032560", "Position": "Administration Manager",
+         "Gender": "M", "DateOfBirth": "1990-12-15T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "shahid@gmail.com",  "UserName":"ShahidAnsari",
+         "Qualifications": "8th", "Department": "Production",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevel": 1}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevel": 2}
+         ],
+         "otherSkill": [
+              {"SkillDataId": 1, "SkillLevel": 1, "IsMain": 0}, 
+              {"SkillDataId": 2, "SkillLevel": 1, "IsMain": 2}
+         ],
+         "Address":"Plot No.39485, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Chennai",
+         "Country": "India"
+    },
+    {"FirstName": "Kadir", "SecondName":"Abdul Wahab", "FamilyName": "Khan","KnownAs": "Kadir", 
+         "PlaceOfBirth": "Patna", "AadharNo": "293824032560", "Position": "HR Executive",
+         "Gender": "M", "DateOfBirth": "1990-12-15T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "kadirkhan@gmail.com",  "UserName":"KadirKhan",
+         "Qualifications": "HSC, ITI(Mech)", "Department": "Production",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevel": 1}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevel": 2}
+         ],
+         "otherSkill": [
+              {"SkillDataId": 1, "SkillLevel": 1, "IsMain": 0}, 
+              {"SkillDataId": 2, "SkillLevel": 1, "IsMain": 2}
+         ],
+         "Address":"Plot No.3332, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Munir", "SecondName":"Maheboob", "FamilyName": "Shaikh","KnownAs": "Munir", 
+         "PlaceOfBirth": "Latur", "AadharNo": "242332560", "Position": "Operations Manager",
+         "Gender": "M", "DateOfBirth": "1955-08-05T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "shahid@gmail.com",  "UserName":"MunirSheikh",
+         "Qualifications": "B.Sc., DME", "Department": "Production",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevel": 1}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevel": 2}
+         ],
+         "otherSkill": [
+              {"SkillDataId": 1, "SkillLevel": 1, "IsMain": 0}, 
+              {"SkillDataId": 2, "SkillLevel": 1, "IsMain": 2}
+         ],
+         "Address":"Plot No.39485, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Chennai",
+         "Country": "India"
+    }
+]
+

@@ -1,5 +1,6 @@
 using api.DTOs;
 using api.Entities;
+using api.Entities.Identity;
 using api.Helpers;
 using api.Params;
 

@@ -1,0 +1,6 @@
+[
+    {"CVRefId": 1, "SelectionStatus": "Selected", "Remarks": "seeded data", 
+          "SelectedOn": "2020-01-05T10:00:00", "Charges": 25000}, 
+    {"CVRefId": 2, "SelectionStatus": "Selected", "Remarks": "seeded data", 
+          "SelectedOn": "2020-02-05T10:00:00","Charges": 35000}
+]

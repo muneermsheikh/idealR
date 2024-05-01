@@ -1,17 +1,18 @@
 using System.Security.Claims;
-using api.Data;
 using api.DTOs;
-using api.Entities;
+using api.Entities.Identity;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
 using api.Params;
+using API.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+     [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     public class UsersController: BaseApiController
     {

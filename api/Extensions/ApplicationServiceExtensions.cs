@@ -1,5 +1,7 @@
 using System.Reflection.Metadata.Ecma335;
 using api.Data;
+using api.Data.Repositories;
+using api.Entities.HR;
 using api.Interfaces;
 using api.Services;
 using API.Helpers;
@@ -27,6 +29,10 @@ namespace api.Extensions
             services.AddScoped<LogUserActivity>();
             services.AddScoped<ILikesRepository, LIkesRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<ICandidateRepository, CandidatesRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IOrdersRepository, OrdersRepository>();
             
             return services;
         }

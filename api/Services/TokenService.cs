@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using api.Entities;
+using api.Entities.Identity;
 using api.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

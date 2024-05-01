@@ -101,7 +101,1497 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("api.Entities.AppRole", b =>
+            modelBuilder.Entity("api.Entities.Admin.Client.AgencySpecialty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IndustryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SpecialtyName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("AgencySpecialties", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Add")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Add2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("District")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Introduction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KnownAs")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Pin")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerName", "City")
+                        .IsUnique();
+
+                    b.ToTable("Customers", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerIndustry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CustomerOfficialId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("IndustryId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("CustomerOfficialId");
+
+                    b.HasIndex("IndustryId");
+
+                    b.ToTable("CustomerIndustries", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerOfficial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Designation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Divn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KnownAs")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OfficialName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId", "OfficialName")
+                        .IsUnique();
+
+                    b.ToTable("CustomerOfficials", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.DLForwardedToAgent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerOfficialId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("DateForwarded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("CustomerOfficialId", "DateForwarded", "OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("DLForwardedToAgents", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AadharNo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateOfJoining")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmployeeAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmployeePhone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmployeePhone2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmployeeQualifications")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FamilyName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KnownAs")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nationality")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PlaceOfBirth")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Qualifications")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecondName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Employees", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HowReceived")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("IssuedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("ReceivedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Feedbacks", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.FeedbackItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackGroup")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FeedbackId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FeedbackQNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackQuestion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel4")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeedbackId");
+
+                    b.ToTable("FeedbackItems", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.FeedbackStddQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackGroup")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FeedbackQNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackQuestion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TextForLevel1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextForLevel4")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("feedbackStddQs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ReleasedForProduction")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReviewStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReviewedBy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ReviewedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("ContractReviews", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ContractReviewId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Ecnr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("RequireAssess")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReviewItemStatus")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractReviewId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("ContractReviewItems", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItemQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContractReviewItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatoryTrue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsResponseBoolean")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Response")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ResponseText")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReviewParameter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractReviewItemId");
+
+                    b.ToTable("ContractReviewItemQs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.JobDescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ExpDesiredMax")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ExpDesiredMin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("JobDescInBrief")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MaxAge")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MinAge")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("QualificationDesired")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("JobDescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CityOfWorking")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CompleteBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ContractReviewId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContractReviewStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ForwardedToHRDeptOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OrderRef")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderRefDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProjectManagerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SalesmanId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Checked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("CompleteBefore")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Ecnr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxCVs")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MinCVs")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReviewItemStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SourceFrom")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProfessionId");
+
+                    b.ToTable("OrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderItemAssessmentQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderItemAssessmentQs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.Remuneration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContractPeriodInMonths")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FoodAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FoodNotProvided")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FoodProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HousingAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HousingNotProvided")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HousingProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LeaveAirfareEntitlementAfterMonths")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LeavePerYearInDays")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OtherAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SalaryCurrency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SalaryMax")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SalaryMin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TransportAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("TransportNotProvided")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("TransportProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WorkHours")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("Remunerations", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.COA", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountClass")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Divn")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("OpBalance")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountName")
+                        .IsUnique();
+
+                    b.ToTable("COAs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("COAId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Divn")
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("VoucherDated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VoucherNo")
+                        .HasMaxLength(10)
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FinanceVouchers", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.VoucherEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("COAId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Cr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Dr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("DrEntryApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DrEntryApprovedByEmployeeById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DrEntryApprovedOn")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FinanceVoucherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("TransDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinanceVoucherId");
+
+                    b.ToTable("VoucherEntries", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.AssessmentQStdd", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Question")
+                        .IsUnique();
+
+                    b.HasIndex("QuestionNo")
+                        .IsUnique();
+
+                    b.ToTable("AssessmentQStdds", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CVRef", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVReviewId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HRExecId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RefStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RefStatusDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ReferredOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId", "CandidateId")
+                        .IsUnique();
+
+                    b.ToTable("CVRefs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.Candidate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DOB")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Ecnr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FamilyName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("KnownAs")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastActive")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nationality")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Pin")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PpNo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Qualifications")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecondName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId");
+
+                    b.ToTable("Candidates", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CandidateAssessment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AssessResult")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AssessedByEmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AssessedByEmployeeName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AssessedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChecklistHRId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TaskIdDocControllerAdmin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("requireInternalReview")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("CandidateAssessments", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CandidateAssessmentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AssessedOnTheParameter")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AssessmentGroup")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CandidateAssessmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateAssessmentId");
+
+                    b.ToTable("CandidatesItemAssessments", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Charges")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChargesAgreed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CheckedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ChecklistedOk")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ExceptionApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ExceptionApprovedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExceptionApprovedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HrExecComments")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("ChecklistHRs", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.ChecklistHRItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Accepts")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChecklistHRId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Exceptions")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("MandatoryTrue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Parameter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChecklistHRId");
+
+                    b.ToTable("ChecklistHRItems", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.Employment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Charges")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChargesFixed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContractPeriodInMonths")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FoodAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("FoodProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HousingAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HousingProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LeaveAirfareEntitlementAfterMonths")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LeavePerYearInDays")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OfferAcceptanceUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OfferAcceptedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OfferAttachmentUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OtherAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Salary")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SalaryCurrency")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SelectedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SelectionDecisionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TransportAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("TransportProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WeeklyHours")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SelectionDecisionId")
+                        .IsUnique();
+
+                    b.ToTable("Employments", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.HRSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IndustryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SkillLevel")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("HRSkills", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SkillDataId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SkillLevel")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("OtherSkills", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Charges")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SelectedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SelectionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SelectionStatus")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId");
+
+                    b.ToTable("SelectionDecisions", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserExp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("CurrentJob")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Employer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MonthlySalaryDrawn")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SalaryCurrency")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly?>("WorkedFrom")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("WorkedUpto")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.ToTable("UserExps", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserPhone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MobileNo")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.ToTable("UserPhones", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserProfession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IndustryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.ToTable("UserProfessions", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserQualification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QualificationId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserQualifications", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Identity.AppRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +1618,7 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("api.Entities.AppUser", b =>
+            modelBuilder.Entity("api.Entities.Identity.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -223,7 +1713,7 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("api.Entities.AppUserRole", b =>
+            modelBuilder.Entity("api.Entities.Identity.AppUserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
@@ -236,6 +1726,126 @@ namespace api.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.CategoryAssessmentQBank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AssessmentParameter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AssessmentQBankId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsStandardQ")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategoryAssessmentQBanks", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.ChecklistHRData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Parameter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChecklistHRDatas", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.Industry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("IndustryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Industries", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.Profession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProfessionName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfessionName")
+                        .IsUnique();
+
+                    b.ToTable("Professions", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.ReviewItemData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatoryTrue")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsResponseBoolean")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Response")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReviewParameter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReviewItemDatas", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Master.SkillData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SkillName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SkillDatas", (string)null);
                 });
 
             modelBuilder.Entity("api.Entities.Message", b =>
@@ -305,6 +1915,58 @@ namespace api.Data.Migrations
                     b.ToTable("Photos", (string)null);
                 });
 
+            modelBuilder.Entity("api.Entities.Process.DeployStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("WorkingDaysReqdForNextStage")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeployStatuses", (string)null);
+                });
+
+            modelBuilder.Entity("api.Entities.Process.Deployment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("NextSequenceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId");
+
+                    b.ToTable("Deployments", (string)null);
+                });
+
             modelBuilder.Entity("api.Entities.UserLike", b =>
                 {
                     b.Property<int>("SourceUserId")
@@ -317,12 +1979,12 @@ namespace api.Data.Migrations
 
                     b.HasIndex("TargetUserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("UserLike", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("api.Entities.AppRole", null)
+                    b.HasOne("api.Entities.Identity.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -331,7 +1993,7 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", null)
+                    b.HasOne("api.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,7 +2002,7 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", null)
+                    b.HasOne("api.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -349,22 +2011,306 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", null)
+                    b.HasOne("api.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.AppUserRole", b =>
+            modelBuilder.Entity("api.Entities.Admin.Client.AgencySpecialty", b =>
                 {
-                    b.HasOne("api.Entities.AppRole", "Role")
+                    b.HasOne("api.Entities.Admin.Client.Customer", null)
+                        .WithMany("AgencySpecialties")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerIndustry", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Client.Customer", "Customer")
+                        .WithMany("CustomerIndustries")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("api.Entities.Admin.Client.CustomerOfficial", null)
+                        .WithMany("CustomerIndustries")
+                        .HasForeignKey("CustomerOfficialId");
+
+                    b.HasOne("api.Entities.Master.Industry", "Industry")
+                        .WithMany("customerIndustries")
+                        .HasForeignKey("IndustryId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Industry");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerOfficial", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Client.Customer", null)
+                        .WithMany("CustomerOfficials")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.DLForwardedToAgent", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.Order", null)
+                        .WithMany("DLForwarded")
+                        .HasForeignKey("OrderId");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.FeedbackItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Feedback", null)
+                        .WithMany("FeedbackItems")
+                        .HasForeignKey("FeedbackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.Order", "Order")
+                        .WithOne("ContractReview")
+                        .HasForeignKey("api.Entities.Admin.Order.ContractReview", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.ContractReview", null)
+                        .WithMany("ContractReviewItems")
+                        .HasForeignKey("ContractReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItemQ", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.ContractReviewItem", null)
+                        .WithMany("ContractReviewItemQs")
+                        .HasForeignKey("ContractReviewItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.JobDescription", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
+                        .WithOne("JobDescription")
+                        .HasForeignKey("api.Entities.Admin.Order.JobDescription", "OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.Order", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Client.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Entities.Master.Profession", "Profession")
+                        .WithMany()
+                        .HasForeignKey("ProfessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Profession");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderItemAssessmentQ", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", null)
+                        .WithMany("OrderItemAssessmentQs")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.Remuneration", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
+                        .WithOne("Remuneration")
+                        .HasForeignKey("api.Entities.Admin.Order.Remuneration", "OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.VoucherEntry", b =>
+                {
+                    b.HasOne("api.Entities.Finance.FinanceVoucher", null)
+                        .WithMany("VoucherEntries")
+                        .HasForeignKey("FinanceVoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.Candidate", b =>
+                {
+                    b.HasOne("api.Entities.HR.CVRef", null)
+                        .WithMany("Candidates")
+                        .HasForeignKey("CVRefId");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CandidateAssessment", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CandidateAssessmentItem", b =>
+                {
+                    b.HasOne("api.Entities.HR.CandidateAssessment", null)
+                        .WithMany("CandidateAssessmentItems")
+                        .HasForeignKey("CandidateAssessmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
+                {
+                    b.HasOne("api.Entities.HR.Candidate", "Candidate")
+                        .WithMany()
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidate");
+
+                    b.Navigation("OrderItem");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.ChecklistHRItem", b =>
+                {
+                    b.HasOne("api.Entities.HR.ChecklistHR", null)
+                        .WithMany("ChecklistHRItems")
+                        .HasForeignKey("ChecklistHRId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.Employment", b =>
+                {
+                    b.HasOne("api.Entities.HR.SelectionDecision", null)
+                        .WithOne("Employment")
+                        .HasForeignKey("api.Entities.HR.Employment", "SelectionDecisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.HRSkill", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Employee", "Employee")
+                        .WithMany("HRSkills")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Employee", "Employee")
+                        .WithMany("OtherSkills")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
+                {
+                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
+                        .WithMany()
+                        .HasForeignKey("CVRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CVRef");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserExp", b =>
+                {
+                    b.HasOne("api.Entities.HR.Candidate", null)
+                        .WithMany("UserExperiences")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserPhone", b =>
+                {
+                    b.HasOne("api.Entities.HR.Candidate", null)
+                        .WithMany("UserPhones")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.HR.UserProfession", b =>
+                {
+                    b.HasOne("api.Entities.HR.Candidate", null)
+                        .WithMany("UserProfessions")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Identity.AppUserRole", b =>
+                {
+                    b.HasOne("api.Entities.Identity.AppRole", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Entities.AppUser", "User")
+                    b.HasOne("api.Entities.Identity.AppUser", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -377,13 +2323,13 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Message", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", "Recipient")
+                    b.HasOne("api.Entities.Identity.AppUser", "Recipient")
                         .WithMany("MessagesReceived")
                         .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("api.Entities.AppUser", "Sender")
+                    b.HasOne("api.Entities.Identity.AppUser", "Sender")
                         .WithMany("MessagesSent")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -396,7 +2342,7 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Photo", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", "AppUser")
+                    b.HasOne("api.Entities.Identity.AppUser", "AppUser")
                         .WithMany("photos")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,15 +2351,26 @@ namespace api.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("api.Entities.Process.Deployment", b =>
+                {
+                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
+                        .WithMany("Deployments")
+                        .HasForeignKey("CVRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CVRef");
+                });
+
             modelBuilder.Entity("api.Entities.UserLike", b =>
                 {
-                    b.HasOne("api.Entities.AppUser", "SourceUser")
+                    b.HasOne("api.Entities.Identity.AppUser", "SourceUser")
                         .WithMany("LikedUsers")
                         .HasForeignKey("SourceUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Entities.AppUser", "TargetUser")
+                    b.HasOne("api.Entities.Identity.AppUser", "TargetUser")
                         .WithMany("LikedByUsers")
                         .HasForeignKey("TargetUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -424,12 +2381,102 @@ namespace api.Data.Migrations
                     b.Navigation("TargetUser");
                 });
 
-            modelBuilder.Entity("api.Entities.AppRole", b =>
+            modelBuilder.Entity("api.Entities.Admin.Client.Customer", b =>
+                {
+                    b.Navigation("AgencySpecialties");
+
+                    b.Navigation("CustomerIndustries");
+
+                    b.Navigation("CustomerOfficials");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerOfficial", b =>
+                {
+                    b.Navigation("CustomerIndustries");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Employee", b =>
+                {
+                    b.Navigation("HRSkills");
+
+                    b.Navigation("OtherSkills");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Feedback", b =>
+                {
+                    b.Navigation("FeedbackItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
+                {
+                    b.Navigation("ContractReviewItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItem", b =>
+                {
+                    b.Navigation("ContractReviewItemQs");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.Order", b =>
+                {
+                    b.Navigation("ContractReview");
+
+                    b.Navigation("DLForwarded");
+
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>
+                {
+                    b.Navigation("JobDescription");
+
+                    b.Navigation("OrderItemAssessmentQs");
+
+                    b.Navigation("Remuneration");
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
+                {
+                    b.Navigation("VoucherEntries");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CVRef", b =>
+                {
+                    b.Navigation("Candidates");
+
+                    b.Navigation("Deployments");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.Candidate", b =>
+                {
+                    b.Navigation("UserExperiences");
+
+                    b.Navigation("UserPhones");
+
+                    b.Navigation("UserProfessions");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.CandidateAssessment", b =>
+                {
+                    b.Navigation("CandidateAssessmentItems");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
+                {
+                    b.Navigation("ChecklistHRItems");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
+                {
+                    b.Navigation("Employment");
+                });
+
+            modelBuilder.Entity("api.Entities.Identity.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("api.Entities.AppUser", b =>
+            modelBuilder.Entity("api.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("LikedByUsers");
 
@@ -442,6 +2489,11 @@ namespace api.Data.Migrations
                     b.Navigation("UserRoles");
 
                     b.Navigation("photos");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.Industry", b =>
+                {
+                    b.Navigation("customerIndustries");
                 });
 #pragma warning restore 612, 618
         }

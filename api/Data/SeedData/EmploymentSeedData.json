@@ -1,0 +1,12 @@
+[
+    {"CVRefId": 1, "SelectionDecisionId": 1, "SelectedOn": "2020-01-01T10:10:00", "SalaryCurrency": "SAR", 
+         "Salary": 2500, "ContractPeriodInMonths": 24, "HousingProvidedFree": false, "HousingAllowance": 500, 
+         "FoodProvidedFree": false, "FoodAllowance": 0, "TransportProvidedFree": false, "TransportAllowance": 500,
+         "Charges": 25000
+    }, 
+    {"CVRefId": 2, "SelectionDecisionId": 1, "SelectedOn": "2020-01-02T10:10:00", "SalaryCurrency": "SAR", 
+         "Salary": 2600, "ContractPeriodInMonths": 24, "HousingProvidedFree": false, "HousingAllowance": 500, 
+         "FoodProvidedFree": false, "FoodAllowance": 0, "TransportProvidedFree": false, "TransportAllowance": 500,
+         "Charges": 45000
+    }
+]
