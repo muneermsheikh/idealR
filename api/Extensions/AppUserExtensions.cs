@@ -1,4 +1,5 @@
 using api.Data;
+using api.DTOs.Admin;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
@@ -35,7 +36,7 @@ namespace api.Extensions
         public static async Task<int> UpdateEmployeeAppUserId(this Employee employee,
             UserManager<AppUser> userManager, DataContext context, string cityName)
         {
-            var off =await userManager.FindByEmailAsync(employee.Email);
+            var off =await userManager.FindByEmailAsync(employee.OfficialEmail);
             if(off == null){
                 off = new AppUser{
                     Gender = employee.Gender,
@@ -69,6 +70,47 @@ namespace api.Extensions
             }
             
             return off.Id;
+        }
+
+        public static async Task<string> GetAppUserEmail(this UserManager<AppUser> userManager, int appUserId)
+        {
+            var user = await userManager.FindByIdAsync(appUserId.ToString());
+            if(user==null) return "";
+            return user.Email;
+
+        }
+
+         public static async Task<UsernameAndEmailDto> AppUserEmailAndUsernameFromAppUserId(this UserManager<AppUser> userManager, int appUserId)
+        {
+            
+            var obj = await userManager.FindByIdAsync(appUserId.ToString());
+            if(obj==null) return null;
+            var dto = new UsernameAndEmailDto
+            {
+                Username = obj.UserName,
+                KnownAs = obj.KnownAs,
+                Email = obj.Email,
+                Position = obj.Position,
+                AppUserId = obj.Id
+            };
+
+            return dto;
+        }
+
+        public static async Task<UsernameAndEmailDto> AppUserEmailAndUsernameFromAppUsername(this UserManager<AppUser> userManager, string username)
+        {
+            var obj = await userManager.FindByNameAsync(username);
+            if(obj==null) return null;
+            var dto = new UsernameAndEmailDto
+            {
+                Username = obj.UserName,
+                KnownAs = obj.KnownAs,
+                Email = obj.Email,
+                Position = obj.Position,
+                AppUserId = obj.Id
+            };
+
+            return dto;
         }
     }
 }

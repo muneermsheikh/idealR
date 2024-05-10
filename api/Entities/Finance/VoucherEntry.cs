@@ -10,7 +10,7 @@ namespace api.Entities.Finance
         }
 
         public int FinanceVoucherId { get; set; }
-        public DateTime TransDate { get; set; }
+        public DateOnly   TransDate { get; set; }
         public int COAId { get; set; }
         public string AccountName { get; set; }
         public long Dr {get; set;}
@@ -18,7 +18,7 @@ namespace api.Entities.Finance
         public string Narration { get; set; }
         public int DrEntryApprovedByEmployeeById { get; set; }
         [MaxLength(10)]
-        public DateTime DrEntryApprovedOn { get; set; }
+        public DateOnly DrEntryApprovedOn { get; set; }
         public bool DrEntryApproved { get; set; }
     
     }

@@ -132,11 +132,17 @@ namespace api.Data.Repositories
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
                 {
+                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem);
+                    if(newAppUser != null) newItem.AppUserId=newAppUser.Id;
                     _context.Entry(existingItem).CurrentValues.SetValues(newItem);
                     _context.Entry(existingItem).State = EntityState.Modified;
                 } else {    //insert new navigation record
+                        
+                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem);
+                    if(newAppUser == null) continue;
                     var itemToInsert = new CustomerOfficial
                     {
+                        AppUserId = newAppUser.Id,
                         CustomerId = existingObject.Id,
                         OfficialName = newItem.OfficialName,
                         Designation = newItem.Designation,
@@ -194,6 +200,32 @@ namespace api.Data.Repositories
             _context.Entry(existingObject).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official) {
+            var appUserData = new AppUser{
+                UserName = official.UserName, Gender=official.Gender, Email=official.Email,
+                KnownAs=official.KnownAs, PhoneNumber=official.Mobile, Position=official.Designation
+            };
+            var userAdded =await _userManager.CreateAsync(appUserData, "Pa$$w0rd");
+            if(!userAdded.Succeeded) return null;
+            await _userManager.AddToRoleAsync(appUserData, "Client");
+
+            return appUserData;
+        }
+
+        public async Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official) {
+            if(official.AppUserId != 0) return false;
+
+            var user = await CreateAppUserForCustomerOfficial(official);
+            if(user != null) {
+                official.AppUserId=user.Id;
+                _context.Entry(official).State = EntityState.Modified;
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+
+            return false;
         }
     }
 }

@@ -10,10 +10,9 @@ namespace api.Entities.HR
         public int OrderItemId { get; set; }
         public int CandidateId {get; set;}
         public DateTime AssessedOn { get; set; }
-        public int AssessedByEmployeeId { get; set; }
         public string AssessedByEmployeeName {get; set;}
         [Required]
-        public bool requireInternalReview {get; set;}
+        public bool RequireInternalReview {get; set;}
         public int ChecklistHRId {get; set;}
         [Required]
         public string AssessResult { get; set; } = "Not Assessed";

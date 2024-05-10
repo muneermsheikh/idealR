@@ -10,7 +10,7 @@ namespace api.Entities.Finance
         public string AccountName { get; set; }
         [MaxLength(10), Required]
         public int VoucherNo { get; set; }
-        public DateTime VoucherDated {get; set;}
+        public DateOnly VoucherDated {get; set;}
         public long Amount {get; set;}
         public string Narration {get; set;}
         [Required]

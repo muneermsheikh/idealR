@@ -6,5 +6,6 @@ namespace api.Entities.HR
         public string Subject { get; set; }
         public string Question { get; set; }
         public int MaxPoints { get; set; }
+        public bool IsMandatory { get; set; }
     }
 }

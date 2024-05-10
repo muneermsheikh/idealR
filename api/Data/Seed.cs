@@ -1,7 +1,4 @@
-using System.Diagnostics.Metrics;
 using System.Text.Json;
-using api.DTOs;
-using api.Entities;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
@@ -10,7 +7,6 @@ using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Master;
 using api.Entities.Process;
-using api.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,27 +27,30 @@ namespace api.Data
                 var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
 
                 var roles = new List<AppRole> {
-                    new AppRole {Name = "Candidate"},
-                    new AppRole {Name = "Employee"},
-                    new AppRole {Name = "Client"},
-                    new AppRole {Name = "Admin"},
-                    new AppRole {Name = "HR Manager"},
-                    new AppRole {Name = "HR Supervisor"},
-                    new AppRole {Name = "HR Executive"},
-                    new AppRole {Name = "Asst HR Executive"},
-                    new AppRole {Name = "Accounts Manager"},
-                    new AppRole {Name = "Finance Manager"},
-                    new AppRole {Name = "Cashier"},
-                    new AppRole {Name = "Accountant"},
-                    new AppRole {Name = "Document Controller-Admin"},
-                    new AppRole {Name = "Document Controller-Processing"},
-                    new AppRole {Name = "Processing Manager"},
-                    new AppRole {Name = "Admin Manager"},
-                    new AppRole {Name = "Receptionist"},
-                    new AppRole {Name = "Marketing Manager"},
-                    new AppRole {Name = "Design Assessment Questions"},
-                    new AppRole {Name = "Register Selections and Rejections"},
-                    new AppRole {Name = "Approve release of documents"},
+                    new() {Name = "Candidate"},
+                    new() {Name = "Employee"},
+                    new() {Name = "Client"},
+                    new() {Name = "Admin"},
+                    new() {Name = "HR Manager"},
+                    new() {Name = "HR Supervisor"},
+                    new() {Name = "HR Executive"},
+                    new() {Name = "Asst HR Executive"},
+                    new() {Name = "Accounts Manager"},
+                    new() {Name = "Finance Manager"},
+                    new() {Name = "Cashier"},
+                    new() {Name = "Accountant"},
+                    new() {Name = "Document Controller-Admin"},
+                    new() {Name = "Document Controller-Processing"},
+                    new() {Name = "Processing Manager"},
+                    new() {Name = "Admin Manager"},
+                    new() {Name = "Receptionist"},
+                    new() {Name = "Marketing Manager"},
+                    new() {Name = "Design Assessment Questions"},
+                    new() {Name = "Register Selections and Rejections"},
+                    new() {Name = "Approve release of documents"},
+                    new() {Name= "Order"},
+                    new() {Name = "Contract Review"},
+                    new() {Name = "Customer Official"}
                 };
 
                 foreach(var role in roles) {
@@ -80,6 +79,17 @@ namespace api.Data
             var UserListEmployees = new List<AppUser>();
             var UserListOfficials = new List<AppUser>();
 
+            if(!await context.MessageComposeSources.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/MessageComposeSourceSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Entities.Messages.MessageComposeSource>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.MessageComposeSources.Add(item);
+                }
+             }
+
             if(!await context.ChecklistHRDatas.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/ChecklistHRDataSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -89,7 +99,6 @@ namespace api.Data
                 {
                     context.ChecklistHRDatas.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if (!await context.COAs.AnyAsync()) {
@@ -100,7 +109,6 @@ namespace api.Data
                 {
                     context.COAs.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.FinanceVouchers.AnyAsync()) {
@@ -111,7 +119,6 @@ namespace api.Data
                 {
                     context.FinanceVouchers.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.Customers.AnyAsync()) {
@@ -131,7 +138,6 @@ namespace api.Data
                     UserListOfficials.Add(user);
                     context.Customers.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.Employees.AnyAsync()) {
@@ -152,7 +158,6 @@ namespace api.Data
                     UserListEmployees.Add(user);
                     context.Employees.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.Professions.AnyAsync()) {
@@ -163,7 +168,16 @@ namespace api.Data
                 {
                     context.Professions.Add(item);
                 }
-                //await context.SaveChangesAsync();
+            }
+            
+            if(!await context.ContractReviewItemStddQs.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/ContractReviewItemStddQSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<ContractReviewItemStddQ>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.ContractReviewItemStddQs.Add(item);
+                }
             }
             
 
@@ -175,8 +189,18 @@ namespace api.Data
                 {
                     context.Industries.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
+
+            if(!await context.AssessmentQStdds.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/AssessmentQStddSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<AssessmentQStdd>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.AssessmentQStdds.Add(item);
+                }
+            }
+
             
              if(!await context.Orders.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/OrderSeedData.json");
@@ -186,7 +210,6 @@ namespace api.Data
                 {
                     context.Orders.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.Candidates.AnyAsync()) {
@@ -202,13 +225,12 @@ namespace api.Data
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
                         Created = DateTime.UtcNow,
-                        DateOfBirth = DateOnly.FromDateTime((DateTime)item.DOB),
+                        DateOfBirth = (DateOnly)item.DOB,
                         City = item.City,
                     };
                     UserListCandidates.Add(user);
                     context.Candidates.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.DeployStatuses.AnyAsync()) {
@@ -219,7 +241,6 @@ namespace api.Data
                 {
                     context.DeployStatuses.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.CVRefs.AnyAsync()) {
@@ -230,7 +251,6 @@ namespace api.Data
                 {
                     context.CVRefs.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.SelectionDecisions.AnyAsync()) {
@@ -241,7 +261,6 @@ namespace api.Data
                 {
                     context.SelectionDecisions.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.feedbackStddQs.AnyAsync()) {
@@ -252,7 +271,6 @@ namespace api.Data
                 {
                     context.feedbackStddQs.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
 
@@ -264,7 +282,6 @@ namespace api.Data
                 {
                     context.Feedbacks.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
 
             if(!await context.Deployments.AnyAsync()) {
@@ -275,7 +292,6 @@ namespace api.Data
                 {
                     context.Deployments.Add(item);
                 }
-                //await context.SaveChangesAsync();
             }
             
             if(context.ChangeTracker.HasChanges())  await context.SaveChangesAsync();

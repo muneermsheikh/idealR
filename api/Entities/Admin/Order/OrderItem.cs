@@ -13,6 +13,7 @@ namespace api.Entities.Admin.Order
         public int MaxCVs { get; set; }
         public bool Ecnr { get; set; }=false;
         public DateOnly CompleteBefore { get; set; }
+        public int Charges { get; set; }
         public string Status { get; set; }="Not Started";
         public bool Checked {get; set;}
         public string ReviewItemStatus { get; set; }="NotReviewed";
@@ -20,5 +21,6 @@ namespace api.Entities.Admin.Order
         public Profession Profession { get; set; }
         public JobDescription JobDescription { get; set; }
         public Remuneration Remuneration { get; set; }
+        public ContractReviewItem ContractReviewItem {get; set;}
     }
 }

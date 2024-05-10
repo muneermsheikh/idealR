@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-     [ServiceFilter(typeof(LogUserActivity))]
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     public class UsersController: BaseApiController
     {

@@ -4,6 +4,11 @@ namespace api.Entities.HR
 {
     public class Candidate: BaseEntity
     {
+        public Candidate()
+        {
+        }
+
+
         public int ApplicationNo { get; set; }
 //names                
         [Required, MaxLength(1)]
@@ -17,11 +22,12 @@ namespace api.Entities.HR
         public int? CustomerId { get; set; }
         public string Source {get; set;}
         //[Required]
-        public DateTime? DOB { get; set; }
+        public DateOnly? DOB { get; set; }
         public string PpNo { get; set; } 
         public bool Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}
+        public string Country {get; set;}
         public string Pin {get; set;}
         public string Nationality {get; set;}
         [EmailAddress]

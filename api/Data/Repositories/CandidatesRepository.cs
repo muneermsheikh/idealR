@@ -68,8 +68,29 @@ namespace api.Data.Repositories
                 else {
                     if(!string.IsNullOrEmpty(candidateParams.CandidateName)) 
                         query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.CandidateName.ToLower()));
+                    
                     if(!string.IsNullOrEmpty(candidateParams.PassportNo))
                         query = query.Where(x => x.PpNo == candidateParams.PassportNo);
+                    
+                    if(candidateParams.ProfessionId != 0) {
+                        var candidateids = await _context.UserProfessions.Where(x => x.ProfessionId == candidateParams.ProfessionId)
+                            .Select(x => x.CandidateId).ToListAsync();
+                        if(candidateids.Count > 0) {
+                            query = query.Where(x => candidateids.Contains(x.Id));
+                        }
+                    }
+
+                    if(candidateParams.OrderItemId !=0) {
+                        var professionid = await _context.OrderItems.Where(x => x.Id == candidateParams.OrderItemId)
+                            .Select(x => x.ProfessionId).FirstOrDefaultAsync();
+                        
+                        var candidateids = await (from orderitem in _context.OrderItems where orderitem.Id==candidateParams.OrderItemId
+                            join userprof in _context.UserProfessions on orderitem.Id equals userprof.ProfessionId
+                            select userprof.CandidateId).ToListAsync();
+                        if(candidateids.Count > 0) query = query.Where(x => candidateids.Contains(x.Id));
+                    }
+
+                    if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
                 }
             
             var paged = await PagedList<CandidateBriefDto>.CreateAsync(query.AsNoTracking()

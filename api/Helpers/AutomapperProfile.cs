@@ -1,4 +1,3 @@
-using api.Data;
 using api.DTOs;
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
@@ -9,8 +8,10 @@ using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Entities.Identity;
+using api.Entities.Messages;
 using api.Extensions;
 using AutoMapper;
+
 
 namespace api.Helpers
 {
@@ -38,12 +39,28 @@ namespace api.Helpers
             CreateMap<Candidate, CandidateBriefDto>();
             CreateMap<CreateCandidateDto, Candidate>();
             CreateMap<FeedbackStddQ, FeedbackItem>();
+
             CreateMap<Order, OrderBriefDto>();
             CreateMap<Order, OrderDisplayDto>();
             CreateMap<OrderItem, OrderItemDisplayDto>();
             CreateMap<OrderItem, OrderItemBriefDto>();
             CreateMap<OrderItemToCreateDto, OrderItem>();
             CreateMap<Order, OrderDisplayWithItemsDto>();
+            
+            CreateMap<ContractReviewItemQ, ContractReviewItemStddQ>();
+            CreateMap<ContractReview, ContractReviewDto>();
+
+            CreateMap<ChecklistHR, ChecklistHRDto>();
+
+            CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
+
+            CreateMap<OrderItemAssessmentQ, CandidateAssessmentItem>();
+
+            CreateMap<CandidateAssessment, CandidateAssessmentDto>();
+
+            CreateMap<Employee, EmployeeBriefDto>();
+            CreateMap<SelectionDecision, SelDecisionDto>();
+
         }
 
     }

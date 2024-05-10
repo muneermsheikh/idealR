@@ -1,7 +1,5 @@
-using api.Data;
 using api.DTOs;
 using api.Entities;
-using api.Entities.Admin;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;

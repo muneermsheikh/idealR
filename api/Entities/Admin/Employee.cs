@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using api.Entities.HR;
+using AutoMapper.Configuration.Conventions;
 
 namespace api.Entities.Admin
 {
@@ -23,7 +24,9 @@ namespace api.Entities.Admin
         public string AadharNo { get; set; }
         public string Nationality {get; set;} = "Indian";
         [EmailAddress]
-        public string Email {get; set;}
+        public string OfficialEmail {get; set;}
+        public string OfficialPhoneNo { get; set; }
+        public string OfficialMobileNo { get; set; }
         public DateTime DateOfJoining {get; set;}
         public string Department { get; set; }
         public string Remarks { get; set; }        

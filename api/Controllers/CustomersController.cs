@@ -78,5 +78,13 @@ namespace api.Controllers
         {
             return await _customerRepo.GetCustomerById(id);
         }
+
+        [HttpPut("updateofficialwithappuserid")]
+        public async Task<ActionResult<bool>> UpdateCustomerOfficialWithAppUserId(CustomerOfficial official)
+        {
+            var succeeded = await _customerRepo.UpdateCustomerOfficialWithAppuserId(official);
+            if(succeeded) return Ok();
+            return BadRequest("failed to  update the data");
+        }
     }
 }

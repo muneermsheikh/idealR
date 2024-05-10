@@ -6,7 +6,6 @@ using api.Interfaces;
 using api.Params.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -178,5 +177,6 @@ namespace api.Controllers
             if(deleted)  return Ok(deleted);
             return BadRequest("Failed to delete the remuneration");
         }
+
     }
 }

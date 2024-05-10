@@ -6,7 +6,9 @@ using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Master;
+using api.Entities.Messages;
 using api.Entities.Process;
+using api.Entities.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,7 @@ namespace api.Data
         public DbSet<CustomerIndustry> CustomerIndustries {get; set;}
         public DbSet<CustomerOfficial> CustomerOfficials {get; set;}
         //order
+        public DbSet<ContractReviewItemStddQ> ContractReviewItemStddQs {get; set;}
         public DbSet<ContractReview> ContractReviews {get; set;}
         public DbSet<ContractReviewItem> ContractReviewItems {get; set;}
         public DbSet<ContractReviewItemQ> ContractReviewItemQs {get; set;}
@@ -41,6 +44,7 @@ namespace api.Data
         public DbSet<DLForwardedToAgent> DLForwardedToAgents {get; set;}
         public DbSet<Order> Orders {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
+        public DbSet<OrderItemAssessment> orderItemAssessments {get; set;}
         public DbSet<OrderItemAssessmentQ> OrderItemAssessmentQs {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
        
@@ -72,13 +76,18 @@ namespace api.Data
         public DbSet<Industry> Industries{get; set;}
         public DbSet<UserLike> Likes {get; set;}
         public DbSet<Profession> Professions {get; set;}
-        public DbSet<ReviewItemData> ReviewItemDatas {get; set;}
         public DbSet<SkillData> SkillDatas {get; set;}
         public DbSet<FeedbackStddQ> feedbackStddQs{get; set;}
 
         //Process
         public DbSet<Deployment> Deployments {get; set;}
         public DbSet<DeployStatus> DeployStatuses {get; set;}
+
+        //Tasks
+        public DbSet<AppTask> Tasks {get; set;}
+        public DbSet<TaskItem> TaskItems {get; set;}
+
+        public DbSet<Entities.Messages.MessageComposeSource> MessageComposeSources {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -90,6 +99,9 @@ namespace api.Data
                 .HasForeignKey(ur => ur.Id)
                 .IsRequired();
             */
+            builder.Entity<OrderItemAssessment>().HasIndex(x => x.OrderItemId).IsUnique();
+            builder.Entity<OrderItemAssessmentQ>().HasIndex(x => new {x.OrderItemAssessmentId, x.Question}).IsUnique();
+
             builder.Entity<Customer>().HasIndex(x => new {x.CustomerName, x.City}).IsUnique();
             builder.Entity<CustomerOfficial>().HasIndex(x => new{x.CustomerId, x.OfficialName}).IsUnique();
             
@@ -111,23 +123,41 @@ namespace api.Data
             
             builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderItem>().HasOne(x => x.Remuneration).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne()
+                .HasForeignKey<JobDescription>(x => x.OrderItemId);
+            builder.Entity<OrderItem>().HasOne(x => x.Remuneration).WithOne()
+                .HasForeignKey<Remuneration>(x => x.OrderItemId);
+            
+            builder.Entity<OrderItem>().HasOne(x => x.ContractReviewItem)
+                .WithOne().HasForeignKey<ContractReviewItem>(x => x.OrderItemId).OnDelete(DeleteBehavior.Cascade);
+            
+              builder.Entity<ChecklistHR>()
+                .HasMany(x => x.ChecklistHRItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AssessmentQStdd>().HasIndex(x => x.QuestionNo).IsUnique();
             builder.Entity<AssessmentQStdd>().HasIndex(x => x.Question).IsUnique();
             
             builder.Entity<COA>().HasIndex(i => i.AccountName).IsUnique();
-
-            builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne()
-                .HasForeignKey<JobDescription>(x => x.OrderItemId);
-            
-            builder.Entity<OrderItem>().HasOne(x => x.Remuneration).WithOne()
-                .HasForeignKey<Remuneration>(x => x.OrderItemId);
             
             builder.Entity<Order>().HasOne(x => x.ContractReview).WithOne(e => e.Order)
                 .HasForeignKey<ContractReview>(x => x.OrderId);
             
             builder.Entity<DLForwardedToAgent>().HasIndex(x => new {x.CustomerOfficialId, x.DateForwarded, x.OrderItemId}).IsUnique();
-        
+
+            builder.Entity<ContractReview>().HasIndex(x => x.OrderId).IsUnique();
+            builder.Entity<ContractReview>().HasMany(x => x.ContractReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ContractReviewItem>().HasIndex(x => x.OrderItemId).IsUnique();
+
+            builder.Entity<ChecklistHR>().HasIndex(x => new {x.OrderItemId, x.CandidateId}).IsUnique();
+            builder.Entity<ChecklistHR>().HasMany(x => x.ChecklistHRItems).WithOne().OnDelete(DeleteBehavior.Cascade); 
+
+            builder.Entity<CandidateAssessment>().HasMany(x => x.CandidateAssessmentItems);
+            builder.Entity<CandidateAssessment>().HasIndex(x => new { x.CandidateId, x.OrderItemId}).IsUnique();
+
+            builder.Entity<AppTask>().HasMany(x => x.TaskItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<AppTask>().HasIndex(x => x.TaskType);
+
         //Identity
            builder.Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)
@@ -157,7 +187,7 @@ namespace api.Data
                 .OnDelete(DeleteBehavior.Cascade);
             
             
-            builder.Entity<Message>()
+            /*builder.Entity<Message>()
                 .HasOne(s => s.Recipient)
                 .WithMany(m => m.MessagesReceived)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -166,7 +196,7 @@ namespace api.Data
                 .HasOne(s => s.Sender)
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+            */
             
             
         }
