@@ -1,6 +1,9 @@
 using api.Data;
+using api.DTOs.HR;
+using api.Entities.Identity;
 using DocumentFormat.OpenXml.Presentation;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace api.Extensions
 {
@@ -19,7 +22,7 @@ namespace api.Extensions
             return appno;
         }
         
-         public static async Task<string> GetCandidateDescriptionFromCandidateId(this DataContext context, int candidateId)
+        public static async Task<string> GetCandidateDescriptionFromCandidateId(this DataContext context, int candidateId)
         {
             var appno = await context.Candidates.Where(x => x.Id == candidateId)
                 .Select(x => x.FullName + ", " +  x.ApplicationNo).FirstOrDefaultAsync();
@@ -28,6 +31,5 @@ namespace api.Extensions
             
             return appno;
         }
-        
     }
 }

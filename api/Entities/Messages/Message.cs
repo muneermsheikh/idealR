@@ -22,8 +22,8 @@ namespace api.Entities.Messages
         public string BCCEmail { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
-        public DateTime? DateRead { get; set; }
-        public DateTime? MessageSent { get; set; } = DateTime.UtcNow;
+        public DateOnly MessageComposedOn {get; set;}
+        public DateOnly? MessageSentOn { get; set; } 
         public bool SenderDeleted { get; set; }=false;
         public bool RecipientDeleted { get; set; }=false;
         

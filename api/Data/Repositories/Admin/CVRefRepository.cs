@@ -68,14 +68,100 @@ namespace api.Data.Repositories.Admin
             return true;
         }
 
+        public async Task<PagedList<CVRefDto>> GetPendingReferrals(CVRefParams refParams)
+        {
+            var query = (from cvref in _context.CVRefs 
+                    where cvref.RefStatus.ToLower() == "referred" && cvref.SelectionStatus ==""
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join o in _context.Orders on item.OrderId equals o.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+        
+                select new CVRefDto{
+                    CVRefId = cvref.Id,
+                    Checked = false,
+                    CustomerId = o.CustomerId,
+                    CustomerName = o.Customer.CustomerName,
+                    CandidateId = cvref.CandidateId,
+                    CandidateName = cv.FullName,
+                    ApplicationNo = cv.ApplicationNo,
+                    OrderId = item.OrderId,
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = cvref.OrderItemId,
+                    ProfessionName = item.Profession.ProfessionName,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    PPNo = cv.PpNo,
+                    ReferredOn = cvref.ReferredOn,
+                    RefStatus = cvref.RefStatus
+                })
+                .AsQueryable();
+    
+            var paged = await PagedList<CVRefDto>.CreateAsync(
+                query.AsNoTracking()
+                .ProjectTo<CVRefDto>(_mapper.ConfigurationProvider)
+                , refParams.PageNumber, refParams.PageSize);
+    
+
+            return paged;
+        }
+
+        
         public async Task<PagedList<CVRefDto>> GetCVReferrals(CVRefParams refParams)
         {
-            var query = await _queryRepo.GetCVReDtoQueryable(refParams);
-            if(query  == null) return null;
+            var query =(from cvref in _context.CVRefs
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join o in _context.Orders on item.OrderId equals o.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+        
+                select new CVRefDto{
+                    CVRefId = cvref.Id,
+                    Checked = false,
+                    CustomerId = o.CustomerId,
+                    CustomerName = o.Customer.CustomerName,
+                    CandidateId = cvref.CandidateId,
+                    CandidateName = cv.FullName,
+                    ApplicationNo = cv.ApplicationNo,
+                    OrderId = item.OrderId,
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = cvref.OrderItemId,
+                    ProfessionName = item.Profession.ProfessionName,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    PPNo = cv.PpNo,
+                    ReferredOn = cvref.ReferredOn,
+                    RefStatus = cvref.RefStatus
+                })
+                .AsQueryable();
+    
+            if(refParams.OrderItemId  > 0) query = query.Where(x => x.OrderItemId == refParams.OrderItemId);
+            if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
+            if(refParams.CandidateId != 0) query = query.Where(x => x.CandidateId == refParams.CandidateId);
+            if(!string.IsNullOrEmpty(refParams.RefStatus)) 
+                query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());
+            if(!string.IsNullOrEmpty(refParams.SelectionStatus)) 
+                query = query.Where(x => x.SelectionStatus.ToLower() == refParams.SelectionStatus.ToLower());
 
-            var paged = await PagedList<CVRefDto>.CreateAsync(query.AsNoTracking()
-                    .ProjectTo<CVRefDto>(_mapper.ConfigurationProvider),
-                    refParams.PageNumber, refParams.PageSize);
+            if(refParams.ProfessionId !=0) {
+                var orderItemIds = await _context.OrderItems.
+                    Where(x => x.ProfessionId == refParams.ProfessionId)
+                    .Select(x => x.Id).ToListAsync();
+                if(orderItemIds != null && orderItemIds.Count > 0) {
+                    query = query.Where(x => orderItemIds.Contains(x.OrderItemId));
+                }
+            }
+
+            if(refParams.AgentId != 0) {
+                var candidateIds = await _context.Candidates.Where(x => x.CustomerId == refParams.AgentId).Select(x => x.Id).ToListAsync();
+                if(candidateIds != null && candidateIds.Count > 0) {
+                    query = query.Where(x => candidateIds.Contains(x.CandidateId));
+                }
+            }
+
+            var paged = await PagedList<CVRefDto>.CreateAsync(
+                query.AsNoTracking()
+                .ProjectTo<CVRefDto>(_mapper.ConfigurationProvider)
+                , refParams.PageNumber, refParams.PageSize);
+    
 
             return paged;
         }
@@ -86,7 +172,7 @@ namespace api.Data.Repositories.Admin
                     join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
                     join o in _context.Orders on item.OrderId equals o.Id
                     join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
-                    join dep in _context.Deployments on cvref.Id equals dep.CVRefId
+                    join dep in _context.Processes on cvref.Id equals dep.CVRefId
            
                     select new CVRefWithDepDto{
                         CVRefId = cvref.Id,
@@ -278,6 +364,7 @@ namespace api.Data.Repositories.Admin
                     var candassess=item.candidateassessment;
                     candassess.CVRefId = item.cvrefid;
                     _context.Entry(candassess).State=EntityState.Modified;
+
                 }
             
             //2 - mark DocControllerAdminTasks as completed
@@ -300,15 +387,21 @@ namespace api.Data.Repositories.Admin
                 //3 - create cvfwdtask - DocController to register CVRef in the system
                 categoryDescription ="Candidate-" + await _context.GetCandidateDescriptionFromCandidateId(item.CandidateId) + 
                         " refer to " + await _context.GetOrderItemDescriptionFromOrderItemId(item.OrderItemId);
-                
-                var cvfwdTask = new AppTask{TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
-                    AssignedToUsername=_docControllerAdminAppUsername,
-                    TaskOwnerUsername = Username, CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
+                var cvrefid=query.Where(x => x.candidateassessment.Id == item.CandidateAssessment.Id).FirstOrDefault().cvrefid;
+
+                var cvfwdTask = new AppTask{
+                    TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
+                    CVRefId = cvrefid,
+                    AssignedToUsername=_docControllerAdminAppUsername, 
+                    TaskOwnerUsername = Username, 
+                    CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
                     TaskDescription= "Forward CV to customer through the system - " + categoryDescription, 
-                     TaskType="CVFwdTask", TaskStatus="Not Started", OrderId=item.OrderId, OrderItemId=item.OrderItemId,
-                     CandidateId = item.CandidateId, CandidateAssessmentId = item.CandidateAssessment.Id,
-                     OrderNo=item.OrderNo, ApplicationNo=item.ApplicationNo, PostTaskAction="Do not auto-send message",
-                     TaskItems = new List<TaskItem>(){
+                    TaskType="CVFwdTask", 
+                    TaskStatus="Not Started", 
+                    OrderId=item.OrderId, OrderItemId=item.OrderItemId,
+                    CandidateId = item.CandidateId, CandidateAssessmentId = item.CandidateAssessment.Id,
+                    OrderNo=item.OrderNo, ApplicationNo=item.ApplicationNo, PostTaskAction="Do not auto-send message",
+                    TaskItems = new List<TaskItem>(){
                         new() { TaskItemDescription="Refer CVs to customer in the system", NextFollowupByName = _docControllerAdminAppUsername }
                      }
                 };
@@ -319,7 +412,7 @@ namespace api.Data.Repositories.Admin
                     AssignedToUsername=_docControllerAdminAppUsername,
                     TaskOwnerUsername = Username, CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
                     TaskDescription= "Send CVs to clients by email -" + categoryDescription, 
-                    CandidateAssessmentId = item.CandidateAssessment.Id,
+                    CandidateAssessmentId = item.CandidateAssessment.Id,CVRefId=cvrefid,
                     TaskType="CVRefByMail", TaskStatus="Not Started", ApplicationNo=item.ApplicationNo,
                     CandidateId=item.CandidateId, OrderItemId=item.OrderItemId, OrderId = item.OrderId, 
                     OrderNo=item.OrderNo, PostTaskAction="Do not auto-send message",
@@ -330,12 +423,12 @@ namespace api.Data.Repositories.Admin
 
                  //5 - create selectionTasks
                   var selTask = new AppTask{TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
-                    AssignedToUsername=_docControllerAdminAppUsername,
+                    AssignedToUsername=_docControllerAdminAppUsername, CVRefId = cvrefid,
                     TaskOwnerUsername = Username, CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
                     TaskDescription= "Follow up with clients for selection-" + categoryDescription, 
                     CandidateAssessmentId = item.CandidateAssessment.Id, OrderId = item.OrderId,
                     TaskType="SelectionFollowupWithClient", TaskStatus="Not Started", 
-                    CandidateId = item.CandidateId, OrderItemId=item.OrderItemId, 
+                    CandidateId = item.CandidateId, OrderItemId=item.OrderItemId, OrderNo=item.OrderNo,
                     ApplicationNo=item.ApplicationNo, PostTaskAction="Do not auto-send message",
                     TaskItems = new List<TaskItem>(){
                     new() { TaskItemDescription="Follow up with clients for selection", 

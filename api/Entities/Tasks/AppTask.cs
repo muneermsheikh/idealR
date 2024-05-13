@@ -8,9 +8,7 @@ namespace api.Entities.Tasks
         {
         }
 
-
-        [Required]
-        public int CVRefId { get; set; }
+        public int? CVRefId { get; set; }
         public string TaskType { get; set; }
         public int? CandidateAssessmentId { get; set; }
         public DateOnly TaskDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);

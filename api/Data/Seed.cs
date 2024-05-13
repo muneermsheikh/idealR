@@ -2,11 +2,11 @@ using System.Text.Json;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
+using api.Entities.Deployments;
 using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Master;
-using api.Entities.Process;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,7 +48,7 @@ namespace api.Data
                     new() {Name = "Design Assessment Questions"},
                     new() {Name = "Register Selections and Rejections"},
                     new() {Name = "Approve release of documents"},
-                    new() {Name= "Order"},
+                    new() {Name = "Order"},
                     new() {Name = "Contract Review"},
                     new() {Name = "Customer Official"}
                 };
@@ -243,6 +243,7 @@ namespace api.Data
                 }
             }
 
+            /*
             if(!await context.CVRefs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/CVRefSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -252,8 +253,9 @@ namespace api.Data
                     context.CVRefs.Add(item);
                 }
             }
-
-            if(!await context.SelectionDecisions.AnyAsync()) {
+            */
+            
+            /* if(!await context.SelectionDecisions.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/SelectionDecisionSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var dbData = JsonSerializer.Deserialize<List<SelectionDecision>>(data);
@@ -262,6 +264,7 @@ namespace api.Data
                     context.SelectionDecisions.Add(item);
                 }
             }
+            */
 
             if(!await context.feedbackStddQs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/FeedbackStddQSeedData.json");
@@ -284,16 +287,18 @@ namespace api.Data
                 }
             }
 
-            if(!await context.Deployments.AnyAsync()) {
+            /* 
+            if(!await context.Processes.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/DeploySeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<Deployment>>(data);
+                var dbData = JsonSerializer.Deserialize<List<Process>>(data);
                 foreach(var item in dbData) 
                 {
-                    context.Deployments.Add(item);
+                    context.Processes.Add(item);
                 }
             }
-            
+            */
+
             if(context.ChangeTracker.HasChanges())  await context.SaveChangesAsync();
 
             foreach(var user in UserListCandidates) {

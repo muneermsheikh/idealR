@@ -77,6 +77,22 @@ namespace api.Extensions
 
             return assess;
         }
+
+        public async static Task<List<int>> GetOrderItemIdAndCustomerId(this DataContext context, int cvrefid)
+        {
+            var obj = await (from cvref in context.CVRefs where cvref.Id == cvrefid
+                join item in context.OrderItems on cvref.OrderItemId equals item.OrderId
+                join order in context.Orders on item.OrderId equals order.Id
+                select new {item.Id, order.CustomerId}
+            ).FirstOrDefaultAsync();
+
+            if (obj == null) return null;
+
+            var intList = new List<int> {obj.Id, obj.CustomerId};
+            
+            return intList;
+
+        }
     }
     
 }

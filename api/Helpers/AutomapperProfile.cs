@@ -1,11 +1,14 @@
 using api.DTOs;
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
+using api.DTOs.Finance;
 using api.DTOs.HR;
+using api.DTOs.Process;
 using api.Entities;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
+using api.Entities.Deployments;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
@@ -54,13 +57,25 @@ namespace api.Helpers
 
             CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
 
+            CreateMap<CVRefDto, CVRefDto>();
+            
             CreateMap<OrderItemAssessmentQ, CandidateAssessmentItem>();
 
             CreateMap<CandidateAssessment, CandidateAssessmentDto>();
 
             CreateMap<Employee, EmployeeBriefDto>();
-            CreateMap<SelectionDecision, SelDecisionDto>();
 
+            CreateMap<SelectionDecision, SelDecisionDto>();
+                //.ForMember(d => d.Accepted, o => o.MapFrom())
+            CreateMap<Employment, EmploymentDto>();
+            CreateMap<Employment, EmploymentsNotConcludedDto>();
+
+            CreateMap<PendingDebitApprovalDto, PendingDebitApprovalDto>();
+
+            CreateMap<DeploymentPendingTempDto, DeploymentPendingDto>();
+
+            CreateMap<Dep, DeploymentPendingDto>();
+                
         }
 
     }

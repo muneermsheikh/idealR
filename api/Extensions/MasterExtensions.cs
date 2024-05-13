@@ -1,4 +1,5 @@
 using api.Data;
+using api.Entities.Deployments;
 using api.Entities.Master;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,5 +22,21 @@ namespace api.Extensions
 
             return empName;
         }
+
+        
+        public async static Task<DeployStatus> GetNextDepStatus(this DataContext context, int sequence)
+        {
+            var nextSeq = await context.DeployStatuses.Where(x => x.Sequence == sequence).FirstOrDefaultAsync();
+
+            return nextSeq;
+        }
+
+        public async static Task<string> GetNextDepStatusName(this DataContext context, int sequence)
+        {
+            var seqName = await context.DeployStatuses.Where(x => x.Sequence == sequence).Select(x => x.StatusName).FirstOrDefaultAsync();
+
+            return seqName;
+        }
+        
     }
 }

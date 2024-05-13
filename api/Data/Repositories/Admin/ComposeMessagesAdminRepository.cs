@@ -36,9 +36,22 @@ namespace api.Data.Repositories.Admin
             _context = context;
         }
 
+        private async Task<AppUser> GetAppUserFromCandidateId(int candidateId)
+        {
+            int appuserid = await _context.GetAppUserIdOfCandidate(candidateId);
+            return await _userManager.FindByIdAsync(appuserid.ToString());
+        }
+        
+        private async Task<AppUser> GetAppUserFromEmployeeId(int employeeId)
+        {
+            int appuserid = await _context.GetAppUserIdOfEmployee(employeeId);
+            return await _userManager.FindByIdAsync(appuserid.ToString());
+        }
+
         public async Task<ICollection<Message>> ComposeSelectionStatusMessagesForCandidate(ICollection<SelectionMessageDto> selectionsDto, 
             string senderUsername)
           {  
+                var dateToday=DateOnly.FromDateTime(DateTime.UtcNow);
                 var senderObj = await _userManager.FindByNameAsync(senderUsername);
                 if(senderObj == null) return null;
                 var subject = "";
@@ -49,27 +62,17 @@ namespace api.Data.Repositories.Admin
                foreach(var sel in selectionsDto)
                {
                     AppUser recipientObj, HRSupobj;
-
-                    if(sel.CandidateAppUserId == 0) {
-                        recipientObj = await _userManager.FindByEmailAsync(sel.CandidateEmail);
-                    } else {
-                        recipientObj = await _userManager.FindByIdAsync(sel.CandidateAppUserId.ToString());
-                    }
-
+                    recipientObj = await GetAppUserFromCandidateId(sel.CandidateId);
                     if(recipientObj == null) continue;
 
-                    if(sel.HRSupAppUserId == 0) {
-                        HRSupobj = await _userManager.FindByEmailAsync(sel.HRExecEmail);
-                    } else {
-                        HRSupobj = await _userManager.FindByIdAsync(sel.HRSupAppUserId.ToString());
-                    }
-
+                    HRSupobj = await GetAppUserFromEmployeeId(sel.HRupId);
+                    
                     subject = "Your selection as " + sel.ProfessionName + " for " + sel.CustomerCity;
                     subjectInBody = "<b><u>Subject: </b>Your selection as " + sel.ProfessionName + " for " + 
                         sel.CustomerName + "</u>";
                     msgBody = string.Format("{0: dd-MMMM-yyyy}", DateTime.Today) + "<br><br>" + 
-                         sel.CandidateTitle + " " + sel.CandidateName + "email: " + sel.CandidateEmail + "<br><br>" + 
-                         "copy: " + HRSupobj.UserName + ", email: " + HRSupobj.Email + "<br><br>Dear " + 
+                         sel.CandidateTitle + " " + sel.CandidateName + "email: " + sel.CandidateEmail ?? "" + "<br><br>" + 
+                         "copy: " + HRSupobj?.UserName?? "" + ", email: " + HRSupobj?.Email?? "" + "<br><br>Dear " + 
                          sel.CandidateTitle + " " + sel.CandidateName + ":" + "<br><br>" + subject + "<br><br>";
 
                     msgBody += await GetEmailMessageBodyContents("selectionadvisetocandidate", 
@@ -81,13 +84,16 @@ namespace api.Data.Repositories.Admin
                     var message = new Message
                     {
                         SenderUsername=senderUsername,
-                        SenderEmail=senderObj.Email,
-                        RecipientUsername = recipientObj.UserName,
-                        RecipientEmail = recipientObj.Email,
-                        CCEmail = HRSupobj.Email,
+                        RecipientAppUserId=recipientObj.Id,
+                        SenderAppUserId=senderObj.Id,
+                        SenderEmail=senderObj.Email ?? "",
+                        RecipientUsername = recipientObj.UserName ?? "",
+                        RecipientEmail = recipientObj.Email ?? "",
+                        CCEmail = HRSupobj?.Email ?? "",
                         Subject = subject,
                         Content = msgBody,
                         MessageType = "SelectionAdvisebyemail",
+                        MessageComposedOn = dateToday
                     };
 
                     msgs.Add(message);
@@ -167,7 +173,7 @@ namespace api.Data.Repositories.Admin
             
             var senderObj = await _userManager.FindByNameAsync(senderUsername);
             if(senderObj == null) return null;
-            
+            var dateToday = DateOnly.FromDateTime(DateTime.UtcNow);
             var subject = "";
             var subjectInBody = "";
             var msgBody = "";
@@ -223,6 +229,7 @@ namespace api.Data.Repositories.Admin
                         SenderEmail=senderObj.Email,
                         RecipientUsername = recipientObj.UserName,
                         RecipientEmail = recipientObj.Email + "; " + HRSupObj.Email ,       //TODO - HRExecEmail included in Recipient, as CC and BCC not working
+                        MessageComposedOn = dateToday,
                         Subject = subject,
                         Content = msgBody,
                         MessageType = "SelectionAdvisebyemail",
@@ -270,6 +277,7 @@ namespace api.Data.Repositories.Admin
 
         public async Task<Message> AckEnquiryToCustomer(Order order)
         {
+            var dateToday = DateOnly.FromDateTime(DateTime.UtcNow);
             var customer = await _context.Customers.Where(x => x.Id == order.CustomerId)
                 .Include(x => x.CustomerOfficials).FirstOrDefaultAsync();
 
@@ -324,6 +332,7 @@ namespace api.Data.Repositories.Admin
             
             var emailMessage = new Message
             {
+                MessageComposedOn = dateToday,
                 SenderEmail = senderEmailAddress,
                 SenderUsername = senderUserName,
                 RecipientUsername = recipientUserName,
@@ -341,6 +350,7 @@ namespace api.Data.Repositories.Admin
 
         public async Task<Message> ForwardEnquiryToHRDept(Order order)
         {
+            var dateToday = DateOnly.FromDateTime(DateTime.UtcNow);
             string msg = "";
             var HRSup = _confg.GetSection("EmpHRSupervisorId").Value;
             int HRSupId = HRSup == null ? 0 : Convert.ToInt32(HRSup);
@@ -352,7 +362,7 @@ namespace api.Data.Repositories.Admin
 
             var cust = await _context.CustomerBriefFromId(order.CustomerId);
 
-            msg = DateTime.Now.Date + "<br><br>" + recipientObj.KnownAs + ", " + 
+            msg = dateToday + "<br><br>" + recipientObj.KnownAs + ", " + 
                 recipientObj.Position + "<br>" +
                 "<br>HR Supervisor<br>Email: " + recipientObj.Email + "<br><br>";
             
@@ -378,7 +388,7 @@ namespace api.Data.Repositories.Admin
 
             var emailMsg = new Message {MessageType="forwardToHR", SenderAppUserId= senderObj.AppUserId,
                 SenderUsername = senderObj.Username, SenderEmail = senderObj.Email, 
-                RecipientAppUserId = recipientObj.AppUserId,
+                RecipientAppUserId = recipientObj.AppUserId, MessageComposedOn=dateToday,
                 RecipientUsername = recipientObj.Username, RecipientEmail= recipientObj.Email,
                 Subject = "New Requirement No. " + order.OrderNo, Content = msg};
             
@@ -386,7 +396,7 @@ namespace api.Data.Repositories.Admin
         }
         public async Task<ICollection<Message>> ComposeCVFwdMessagesToClient(ICollection<CVFwdMsgDto> cvfwddtos, string Username)
         {
-            DateTime dateTimeNow = DateTime.Now;
+            var dateToday =DateOnly.FromDateTime(DateTime.Now);
             var emails = new List<Message>();
 
             int lastOfficialId=0;
@@ -421,15 +431,21 @@ namespace api.Data.Repositories.Admin
                     if (lastOfficialId != 0) {
                         msg += concludingMsg;
                         email = new Message{
-                            MessageType="cv forward", SenderUsername = Username, SenderEmail=senderObj.Email,
-                            RecipientAppUserId = recipientappuserid, RecipientUsername=recipientObj.Username,
-                            RecipientEmail=recipientObj.Email, Subject="CVs Forwarded against your requirement",
+                            MessageComposedOn = dateToday,
+                            MessageType="cv forward", 
+                            SenderUsername = Username, 
+                            SenderEmail=senderObj.Email,
+                            RecipientAppUserId = recipientappuserid, 
+                            SenderAppUserId=senderObj.AppUserId,
+                            RecipientUsername=recipientObj.Username,
+                            RecipientEmail=recipientObj.Email, 
+                            Subject="CVs Forwarded against your requirement",
                             Content=msg
                         };
                         
                         emails.Add(email);
                     }
-                    msg = dateTimeNow.Date.ToString("dd-MMM-yy") + "<br><br>"+  cvref.OfficialTitle + " " + cvref.OfficialName + ", " + 
+                    msg = dateToday + "<br><br>"+  cvref.OfficialTitle + " " + cvref.OfficialName + ", " + 
                         cvref.Designation + "<br>M/S " + cvref.CustomerName + ", " + cvref.City + "<br>Email:" + cvref.OfficialEmail +
                         "<br><br>Dear Sir:<br><br>We are pleased to enclose following CVs for your consideration against your requirements mentioned:<br>" +
                         "<table border='1'><tr><th width=10%>Order ref and dated</th><th width=20%>Category</th><th width=5%>Application<br>No</th>" + 
@@ -453,7 +469,7 @@ namespace api.Data.Repositories.Admin
                 MessageType="cv forward", SenderUsername = Username, SenderEmail=senderObj.Email,
                 RecipientAppUserId = recipientappuserid, RecipientUsername=recipientObj.Username,
                 RecipientEmail=recipientObj.Email, Subject="CVs Forwarded against your requirement",
-                Content=msg
+                Content=msg, SenderAppUserId = senderObj.AppUserId, MessageComposedOn = dateToday
             };
 
             emails.Add(email);
@@ -473,13 +489,13 @@ namespace api.Data.Repositories.Admin
             var query = await _queryRepo.GetCVReDtoQueryable(refParam);
             var cvfwddtos = await query.ToListAsync();
 
-            DateTime dateTimeNow = DateTime.Now;
+            var dateToday = DateOnly.FromDateTime(DateTime.UtcNow);
             
             var senderAppUserDetails = await _userManager.AppUserEmailAndUsernameFromAppUsername(Username);
             var recipientAppUserDetails = await _userManager.AppUserEmailAndUsernameFromAppUserId(
                 custAndOfficialDto.AppUserId);
 
-            string msg=dateTimeNow + "<br><br>" + custAndOfficialDto.OfficialTitle + " " + custAndOfficialDto.OfficialName
+            string msg=dateToday + "<br><br>" + custAndOfficialDto.OfficialTitle + " " + custAndOfficialDto.OfficialName
                 + "<br>" + custAndOfficialDto.OfficialDesignation +"<br>" + custAndOfficialDto.CustomerName + 
                 "<br>" + custAndOfficialDto.City + "<br>" + custAndOfficialDto.Country + "<br><br>Dear Sir:<br><br>";
 
@@ -507,7 +523,7 @@ namespace api.Data.Repositories.Admin
             var message = new Message
             {
                 MessageType = "SelectionReminderToClient",
-                SenderAppUserId = senderAppUserDetails.AppUserId,
+                SenderAppUserId = senderAppUserDetails.AppUserId, MessageComposedOn = dateToday,
                 SenderUsername = senderAppUserDetails.Username, SenderEmail = senderAppUserDetails.Email,
                 RecipientAppUserId = recipientAppUserDetails.AppUserId, RecipientUsername = recipientAppUserDetails.Username,
                 RecipientEmail = recipientAppUserDetails.Email, Subject = "Request for decision on selection of Profiles",

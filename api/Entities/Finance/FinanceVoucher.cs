@@ -14,8 +14,7 @@ namespace api.Entities.Finance
         public long Amount {get; set;}
         public string Narration {get; set;}
         [Required]
-        public int EmployeeId {get; set;}
-        public ICollection<VoucherEntry> VoucherEntries { get; set; }
+         public ICollection<VoucherEntry> VoucherEntries { get; set; }
         
     }
 }

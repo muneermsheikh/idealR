@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using api.Entities.Process;
+using api.Entities.Deployments;
+
 
 namespace api.Entities.HR
 {
@@ -13,11 +14,12 @@ namespace api.Entities.HR
         public int CandidateId { get; set; }
         public DateOnly ReferredOn { get; set; } 
         public int HRExecId { get; set; }
-        public string RefStatus { get; set; }="Referred";
+        public string RefStatus { get; set; }// =Referred
         public DateOnly RefStatusDate {get; set;}
         public string SelectionStatus {get; set;}
         public DateOnly SelectionStatusDate {get; set;}
+        public Process Process { get; set; }
         public ICollection<Candidate> Candidates {get; set;}
-        public List<Deployment> Deployments {get; set;}
+
     }
 }

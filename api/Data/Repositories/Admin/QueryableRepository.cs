@@ -44,7 +44,10 @@ namespace api.Data.Repositories.Admin
             if(refParams.OrderItemId  > 0) query = query.Where(x => x.OrderItemId == refParams.OrderItemId);
             if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
             if(refParams.CandidateId != 0) query = query.Where(x => x.CandidateId == refParams.CandidateId);
-            if(!string.IsNullOrEmpty(refParams.RefStatus)) query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());
+            if(!string.IsNullOrEmpty(refParams.RefStatus)) 
+                query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());
+            if(!string.IsNullOrEmpty(refParams.SelectionStatus)) 
+                query = query.Where(x => x.SelectionStatus.ToLower() == refParams.SelectionStatus.ToLower());
 
             if(refParams.ProfessionId !=0) {
                 var orderItemIds = await _context.OrderItems.

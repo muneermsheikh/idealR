@@ -20,6 +20,7 @@ namespace api.Entities.Finance
         [MaxLength(10)]
         public DateOnly DrEntryApprovedOn { get; set; }
         public bool DrEntryApproved { get; set; }
+        public string Remarks { get; set; }
     
     }
 }

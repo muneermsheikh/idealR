@@ -17,5 +17,6 @@ namespace api.Params.Admin
         public int OrderId { get; set; }
         public int OrderItemId { get; set; }
         public string RefStatus {get; set;}
+        public string SelectionStatus { get; set; }
     }
 }

@@ -13,8 +13,8 @@ namespace api.Entities.Identity
         public string City { get; set; }
         public string Country { get; set; }
         public string Position { get; set; }
-        public string LookingFor { get; set; }
-        public String Introduction { get; set; }
+        //public string LookingFor { get; set; }
+        //public String Introduction { get; set; }
 
         public List<Photo> photos { get; set; }=new();
         public List<UserLike> LikedByUsers { get; set; }

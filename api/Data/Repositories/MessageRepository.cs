@@ -181,7 +181,7 @@ namespace api.Data.Repositories
 
         public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
         {
-            var qry = _context.Messages.OrderByDescending(x => x.MessageSent).AsQueryable();
+            var qry = _context.Messages.OrderByDescending(x => x.MessageSentOn).AsQueryable();
 
             qry = messageParams.Container switch
             {
@@ -189,8 +189,7 @@ namespace api.Data.Repositories
                     x.RecipientDeleted == false),
                 "Outbox" => qry = qry.Where(x => x.SenderUsername == messageParams.Username && 
                     x.SenderDeleted == false),
-                _ => qry = qry.Where(x => x.RecipientUsername == messageParams.Username && 
-                    x.DateRead == null && x.RecipientDeleted == false)
+                _ => qry = qry.Where(x => x.RecipientUsername == messageParams.Username && x.RecipientDeleted == false)
             };
 
             var messages = qry.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
@@ -208,21 +207,8 @@ namespace api.Data.Repositories
                 m.RecipientUsername == recipientUserName && m.SenderDeleted == false &&
                 m.SenderUsername == currentUserName
             )
-            .OrderBy(m => m.MessageSent)
+            .OrderBy(m => m.MessageSentOn)
             .AsQueryable();
-
-            var unreadMessages = query.Where(m => m.DateRead == null
-                && m.RecipientUsername == currentUserName).ToList();
-
-            if (unreadMessages.Any())
-            {
-                foreach (var message in unreadMessages)
-                {
-                    message.DateRead = DateTime.UtcNow;
-                }
-
-                await _context.SaveChangesAsync();
-            }
 
             return await query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider).ToListAsync();
         }

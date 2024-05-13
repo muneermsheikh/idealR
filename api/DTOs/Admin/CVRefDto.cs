@@ -4,6 +4,7 @@ namespace api.DTOs.Admin
 {
     public class CVRefDto
     {
+        public int Id { get; set; }
         public int CVRefId { get; set; }
         public bool Checked {get; set;}
         public int CustomerId { get; set; }
@@ -21,5 +22,6 @@ namespace api.DTOs.Admin
         public string PPNo {get; set;}
         public DateOnly ReferredOn { get; set; }
         public string RefStatus { get; set; }
+        public string SelectionStatus { get; set; }
     }
 }

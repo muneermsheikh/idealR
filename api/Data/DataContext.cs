@@ -2,13 +2,14 @@ using api.Entities;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
+using api.Entities.Deployments;
 using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Master;
 using api.Entities.Messages;
-using api.Entities.Process;
 using api.Entities.Tasks;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,8 @@ namespace api.Data
         public DbSet<COA> COAs {get; set;}
         public DbSet<FinanceVoucher> FinanceVouchers {get; set;}
         public DbSet<VoucherEntry> VoucherEntries {get; set;}
+        public DbSet<Voucher> Vouchers {get; set;}
+        public DbSet<VoucherItem> VoucherItems {get; set;}
         
         //HR
         public DbSet<AssessmentQStdd> AssessmentQStdds {get; set;}
@@ -80,7 +83,11 @@ namespace api.Data
         public DbSet<FeedbackStddQ> feedbackStddQs{get; set;}
 
         //Process
-        public DbSet<Deployment> Deployments {get; set;}
+        public DbSet<Deployment> Deployments {get; set;}        //unable to delete this, as it throws Index error
+        public DbSet<Process> Processes {get; set;}
+        public DbSet<ProcessItem> ProcessItems {get; set;}
+        public DbSet<Dep> Deps { get; set; }
+        public DbSet<DepItem> DepItems {get; set;}
         public DbSet<DeployStatus> DeployStatuses {get; set;}
 
         //Tasks
@@ -116,7 +123,7 @@ namespace api.Data
 
             builder.Entity<Profession>().HasIndex(x => x.ProfessionName).IsUnique();
 
-            builder.Entity<CVRef>().HasMany(o => o.Deployments);
+            builder.Entity<CVRef>().HasOne(o => o.Process);
             builder.Entity<CVRef>().HasIndex(i => new {i.OrderItemId, i.CandidateId}).IsUnique();
             
             //builder.Entity<AgencySpecialty>().HasIndex(i => new {i.CustomerId, i.IndustryId, i.ProfessionId}).IsUnique();
@@ -152,11 +159,29 @@ namespace api.Data
             builder.Entity<ChecklistHR>().HasIndex(x => new {x.OrderItemId, x.CandidateId}).IsUnique();
             builder.Entity<ChecklistHR>().HasMany(x => x.ChecklistHRItems).WithOne().OnDelete(DeleteBehavior.Cascade); 
 
-            builder.Entity<CandidateAssessment>().HasMany(x => x.CandidateAssessmentItems);
+            builder.Entity<CandidateAssessment>().HasMany(x => x.CandidateAssessmentItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CandidateAssessment>().HasIndex(x => new { x.CandidateId, x.OrderItemId}).IsUnique();
 
             builder.Entity<AppTask>().HasMany(x => x.TaskItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<AppTask>().HasIndex(x => x.TaskType);
+            //builder.Entity<AppTask>().HasIndex(x => new {x.CVRefId, x.TaskType})
+                //.HasFilter("CVRefId is NOT ")     //provided by default
+                //.IsUnique();
+
+            builder.Entity<SelectionDecision>().HasIndex(x => x.CVRefId).IsUnique();
+            //builder.Entity<SelectionDecision>().HasOne(x => x.Employment).WithOne().OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<SelectionDecision>().HasOne(x => x.Dep).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Employment>().HasIndex(x => x.CVRefId).IsUnique();
+            builder.Entity<Employment>().HasIndex(x => x.SelectionDecisionId).HasFilter("SelectionDecisionId is NOT NULL");
+
+            builder.Entity<FinanceVoucher>().HasMany(x => x.VoucherEntries).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Process>().HasMany(x => x.ProcessItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Dep>().HasIndex(x => x.CVRefId).IsUnique();
+            builder.Entity<Dep>().HasMany(x => x.DepItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<DepItem>().HasIndex(x => new {x.DepId, x.Sequence}).IsUnique();
+            
+            builder.Entity<Voucher>().HasMany(x => x.VoucherItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
         //Identity
            builder.Entity<AppUser>()

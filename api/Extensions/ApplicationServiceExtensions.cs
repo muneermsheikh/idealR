@@ -1,11 +1,13 @@
 using api.Data;
 using api.Data.Repositories;
 using api.Data.Repositories.Admin;
+using api.Data.Repositories.Deployment;
 using api.Data.Repositories.Finance;
 using api.Data.Repositories.HR;
 using api.Data.Repositories.Master;
 using api.Interfaces;
 using api.Interfaces.Admin;
+using api.Interfaces.Deployments;
 using api.Interfaces.Finance;
 using api.Interfaces.HR;
 using api.Interfaces.Messages;
@@ -57,9 +59,10 @@ namespace api.Extensions
             services.AddScoped<ITaskRepository, TaskRepository>(); 
             
             services.AddScoped<IQueryableRepository, QueryableRepository>();
-            //services.AddScoped<ISelDecisionRepository, SelDecisionRepository>();
-
+            
             services.AddScoped<IFinanceRepository, FinanceRepository>();
+            services.AddScoped<ISelDecisionRepository, SelDecisionRepository>();
+            services.AddScoped<IDeploymentRepository, DeploymentRepository>();
 
             return services;
         }

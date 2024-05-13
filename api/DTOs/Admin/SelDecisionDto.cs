@@ -10,6 +10,6 @@ namespace api.DTOs.Admin
         public string RejectionReason { get; set; }
         public DateOnly SelectedOn { get; set; }
         public int Charges {get; set;}
-        public bool Accepted {get; set;}    
+        //public bool Accepted {get; set;}    
     }
 }

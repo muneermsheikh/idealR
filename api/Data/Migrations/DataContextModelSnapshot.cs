@@ -932,6 +932,168 @@ namespace api.Data.Migrations
                     b.ToTable("Remunerations");
                 });
 
+            modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CurrentStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("SelectedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId")
+                        .IsUnique();
+
+                    b.ToTable("Deps");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.DepItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DepId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("NextSequenceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepId", "Sequence")
+                        .IsUnique();
+
+                    b.ToTable("DepItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.DeployStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("WorkingDaysReqdForNextStage")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("isOptional")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeployStatuses");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.Deployment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("NextSequenceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Deployments");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CurrentStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("SelectedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId")
+                        .IsUnique();
+
+                    b.ToTable("Processes");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.ProcessItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("NextSequenceDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProcessId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessId");
+
+                    b.ToTable("ProcessItems");
+                });
+
             modelBuilder.Entity("api.Entities.Finance.COA", b =>
                 {
                     b.Property<int>("Id")
@@ -986,13 +1148,10 @@ namespace api.Data.Migrations
                         .HasMaxLength(1)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Narration")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("VoucherDated")
+                    b.Property<DateOnly>("VoucherDated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VoucherNo")
@@ -1002,6 +1161,43 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FinanceVouchers");
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.Voucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("COAId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Divn")
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("VoucherDated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VoucherNo")
+                        .HasMaxLength(10)
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.VoucherEntry", b =>
@@ -1028,7 +1224,7 @@ namespace api.Data.Migrations
                     b.Property<int>("DrEntryApprovedByEmployeeById")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DrEntryApprovedOn")
+                    b.Property<DateOnly>("DrEntryApprovedOn")
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
@@ -1038,7 +1234,10 @@ namespace api.Data.Migrations
                     b.Property<string>("Narration")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("TransDate")
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("TransDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -1046,6 +1245,52 @@ namespace api.Data.Migrations
                     b.HasIndex("FinanceVoucherId");
 
                     b.ToTable("VoucherEntries");
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.VoucherItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("COAId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Cr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Dr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("DrEntryApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DrEntryApprovedByAppUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("DrEntryApprovedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Narration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("TransDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VoucherId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("VoucherItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentQStdd", b =>
@@ -1104,10 +1349,16 @@ namespace api.Data.Migrations
                     b.Property<string>("RefStatus")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("RefStatusDate")
+                    b.Property<DateOnly>("RefStatusDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("ReferredOn")
+                    b.Property<DateOnly>("ReferredOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SelectionStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("SelectionStatusDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -1402,10 +1653,16 @@ namespace api.Data.Migrations
                     b.Property<int>("FoodAllowance")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("FoodNotProvided")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("FoodProvidedFree")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HousingAllowance")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HousingNotProvided")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("HousingProvidedFree")
@@ -1417,13 +1674,19 @@ namespace api.Data.Migrations
                     b.Property<int>("LeavePerYearInDays")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateOnly>("OfferAcceptanceConcludedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("OfferAcceptanceUrl")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("OfferAcceptedOn")
+                    b.Property<string>("OfferAccepted")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OfferAttachmentUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OfferConclusionRegisteredByUsername")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OtherAllowance")
@@ -1435,10 +1698,10 @@ namespace api.Data.Migrations
                     b.Property<string>("SalaryCurrency")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("SelectedOn")
+                    b.Property<DateOnly>("SelectedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SelectionDecisionId")
+                    b.Property<int?>("SelectionDecisionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TransportAllowance")
@@ -1452,8 +1715,11 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SelectionDecisionId")
+                    b.HasIndex("CVRefId")
                         .IsUnique();
+
+                    b.HasIndex("SelectionDecisionId")
+                        .HasFilter("SelectionDecisionId is NOT NULL");
 
                     b.ToTable("Employments");
                 });
@@ -1561,16 +1827,22 @@ namespace api.Data.Migrations
                     b.Property<int>("Charges")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ProfessionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RejectionReason")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("SelectedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("SelectionDate")
+                    b.Property<DateOnly>("SelectedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SelectionStatus")
@@ -1578,7 +1850,8 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CVRefId");
+                    b.HasIndex("CVRefId")
+                        .IsUnique();
 
                     b.ToTable("SelectionDecisions");
                 });
@@ -1761,9 +2034,6 @@ namespace api.Data.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Introduction")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("KnownAs")
                         .HasColumnType("TEXT");
 
@@ -1774,9 +2044,6 @@ namespace api.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LookingFor")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
@@ -1945,10 +2212,10 @@ namespace api.Data.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateRead")
+                    b.Property<DateOnly>("MessageComposedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("MessageSent")
+                    b.Property<DateOnly?>("MessageSentOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MessageType")
@@ -2044,58 +2311,6 @@ namespace api.Data.Migrations
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("api.Entities.Process.DeployStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NextSequence")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StatusName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("WorkingDaysReqdForNextStage")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeployStatuses");
-                });
-
-            modelBuilder.Entity("api.Entities.Process.Deployment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NextSequence")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("NextSequenceDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CVRefId");
-
-                    b.ToTable("Deployments");
-                });
-
             modelBuilder.Entity("api.Entities.Tasks.AppTask", b =>
                 {
                     b.Property<int>("Id")
@@ -2109,14 +2324,16 @@ namespace api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("CVRefId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("CandidateAssessmentId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CandidateId")
+                    b.Property<int>("CandidateId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("CompleteBy")
-                        .IsRequired()
+                    b.Property<DateOnly>("CompleteBy")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CompletedOn")
@@ -2128,7 +2345,7 @@ namespace api.Data.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("OrderItemId")
+                    b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("OrderNo")
@@ -2141,7 +2358,7 @@ namespace api.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("TaskDate")
+                    b.Property<DateOnly>("TaskDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TaskDescription")
@@ -2157,7 +2374,6 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TaskType")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -2398,11 +2614,60 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
+                {
+                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
+                        .WithMany()
+                        .HasForeignKey("CVRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CVRef");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.DepItem", b =>
+                {
+                    b.HasOne("api.Entities.Deployments.Dep", null)
+                        .WithMany("DepItems")
+                        .HasForeignKey("DepId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
+                {
+                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
+                        .WithOne("Process")
+                        .HasForeignKey("api.Entities.Deployments.Process", "CVRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CVRef");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.ProcessItem", b =>
+                {
+                    b.HasOne("api.Entities.Deployments.Process", null)
+                        .WithMany("ProcessItems")
+                        .HasForeignKey("ProcessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Finance.VoucherEntry", b =>
                 {
                     b.HasOne("api.Entities.Finance.FinanceVoucher", null)
                         .WithMany("VoucherEntries")
                         .HasForeignKey("FinanceVoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.VoucherItem", b =>
+                {
+                    b.HasOne("api.Entities.Finance.Voucher", null)
+                        .WithMany("VoucherItems")
+                        .HasForeignKey("VoucherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2458,15 +2723,6 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.HR.ChecklistHR", null)
                         .WithMany("ChecklistHRItems")
                         .HasForeignKey("ChecklistHRId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("api.Entities.HR.Employment", b =>
-                {
-                    b.HasOne("api.Entities.HR.SelectionDecision", null)
-                        .WithOne("Employment")
-                        .HasForeignKey("api.Entities.HR.Employment", "SelectionDecisionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -2576,17 +2832,6 @@ namespace api.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("api.Entities.Process.Deployment", b =>
-                {
-                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
-                        .WithMany("Deployments")
-                        .HasForeignKey("CVRefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CVRef");
-                });
-
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
                 {
                     b.HasOne("api.Entities.Tasks.AppTask", null)
@@ -2671,16 +2916,31 @@ namespace api.Data.Migrations
                     b.Navigation("Remuneration");
                 });
 
+            modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
+                {
+                    b.Navigation("DepItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
+                {
+                    b.Navigation("ProcessItems");
+                });
+
             modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
                 {
                     b.Navigation("VoucherEntries");
+                });
+
+            modelBuilder.Entity("api.Entities.Finance.Voucher", b =>
+                {
+                    b.Navigation("VoucherItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CVRef", b =>
                 {
                     b.Navigation("Candidates");
 
-                    b.Navigation("Deployments");
+                    b.Navigation("Process");
                 });
 
             modelBuilder.Entity("api.Entities.HR.Candidate", b =>
@@ -2705,11 +2965,6 @@ namespace api.Data.Migrations
             modelBuilder.Entity("api.Entities.HR.OrderItemAssessment", b =>
                 {
                     b.Navigation("OrderItemAssessmentQs");
-                });
-
-            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
-                {
-                    b.Navigation("Employment");
                 });
 
             modelBuilder.Entity("api.Entities.Identity.AppRole", b =>

@@ -2,7 +2,10 @@ using api.DTOs.Finance;
 using api.Entities.Finance;
 using api.Helpers;
 using api.Interfaces.Finance;
+using api.Params;
 using api.Params.Finance;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Finance
@@ -10,15 +13,31 @@ namespace api.Data.Repositories.Finance
     public class FinanceRepository : IFinanceRepository
     {
         private readonly DataContext _context;
-        public FinanceRepository(DataContext context)
+        private readonly IMapper _mapper;
+        public FinanceRepository(DataContext context, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
         }
 
-
-        public Task<COA> AddNewCOA(COA COA)
+        public async Task<int> GetNextVoucherNo()
         {
-            throw new NotImplementedException();
+            int no = await _context.FinanceVouchers.Select(x => x.VoucherNo).MaxAsync();
+
+            return no + 1;
+        }
+        public async Task<COA> SaveNewCOA(COA coa)
+        {
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateException ex) {
+                throw new Exception("Database error - " + ex.Message);
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+            
+            return coa;
+
         }
 
         public async Task<FinanceVoucher> AddNewVoucher(FinanceVoucher voucher, string Username)
@@ -30,7 +49,7 @@ namespace api.Data.Repositories.Finance
             return voucher;
         }
 
-        public async Task<COA> CreateCoaForCandidate(int applicationno, bool create)
+        public async Task<COA> CreateCoaForCandidateWithNoSave(int applicationno, bool create)
         {
             var candidate = await _context.Candidates.Where(x => x.ApplicationNo==applicationno).FirstOrDefaultAsync();
 			if(candidate==null) return null;
@@ -60,9 +79,11 @@ namespace api.Data.Repositories.Finance
 					AccountClass="Candidate",
 					OpBalance=0
 				};
-				coa = await AddNewCOA(coa);
-			}
-			
+				//coa = await SaveNewCOA(coa);
+			} else if(coa == null && create) {
+                return null;
+            }
+
 			return coa;
         }
 
@@ -82,11 +103,6 @@ namespace api.Data.Repositories.Finance
         }
 
         public Task<long> GetClosingBalIncludingSuspense(int accountid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PagedList<COA>> GetCOAList()
         {
             throw new NotImplementedException();
         }
@@ -111,9 +127,26 @@ namespace api.Data.Repositories.Finance
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<PendingDebitApprovalDto>> GetPendingDebitApprovals()
+        public async Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams pParams)
         {
-            throw new NotImplementedException();
+            var cashandbank = await _context.COAs.Where(x => x.AccountClass=="CashAndBank").Select(x => x.Id).ToListAsync();
+
+			var qry = (from e in _context.VoucherItems
+				where e.DrEntryApproved != true & e.Dr > 0  & cashandbank.Contains(e.COAId)
+				join v in _context.Vouchers on e.VoucherId equals v.Id
+				select new PendingDebitApprovalDto{
+                     DrAccountId=e.COAId, DrAccountName=e.AccountName, DrAmount=e.Dr, VoucherItemId=e.Id, 
+                     DrEntryApproved = e.DrEntryApproved, VoucherDated =v.VoucherDated, VoucherNo=v.VoucherNo
+                }).AsQueryable();
+			
+            if(!string.IsNullOrEmpty(pParams.AccountName)) 
+                qry = qry.Where(x => x.DrAccountName.ToLower() == pParams.AccountName.ToLower());
+            
+			var paged = await PagedList<PendingDebitApprovalDto>.CreateAsync(
+                qry.AsNoTracking()
+                .ProjectTo<PendingDebitApprovalDto>(_mapper.ConfigurationProvider)
+                , pParams.PageNumber, pParams.PageSize);
+            return paged;
         }
 
         public Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate)
@@ -124,6 +157,25 @@ namespace api.Data.Repositories.Finance
         public Task<bool> UpdateCashAndBankDebitApprovals(ICollection<UpdatePaymentConfirmationDto> updateDto)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<COA> GetSalesRecruitmentCOA()
+        {
+            var coa = await _context.COAs
+                .Where(x => x.AccountName.ToLower() == "sales recruitment" && x.AccountType=="I")
+                .FirstOrDefaultAsync();
+            
+            return coa;
+        }
+
+        public async Task<COA> GetCOA(COAParams coaParams)
+        {
+            var query = _context.COAs.AsQueryable();
+
+            if(!string.IsNullOrEmpty(coaParams.AccountType)) query = query.Where(x => x.AccountType== coaParams.AccountType);
+            if(!string.IsNullOrEmpty(coaParams.AccountName)) query = query.Where(x => x.AccountName.ToLower().Contains(coaParams.AccountName.ToLower()));
+            
+            return await query.FirstOrDefaultAsync();
         }
 
     }

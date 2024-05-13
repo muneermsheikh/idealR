@@ -53,8 +53,7 @@ namespace api.Data.Repositories.Admin
         {
             string strToReturn = "";
             strToReturn = "Pleased to advise you hv been selected by " + customerName + " as " + professionName;
-            strToReturn += " at a basic salary of " + selection.Employment!.SalaryCurrency + " " + 
-                selection.Employment.FoodAllowance;
+            //strToReturn += " at a basic salary of " + selection.Employment!.SalaryCurrency + " " + selection.Employment.FoodAllowance;
             strToReturn += " plus perks.  Please visit us to review and sign your offer letter and to initiate your joining formalities";
             return strToReturn;
         }

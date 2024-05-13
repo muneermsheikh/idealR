@@ -5,10 +5,13 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace api.Controllers
 {
+    [Authorize(Policy = "AdminPolicy")]
     public class SelectionController : BaseApiController
     {
         private readonly ISelDecisionRepository _selRepo;
@@ -19,11 +22,19 @@ namespace api.Controllers
             _selRepo = selRepo;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<PagedList<SelDecisionDto>>> GetSelectionDecisions(SelDecisionParams selParams)
+        [HttpGet("selection/{cvrefid}")]
+        public async Task<ActionResult<SelectionDecision>> GetSelectionDecisionFromCVRefId(int cvrefid)
         {
-                       
-            var decs = await _selRepo.GetSelectionDecisions(selParams);
+            var sel = await _selRepo.GetSelectionDecisionFromCVRefId(cvrefid);
+            if(sel == null) return BadRequest(new ApiException(400, "Not Found", "failed to retrieve the selection record"));
+
+            return Ok(sel);
+        }
+        [HttpGet]
+        public async Task<ActionResult<PagedList<SelDecisionDto>>> GetSelectionDecisionsAsync(SelDecisionParams selParams)
+        {
+             
+           var decs = await _selRepo.GetSelectionDecisions(selParams);
             if (decs != null) return Ok(decs);
             return NotFound(new ApiException(404, "no records found"));
         }
@@ -33,11 +44,10 @@ namespace api.Controllers
         {
             var decs = await _selRepo.RegisterSelections(dtos, User.GetUsername());
 
-            if(!string.IsNullOrEmpty(decs.ErrorString)) return BadRequest(new ApiException(400, decs.ErrorString));
+            if(!string.IsNullOrEmpty(decs.ErrorString)) return BadRequest(new ApiException(400, "Failed to register the selections", decs.ErrorString));
 
             return Ok("Selections registered");
         }
-
      
         [HttpPut]
         public async Task<ActionResult<bool>> EditSelectionDecision(SelectionDecision selDecision)
@@ -45,17 +55,45 @@ namespace api.Controllers
             return await _selRepo.EditSelection(selDecision);
         }
 
-    
+        [HttpPut("employment")]
+        public async Task<ActionResult<bool>> EditEmployment(Employment employment)
+        {
+            var edited = await _selRepo.EditEmployment(employment, User.GetUsername());
+
+            if(!edited) return BadRequest(new ApiException(400, "Failed to edit the employment details"));
+
+            return Ok(edited);
+        }
+
+        [HttpPut("offeraccepted")]
+        public async Task<ActionResult<bool>> RegisterOfferAcceptance(ICollection<OfferConclusionDto> dto)
+        {
+            dto = dto.Where(x => !"acceptedrejected".Contains(x.acceptedString.ToLower())).ToList();
+
+            if(dto.Count == 0) return BadRequest(new ApiException(400, "invalid accepted String", "accepted value are 'Accepted' or 'Rejected"));
+            
+            var errorString= await _selRepo.RegisterOfferAcceptance(dto, User.GetUsername());
+
+            if(!string.IsNullOrEmpty(errorString)) return BadRequest(errorString);
+
+            return Ok("offer acceptance registered");
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> DeleteSelectionDecision(int id)
         {
-            return await _selRepo.DeleteSelection(id);
+            var errString= await _selRepo.DeleteSelection(id);
+
+            if(!string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Failed to delete the Selection", errString));
+
+            return Ok("Selection Decision deleted successfully");
+            
         }
 
         [HttpGet("pendingselections")]
         public async Task<ActionResult<PagedList<CVRefDto>>> SelectionDecisionPending(CVRefParams refParams)
         {
-            var data = await _cvrefRepo.GetCVReferrals(refParams);
+            var data = await _cvrefRepo.GetPendingReferrals(refParams);
             if (data==null && data.Count == 0) return NotFound(new ApiException(404, "No referral decisions found pending as of now"));
             
             Response.AddPaginationHeader(new PaginationHeader(data.CurrentPage, 
@@ -64,6 +102,29 @@ namespace api.Controllers
             return Ok(data);
         }
         
-     
+        [HttpGet("employment/{employmentid}")]
+        public async Task<ActionResult<Employment>> GetEmployment (int employmentid)
+        {
+            var emp = await _selRepo.GetEmployment(employmentid);
+
+            if(emp == null) return BadRequest("Failed to get the employment data");
+
+            return Ok(emp);
+        }
+
+        [HttpGet("offeracceptancespending")]
+        public async Task<ActionResult<EmploymentsNotConcludedDto>> OfferAcceptancesPending(EmploymentParams empParams)
+        {
+            var data = await _selRepo.EmploymentsAwaitingConclusion(empParams);
+
+            if (data == null || data.Count == 0) return BadRequest("No employment offers are pending conclusion");
+
+            Response.AddPaginationHeader(new PaginationHeader(data.CurrentPage, 
+                data.PageSize, data.TotalCount, data.TotalPages));
+            
+            return Ok(data);
+        }
+    
+        
     }
 }
