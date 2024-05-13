@@ -273,6 +273,47 @@ namespace api.Data.Repositories.Deployment
             return paged;
         }
 
-        public async Task<PagedList<
+        /* public async Task<PagedList<DeploymentRecordsDto>> GetDeploymentHistory()
+        {
+           group t by new { t.MonthName, t.FeeParticularName } into grp
+            // Assuming you have a collection of records that you want to transform into a crosstab format
+            var records =  (from dep in _context.Deps 
+                join depitem in _context.DepItems on dep.Id equals depitem.DepId
+                join depStatus in _context.DeployStatuses on depitem.Sequence equals depStatus.Sequence
+                join cvref in _context.CVRefs on dep.CVRefId equals cvref.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id
+                join order in _context.Orders on item.OrderId equals order.Id
+                group depStatus by depStatus.StatusName into grp
+                select new DeploymentRecordsDto {
+                    DepId = grp.dep.Id,
+                    CVRefId = grp.cvref.Id,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateName = cv.FullName,
+                    CategoryName = item.Profession.ProfessionName,
+                    Status = depStatus.StatusName,
+                    TransactionDate  = depitem.TransactionDate,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderNo = order.OrderNo,
+                }).ToList();
+
+
+            // Group the records by the first key (e.g., Month)
+            var groupedRecords = records
+                .GroupBy(record => record.CVRefId)
+                .Select(group => new
+                {
+                    FirstKey = group.Key,
+                    // Create a dictionary for the crosstab columns
+                    CrosstabColumns = group
+                        .GroupBy(record => record.CVRefId)
+                        .ToDictionary(g => g.Key,  g => g.First(x => x.TransactionDate.Value))
+                })
+                .ToList();
+
+            // Now you have a list of anonymous objects, each with a FirstKey and a dictionary of crosstab columns
+
+        }
+        */
     }
 }
