@@ -15,7 +15,6 @@ export class MemberService {
 
   baseUrl = environment.apiUrl;
   members: Member[] = [];
-  //memberCache = new Map();
   user?: User | null;
   userParams: UserParams | undefined;
 
@@ -38,8 +37,7 @@ export class MemberService {
     if(response) return of(response);
 
     let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
-    if(userParams.minAge > 0) params = params.append('minAge', userParams.minAge);
-    if(userParams.maxAge > 0) params = params.append('maxAge', userParams.maxAge);
+
     if(userParams.gender !== '') params = params.append('gender', userParams.gender);
     if(userParams.orderBy !== '') params = params.append('orderBy', userParams.orderBy);
     
