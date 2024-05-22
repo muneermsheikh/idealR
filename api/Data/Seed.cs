@@ -50,7 +50,8 @@ namespace api.Data
                     new() {Name = "Approve release of documents"},
                     new() {Name = "Order"},
                     new() {Name = "Contract Review"},
-                    new() {Name = "Customer Official"}
+                    new() {Name = "Customer Official"},
+                    new() {Name = "OrderForward"}
                 };
 
                 foreach(var role in roles) {
@@ -132,7 +133,7 @@ namespace api.Data
                         KnownAs = item.CustomerOfficials.FirstOrDefault().KnownAs,
                         Gender = item.CustomerOfficials.FirstOrDefault().Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateTime.UtcNow,
+                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
                         City = item.City
                     };
                     UserListOfficials.Add(user);
@@ -151,8 +152,8 @@ namespace api.Data
                         KnownAs = item.KnownAs,
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateTime.UtcNow,
-                        DateOfBirth = DateOnly.FromDateTime((DateTime)item.DateOfBirth),
+                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
+                        DateOfBirth = item.DateOfBirth,
                         City = item.City,
                     };
                     UserListEmployees.Add(user);
@@ -224,7 +225,7 @@ namespace api.Data
                         KnownAs = item.KnownAs,
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateTime.UtcNow,
+                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
                         DateOfBirth = (DateOnly)item.DOB,
                         City = item.City,
                     };

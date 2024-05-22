@@ -1,4 +1,4 @@
 export interface IIndustryType {
      id: number;
-     name: string;
+     industryName: string;
 }

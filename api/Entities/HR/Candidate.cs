@@ -24,6 +24,7 @@ namespace api.Entities.HR
         //[Required]
         public DateOnly? DOB { get; set; }
         public string PpNo { get; set; } 
+        public string AadharNo {get; set;}
         public bool Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}
@@ -39,9 +40,11 @@ namespace api.Entities.HR
         public string Status {get; set;} = "NotReferred";
         public string Qualifications {get; set;}
         public string PhotoUrl { get; set; }
+        public bool NotificationDesired { get; set; }
         public ICollection<UserPhone> UserPhones {get; set;}
         public ICollection<UserProfession> UserProfessions {get; set;}
         public ICollection<UserExp> UserExperiences {get; set;}
+        public ICollection<UserAttachment> UserAttachments { get; set; }
         public string FullName {get => FirstName + " " + SecondName + " " + FamilyName;}
     }
 }

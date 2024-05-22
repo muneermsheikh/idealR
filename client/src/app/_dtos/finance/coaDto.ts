@@ -1,4 +1,4 @@
-export class coaDto
+export class COADto
 {
     id = 0;
     divn='';

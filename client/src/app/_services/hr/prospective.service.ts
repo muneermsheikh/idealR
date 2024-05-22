@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { prospectiveCandidateParams } from '../../params/hr/prospectiveCandidateParams';
-import { prospectiveSummaryParams } from '../../params/hr/prospectiveSummaryParams';
-import { IProspectiveSummaryDto } from '../../dtos/hr/propectiveSummaryDto';
-import { IProspectiveCandidate } from '../../models/hr/prospectiveCandidate';
-import { IPagination } from '../../models/pagination';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IProspectiveRegisterToAddDto } from '../../dtos/hr/prospectiveRegisterToAddDto';
-import { IProspectiveUpdateDto } from '../../dtos/hr/prospectiveUpdateDto';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
+import { prospectiveSummaryParams } from 'src/app/_models/params/hr/prospectiveSummaryParams';
+import { IProspectiveSummaryDto } from 'src/app/_dtos/hr/propectiveSummaryDto';
+import { Pagination } from 'src/app/_models/pagination';
+import { getPaginatedResult, getPaginationHeadersProspectiveCandidates, getPaginationHeadersProspectiveCandidatesSummary } from '../paginationHelper';
+import { IProspectiveCandidate } from 'src/app/_models/hr/prospectiveCandidate';
+import { IProspectiveRegisterToAddDto } from 'src/app/_dtos/hr/prospectiveRegisterToAddDto';
+import { IProspectiveUpdateDto } from 'src/app/_dtos/hr/prospectiveUpdateDto';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,53 +19,33 @@ import { IProspectiveUpdateDto } from '../../dtos/hr/prospectiveUpdateDto';
 export class ProspectiveService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   oParams = new prospectiveCandidateParams();
   sParams = new prospectiveSummaryParams();
   //paginationSummary = new PaginationProspectiveSummary();
   summaries: IProspectiveSummaryDto[]=[];
-  pagination?: IPagination<IProspectiveCandidate[]>; // = new PaginationProspectiveCandidates();
+  pagination: Pagination | undefined;
   cache = new Map();
   cacheSummary = new Map();
 
   constructor(private http: HttpClient) { }
 
-  getProspectiveCandidates(useCache: boolean) {
-        if (useCache === false) this.cache = new Map();
+  getProspectiveCandidates(oParams: prospectiveCandidateParams) {
+        
+      const response = this.cache.get(Object.values(oParams).join('-'));
+      if(response) return of(response);
+  
+      let params = getPaginationHeadersProspectiveCandidates(oParams);
     
-    if (this.cache.size > 0 && useCache === true) {
-      if (this.cache.has(Object.values(this.oParams).join('-'))) {
-        this.pagination!.data = this.cache.get(Object.values(this.oParams).join('-'));
-        return of(this.pagination);
-      }
-    }
-
-    let params = new HttpParams();
-    
-    if (this.oParams.status !== ''  && this.oParams.status !== undefined)  params = params.append('status', this.oParams.status);
-    if (this.oParams.categoryRef !== ''  && this.oParams.categoryRef !== undefined)  params = params.append('categoryRef', this.oParams.categoryRef);
-
-    if (this.oParams.dateAdded !=='' && this.oParams.dateAdded !== undefined ){
-      params = params.append('dateAdded', this.oParams.dateAdded);
-    }
-    //if(this.oParams.status !== '') params = params.append('status', this.oParams.status);
-    
-    if (this.oParams.search) params = params.append('search', this.oParams.search);
-    
-    params = params.append('sort', this.oParams.sort);
-    params = params.append('pageIndex', this.oParams.pageNumber.toString());
-    params = params.append('pageSize', this.oParams.pageSize.toString());
-
-    return this.http.get<IPagination<IProspectiveCandidate[]>>(this.apiUrl + 'prospectivecandidates', {params})
-      .pipe(
+      return getPaginatedResult<IProspectiveCandidate[]>(this.apiUrl + 'prospectivecandidates', params, this.http).pipe(
         map(response => {
-          this.cache.set(Object.values(this.oParams).join('-'), response);
-          this.pagination = response;
+          this.cache.set(Object.values(oParams).join('-'), response);
           return response;
-        })
-      )
+        }))
+
     }
+    
   
   getProspectiveSummary(useCache: boolean)
   {
@@ -76,21 +58,8 @@ export class ProspectiveService {
       }
     }
 
-    let params = new HttpParams();
+    let params = getPaginationHeadersProspectiveCandidatesSummary(this.sParams);
     
-    if (this.sParams.status !== ''  && this.sParams.status !== undefined)  params = params.append('status', this.sParams.status);
-    if (this.sParams.categoryRef !== ''  && this.sParams.categoryRef !== undefined)  params = params.append('categoryRef', this.sParams.categoryRef);
-    if (this.sParams.dated !=='' && this.sParams.dated !== undefined ){
-      //console.log('dateAdded', this.sParams.dated);
-      params = params.append('dateAdded', this.sParams.dated);
-    }
-    
-    if (this.oParams.search) params = params.append('search', this.sParams.search);
-    
-    params = params.append('sort', this.sParams.sort);
-    //params = params.append('pageIndex', this.sParams.pageNumber.toString());
-    //params = params.append('pageSize', this.sParams.pageSize.toString());
-
     return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'ProspectiveCandidates/summary', {params})
       .pipe(
         map(response => {
@@ -124,7 +93,7 @@ export class ProspectiveService {
   }
 
   uploadProspectiveXLSFile(prospectivexlFile: any){
-    console.log('prosective upload in prospecive service');
+    //console.log('prosective upload in prospecive service');
     return this.http.post<string>(this.apiUrl + 'excel/uploadProspectiveFile', prospectivexlFile)
   }
 

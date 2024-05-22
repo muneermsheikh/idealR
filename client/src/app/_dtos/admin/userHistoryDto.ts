@@ -1,4 +1,4 @@
-import { IUserHistoryItem } from "../../models/admin/userHistoryItem";
+import { IUserHistoryItem } from "src/app/_models/admin/userHistoryItem";
 
 export interface IUserHistoryDto
 {

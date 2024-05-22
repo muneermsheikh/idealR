@@ -1,3 +1,4 @@
+using System.Data.Common;
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Master;
@@ -18,26 +19,40 @@ namespace api.Data.Repositories
             _context = context;
         }
 
-        public async Task<ChecklistObj> AddNewChecklistHR(int candidateId, int orderItemId, string Username)
+        public async Task<ChecklistObj> GetOrGenerateChecklist(int candidateId, int orderItemId, string Username)
         {
             var checkobj = new ChecklistObj();
 
-            //check if the candidate has aleady been checklisted for the order item
-            var checkedOn = await _context.ChecklistHRs.Where(x => x.CandidateId == candidateId && x.OrderItemId == orderItemId)
-                .Select(x => x.CheckedOn.Date).FirstOrDefaultAsync();
-            if (checkedOn.Year > 2000) {
-                checkobj.ErrorString = "Checklist on the candidate for the same requirement has been done on " + checkedOn;
+            var errString = await CandidateAlreadyChecklisted(candidateId, orderItemId);
+            if(!string.IsNullOrEmpty(errString)) {
+                checkobj.ErrorString = errString;
                 return checkobj;
             }
-            var checklistobj = await AddChecklistHR(candidateId, orderItemId,  Username);
-            if(!string.IsNullOrEmpty(checklistobj.ErrorString)) {
-                checkobj.ErrorString=checklistobj.ErrorString;
-            } else {
-                checkobj.ChecklistHR = checklistobj.ChecklistHR;
-            }
+
+            checkobj = await ComposeChecklistHR(candidateId, orderItemId, Username);
+
             return checkobj;
         }
 
+        public async Task<ChecklistHR> GetChecklist(int candidateid, int orderitemid)
+        {
+            var obj = await _context.ChecklistHRs.Where(x => x.CandidateId == candidateid &&
+                x.OrderItemId == orderitemid).FirstOrDefaultAsync();
+            
+            return obj;
+        }
+
+        private async Task<string> CandidateAlreadyChecklisted(int candidateId, int orderItemId)
+        {
+            var checkedOn = await _context.ChecklistHRs.Where(x => x.CandidateId == candidateId && x.OrderItemId == orderItemId)
+                .Select(x => x.CheckedOn).FirstOrDefaultAsync();
+            if (checkedOn.Year > 2000) 
+                return "Checklist on the candidate for the same requirement has been done on " + checkedOn;
+            
+            return "";
+
+        }
+        
         private static string ChecklistErrors(ChecklistHR checklistHR) {
 
             var errorStrings = "";
@@ -59,62 +74,81 @@ namespace api.Data.Repositories
             return errorStrings;
         }
 
-
-        private async Task<ChecklistObj> AddChecklistHR(int candidateid, int orderitemid, string Username)
+        private async Task<string> verifyChecklist(ChecklistHR checklisthr)
         {
-            //verify candidteid and orderitemid exist
-            var checklistObj = new ChecklistObj();
-            if(await _context.Candidates.FindAsync(candidateid) == null) {
-                checklistObj.ErrorString = "Candidate does not exist";
-                return checklistObj;
+            var strErr="";
+            var candidate = await _context.Candidates.FindAsync(checklisthr.CandidateId);
+            if(candidate != null) strErr = "Invalid Candidate Id";
+            var item = await _context.OrderItems.FindAsync(checklisthr.OrderItemId);
+            if(item != null) strErr +=" Invalid Order Item Id code";
+
+            return strErr;
+        }
+
+        private async Task<ChecklistObj> ComposeChecklistHR(int candidateId, int orderItemId, string Username)
+        {
+            var checkobj = new ChecklistObj();
+
+            if(await _context.Candidates.FindAsync(candidateId) == null) {
+                checkobj.ErrorString = "Candidate does not exist";
+                return checkobj;
             }
 
-            if(await _context.OrderItems.FindAsync(orderitemid) == null)  {
-                checklistObj.ErrorString = "Order Item does not exist";
-                return checklistObj;
+            if(await _context.OrderItems.FindAsync(orderItemId) == null)  {
+                checkobj.ErrorString = "Order Item does not exist";
+                return checkobj;
             }
             
             var itemList = new List<ChecklistHRItem>();
             //populate the checklistHRItem
             var data = await _context.ChecklistHRDatas.OrderBy(x => x.SrNo).ToListAsync();
-            var charges  = await _context.GetServiceChargesFromOrderItemId(orderitemid);
+            var charges  = await _context.GetServiceChargesFromOrderItemId(orderItemId);
 
             foreach (var item in data)
             {
                 if(item.Parameter.ToLower() == "willing to pay service charges") item.Parameter += charges == 0 ? "" : " " + charges;
                 itemList.Add(new ChecklistHRItem{SrNo = item.SrNo, Parameter = item.Parameter, MandatoryTrue=item.IsMandatory});
             }
+
             var hrTask = new ChecklistHR{
-                CandidateId=candidateid, OrderItemId= orderitemid, 
-                UserName = Username, CheckedOn = System.DateTime.UtcNow, 
-                Charges = await _context.GetServiceChargesFromOrderItemId(orderitemid),
+                CandidateId=candidateId, OrderItemId= orderItemId, 
+                UserName = Username, CheckedOn = DateOnly.FromDateTime(System.DateTime.UtcNow), 
+                Charges = await _context.GetServiceChargesFromOrderItemId(orderItemId),
                 ChecklistHRItems = itemList,
                 Candidate = null};
+            
+            checkobj.ChecklistHR = hrTask;
 
-            _context.ChecklistHRs.Add(hrTask);
-            var errorString="";
+            return checkobj;
+
+        }
+
+        public async Task<ChecklistObj> SaveNewChecklist (ChecklistHR checklisthr, string Username)
+        {
+            var checkobj = new ChecklistObj();
+
+            var errStr = await verifyChecklist(checklisthr);
+            if(!string.IsNullOrEmpty(errStr)) {
+                checkobj.ErrorString = errStr;
+                return checkobj;
+            }
+
+            _context.Entry(checklisthr).State = EntityState.Added;
+
             try {
                 await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                checkobj.ErrorString = ex.Message;
+                return checkobj;
             } catch (Exception ex) {
-                checklistObj.ErrorString = "";
-                errorString = ex.Message switch
-                {
-                    "FOREIGN KEY constraint failed" => checklistObj.ErrorString ="Index constraint failed - pl check if the candidate has already been checklisted for the same order item",
-                
-                    _ => checklistObj.ErrorString= ex.Message,
-                };
-                return checklistObj;
+                checkobj.ErrorString = ex.Message;
+                return checkobj;
             }
 
-            if(hrTask.Candidate != null) hrTask.Candidate=null;
-            if(hrTask.OrderItem != null) hrTask.OrderItem=null;
+            checkobj.ChecklistHR  = checklisthr;
 
-            if(!string.IsNullOrEmpty(errorString)) {
-                checklistObj.ErrorString=errorString;
-            } else {
-                checklistObj.ChecklistHR=_mapper.Map<ChecklistHR>(hrTask);
-            }
-            return checklistObj;
+            return checkobj;
+            
         }
 
         public async Task<string> EditChecklistHR(ChecklistHR model, string Username)
@@ -192,6 +226,7 @@ namespace api.Data.Repositories
 
             if (obj==null) return false;
             
+            _context.ChecklistHRs.Remove(obj);
             _context.Entry(obj).State = EntityState.Deleted;
 
             return await _context.SaveChangesAsync() > 0;
@@ -217,14 +252,13 @@ namespace api.Data.Repositories
                 select new ChecklistHRDto {
                     Id = checklist.Id, ApplicationNo = candidate.ApplicationNo, OrderItemId = orderItemId,
                     CandidateName = candidate.FullName, CandidateId = candidate.Id,
-                    OrderRef =  order.OrderNo + "-" + orderitem.SrNo + "-" + 
-                        orderitem.Profession.ProfessionName,
+                    //OrderRef =  order.OrderNo + "-" + orderitem.SrNo + "-" + orderitem.Profession.ProfessionName,
                     UserName = checklist.UserName, 
                     CheckedOn = checklist.CheckedOn, 
-                    UserComments = checklist.UserComments,
+                    //UserComments = checklist.UserComments,
                     ChecklistHRItems = checklist.ChecklistHRItems,
                     Charges = rvwitem.Charges,
-                    ChargesAgreed = checklist.ChargesAgreed,
+                    //ChargesAgreed = checklist.ChargesAgreed,
                     ExceptionApproved = checklist.ExceptionApproved,
                     ExceptionApprovedBy = checklist.ExceptionApprovedBy,
                     ExceptionApprovedOn = checklist.ExceptionApprovedOn,

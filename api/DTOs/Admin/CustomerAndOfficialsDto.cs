@@ -10,8 +10,12 @@ namespace api.DTOs.Admin
         public string CustomerName { get; set; }
         public string City {get; set;}
         public string Country {get; set;}
-        public string OfficialTitle { get; set; }
-        public string OfficialDesignation {get; set;}
         public string OfficialName { get; set; }
+        public string Designation {get; set;}
+        public string OfficialEmailId { get; set; }
+        public string MobileNo { get; set; }
+        public string OfficialTitle { get; set; }
+       
+        
     }
 }

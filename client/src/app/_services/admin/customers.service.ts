@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { IPagination } from '../../models/pagination';
-import { ICustomerBriefDto } from '../../dtos/admin/customerBriefDto';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { ICustomer } from '../../models/admin/customer';
-import { IRegisterCustomerDto } from '../../dtos/admin/registerCustomerDto';
-import { ICustomerCity } from '../../models/admin/customerCity';
-import { ICustomerOfficialDto } from '../../models/admin/customerOfficialDto';
-import { IClientIdAndNameDto } from '../../dtos/admin/clientIdAndNameDto';
-import { paramsCustomer } from '../../params/admin/paramsCustomer';
+import { ReplaySubject, map, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { paramsCustomer } from 'src/app/_models/params/Admin/paramsCustomer';
+import { Pagination } from 'src/app/_models/pagination';
+import { ICustomerBriefDto } from 'src/app/_dtos/admin/customerBriefDto';
+import { getHttpParamsForCustomers, getPaginatedResult} from '../paginationHelper';
+import { ICustomer } from 'src/app/_models/admin/customer';
+import { IRegisterCustomerDto } from 'src/app/_dtos/admin/registerCustomerDto';
+import { ICustomerCity } from 'src/app/_models/admin/customerCity';
+import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto';
+import { IClientIdAndNameDto } from 'src/app/_dtos/admin/clientIdAndNameDto';
+import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +20,14 @@ import { paramsCustomer } from '../../params/admin/paramsCustomer';
 export class CustomersService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   custParams = new paramsCustomer();
-  pagination?: IPagination<ICustomerBriefDto[]>;
-  //paginationBrief?: IPagination<ICustomerBriefDto[]>;
+  pagination: Pagination | undefined;
+  customerType='';
   customersBrief: ICustomerBriefDto[]=[];
 
-  cache = new Map<string, IPagination<ICustomerBriefDto[]>>() // new Map();
+  cache = new Map();
   
   constructor(private http: HttpClient) { }
 
@@ -34,42 +36,35 @@ export class CustomersService {
       var custBrief = this.customersBrief.find(x => x.id ===id);
       if(custBrief !==null) return of(custBrief?.knownAs);
     }
-    console.log('geting custome rbrief from api');
     return this.http.get<string>(this.apiUrl + 'customers/customernamefromId/' + id);
   }
 
-  getCustomers(useCache: boolean): Observable<IPagination<ICustomerBriefDto[]>> { 
+  getCustomers(oParams: paramsCustomer) { 
 
-    if (useCache === false)  this.cache = new Map();
+      const response = this.cache.get(Object.values(oParams).join('-'));
+      if(response) return of(response);
     
-    if (this.cache.size > 0 && useCache === true) {
-      if (this.cache.has(Object.values(this.custParams).join('-'))) {
-        this.pagination = this.cache.get(Object.values(this.custParams).join('-'))!;
-        if(this.pagination) return of(this.pagination);
-      }
-    }
+      this.customerType = oParams.customerType ?? "customer";
 
-    let params = new HttpParams();
-    if (this.custParams.customerType !== "") params = params.append('customerType', this.custParams.customerType);
-    if (this.custParams.customerCityName !== '') params = params.append('customerCityName', this.custParams.customerCityName!);
-    if (this.custParams.customerIndustryId !== 0) params = params.append('customerIndustryId', this.custParams.customerIndustryId!.toString());
-    if (this.custParams.search) params = params.append('search', this.custParams.search);
+      let params = getHttpParamsForCustomers(oParams);
     
-    params = params.append('sort', this.custParams.sort);
-    params = params.append('pageIndex', this.custParams.pageNumber.toString());
-    params = params.append('pageSize', this.custParams.pageSize.toString());
+      return getPaginatedResult<ICustomerBriefDto[]>(this.apiUrl + 'customers', params, this.http).pipe(
+        map(response => {
+          this.cache.set(Object.values(oParams).join('-'), response);
+          return response;
+        })
+      )
 
-    return this.http.get<IPagination<ICustomerBriefDto[]>>(this.apiUrl + 
-        'customers/customersBrief', {params}).pipe(
-      map(response => {
-        this.cache.set(Object.values(this.custParams).join('-'), response)
-        this.pagination = response;
-        return response;
-      })
-    )
   }
 
-  getCustomer(id: number) {
+  
+  getClientIdAndNames() {
+    
+    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames');
+  }
+
+  
+ getCustomer(id: number) {
     return this.http.get<ICustomer>(this.apiUrl + 'customers/byid/' + id);
   }
 
@@ -78,7 +73,7 @@ export class CustomersService {
   }
   
   getCustomerCities(customerType: string) {
-    return this.http.get<ICustomerCity[]>(this.apiUrl + 'customers/customerCities/' + customerType);
+    return this.http.get<ICustomerCity[]>(this.apiUrl + 'customers/customercities/' + customerType);
   }
   
   
@@ -91,18 +86,26 @@ export class CustomersService {
   }
 
   updateCustomer(model: any) {
-    console.log('model in updatecustomer', model);
-    return this.http.put(this.apiUrl + 'customers', model);
+    return this.http.put(this.apiUrl + 'customers/edit', model);
   }
 
 
   //associates
   getAgents() {
-    return this.http.get<ICustomerOfficialDto[]>(this.apiUrl + 'customers/agentdetails');
+    return this.http.get<ICustomerOfficialDto[]>(this.apiUrl + 'customers/agentdetails/associate');
   }
-
 
   getAgentIdAndNames() {
-    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/idandnames/associate');
+    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames/associate');
   }
+
+  getCustomerAndCities() {
+    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/customerCities/customer');
+  }
+
+  
+  remindClientForSelections(customerId: number) {
+    return this.http.get<boolean>(this.apiUrl + 'CVRef/selDecisionReminder/' + customerId);
+  }
+
 }

@@ -1,10 +1,8 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IAssessment } from "../../shared/models/admin/assessment";
-import { AssessmentService } from "../../shared/services/hr/assessment.service";
-import { IOrderItemAssessment } from "src/app/shared/models/admin/orderItemAssessment";
-import { IOrderItemAssessmentQ } from "src/app/shared/models/admin/orderItemAssessmentQ";
+import { IOrderItemAssessmentQ } from "src/app/_models/admin/orderItemAssessmentQ";
+import { AssessmentService } from "src/app/_services/hr/assessment.service";
 
  export const AssessmentQsOfOrderIdResolver: ResolveFn<IOrderItemAssessmentQ[]|null> = (
     route: ActivatedRouteSnapshot,

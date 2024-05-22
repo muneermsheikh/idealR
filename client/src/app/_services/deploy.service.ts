@@ -7,13 +7,13 @@ import { ICVRefAndDeployDto } from '../_dtos/process/cvRefAndDeployDto';
 import { Pagination } from '../_models/pagination';
 import { deployParams } from '../_models/params/process/deployParams';
 import { IDeployStage } from '../_models/masters/deployStage';
-import { depProcessParams } from '../_models/params/process/depProcessParams';
 import { IDeploymentDto } from '../_models/process/deploymentdto';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { GetHttpParamsForDepProcess, getPaginatedResult } from './paginationHelper';
 import { IDeploymentPendingDto } from '../_dtos/process/deploymentPendingDto';
-import { IDeployment } from '../_models/process/deployment';
 import { IDeploymentDtoWithErrorDto } from '../_dtos/process/deploymentDtoWithErrorDto';
-import { ICVReferredDto } from '../_dtos/admin/cvReferredDto';
+import { IDepItem } from '../_models/process/depItem';
+import { IDepItemToAddDto } from '../_dtos/process/depItemToAddDto';
+import { ICVRefDto } from '../_dtos/admin/cvRefDto';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class DeployService {
   cache = new Map();
   
   //for processDto list
-  dParams = new depProcessParams();
+  dParams = new deployParams();
   cacheDep = new Map();
   deployments: IDeploymentDto[]=[];
   
@@ -48,7 +48,7 @@ export class DeployService {
     return this.pParams;
   }
 
-  setDParams(params: depProcessParams) {
+  setDParams(params: deployParams) {
     this.dParams = params;
   }
   
@@ -57,99 +57,55 @@ export class DeployService {
   }
 
   
-  getCachedProcessesList(useCache: boolean) {
-    const token = localStorage.getItem("token");
-    if (token==='') return;
+  getCachedProcessesList(dParams: deployParams) {
+    //const token = localStorage.getItem("token");
+    //if (token==='') return;
     
-    if (useCache === false) this.cacheDep = new Map();
-    
-    if (this.cacheDep.size > 0 && useCache === true) {
-      
-      if (this.cacheDep.has(Object.values(this.dParams).join('-'))) {
-        this.deployments = this.cacheDep.get(Object.values(this.dParams).join('-'));
-        return of(this.deployments);
-      }
-    }
+    const response = this.cache.get(Object.values(dParams).join('-'));
+    if(response) return of(response);
 
-    return this.http.get<IDeploymentDto[]>(this.apiUrl + 'deploy/deploys/' + this.dParams.cvrefId)
-      .pipe(
-        map((response: any) => {
-          this.cacheDep.set(Object.values(this.dParams).join('-'), response);
-          this.deployments = response;
-          return response;
-        })
-      )
+    let params = GetHttpParamsForDepProcess(dParams);
+
+    return getPaginatedResult<IDeploymentPendingDto[]>(this.apiUrl + 
+        'Deployment/deployments', params, this.http).pipe(
+      map(response => {
+        this.cache.set(Object.values(dParams).join('-'), response);
+        return response;
+      })
+    )
   }
-
-  getPendingProcessesPaginated(dParams: deployParams) {
-
-      const response = this.cache.get(Object.values(dParams).join('-'));
-      if(response) return of(response);
-  
-      let params = getPaginationHeaders(dParams.pageNumber, dParams.pageSize);
-  
-      if(dParams.searchOn !=='' && dParams.search !== '') params = params.append(dParams.searchOn, dParams.search);
-
-      params = params.append('sort', this.pParams.sort);
-      params = params.append('pageIndex', this.pParams.pageNumber.toString());
-      params = params.append('pageSize', this.pParams.pageSize.toString());
-
-      return getPaginatedResult<IDeploymentPendingDto[]>(this.apiUrl + 'deploy/pending', params, this.http).pipe(
-        map(response => {
-          this.cache.set(Object.values(dParams).join('-'), response);
-          return response;
-        })
-      )
-    }
 
   getDeployStatus() {
     //return this.http.get<IDeploymentStatus[]>(this.apiUrl + 'deploy/depstatus');
     if(this.deployStages.length > 0) return of(this.deployStages);
 
-    return this.http.get<IDeployStage[]>(this.apiUrl + 'deploy/depstatus')
+    return this.http.get<IDeployStage[]>(this.apiUrl + 'Deployment/depStatusData')
       .pipe(
         map(response => {
           this.deployStages = response;
-          console.log('deploy.servic.ts, stages:', response);
           return response;
         })
       )
   }
 
-  updateSingleTransaction(deploy: IDeploymentDto) {
-    let params = new HttpParams();
+  updateDeploymentItem(deploy: IDepItem) {
     
-    params = params.append('cVRefId', deploy.cVRefId);
-    params = params.append('id', deploy.id);
-    params = params.append('nextSequence', deploy.nextSequence);
-    params = params.append('sequence', deploy.sequence);
-    params = params.append('transactionDate', deploy.transactionDate.toDateString());
-    params = params.append('nextStageDate', deploy.nextStageDate.toDateString());
-
-    return this.http.put<boolean>(this.apiUrl + 'deploy/editSingleTransaction', {params});
+    return this.http.put<boolean>(this.apiUrl + 'Deplyment/depItem', deploy);
   }
 
-  updateDeployment(deps: IDeployment[]) {
-    return this.http.put<boolean>(this.apiUrl + 'deploy', deps);
-  }
-
-  InsertDeployTransactions(deploys: IDeployment[] ){
-    return this.http.post<IDeploymentDtoWithErrorDto>(this.apiUrl + 'deploy/posts', deploys);
-  }
-
-  getDeployments(i: number) {
-    return this.http.get<IDeploymentDto[]>(this.apiUrl + 'deploy/deploys/' + i);
+  InsertDeployTransactions(deployItems: IDepItemToAddDto[] ){
+    return this.http.post<IDeploymentDtoWithErrorDto>(this.apiUrl + 'deploy/depItems', deployItems);
   }
 
   getCVReferredDto(cvrefid: number) {
-    return this.http.get<ICVReferredDto>(this.apiUrl + 'deploy/cvreferreddto/' + cvrefid);
+    return this.http.get<ICVRefDto>(this.apiUrl + 'Deployment/bycvrefid/' + cvrefid);
   }
 
   
   getNextSequence(cvrefid: number) {
-    if(this.deployments.length===0 || this.dParams.cvrefId !== cvrefid){
-      this.dParams.cvrefId=cvrefid;
-      this.getCachedProcessesList(false);
+    if(this.deployments.length===0 || this.dParams.cvrefid !== cvrefid){
+      this.dParams.cvrefid=cvrefid;
+      this.getCachedProcessesList(this.dParams);
 
     }
     var arr = new Array(this.deployments.length).map(x => x.sequence );
@@ -176,11 +132,10 @@ export class DeployService {
   }
 
   getNextStageDate(stageId: number): Date {
-    var day = this.deployStages.find(x => x.id==stageId)?.estimatedDaysToCompleteThisStage;
-    console.log('day:', day);
-    
-    if(day !== undefined) {
-      return new Date(new Date().setDate(new Date().getDate()+ day));
+    var dayToCompleteStage = this.deployStages.find(x => x.id==stageId)?.estimatedDaysToCompleteThisStage;
+       
+    if(dayToCompleteStage !== undefined) {
+      return new Date(new Date().setDate(new Date().getDate()+ dayToCompleteStage));
     } else {
       return new Date();
     }

@@ -35,7 +35,7 @@ namespace api.Data.Repositories.Admin
                     OrderItemId = cvref.OrderItemId,
                     ProfessionName = item.Profession.ProfessionName,
                     CategoryRef = o.OrderNo + "-" + item.SrNo,
-                    PPNo = cv.PpNo,
+                    //PPNo = cv.PpNo,
                     ReferredOn = cvref.ReferredOn,
                     RefStatus = cvref.RefStatus
                 })
@@ -77,7 +77,7 @@ namespace api.Data.Repositories.Admin
                 select new CustomerAndOfficialsDto {
                     CustomerId = cust.Id, OfficialId = off.Id, AppUserId = off.AppUserId,
                     CustomerName = cust.CustomerName, City=cust.City, Country=cust.Country,
-                    OfficialDesignation = off.Designation
+                    Designation = off.Designation
                 }).AsQueryable();
             
             return customerNOfficials;

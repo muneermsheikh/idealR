@@ -1,3 +1,5 @@
+using api.Data.Migrations;
+using api.DTOs.Order;
 using api.Entities.Admin.Order;
 using api.Extensions;
 using api.Helpers;
@@ -11,13 +13,13 @@ namespace api.Data.Repositories.Admin
 {
     public class ContractReviewRepository: IContractReviewRepository
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-        public ContractReviewRepository(DataContext context, IMapper mapper)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+          private readonly DataContext _context;
+          private readonly IMapper _mapper;
+          public ContractReviewRepository(DataContext context, IMapper mapper)
+          {
+               _mapper = mapper;
+               _context = context;
+          }
 
           public async Task<ContractReview> EditContractReview(ContractReview model)
           {
@@ -78,262 +80,288 @@ namespace api.Data.Repositories.Admin
           }
 
 
-     public async Task<ContractReviewItem> EditContractReviewItem(ContractReviewItem model, bool calledByThis)
-     {
-          // thanks to @slauma of stackoverflow
-          var existingObj = await _context.ContractReviewItems
-               .Where(p => p.Id == model.Id)
-               .Include(x => x.ContractReviewItemQs)
-               .AsNoTracking()
-               .SingleOrDefaultAsync();
-
-          if (existingObj == null || existingObj.ContractReviewItemQs == null) return null;
-
-          _context.Entry(existingObj).CurrentValues.SetValues(model);   //saves only the parent, not children
-
-          //Delete children that exist in existing record, but not in the new model order
-          foreach (var existingItem in existingObj.ContractReviewItemQs.ToList())
+          public async Task<ContractReviewItem> EditContractReviewItem(ContractReviewItem model, bool calledByThis)
           {
-               if (!model.ContractReviewItemQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+               // thanks to @slauma of stackoverflow
+               var existingObj = await _context.ContractReviewItems
+                    .Where(p => p.Id == model.Id)
+                    .Include(x => x.ContractReviewItemQs)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync();
+
+               if (existingObj == null || existingObj.ContractReviewItemQs == null) return null;
+
+               _context.Entry(existingObj).CurrentValues.SetValues(model);   //saves only the parent, not children
+
+               //Delete children that exist in existing record, but not in the new model order
+               foreach (var existingItem in existingObj.ContractReviewItemQs.ToList())
                {
-                    _context.ContractReviewItemQs.Remove(existingItem);
-                    _context.Entry(existingItem).State = EntityState.Deleted;
-               }
-          }
-
-          //children that are not deleted, are either updated or new ones to be added
-          foreach (var itemModelQ in model.ContractReviewItemQs)
-          {
-               //work on the contractReviewItem
-               var existingQ = existingObj.ContractReviewItemQs.Where(c => c.Id == itemModelQ.Id && c.Id != default(int)).SingleOrDefault();
-               if (existingQ != null)       // record exists, update it
-               {
-                    _context.Entry(existingQ).CurrentValues.SetValues(itemModelQ);
-                    _context.Entry(existingQ).State = EntityState.Modified;
-               }
-               else            //record does not exist, insert a new record
-               {
-                    var newItem = new ContractReviewItemQ {
-                         OrderItemId=itemModelQ.OrderItemId, 
-                         ContractReviewItemId= itemModelQ.ContractReviewItemId, 
-                         SrNo = itemModelQ.SrNo, ReviewParameter = itemModelQ.ReviewParameter,
-                         Response = itemModelQ.Response, ResponseText = itemModelQ.ResponseText, 
-                         IsResponseBoolean=itemModelQ.IsResponseBoolean, 
-                         IsMandatoryTrue=itemModelQ.IsMandatoryTrue, 
-                         Remarks=itemModelQ.Remarks
-                    };
-                    existingObj.ContractReviewItemQs.Add(newItem);
-                    _context.Entry(newItem).State = EntityState.Added;
-               }
-          }
-
-          _context.Entry(existingObj).State = EntityState.Modified;
-
-          //update orderitem.reviewitemstatusId     
-          existingObj.ReviewItemStatus = model.ReviewItemStatus;
-       
-          if(calledByThis) {
-               return existingObj;
-          } else {
-               _context.Entry(existingObj).State = EntityState.Modified;
-               return await _context.SaveChangesAsync() > 0 ? existingObj : null;
-          }
-          
-     }
-
-
-     public async Task<ContractReview> GetContractReviewFromOrderId(int orderId)
-     {
-          var crvw = await _context.ContractReviews.Where(x => x.OrderId == orderId)
-               .Include(x => x.ContractReviewItems)
-               .ThenInclude(x => x.ContractReviewItemQs)
-               .FirstOrDefaultAsync();
-          return crvw;
-     }
-
-     public async Task<bool> DeleteContractReview(int orderid)
-     {
-          var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderid).FirstOrDefaultAsync();
-          if (contractReview == null) throw new Exception("the object to delete does not exist");
-          _context.Entry(contractReview).State = EntityState.Deleted;      //configured as Delete.Cascade - all ConntractReviewItems and contractReviewItemQs will also be deleted
-          try {
-               await _context.SaveChangesAsync();
-          } catch (Exception ex) {
-               throw new Exception(ex.Message, ex);
-          }
-          return true;
-     }
-
-     public async Task<bool> DeleteContractReviewItem(int orderitemid)
-     {
-          var item = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderitemid).FirstOrDefaultAsync();
-          if (item == null) throw new Exception("the object to delete does not exist");
-          _context.Entry(item).State = EntityState.Deleted;           //configured as delete.cascade
-          try{
-               await _context.SaveChangesAsync();
-          } catch (Exception ex) {
-               throw new Exception (ex.Message, ex);
-          }
-          return true;
-     }
-
-     public async Task<bool> DeleteReviewQ(int id)
-     {
-          var reviewItem = await _context.ContractReviewItemQs.FindAsync(id);
-          if (reviewItem == null) throw new Exception("the Review Question to delete does not exist");
-          try {
-               await _context.SaveChangesAsync();
-          } catch (Exception ex) {
-               throw new Exception(ex.Message, ex);
-          }
-          return true;
-     }
-
-     //returns the object, without inserting in DB
-     public async Task<ContractReview> GenerateContractReviewObject(int orderId, string Username)
-     {
-          //check if Remuneration for all the order items exist
-          var itemIds = await _context.OrderItems.Where(x => x.OrderId == orderId).Select(x => x.Id).ToListAsync();
-          
-          if (itemIds.Count == 0) throw new Exception("Order Items not created");
-
-          var orderitems = await _context.OrderItems.Where(x => itemIds.Contains(x.Id))
-               .Include(x => x.Remuneration)
-               .ToListAsync();
-          if (orderitems == null || orderitems.Count == 0) throw new Exception("Remunerations need to be defined for all the items before the contract review");
-
-          //check if the object exists
-          var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderId).Include(x => x.ContractReviewItems).FirstOrDefaultAsync();
-          if (contractReview != null) throw new System.Exception("Contract Review Object already exists");
-
-          var order = await _context.Orders.Where(x => x.Id == orderId)
-               .Include(x => x.OrderItems).FirstOrDefaultAsync();
-          var contractReviewItems = new List<ContractReviewItem>();
-          var reviewQs = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
-
-          foreach (var item in order.OrderItems)
-          {
-               var requireAssess = contractReview.ContractReviewItems.Where(x => x.OrderItemId == item.Id).Select(x => x.RequireAssess).FirstOrDefault();
-               var itemQs = new List<ContractReviewItemQ>();
-               foreach (var data in reviewQs)
-               {
-                    itemQs.Add(new ContractReviewItemQ
+                    if (!model.ContractReviewItemQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                     {
-                         SrNo = data.SrNo, OrderItemId = item.Id, ReviewParameter = data.ReviewParameter, IsMandatoryTrue = data.IsMandatoryTrue
+                         _context.ContractReviewItemQs.Remove(existingItem);
+                         _context.Entry(existingItem).State = EntityState.Deleted;
+                    }
+               }
+
+               //children that are not deleted, are either updated or new ones to be added
+               foreach (var itemModelQ in model.ContractReviewItemQs)
+               {
+                    //work on the contractReviewItem
+                    var existingQ = existingObj.ContractReviewItemQs.Where(c => c.Id == itemModelQ.Id && c.Id != default(int)).SingleOrDefault();
+                    if (existingQ != null)       // record exists, update it
+                    {
+                         _context.Entry(existingQ).CurrentValues.SetValues(itemModelQ);
+                         _context.Entry(existingQ).State = EntityState.Modified;
+                    }
+                    else            //record does not exist, insert a new record
+                    {
+                         var newItem = new ContractReviewItemQ {
+                              OrderItemId=itemModelQ.OrderItemId, 
+                              ContractReviewItemId= itemModelQ.ContractReviewItemId, 
+                              SrNo = itemModelQ.SrNo, ReviewParameter = itemModelQ.ReviewParameter,
+                              Response = itemModelQ.Response, ResponseText = itemModelQ.ResponseText, 
+                              IsResponseBoolean=itemModelQ.IsResponseBoolean, 
+                              IsMandatoryTrue=itemModelQ.IsMandatoryTrue, 
+                              Remarks=itemModelQ.Remarks
+                         };
+                         existingObj.ContractReviewItemQs.Add(newItem);
+                         _context.Entry(newItem).State = EntityState.Added;
+                    }
+               }
+
+               _context.Entry(existingObj).State = EntityState.Modified;
+
+               //update orderitem.reviewitemstatusId     
+               existingObj.ReviewItemStatus = model.ReviewItemStatus;
+          
+               if(calledByThis) {
+                    return existingObj;
+               } else {
+                    _context.Entry(existingObj).State = EntityState.Modified;
+                    return await _context.SaveChangesAsync() > 0 ? existingObj : null;
+               }
+               
+          }
+
+
+          public async Task<ContractReview> GetContractReviewFromOrderId(int orderId)
+          {
+               var crvw = await _context.ContractReviews.Where(x => x.OrderId == orderId)
+                    .Include(x => x.ContractReviewItems)
+                    .ThenInclude(x => x.ContractReviewItemQs)
+                    .FirstOrDefaultAsync();
+               return crvw;
+          }
+
+          public async Task<bool> DeleteContractReview(int orderid)
+          {
+               var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderid).FirstOrDefaultAsync() ?? throw new Exception("the object to delete does not exist");
+               _context.ContractReviews.Remove(contractReview);
+               _context.Entry(contractReview).State = EntityState.Deleted;      //configured as Delete.Cascade - all ConntractReviewItems and contractReviewItemQs will also be deleted
+               try {
+                    await _context.SaveChangesAsync();
+               } catch (Exception ex) {
+                    throw new Exception(ex.Message, ex);
+               }
+               return true;
+          }
+
+          public async Task<bool> DeleteContractReviewItem(int orderitemid)
+          {
+               var item = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderitemid).FirstOrDefaultAsync() ?? throw new Exception("the object to delete does not exist");
+               _context.ContractReviewItems.Remove(item);
+               _context.Entry(item).State = EntityState.Deleted;           //configured as delete.cascade
+               try{
+                    await _context.SaveChangesAsync();
+               } catch (Exception ex) {
+                    throw new Exception (ex.Message, ex);
+               }
+               return true;
+          }
+
+          public async Task<bool> DeleteReviewQ(int id)
+          {
+               var reviewItem = await _context.ContractReviewItemQs.FindAsync(id);
+               if (reviewItem == null) throw new Exception("the Review Question to delete does not exist");
+               try {
+                    await _context.SaveChangesAsync();
+               } catch (Exception ex) {
+                    throw new Exception(ex.Message, ex);
+               }
+               return true;
+          }
+
+          //returns the object, without inserting in DB
+          public async Task<ContractReview> GenerateContractReviewObject(int orderId, string Username)
+          {
+               //check if Remuneration for all the order items exist
+               var itemIds = await _context.OrderItems.Where(x => x.OrderId == orderId).Select(x => x.Id).ToListAsync();
+               
+               if (itemIds.Count == 0) throw new Exception("Order Items not created");
+
+               var orderitems = await _context.OrderItems.Where(x => itemIds.Contains(x.Id))
+                    .Include(x => x.Remuneration)
+                    .ToListAsync();
+               if (orderitems == null || orderitems.Count == 0) throw new Exception("Remunerations need to be defined for all the items before the contract review");
+
+               //check if the object exists
+               var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderId).Include(x => x.ContractReviewItems).FirstOrDefaultAsync();
+               if (contractReview != null) throw new System.Exception("Contract Review Object already exists");
+
+               var order = await _context.Orders.Where(x => x.Id == orderId)
+                    .Include(x => x.OrderItems).FirstOrDefaultAsync();
+               var contractReviewItems = new List<ContractReviewItem>();
+               var reviewQs = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
+
+               foreach (var item in order.OrderItems)
+               {
+                    var requireAssess = contractReview.ContractReviewItems.Where(x => x.OrderItemId == item.Id).Select(x => x.RequireAssess).FirstOrDefault();
+                    var itemQs = new List<ContractReviewItemQ>();
+                    foreach (var data in reviewQs)
+                    {
+                         itemQs.Add(new ContractReviewItemQ
+                         {
+                              SrNo = data.SrNo, OrderItemId = item.Id, ReviewParameter = data.ReviewParameter, IsMandatoryTrue = data.IsMandatoryTrue
+                         });
+                    }
+                    contractReviewItems.Add(new ContractReviewItem
+                    {
+                         OrderItemId = item.Id,
+                         Quantity = item.Quantity,
+                         ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId),
+                         Ecnr = item.Ecnr,
+                         SourceFrom = item.SourceFrom,
+                         ContractReviewItemQs = itemQs,
+                         RequireAssess = requireAssess
                     });
                }
-               contractReviewItems.Add(new ContractReviewItem
+
+               contractReview = new ContractReview
                {
-                    OrderItemId = item.Id,
-                    Quantity = item.Quantity,
-                    ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId),
-                    Ecnr = item.Ecnr,
-                    SourceFrom = item.SourceFrom,
-                    ContractReviewItemQs = itemQs,
-                    RequireAssess = requireAssess
-               });
+                    OrderNo = order.OrderNo,
+                    OrderId = orderId,
+                    OrderDate = order.OrderDate,
+                    CustomerId = order.CustomerId,
+                    CustomerName = await _context.CustomerNameFromId(order.CustomerId),
+                    ReviewedByName = Username,
+                    ReviewedOn = System.DateTime.Now,
+                    ContractReviewItems = contractReviewItems
+               };
+
+               return contractReview;
           }
 
-          contractReview = new ContractReview
-          {
-               OrderNo = order.OrderNo,
-               OrderId = orderId,
-               OrderDate = order.OrderDate,
-               CustomerId = order.CustomerId,
-               CustomerName = await _context.CustomerNameFromId(order.CustomerId),
-               ReviewedByName = Username,
-               ReviewedOn = System.DateTime.Now,
-               ContractReviewItems = contractReviewItems
-          };
+          public  ICollection<int> ConvertCSVToAray(string csv) {
+               bool isParsingOk = true;
+               int[] results = Array.ConvertAll<string,int>(csv.Split(','), 
+               new Converter<string,int>(
+               delegate(string num)
+               {
+                    int r;
+                    isParsingOk &= int.TryParse(num, out r);
+                    return r;
+               }));
+               return results;
 
-          return contractReview;
-     }
-
-     public  ICollection<int> ConvertCSVToAray(string csv) {
-          bool isParsingOk = true;
-          int[] results = Array.ConvertAll<string,int>(csv.Split(','), 
-          new Converter<string,int>(
-          delegate(string num)
-          {
-               int r;
-               isParsingOk &= int.TryParse(num, out r);
-               return r;
-          }));
-          return results;
-
-          }
-     public async Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams)
-     {
-          if (!string.IsNullOrEmpty(cParams.OrderIds)) {
-               cParams.OrderIdInts = ConvertCSVToAray(cParams.OrderIds);
-          }
-
-          var query = _context.ContractReviews
-               //.Where(x => cParams.OrderIdInts.Contains(x.OrderId))
-               .OrderBy(x => x.OrderNo)
-               .AsQueryable();
-          
-          var paged = await PagedList<ContractReviewDto>.CreateAsync(query.AsNoTracking()
-               .ProjectTo<ContractReviewDto>(_mapper.ConfigurationProvider),
-               cParams.PageNumber, cParams.PageSize);
-          
-          return paged;
-
-     }
-
-     public async Task<ContractReview> AddContractReview(ContractReview contractReview)
-     {
-          _context.ContractReviews.Add(contractReview);
-
-          try {
-               await _context.SaveChangesAsync();
-          } catch (Exception ex) {
-               throw new Exception(ex.Message, ex);
-          }
-
-          return contractReview;
-     }
-     
-    public async Task<ICollection<ContractReviewItemStddQ>> GetReviewStddQs()
-     {
-          var data = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
-          return data;
-     }
-
-		//based on status of ALL orderItem.ReviewItemStatusId, update OrderReviewStatus field
-     public async Task<bool> UpdateOrderReviewStatus(int orderId)
-     {
-          //if any item is not reviewed, return false
-          var order = await _context.Orders.Include(x => x.OrderItems).Where(x => x.Id == orderId)
-               .FirstOrDefaultAsync();
-
-          var orderitemIds = order.OrderItems.Select(x => x.Id).ToList();
-
-          var reviewitems = await _context.ContractReviewItems
-               .Where(x => orderitemIds.Contains(x.OrderItemId))
-               .Include(x => x.ContractReviewItemQs.Where(x => x.ReviewParameter=="Service Charges in INR"))
-               .ToListAsync();
-          
-          if(reviewitems == null || reviewitems.Count == 0 || orderitemIds.Count != reviewitems.Count) {
-               if(order.Status != "Awaiting Review") {
-                    order.Status="Awaiting Review";
-                    order.ContractReviewStatus = "NotReviewed";
-                    _context.Entry(order).State = EntityState.Modified;
                }
-               return false;
+          public async Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams)
+          {
+               if (!string.IsNullOrEmpty(cParams.OrderIds)) {
+                    cParams.OrderIdInts = ConvertCSVToAray(cParams.OrderIds);
+               }
+
+               var query = _context.ContractReviews
+                    //.Where(x => cParams.OrderIdInts.Contains(x.OrderId))
+                    .OrderBy(x => x.OrderNo)
+                    .AsQueryable();
+               
+               var paged = await PagedList<ContractReviewDto>.CreateAsync(query.AsNoTracking()
+                    .ProjectTo<ContractReviewDto>(_mapper.ConfigurationProvider),
+                    cParams.PageNumber, cParams.PageSize);
+               
+               return paged;
+
           }
 
-          order.ContractReviewStatus = order.OrderItems.Any(x => x.ReviewItemStatus.ToLower() == "regretted")
-               ? order.OrderItems.Any(x => x.ReviewItemStatus.ToLower()=="accepted") 
-                    ? "Accepted With Regrets"
-                    :  "Regretted"
-               : "Accepted";
-          
-          _context.Entry(order).State= EntityState.Modified;
-    
-          return true;
-     }
+          public async Task<ContractReview> AddContractReview(ContractReview contractReview)
+          {
+               _context.ContractReviews.Add(contractReview);
 
-       
+               try {
+                    await _context.SaveChangesAsync();
+               } catch (Exception ex) {
+                    throw new Exception(ex.Message, ex);
+               }
+
+               return contractReview;
+          }
+               
+          public async Task<ICollection<ContractReviewItemStddQ>> GetReviewStddQs()
+               {
+                    var data = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
+                    return data;
+               }
+
+          //based on status of ALL orderItem.ReviewItemStatusId, update OrderReviewStatus field
+          public async Task<bool> UpdateOrderReviewStatus(int orderId)
+          {
+               //if any item is not reviewed, return false
+               var order = await _context.Orders.Include(x => x.OrderItems).Where(x => x.Id == orderId)
+                    .FirstOrDefaultAsync();
+
+               var orderitemIds = order.OrderItems.Select(x => x.Id).ToList();
+
+               var reviewitems = await _context.ContractReviewItems
+                    .Where(x => orderitemIds.Contains(x.OrderItemId))
+                    .Include(x => x.ContractReviewItemQs.Where(x => x.ReviewParameter=="Service Charges in INR"))
+                    .ToListAsync();
+               
+               if(reviewitems == null || reviewitems.Count == 0 || orderitemIds.Count != reviewitems.Count) {
+                    if(order.Status != "Awaiting Review") {
+                         order.Status="Awaiting Review";
+                         order.ContractReviewStatus = "NotReviewed";
+                         _context.Entry(order).State = EntityState.Modified;
+                    }
+                    return false;
+               }
+
+               order.ContractReviewStatus = order.OrderItems.Any(x => x.ReviewItemStatus.ToLower() == "regretted")
+                    ? order.OrderItems.Any(x => x.ReviewItemStatus.ToLower()=="accepted") 
+                         ? "Accepted With Regrets"
+                         :  "Regretted"
+                    : "Accepted";
+               
+               _context.Entry(order).State= EntityState.Modified;
+     
+               return true;
+          }
+
+          public async Task<ContractReviewItem> GetContractReviewItem(int orderItemId)
+          {
+               return await _context.ContractReviewItems
+                    .Where(x => x.OrderItemId == orderItemId).FirstOrDefaultAsync();
+          }
+
+          public async Task<ICollection<ContractReviewItem>> GetContractReviewItems(int orderid)
+          {
+               var query = await (from rvw in _context.ContractReviews where rvw.OrderId==orderid
+                    join rvwItem in _context.ContractReviewItems on rvw.Id equals rvwItem.ContractReviewId
+                    select rvwItem).ToListAsync();
+               
+               return query;
+          }
+
+        public async Task<bool> UpdateContractReviewItem(ContractReviewItem contractReviewItem)
+        {
+               var obj = await _context.ContractReviewItems.Where(x => x.Id == contractReviewItem.Id)
+                    .AsNoTracking().FirstOrDefaultAsync();
+
+               if(obj == null) return false;
+
+               _context.Entry(obj).CurrentValues.SetValues(contractReviewItem);
+               
+               return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

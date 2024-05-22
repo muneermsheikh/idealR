@@ -2,9 +2,9 @@ export interface ICustomerReviewItem{
      id: number;
      customerReviewId: number;
      reviewTransactionDate: Date;
-     userId: number;
+     username: string;
      customerReviewDataId: number;
      remarks: string;
-     approvedBySup: boolean;
-     approvedById: number;
+     approvedBySupUsername: boolean;
+     approvedOn: Date;
 }

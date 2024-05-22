@@ -3,6 +3,9 @@ using api.Entities.Admin.Order;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.Admin;
+using api.Interfaces.Messages;
+using api.Interfaces.Orders;
 using api.Params.Orders;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -14,25 +17,17 @@ namespace api.Data.Repositories
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public OrdersRepository(DataContext context, IMapper mapper)
+        private readonly IComposeMessagesAdminRepository _msgAdmRepo;
+        private readonly IJDAndRemunRepository _jdandremunRepo;
+        public OrdersRepository(DataContext context, IMapper mapper, 
+            IComposeMessagesAdminRepository msgAdmRepo, IJDAndRemunRepository jdandremunRepo)
         {
+            _jdandremunRepo = jdandremunRepo;
+            _msgAdmRepo = msgAdmRepo;
             _mapper = mapper;
             _context = context;
         }
-        public async Task<JobDescription> AddJobDescription(JobDescription jobDescription)
-        {
-            if(jobDescription.OrderItemId==0) return null;
-            if(jobDescription.Id !=0) {
-                var jd = await _context.JobDescriptions.FindAsync(jobDescription.Id);
-                if(jd != null) return null;
-            } 
-
-            _context.Entry(jobDescription).State=EntityState.Added;
-
-            if(await _context.SaveChangesAsync() > 0) return jobDescription;
-
-            return null;
-        }
+        
         public async Task<OrderItem> AddOrderItem(OrderItemToCreateDto dto)
             {
             var item = _mapper.Map<OrderItem>(dto);
@@ -47,20 +42,17 @@ namespace api.Data.Repositories
 
             }
 
-        public async Task<Remuneration> AddRemuneration(Remuneration remuneration)
+        public async Task<MessageWithError> ComposeMsg_AckToClient(int orderid)
         {
-            if(remuneration.OrderItemId == 0) return null;
-
-            _context.Entry(remuneration).State=EntityState.Added;   
-
-            if(await _context.SaveChangesAsync() > 0) return remuneration;
-
-            return null;
-        }
-
-        public Task<bool> ComposeMsg_AckToClient(int orderid)
-        {
-            throw new NotImplementedException();
+            var order = await _context.Orders.FindAsync(orderid);
+            var msgs = await _msgAdmRepo.AckEnquiryToCustomer(order);
+            if(!string.IsNullOrEmpty(msgs.ErrorString) && msgs.Messages != null) {
+                foreach(var msg in msgs.Messages) {
+                    _context.Entry(msg).State = EntityState.Added;
+                }
+                await _context.SaveChangesAsync();
+            }
+            return msgs;
         }
 
         public async Task<Order> CreateOrderAsync(OrderToCreateDto dto)
@@ -88,18 +80,12 @@ namespace api.Data.Repositories
             return order;
         }
 
-        public async Task<bool> DeleteJobDescription(int jobDescriptionId)
-        {
-            var jd = await _context.JobDescriptions.FindAsync(jobDescriptionId);
-            if (jd == null) return false;
-            _context.Entry(jd).State = EntityState.Deleted;
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public async Task<bool> DeleteOrder(int orderid)
         {
             var order = await _context.Orders.FindAsync(orderid);
             if (order == null) return false;
+
+            _context.Orders.Remove(order);
             _context.Entry(order).State = EntityState.Deleted;
             
             try{
@@ -113,8 +99,9 @@ namespace api.Data.Repositories
 
         public async Task<bool> DeleteOrderItem(int orderItemId)
         {
-            var item = await _context.Orders.FindAsync(orderItemId);
+            var item = await _context.OrderItems.FindAsync(orderItemId);
             if (item == null) return false;
+            _context.OrderItems.Remove(item);
             _context.Entry(item).State = EntityState.Deleted;
             
             try{
@@ -124,37 +111,6 @@ namespace api.Data.Repositories
             }
             
             return  true;
-        }
-
-        public async Task<bool> DeleteRemuneration(int remunerationId)
-        {
-           var item = await _context.Remunerations.FindAsync(remunerationId);
-            if (item == null) return false;
-            _context.Entry(item).State = EntityState.Deleted;
-            
-            try{
-                await _context.SaveChangesAsync();
-            } catch (Exception ex) {
-                throw new Exception(ex.Message, ex);
-            }
-            
-            return  true;
-        }
-
-        public async Task<bool> EditJobDescription(JobDescription jobDescription)
-        {
-            var existingObject = await _context.JobDescriptions.FindAsync(jobDescription.Id);
-            if (existingObject == null) return false;
-            
-            _context.Entry(existingObject).CurrentValues.SetValues(jobDescription);
-
-            try{
-                await _context.SaveChangesAsync();
-            } catch (Exception ex) {
-                throw new Exception(ex.Message, ex);
-            }
-
-            return true;
         }
 
         public async Task<bool> EditOrder(Order newObject)
@@ -206,8 +162,8 @@ namespace api.Data.Repositories
                         Ecnr = newItem.Ecnr,
                         CompleteBefore = newItem.CompleteBefore,
                         Status = "Not Started",
-                        JobDescription = CreateNewJobDescription(newItem.JobDescription,0),
-                        Remuneration = CreateNewRemuneration(newItem.Remuneration, 0)
+                        JobDescription = _jdandremunRepo.CreateNewJobDescription(newItem.JobDescription,0),
+                        Remuneration = _jdandremunRepo.CreateNewRemuneration(newItem.Remuneration, 0)
                     };
 
                     existingObject.OrderItems.Add(itemToInsert);
@@ -229,7 +185,7 @@ namespace api.Data.Repositories
                             _context.Entry(existingSubItem).CurrentValues.SetValues(newItem.JobDescription);
                             _context.Entry(existingSubItem).State = EntityState.Modified;
                         } else {    //insert new navigation record
-                            var itemToInsert = CreateNewJobDescription(newItem.JobDescription, existingItem.Id);
+                            var itemToInsert = _jdandremunRepo.CreateNewJobDescription(newItem.JobDescription, existingItem.Id);
 
                             _context.Entry(itemToInsert).State = EntityState.Added;
                         }
@@ -247,7 +203,7 @@ namespace api.Data.Repositories
                             _context.Entry(existingSubItem2).CurrentValues.SetValues(newItem.Remuneration);
                             _context.Entry(existingSubItem2).State = EntityState.Modified;
                         } else {    //insert new navigation record
-                            var remunerationToInsert = CreateNewRemuneration(newItem.Remuneration, existingItem.Id);
+                            var remunerationToInsert = _jdandremunRepo.CreateNewRemuneration(newItem.Remuneration, existingItem.Id);
                             _context.Entry(remunerationToInsert).State = EntityState.Added;
                         }
                     }   
@@ -265,46 +221,6 @@ namespace api.Data.Repositories
             return true;
         }
         
-        private static Remuneration CreateNewRemuneration(Remuneration remun, int orderItemId)
-        {
-            var itemToInsert2 = new Remuneration
-            {
-                OrderItemId = orderItemId,
-                WorkHours = remun.WorkHours,
-                SalaryCurrency = remun.SalaryCurrency,
-                SalaryMin = remun.SalaryMin,
-                SalaryMax = remun.SalaryMax,
-                ContractPeriodInMonths = remun.ContractPeriodInMonths,
-                HousingProvidedFree = remun.HousingProvidedFree,
-                HousingAllowance = remun.HousingAllowance,
-                HousingNotProvided = remun.HousingNotProvided,
-                FoodProvidedFree = remun.FoodProvidedFree,
-                FoodAllowance = remun.FoodAllowance,
-                FoodNotProvided = remun.FoodNotProvided,
-                TransportProvidedFree = remun.TransportProvidedFree,
-                TransportAllowance = remun.TransportAllowance,
-                TransportNotProvided = remun.TransportNotProvided,
-                OtherAllowance = remun.OtherAllowance,
-                LeavePerYearInDays = remun.LeavePerYearInDays,
-                LeaveAirfareEntitlementAfterMonths = remun.LeaveAirfareEntitlementAfterMonths
-            };
-            return itemToInsert2;
-        }
-        private static JobDescription CreateNewJobDescription(JobDescription newJD, int OrderItemId)
-        {
-            var itemToInsert = new JobDescription
-                {
-                    OrderItemId = OrderItemId,
-                    JobDescInBrief = newJD.JobDescInBrief,
-                    MaxAge=newJD.MaxAge,
-                    MinAge=newJD.MinAge,
-                    ExpDesiredMin = newJD.ExpDesiredMin,
-                    ExpDesiredMax = newJD.ExpDesiredMax,
-                    QualificationDesired = newJD.QualificationDesired,
-                };
-            return itemToInsert;
-        }
-
         public async Task<bool> EditOrderItem(OrderItem newObject, bool DoNotSave)
         {
             var existingItem = await _context.OrderItems
@@ -416,23 +332,6 @@ namespace api.Data.Repositories
             return true;
         }
 
-        public async Task<bool> EditRemuneration(Remuneration remuneration)
-        {
-            var existingObject = await _context.Remunerations.FindAsync(remuneration.Id);
-            if (existingObject == null) throw new Exception("no such remuneration record");
-            
-            _context.Entry(existingObject).CurrentValues.SetValues(remuneration);
-
-            try{
-                await _context.SaveChangesAsync();
-            } catch (Exception ex) {
-                throw new Exception(ex.Message, ex);
-            }
-
-            return true;
-        }
-
-        
         public async Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsMatchingAProfession(int professionId)
         {
             var items = await _context.OrderItems
@@ -448,20 +347,75 @@ namespace api.Data.Repositories
             return items;
         }
 
-        public async Task<OrderDisplayWithItemsDto> GetOrderByIdWithItemsAsyc(int id)
+        public async Task<PagedList<OrderItemBriefDto>> GetOpenOrderItems(OpenOrderItemsParams orderParams)
         {
-               var order = await _context.Orders.Include(x => x.OrderItems)
-                .Where(x => x.Id == id)
-                .ProjectTo<OrderDisplayWithItemsDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-            order.ProjectManagerName = await _context.GetEmployeeNameFromId(order.ProjectManagerId);
-            order.CustomerName = await _context.CustomerNameFromId(order.CustomerId);
-            foreach(var item in order.OrderItems)
-            {
-                item.ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId);
-            }
+            var query = (from item in _context.OrderItems
+                join order in _context.Orders on item.OrderId equals order.Id 
+                select new OrderItemBriefDto {
+                    OrderId = order.Id,  AboutEmployer = order.Customer.Introduction,
+                    CompleteBefore = item.CompleteBefore, CustomerId = order.CustomerId,
+                    CustomerName = order.Customer.CustomerName, OrderItemId = item.Id,
+                    JobDescription = item.JobDescription, OrderDate = order.OrderDate,
+                    OrderNo = order.OrderNo, Ecnr = item.Ecnr, ProfessionId = item.ProfessionId,
+                    ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
+                    Remuneration = item.Remuneration, SrNo = item.SrNo, Status = item.Status 
+                }).AsQueryable();
             
-            return order;
+            if(orderParams.OrderId != 0) query = query.Where(x => x.OrderId == orderParams.OrderId);
+            if(orderParams.OrderItemIds.Count > 0) 
+                query = query.Where(x => orderParams.OrderItemIds.Contains(x.OrderItemId));
+            if(orderParams.ProfessionIds.Count > 0)
+                query = query.Where(x => orderParams.ProfessionIds.Contains(x.ProfessionId));
+            if(orderParams.CustomerId != 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
+
+            var paged = await PagedList<OrderItemBriefDto>.CreateAsync(query.AsNoTracking()
+                .ProjectTo<OrderItemBriefDto>(_mapper.ConfigurationProvider),
+                orderParams.PageNumber, orderParams.PageSize);
+
+            if(paged == null || paged.Count == 0) return null;
+
+            foreach(var item in paged)
+            {
+                if(string.IsNullOrEmpty(item.ProfessionName)) item.ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId);
+            }
+            return paged;
+        }
+
+        public async Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc(int orderid)
+        {
+               var qry = await (from order in _context.Orders where order.Id == orderid
+                        join item in _context.OrderItems on order.Id equals item.OrderId
+                    select new OrderItemBriefDto {
+                        OrderId = orderid, OrderNo = order.OrderNo, OrderDate = order.OrderDate,
+                        AboutEmployer = order.Customer.Introduction,
+                        CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
+                        OrderItemId = item.Id, SrNo = item.SrNo, ProfessionId = item.ProfessionId,
+                        ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
+                        Ecnr = item.Ecnr, CompleteBefore = item.CompleteBefore,
+                        JobDescription = item.JobDescription, Remuneration = item.Remuneration,
+                        Status = item.Status
+                    }).ToListAsync();
+                
+            return qry;
+        }
+
+        public async Task<OrderItemBriefDto> GetOrderItemBrief(int orderitemid)
+        {
+               var qry = await (from order in _context.Orders
+                        join item in _context.OrderItems on order.Id equals item.OrderId
+                            where item.Id == orderitemid
+                    select new OrderItemBriefDto {
+                        OrderId = order.Id, OrderNo = order.OrderNo, OrderDate = order.OrderDate,
+                        AboutEmployer = order.Customer.Introduction,
+                        CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
+                        OrderItemId = item.Id, SrNo = item.SrNo, ProfessionId = item.ProfessionId,
+                        ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
+                        Ecnr = item.Ecnr, CompleteBefore = item.CompleteBefore,
+                        JobDescription = item.JobDescription, Remuneration = item.Remuneration,
+                        Status = item.Status
+                    }).FirstOrDefaultAsync();
+                
+            return qry;
         }
 
         public async Task<OrderDisplayDto> GetOrderByIdWithAllRelatedProperties(int id)
@@ -483,6 +437,16 @@ namespace api.Data.Repositories
             return order;
         }
 
+        public async Task<string> GetOrderItemRefCode(int orderitemid)
+        {
+            var obj = await(from order in _context.Orders
+                join item in _context.OrderItems on order.Id equals item.OrderId
+                        where item.Id == orderitemid
+                select order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName
+            ).FirstOrDefaultAsync();
+        
+            return obj;
+        }
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
             var query = _context.Orders.AsQueryable();
@@ -502,18 +466,48 @@ namespace api.Data.Repositories
             return paged;
         }
 
-        public async Task<JobDescription> GetJDOfOrderItem(int OrderItemId)
+        public async Task<PagedList<OpenOrderItemCategoriesDto>> GetOpenItemCategories(OpenOrderItemsParams orderParams)
         {
-            var jd = await _context.JobDescriptions.Where(x => x.OrderItemId == OrderItemId).FirstOrDefaultAsync();
+            var query = (from item in _context.OrderItems
+                join order in _context.Orders on item.OrderId equals order.Id 
+                select new OpenOrderItemCategoriesDto {
+                    OrderItemId = item.Id, OrderDate = order.OrderDate,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderNo = order.OrderNo, Quantity = item.Quantity,
+                    CategoryRefAndName = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName
+                }).AsQueryable();
+            
+            if(orderParams.OrderId != 0) query = query.Where(x => x.OrderId == orderParams.OrderId);
+            if(orderParams.OrderItemIds.Count > 0) 
+                query = query.Where(x => orderParams.OrderItemIds.Contains(x.OrderItemId));
+            if(orderParams.ProfessionIds.Count > 0)
+                query = query.Where(x => orderParams.ProfessionIds.Contains(x.ProfessionId));
+            if(orderParams.CustomerId != 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
 
-            return jd;
+            var paged = await PagedList<OpenOrderItemCategoriesDto>.CreateAsync(query.AsNoTracking()
+                .ProjectTo<OpenOrderItemCategoriesDto>(_mapper.ConfigurationProvider),
+                orderParams.PageNumber, orderParams.PageSize);
+
+            if(paged == null || paged.Count == 0) return null;
+
+            return paged;
         }
 
-        public async Task<Remuneration> GetRemuneratinOfOrderItem(int OrderItemId)
+        public async Task<ICollection<OpenOrderItemCategoriesDto>> GetOpenItemCategoryList()
         {
-            var remun = await _context.Remunerations.Where(x => x.OrderItemId == OrderItemId).FirstOrDefaultAsync();
+            var query = await (from item in _context.OrderItems 
+                where item.Status != "Completed" orderby item.SrNo
+                join order in _context.Orders on item.OrderId equals order.Id 
+                    where order.Status != "Completed" orderby order.OrderNo
+                select new OpenOrderItemCategoriesDto {
+                    OrderItemId = item.Id, OrderDate = order.OrderDate,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderNo = order.OrderNo, Quantity = item.Quantity,
+                    CategoryRefAndName = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName
+                }).ToListAsync();
 
-            return remun;
+            return query;
         }
+
     }
 }

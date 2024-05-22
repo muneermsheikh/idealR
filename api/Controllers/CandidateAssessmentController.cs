@@ -1,5 +1,7 @@
 using System.ComponentModel;
+using api.DTOs.HR;
 using api.Entities.HR;
+using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.HR;
@@ -26,7 +28,7 @@ namespace api.Controllers
             return Ok(assessment);
         }
 
-        [HttpPost]
+        [HttpPost("assessment")]
         public async Task<ActionResult<CandidateAssessment>> InsertCandidateAssessment(CandidateAssessment candidateAssessment)
         {
             var assessment = await _repo.SaveCandidateAssessment(candidateAssessment, User.GetUsername());
@@ -34,7 +36,7 @@ namespace api.Controllers
             return Ok(assessment);
         }
 
-        [HttpPut]
+        [HttpPut("assessment")]
         public async Task<ActionResult<bool>> UpdateCandidateAssessment(CandidateAssessment candidateAssessment)
         {
             var errorString = await _repo.EditCandidateAssessment(candidateAssessment, User.GetUsername());
@@ -52,8 +54,8 @@ namespace api.Controllers
             return Ok(true);
         }
 
-        [HttpGet("candidateAssessmentspaged")]
-        public async Task<ActionResult<PagedList<CandidateAssessment>>> GetCandidateAssessments([FromQuery]CandidateAssessmentParams assessmentParams)
+        [HttpGet("assessmentspaged")]
+        public async Task<ActionResult<PagedList<CandidateAssessedDto>>> GetCandidateAssessments([FromQuery]CandidateAssessmentParams assessmentParams)
         {
             var assessments = await _repo.GetCandidateAssessments(assessmentParams);
             
@@ -64,8 +66,8 @@ namespace api.Controllers
 
         }
 
-        [HttpGet("candidateAssessment")]
-        public async Task<ActionResult<CandidateAssessment>> GetCandidateAssessment(CandidateAssessmentParams assessmentParams)
+        [HttpGet("assessment")]
+        public async Task<ActionResult<CandidateAssessment>> GetCandidateAssessment([FromQuery]CandidateAssessmentParams assessmentParams)
         {
             var assessments = await _repo.GetCandidateAssessment(assessmentParams);
             if(assessments == null) return BadRequest("Your parameters did not produce any result");
@@ -95,6 +97,16 @@ namespace api.Controllers
             var errorString = await _repo.UpdateCandidateAssessmentStatus(candidateassessmentid, User.GetUsername());
             if(!string.IsNullOrEmpty(errorString)) return BadRequest(errorString);
             return Ok("updated to " + errorString);
+        }
+    
+        [HttpGet("assessmentandchecklist/{orderItemId}/{candidateId}")]
+        public async Task<ActionResult<CandidateAssessmentAndChecklistDto>> GetCandidateAssessmentWithChecklist(int orderItemId, int candidateId)
+        {
+            var assessment = await _repo.GetChecklistAndAssessment(candidateId, orderItemId, User.GetUsername());
+            
+            if(assessment == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to get the checklist and/or the candidate assessment"));
+
+            return Ok(assessment);
         }
     }
 }

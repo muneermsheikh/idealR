@@ -1,16 +1,18 @@
+import { IAssessmentStandardQ } from "./assessmentStandardQ";
+
 export interface IAssessmentQBank
 {
      id: number;
-     categoryId: number;
-     categoryName: string;
-     assessmentQBankItems: IAssessmentQBankItem[];
+     professionId: number;
+     professionName: string;
+     assessmentStddQs: IAssessmentStandardQ[];
 }
 export class AssessmentQBank
 {
      id=0;
-     categoryId=0;
-     categoryName='';
-     assessmentQBankItems=null;
+     professionId=0;
+     professionName='';
+     assessmentStddQs=null;
 }
 
 export interface IAssessmentQBankItem

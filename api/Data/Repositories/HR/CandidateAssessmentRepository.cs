@@ -11,6 +11,7 @@ using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using OrderItemAssessment = api.Entities.HR.OrderItemAssessment;
 
 namespace api.Data.Repositories.HR
 {
@@ -18,15 +19,18 @@ namespace api.Data.Repositories.HR
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        private readonly IAssessmentRepository _assessRepo;
+        private readonly IOrderAssessmentRepository _assessRepo;
         private readonly ITaskRepository _taskRepo;
         readonly int _docControllerAdminAppUserId=0;
         readonly string _docControllerAdminAppUsername= "";
         readonly string _docControllerAdminAppUserEmail= "";
+        private readonly IChecklistRepository _checkRepo;
+        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        public CandidateAssessmentRepository(DataContext context, IMapper mapper, 
-            IAssessmentRepository assessRepo, ITaskRepository taskRepo, IConfiguration config)
+        public CandidateAssessmentRepository(DataContext context, IMapper mapper, IChecklistRepository checkRepo,
+            IOrderAssessmentRepository assessRepo, ITaskRepository taskRepo, IConfiguration config)
         {
+            _checkRepo = checkRepo;
             _taskRepo = taskRepo;
             _assessRepo = assessRepo;
             _mapper = mapper;
@@ -69,7 +73,7 @@ namespace api.Data.Repositories.HR
             var assessment = new CandidateAssessment{
                 CandidateId = candidateid,
                 OrderItemId = orderItemId,
-                AssessedOn = DateTime.UtcNow,
+                AssessedOn = _today,
                 AssessedByEmployeeName = Username,
                 ChecklistHRId = checklistId,
                 RequireInternalReview = requireAssess,
@@ -86,16 +90,13 @@ namespace api.Data.Repositories.HR
             var assessment = await _context.CandidateAssessments.Include(x => x.CandidateAssessmentItems)
                 .Where(x => x.Id == candidateAssessmentId).AsNoTracking().FirstOrDefaultAsync();
 
-            if(assessment.CandidateAssessmentItems.Count > 0  ) {
-                _context.Entry(assessment.CandidateAssessmentItems).State = EntityState.Deleted;
-            }
-            
+           
             var data = await _assessRepo.GetAssessmentQStdds();
             var items = _mapper.Map<ICollection<CandidateAssessmentItem>>(data);
             assessment.CandidateAssessmentItems=items;
 
             foreach(var item in items) {
-                //item.CandidateAssessmentId=candidateAssessmentId;
+                item.CandidateAssessmentId=candidateAssessmentId;
                 assessment.CandidateAssessmentItems.Add(item);
                 _context.Entry(item).State=EntityState.Added;
             }
@@ -111,9 +112,8 @@ namespace api.Data.Repositories.HR
         {
             string grade = GetGradeFromAssessmentItems(model.CandidateAssessmentItems);
             
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
             model.AssessResult = grade;
-            model.AssessedOn = DateTime.UtcNow;
+            model.AssessedOn = _today;
             model.AssessedByEmployeeName = Username;
 
             _context.Entry(model).State = EntityState.Added;
@@ -134,8 +134,8 @@ namespace api.Data.Repositories.HR
                 OrderItemId=model.OrderItemId,
                 OrderNo = await _context.GetOrderNoFromOrderItemId(model.OrderItemId),
                 ApplicationNo = await  _context.GetApplicationNoFromCandidateId(model.CandidateId),
-                CandidateId = model.CandidateId, CompleteBy = today.AddDays(5), 
-                TaskDate = today, 
+                CandidateId = model.CandidateId, CompleteBy = _today.AddDays(5), 
+                TaskDate = _today, 
                 TaskDescription = await _context.GetCandidateDescriptionFromCandidateId(model.CandidateId)
             };
 
@@ -168,7 +168,7 @@ namespace api.Data.Repositories.HR
 
             var grade = GetGradeFromAssessmentItems(existing.CandidateAssessmentItems);
             existing.AssessResult = grade;
-            existing.AssessedOn = DateTime.UtcNow;
+            existing.AssessedOn = _today;
             existing.AssessedByEmployeeName = username;
             _context.Entry(existing).CurrentValues.SetValues(existing);   //saves only the parent, not children
 
@@ -188,7 +188,7 @@ namespace api.Data.Repositories.HR
             var grade = GetGradeFromAssessmentItems(model.CandidateAssessmentItems);
             if(grade != "Assessment Items not properly defined") {
                 model.AssessResult = grade;
-                model.AssessedOn = DateTime.UtcNow;
+                model.AssessedOn = _today;
                 model.AssessedByEmployeeName = Username;
             }
 
@@ -266,6 +266,7 @@ namespace api.Data.Repositories.HR
 
            if (assessment == null) return false;
 
+            _context.CandidateAssessments.Remove(assessment);
            _context.Entry(assessment).State = EntityState.Deleted;
 
            try {
@@ -283,6 +284,7 @@ namespace api.Data.Repositories.HR
             
            if (assessment == null) return false;
 
+            _context.CandidatesItemAssessments.Remove(assessment);
            _context.Entry(assessment).State = EntityState.Deleted;
 
            try {
@@ -294,7 +296,7 @@ namespace api.Data.Repositories.HR
            return true;
         }
 
-        public async Task<PagedList<CandidateAssessmentDto>> GetCandidateAssessments(CandidateAssessmentParams assessParams)
+        public async Task<PagedList<CandidateAssessedDto>> GetCandidateAssessments(CandidateAssessmentParams assessParams)
         {
             var query = _context.CandidateAssessments.Include(x => x.CandidateAssessmentItems)
                 .AsQueryable();
@@ -317,14 +319,43 @@ namespace api.Data.Repositories.HR
                 
                 if(!string.IsNullOrEmpty(assessParams.AssessedByEmployeeName)) query = query.Where(x => x.AssessedByEmployeeName.ToLower() == assessParams.AssessedByEmployeeName.ToLower());
                 
-                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.AssessedOn) == assessParams.AssessedOn);
+                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x => x.AssessedOn == assessParams.AssessedOn);
             }
             
-            var paged = await PagedList<CandidateAssessmentDto>.CreateAsync(query.AsNoTracking()
-                    .ProjectTo<CandidateAssessmentDto>(_mapper.ConfigurationProvider),
+            var paged = await PagedList<CandidateAssessedDto>.CreateAsync(query.AsNoTracking()
+                    .ProjectTo<CandidateAssessedDto>(_mapper.ConfigurationProvider),
                     assessParams.PageNumber, assessParams.PageSize);
+            
             return paged;
             
+        }
+
+        public async Task<CandidateAssessmentAndChecklistDto> GetChecklistAndAssessment(int candidateid, int orderitemid, string Username)
+        {
+            var dto = new CandidateAssessmentAndChecklistDto();
+
+            var checklist = new ChecklistHR();
+            var checklistdto = new ChecklistHRDto();
+
+            var assess = await GenerateCandidateAssessment(candidateid, orderitemid, Username);
+
+            var checkobj = await _checkRepo.GetOrGenerateChecklist(candidateid, orderitemid, Username);
+            if(!string.IsNullOrEmpty(checkobj.ErrorString)) {
+                checklist = await _checkRepo.GetChecklist(candidateid, orderitemid);
+                checklistdto = _mapper.Map<ChecklistHRDto>(checklist);
+            }
+
+            var cand = await _context.Candidates.Where(x => x.Id == candidateid).Select(x => new {x.FullName, x.ApplicationNo }).FirstOrDefaultAsync();
+            checklistdto.ApplicationNo = cand.ApplicationNo;
+            checklistdto.CandidateName = cand.FullName;
+            checklistdto.AssessmentIsNull = assess.CandidateAssessmentItems.Count ==0;
+
+            if(assess != null && checklist != null) {
+                dto.Assessed = assess;
+                dto.ChecklistHRDto = checklistdto;
+            }
+
+            return dto;
         }
 
         public async  Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessParams)
@@ -339,7 +370,7 @@ namespace api.Data.Repositories.HR
                 if(assessParams.CVRefId > 0) query = query.Where(x => x.CVRefId == assessParams.CVRefId);
                 if(!string.IsNullOrEmpty(assessParams.AssessResult)) query = query.Where(x => x.AssessResult == assessParams.AssessResult);
                 if(!string.IsNullOrEmpty(assessParams.AssessedByEmployeeName)) query = query.Where(x => x.AssessedByEmployeeName.ToLower() == assessParams.AssessedByEmployeeName.ToLower());
-                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.AssessedOn) == assessParams.AssessedOn);
+                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x =>x.AssessedOn == assessParams.AssessedOn);
             }
             
             return await query.FirstOrDefaultAsync();
@@ -358,7 +389,7 @@ namespace api.Data.Repositories.HR
                 if(assessParams.CVRefId > 0) query = query.Where(x => x.CVRefId == assessParams.CVRefId);
                 if(!string.IsNullOrEmpty(assessParams.AssessResult)) query = query.Where(x => x.AssessResult == assessParams.AssessResult);
                 if(!string.IsNullOrEmpty(assessParams.AssessedByEmployeeName)) query = query.Where(x => x.AssessedByEmployeeName.ToLower() == assessParams.AssessedByEmployeeName.ToLower());
-                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.AssessedOn) == assessParams.AssessedOn);
+                if(assessParams.AssessedOn.Year > 2000) query = query.Where(x => x.AssessedOn == assessParams.AssessedOn);
             }
             
             return await query.FirstOrDefaultAsync();

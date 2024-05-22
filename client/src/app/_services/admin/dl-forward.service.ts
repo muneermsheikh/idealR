@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/app/environments/environment';
-import { IDLForwardToAgent } from '../../models/admin/dlforwardToAgent';
-import { IForwardedCategoryDto } from '../../dtos/admin/forwardedCategoryDto';
-import { IApplicationTask } from '../../models/admin/applicationTask';
+import { IForwardedCategoryDto } from 'src/app/_dtos/admin/forwardedCategoryDto';
+import { IOrderForwardToAgent } from 'src/app/_models/admin/orderForwardToAgent';
+import { IOrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +15,35 @@ export class DlForwardService {
   constructor(private http: HttpClient) { }
 
    //forward DL to agents
-  forwardDLtoSelectedAgents(dlforward: IDLForwardToAgent) {
-    return this.http.post<string>(this.apiUrl + 'DLForward', dlforward );
+  forwardDLtoSelectedAgents(dlforward: IOrderForwardToAgent) {
+    return this.http.post<string>(this.apiUrl + 'Orderforward', dlforward );
   }
 
   //get dlforwards of an orderid
   getDLForwardsOfAnOrderId(orderid: number) {
-    return this.http.get<IDLForwardToAgent[]>(this.apiUrl + 'DLForward/byorderid/' + orderid );
+    return this.http.get<IOrderForwardToAgent[]>(this.apiUrl + 'Orderforward/byorderid/' + orderid );
   }
 
   getAssociatesForwardedForADL(orderid: number) {
-    return this.http.get<IForwardedCategoryDto[]>(this.apiUrl + 'DLForward/associatesforwardedForOrderId/' + orderid);
+    return this.http.get<IForwardedCategoryDto[]>(this.apiUrl + 'Orderforward/associatesforwardedForOrderId/' + orderid);
   }
 
-  forwardDLtoHRHead(orderid: number) {
-    return this.http.post<IApplicationTask>(this.apiUrl + 'DLForward/addtaskdltohr/' + orderid, {});
+  GenerateObjToForwarOrderToAgent(orderid: number) {
+    return this.http.get<IOrderForwardToAgent>(this.apiUrl + 'OrderForward/generateOrderFwdToAgent/' + orderid, {});
   }
+
+
+  UpdateForwarOrderToAgent(model: IOrderForwardToAgent) {
+    return this.http.post<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToAgent', {model});
+  }
+
+  UpdateForwarOrderToHR(model: IOrderForwardToHR) {
+    return this.http.post<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToHR', {model});
+  }
+
+
+  GenerateObjToForwardDLtoHR(orderid: number) {
+    return this.http.get<IOrderForwardToHR>(this.apiUrl + 'OrderForward/generateOrderFwdToHR/' + orderid, {});
+  }
+
 }

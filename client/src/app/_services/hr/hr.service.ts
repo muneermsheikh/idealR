@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { assessmentQBankParams } from '../../models/admin/assessmentQBankParams';
-import { IPagination } from '../../models/pagination';
-import { IAssessmentQBank } from '../../models/admin/assessmentQBank';
-import { IProfession } from '../../models/masters/profession';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AccountsService } from '../accounts.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { IChecklistHRDto } from '../../dtos/hr/checklistHRDto';
+import { User } from 'src/app/_models/user';
+import { environment } from 'src/environments/environment.development';
+import { assessmentQBankParams } from 'src/app/_models/admin/assessmentQBankParams';
+import { Pagination } from 'src/app/_models/pagination';
+import { IProfession } from 'src/app/_models/masters/profession';
+import { AccountService } from '../account.service';
+import { HttpClient } from '@angular/common/http';
+import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
+import { getPaginatedResult, getPaginationHeadersAssessmentQBankParams } from '../paginationHelper';
+import { IChecklistHRDto } from 'src/app/_dtos/hr/checklistHRDto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,19 +18,19 @@ import { IChecklistHRDto } from '../../dtos/hr/checklistHRDto';
 export class HrService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   
   qParams = new assessmentQBankParams();
-  pagination?: IPagination<IAssessmentQBank[]>|null;  // = new paginationQBank();
+  pagination: Pagination | undefined;
   existingCats: IProfession[]=[];
   routeId: string;
-  user?: IUser;
+  user?: User;
   cache = new Map();
 
   constructor(private activatedRoute: ActivatedRoute, 
     private router: Router,
-    private accountService:AccountsService,
+    private accountService:AccountService,
     private http: HttpClient) {
       this.routeId = this.activatedRoute.snapshot.params['id'];
       this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
@@ -37,54 +38,34 @@ export class HrService {
   
    
     getExistingProfFromQBank() {
-      return this.http.get<IProfession[]>(this.apiUrl + 'assessmentqbank/existingqbankcategories');
+      return this.http.get<IProfession[]>(this.apiUrl + 'AssessmentQBank/existingqbankprofs');
     }
 
     getAssessmentQBank() {
       return this.http.get<IAssessmentQBank[]>(this.apiUrl + 'assessmentqbank/assessmentbankqs');
     }
 
-    getQBank(useCache: boolean) {
-      if (useCache === false) this.cache = new Map();
-
-      if(this.cache.size > 0 && useCache === true) {
-        if(this.cache.has(Object.values(this.qParams).join('-'))) {
-          this.pagination!.data=this.cache.get(Object.values(this.qParams).join('-'));
-          return of(this.pagination);
-        }
-      }
-
-      let params = new HttpParams();
-      if(this.qParams.categoryId !== 0) {
-        params = params.append('categoryId', this.qParams.categoryId!.toString());
-      }
-      if(this.qParams.categoryName !== '') {
-        params = params.append('categoryName', this.qParams.categoryName!);
-      }
-      if (this.qParams.search) {
-        params = params.append('search', this.qParams.search);
-      }
-  
-      params = params.append('sort', this.qParams.sort);
-      params = params.append('pageIndex', this.qParams.pageNumber.toString());
-      params = params.append('pageSize', this.qParams.pageSize.toString());
-
-      return this.http.get<IPagination<IAssessmentQBank[]>>(this.apiUrl + 'assessmentqbank/assessmentbankqs', {observe: 'response', params})
-        .pipe(
-          map(response => {
-            this.cache.set(Object.values(this.qParams).join('-'), response.body!.data);
-            this.pagination = response.body;
-            return response.body;
-          })
+    getQBank(oParams: assessmentQBankParams) {
+        const response = this.cache.get(Object.values(oParams).join('-'));
+        if(response) return of(response);
+    
+        let params = getPaginationHeadersAssessmentQBankParams(oParams);
+    
+        return getPaginatedResult<IAssessmentQBank[]>(this.apiUrl + 
+          'assessmentqbank/assessmentbankqs', params, this.http).pipe(
+            map(response => {
+              this.cache.set(Object.values(oParams).join('-'), response);
+              return response;
+            })
         )
     }
 
     getQs(categoryName: string) {
-      return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentQBank/categoryName/' + categoryName);
+      return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentQBank/catqs/' + categoryName);
     }
 
-    getQBankByCategoryId(id: number) {
-      return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentQBank/qbank/' + id);
+    getQBankByOrderItemId(orderitemid: number) {
+      return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentQBank/catqsbyorderitem');
     }
 
     
@@ -116,7 +97,6 @@ export class HrService {
       return this.http.put(this.apiUrl + 'assessmentQBank', model);
     }
 
-    
     //checklist
     getChecklistHRDto(candidateid: number, orderitemid: number) {
       return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/checklisthr/' + candidateid + '/' + orderitemid);

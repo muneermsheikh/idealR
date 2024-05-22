@@ -1,7 +1,7 @@
-import { IUserPhone } from "../../params/admin/userPhone";
-import { IUserProfession } from "../../params/admin/userProfession";
-import { IUserQualification } from "../../params/admin/userQualification";
 import { IPhoto } from "../admin/photo";
+import { IUserPhone } from "../params/Admin/userPhone";
+import { IUserProfession } from "../params/Admin/userProfession";
+import { IUserQualification } from "../params/Admin/userQualification";
 import { IUserAttachment } from "./userAttachment";
 import { IUserExp } from "./userExp";
 

@@ -29,13 +29,6 @@ namespace api.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<CustomerDto>>> GetCustomers([FromQuery]CustomerParams customerParams)
         { 
-            /*var Username = User.GetUsername();
-            if(string.IsNullOrEmpty(Username)) return Unauthorized();
-            var user = await _userManager.Users
-                .SingleOrDefaultAsync(x => x.UserName == Username.ToLower());
-            
-            if(user==null) return Unauthorized("invalid credentials");
-            */
             var Customers = await _customerRepo.GetCustomers(customerParams);
 
             if(Customers == null) return NotFound("No matching customers found");
@@ -49,12 +42,19 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateCustomer(CreateCustomerDto createDto)
         {
-            var username = User.GetUsername();
             var newCustomer = _mapper.Map<Customer>(createDto);
 
             if (await _customerRepo.InsertCustomer(newCustomer)) return Ok();
             
             return BadRequest("Failed to create the Customer Object");
+        }
+
+        [HttpGet("customercities/{customerType}")]
+        public async Task<ActionResult<ICollection<string>>> GetCustomerCities(string customerType)
+        {
+            var cities = await _customerRepo.GetCustomerCities(customerType);
+
+            return Ok(cities);
         }
 
         [HttpDelete("{id}")]
@@ -73,10 +73,33 @@ namespace api.Controllers
             return BadRequest("Failed to edit the customer");
         }
 
+        [HttpGet("customernamefromId/{customerId}")]
+        public async Task<string> GetCustomerNameFromCustomerId(int customerId)
+        {
+            var cust = await _customerRepo.GetCustomerById(customerId);
+            if(cust == null) return "";
+            return cust.CustomerName;
+        }
+
+
+        [HttpGet("clientidandnames/{customertype}")]
+        public async Task<ICollection<ClientIdAndNameDto>> GetCustomerIdAndName(string customertype)
+        {
+            var cust = await _customerRepo.GetCustomerIdAndNames(customertype);
+            if(cust == null) return null;
+            return cust;
+        }
+
         [HttpGet("byid/{id}")]
         public async Task<Customer> GetCustomerById(int id)
         {
             return await _customerRepo.GetCustomerById(id);
+        }
+
+        [HttpGet("agentdetails/{customerType}")]
+        public async Task<ICollection<CustomerAndOfficialsDto>> GetAgentDetails(string customerType)
+        {
+            return await _customerRepo.GetCustomerAndOfficials(customerType);
         }
 
         [HttpPut("updateofficialwithappuserid")]

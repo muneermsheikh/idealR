@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, map, of } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ICandidateCity } from '../_models/hr/candidateCity';
 import { CandidateBriefDto, ICandidateBriefDto } from '../_dtos/admin/candidateBriefDto';
 import { Pagination } from '../_models/pagination';
-import { ParamsCandidate } from '../_models/params/hr/paramsCandidate';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getHttpParamsForCandidate, getPaginatedResult } from './paginationHelper';
 import { ICandidate } from '../_models/hr/candidate';
 import { IApiReturnDto } from '../_dtos/admin/apiReturnDto';
 import { ICVReviewDto, cvReviewDto } from '../_dtos/admin/cvReviewDto';
 import { IUserAttachment } from '../_models/hr/userAttachment';
+import { candidateParams } from '../_models/params/hr/candidateParams';
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +22,7 @@ export class CandidateService {
   apiUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
-  cvParams: ParamsCandidate | undefined;
+  cvParams: candidateParams | undefined;
   pagination: Pagination | undefined;   // IPagination<ICandidateBriefDto[]>;
   paginationBrief: Pagination | undefined;    //<CandidateBriefDto[]>;
   cities: ICandidateCity[]=[];
@@ -36,21 +36,15 @@ export class CandidateService {
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
 
-  getCandidates(cvParams: ParamsCandidate): Observable<any> { 
+  getCandidatesPaged(cvParams: candidateParams): Observable<any> { 
    
     const response = this.cacheBrief.get(Object.values(cvParams).join('-'));
     if(response) return of(response);
 
-    let params = getPaginationHeaders(cvParams.pageNumber, cvParams.pageSize);
-
-    if(cvParams.agentId !== 0) params = params.append('agendId', cvParams.agentId.toString());
-    if(cvParams.city !== '') params = params.append('city', cvParams.city);
-    if(cvParams.professionId !== 0) params = params.append('professionId', cvParams.professionId.toString());
-    if(cvParams.search !== '') params = params.append('search', cvParams.search);
-    if(cvParams.sort !== '') params = params.append('sort', cvParams.sort);
+    let params = getHttpParamsForCandidate(cvParams);
 
     return getPaginatedResult<CandidateBriefDto[]>(this.apiUrl + 
-        'candidate/candidatepages', params, this.http).pipe(
+        'candidate', params, this.http).pipe(
       map(response => {
         this.cacheBrief.set(Object.values(cvParams).join('-'), response);
         return response;
@@ -64,11 +58,14 @@ export class CandidateService {
   }
 
   checkPPExists(ppnumber: string) {
-    return this.http.get(this.apiUrl + 'account/ppexists?ppnumber=' + ppnumber);
+    return this.http.get(this.apiUrl + 'Candidate/ppexists/' + ppnumber);
   }
   
   getCandidate(id: number) {
-    return this.http.get<ICandidate>(this.apiUrl + 'candidate/byid/' + id);
+    let params = new HttpParams();
+    params.append('id', id.toString());
+
+    return this.http.get<ICandidate>(this.apiUrl + 'candidate/byparams', {params});
   }
 
   getCandidateBrief(id: number) {
@@ -77,20 +74,21 @@ export class CandidateService {
       .reduce((arr,elem) => arr.concat(elem.result), [])
       .find((candidate: ICandidate) => candidate.id === id);
     
-    if(candidate) {
-      console.log('returned from cache');
-      return of(candidate);
-    }
-    
-    return this.http.get<ICandidate>(this.apiUrl + 'candidate/briefbyid/' + '/' + id);
+    if(candidate) return of(candidate);
+        
+    return this.http.get<ICandidate>(this.apiUrl + 'candidate/briefdtobyid/' + id);
   }
 
-  getCandidateBriefDtoFromAppNo(id: number) {
-    return this.http.get<ICandidateBriefDto>(this.apiUrl + 'candidate/byappno/' + id);
+  getCandidateBriefDtoFromAppNo(appno: number) {
+    let params = new HttpParams();
+    params.append('applicationNo', appno.toString());
+
+    return this.http.get<ICandidateBriefDto>(this.apiUrl + 
+        'Candidate/briefbyparams', {params});
   }
 
-  registerWithFiles(model: any) {
-    return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model );
+  registerNewWithFiles(model: any) {
+    return this.http.post<IApiReturnDto>(this.apiUrl + 'Candidate/RegisterByUpload', model );
     
   }
 
@@ -105,7 +103,7 @@ export class CandidateService {
     this.currentUserSource.next(user);
   }
   
-  setCVParams(params: ParamsCandidate) {
+  setCVParams(params: candidateParams) {
     this.cvParams = params;
   }
   
@@ -126,7 +124,7 @@ export class CandidateService {
     )
   }
   
-  submitCVsForReview(itemIds: number[], cvids: number[]) {
+  /*submitCVsForReview(itemIds: number[], cvids: number[]) {
       
       if (itemIds.length === 0 || cvids.length ===0) {
         this.toastr.warning("candidate Ids or item Ids data not provided");
@@ -145,22 +143,26 @@ export class CandidateService {
       })
 
       return this.http.post(this.apiUrl + 'cvreviews', cvrvws);
-  }
-  viewDocument(id: number) {
+  } 
+  */
+  downloadAttachmentFile(attachmentid: number) {
     // get a document from the Web API endpoint 'LoadDocument'
-    return this.http.get<any>(this.apiUrl + 'fileupload/viewdocument/' + id);
+    return this.http.get<any>(this.apiUrl + 'fileupload/downloadattachmentfile/' + attachmentid);
   }
 
   updateAttachments(model: IUserAttachment) {
-    return this.http.post<IUserAttachment>(this.apiUrl + 'userattachment/attachment', model);
+    var attachments: IUserAttachment[]=[];
+    attachments.push(model);
+
+    return this.http.post<IUserAttachment[]>(this.apiUrl + 'Candidate/attachment', attachments);
   }
 
-  getAttachment(candidateid: number) {
-    return this.http.get<IUserAttachment[]>(this.apiUrl + 'userattachment/' + candidateid);
+  getAttachments(candidateid: number) {
+    return this.http.get<IUserAttachment[]>(this.apiUrl + 'Candidate/userattachments' + candidateid);
   }
 
   deleteAttachment(attachmentId: number) {
-    return this.http.delete<boolean>(this.apiUrl + 'userattachment/' + attachmentId);
+    return this.http.delete<boolean>(this.apiUrl + 'Candidate/userattachment/' + attachmentId);
   }
 
   setPhoto(model: IUserAttachment) {

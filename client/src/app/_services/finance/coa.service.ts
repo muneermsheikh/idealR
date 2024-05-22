@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { coaParams } from '../../params/finance/coaParams';
-import { coaParamsFind } from '../../params/finance/coaParamsFind';
-import { ICOA } from '../../models/finance/coa';
-import { IPagination } from '../../models/pagination';
-import { CandidateCOAParams } from '../../dtos/finance/candidateCOAParams';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IPendingDebitApprovalDto } from '../../dtos/finance/pendingDebitApprovalDto';
-import { coaDto } from '../../dtos/finance/coaDto';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { ICOA } from 'src/app/_models/finance/coa';
+import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
+import { CandidateCOAParamsDto } from 'src/app/_dtos/finance/candidateCOAParamsDto';
+import { Pagination } from 'src/app/_models/pagination';
+import { IPendingDebitApprovalDto } from 'src/app/_dtos/finance/pendingDebitApprovalDto';
+import { COADto } from 'src/app/_dtos/finance/coaDto';
+import { getPaginatedResult, getPaginationHeaders } from '../paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -17,81 +17,55 @@ import { coaDto } from '../../dtos/finance/coaDto';
 export class COAService {
  
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
-  sParams = new coaParams();
-  candidatearams = new coaParamsFind();
+  sParams = new ParamsCOA();
 
   coalists: ICOA[]=[];
-  pagination?: IPagination<ICOA[]>;  // = new PaginationCOA;
+  pagination?: Pagination | undefined;
   cache = new Map();
-  candidateCOAParams = new CandidateCOAParams();
+  candidateCOAParams = new CandidateCOAParamsDto();
 
   constructor(private http: HttpClient) { }
 
   getCoaList() {
-    return this.http.get<ICOA[]>(this.apiUrl + 'finance/coaslist');
+    return this.http.get<ICOA[]>(this.apiUrl + 'finance/coalist');
   }
 
   createCandidateCOA(appno: number) {
-    return this.http.get<ICOA>(this.apiUrl + 'finance/coaforCandidate/' + appno + '/' + true);
+    return this.http.get<ICOA>(this.apiUrl + 'finance/candidateCOA/' + appno + '/' + true);
   }
 
-  getGroupOfCOAs(group: string) {
-    return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coabygroup/'+  group);
-  }
-
-  getCandidateCOAs(appno: number) {
-    return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coasforpayment/' + appno);
-  }
-
-  getDebitApprovalsPending() {
-    return this.http.get<IPendingDebitApprovalDto[]>(this.apiUrl + 'finance/debitapprovalspending');
-  }
   
-  getCandidateCOAWithClBal(appno: number) {
-    return this.http.get<coaDto>(this.apiUrl + 'finance/coaforcandidate/' + appno + '/' + false);
+  /*getCandidateCOAWithClBal(appno: number) {
+    return this.http.get<COADto>(this.apiUrl + 'finance/coaforcandidate/' + appno + '/' + false);
   }
+  */
 
-  getCoas(useCache: boolean) {
+  /*
+  getCoas(oParams: ParamsCOA) {
 
-    if (useCache === false) this.cache = new Map();
-    
-    if (this.cache.size > 0 && useCache === true) {
-      if (this.cache.has(Object.values(this.sParams).join('-'))) {
-        this.pagination = this.cache.get(Object.values(this.sParams).join('-'));
-        return of(this.pagination);
-      }
-    }
-
-    let params = new HttpParams();
-
-    if (this.sParams.accountName !== '' )  params = params.append('coaId', this.sParams.accountName);
-    if (this.sParams.sort !== '') params = params.append('sort', this.sParams.sort);
-    
-    if (this.sParams.search) params = params.append('search', this.sParams.search);
-
-    params = params.append('sort', this.sParams.sort);
-    params = params.append('pageIndex', this.sParams.pageNumber.toString());
-    params = params.append('pageSize', this.sParams.pageSize.toString());
-
-    return this.http.get<IPagination<ICOA[]>>(this.apiUrl + 'finance/coas', {params})
-      .pipe(
-        map((response: any) => {
-          this.cache.set(Object.values(this.sParams).join('-'), response);
-          this.pagination = response;
+    const response = this.cache.get(Object.values(oParams).join('-'));
+      if(response) return of(response);
+  
+      let params = this.populateCOAParams(oParams);
+        
+      return getPaginatedResult<ICOA[]>(this.apiUrl + 'users', params, this.http).pipe(
+        map(response => {
+          this.cache.set(Object.values(oParams).join('-'), response);
           return response;
         })
       )
+   
     }
-
+*/
   editCOA(coa : ICOA | undefined)
   {
       return this.http.put<ICOA>(this.apiUrl + 'finance/coa', coa);
   }
 
-  addNewCOA(coa: any) {
-    console.log('sending to api, coa:', coa);
+  addNewCOA(coa: ICOA) {
+    //console.log('sending to api, coa:', coa);
     return this.http.post<ICOA>(this.apiUrl + 'finance/coa', coa);
   }
   
@@ -103,16 +77,40 @@ export class COAService {
   updateCOA(coa:ICOA) {
     return this.http.put<boolean>(this.apiUrl + 'finance/coa', coa);
   }
+
   getMatchingCOAs(coaname: string) {
-    return this.http.get<string[]>(this.apiUrl + 'finance/matchingaccountnames/' + coaname);
+    return this.http.get<string[]>(this.apiUrl + 'finance/matchingcoas/' + coaname);
   }
     
   deleteFromCache(id: number) {
     this.cache.delete(id);
-    this.pagination!.count--;
+    this.pagination!.totalItems--;
   }
 
-  setParams(params: coaParams) {
+  
+  getGroupOfCOAs(group: string) {
+    return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coabygroup/'+  group);
+  }
+
+  getCandidateCOAs(appno: number) {
+    return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coasforpayment/' + appno);
+  }
+
+  
+  populateCOAParams(oParams: ParamsCOA) {
+    let params = getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
+  
+      if (oParams.search) params = params.append('search', oParams.search);
+      if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
+      if (oParams.sort !== '') params = params.append('sort', oParams.sort);
+      if (oParams.accountId !== 0) params = params.append('accountId', oParams.accountId.toString());
+      if (oParams.accountType !== '') params = params.append('accountType', oParams.accountType);
+      if (oParams.accountClass !== '') params = params.append('accountClass', oParams.accountClass);
+      
+    return params;
+  }
+
+  setParams(params: ParamsCOA) {
     this.sParams = params;
   }
   

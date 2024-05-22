@@ -1,4 +1,4 @@
-export interface IDLForwardCategoryOfficial
+export interface IOrderForwardCategoryOfficial
 {
 	checked: boolean;
 	id: number;
@@ -15,7 +15,7 @@ export interface IDLForwardCategoryOfficial
 	loggedInEmployeeId: number;
 }
 
-export class dLForwardCategoryOfficial implements IDLForwardCategoryOfficial
+export class OrderForwardCategoryOfficial implements IOrderForwardCategoryOfficial
 {
 	checked = false;
 	id= 0;

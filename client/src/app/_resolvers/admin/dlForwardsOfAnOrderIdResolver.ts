@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IDLForwardToAgent } from "../../shared/models/admin/dlforwardToAgent";
-import { DlForwardService } from "../../shared/services/admin/dl-forward.service";
+import { IDLForwardToAgent } from "src/app/_models/admin/orderForwardToAgent";
+import { DlForwardService } from "src/app/_services/admin/dl-forward.service";
 
 export const DLForwardsOfAnOrderIdResolver: ResolveFn<IDLForwardToAgent[]|null> = (
     route: ActivatedRouteSnapshot,

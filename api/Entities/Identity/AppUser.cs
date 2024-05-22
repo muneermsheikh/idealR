@@ -8,8 +8,8 @@ namespace api.Entities.Identity
         public string Gender { get; set; }
         public string KnownAs { get; set; }
         public DateOnly DateOfBirth { get; set; }
-        public DateTime Created { get; set; }=DateTime.UtcNow;
-        public DateTime LastActive { get; set; }=DateTime.UtcNow;
+        public DateOnly Created { get; set; }
+        public DateTime LastActive { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
         public string Position { get; set; }

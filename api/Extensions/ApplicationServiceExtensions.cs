@@ -1,16 +1,21 @@
 using api.Data;
 using api.Data.Repositories;
 using api.Data.Repositories.Admin;
+using api.Data.Repositories.Customer;
 using api.Data.Repositories.Deployment;
 using api.Data.Repositories.Finance;
 using api.Data.Repositories.HR;
 using api.Data.Repositories.Master;
+using api.Data.Repositories.Orders;
 using api.Interfaces;
 using api.Interfaces.Admin;
+using api.Interfaces.Customers;
 using api.Interfaces.Deployments;
 using api.Interfaces.Finance;
 using api.Interfaces.HR;
+using api.Interfaces.Masters;
 using api.Interfaces.Messages;
+using api.Interfaces.Orders;
 using api.Services;
 using API.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -41,20 +46,21 @@ namespace api.Extensions
             services.AddScoped<ICandidateRepository, CandidatesRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IOrdersRepository, OrdersRepository>();
+            services.AddScoped<IJDAndRemunRepository, JDAndRemunRepository>();
 
-            services.AddScoped<IAssessmentRepository, AssessmentRepository>();
+            services.AddScoped<IOrderAssessmentRepository, OrderAssessmentRepository>();
             services.AddScoped<IContractReviewRepository, ContractReviewRepository>();
             services.AddScoped<IChecklistRepository, ChecklistRepository>();
             services.AddScoped<ICandidateAssessentRepository, CandidateAssessmentRepository>();
             services.AddScoped<ICVRefRepository, CVRefRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IComposeMessagesAdminRepository, ComposeMessagesAdminRepository>();
             
-            services.AddScoped<IComposeMessagesAdminRepository, ComposeMessagesAdminRepository>();
+            services.AddScoped<IComposeMessagesHRRepository, ComposeMessagesHRRepository>();
 
             services.AddScoped<IComposeMessagesForTypes, ComposeMessagesForTypes>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmploymentRepository, EmploymentRepository>();
 
             services.AddScoped<ITaskRepository, TaskRepository>(); 
             
@@ -63,7 +69,16 @@ namespace api.Extensions
             services.AddScoped<IFinanceRepository, FinanceRepository>();
             services.AddScoped<ISelDecisionRepository, SelDecisionRepository>();
             services.AddScoped<IDeploymentRepository, DeploymentRepository>();
+            services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
+            services.AddScoped<IOrderForwardRepository, OrderForwardRepository>();
+            services.AddScoped<IUserHistoryRepository, UserHistoryRepository>();
+            services.AddScoped<IAssessmentQBankRepository, AssessmentQBankRepository>();
+            services.AddScoped<IFileUploadRepository, FileUploadRepository>();
+            services.AddScoped<IIndustryRepository, IndustryRepository>();
+            services.AddScoped<IProfessionRepository, ProfessionRepository>();
+            services.AddScoped<IQualificationRepository, QualificationRepository>();
 
+            
             return services;
         }
 

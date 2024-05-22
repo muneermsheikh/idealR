@@ -29,7 +29,7 @@ namespace api.Entities.Tasks
         public DateOnly CompleteBy {get; set;}
         [Required]
         public string TaskStatus {get; set;}="Not Started";
-        public DateTime? CompletedOn { get; set; }
+        public DateOnly? CompletedOn { get; set; }
         public int? HistoryItemId { get; set; }
         public string PostTaskAction { get; set; } ="Do Not Compose Message";
         public virtual ICollection<TaskItem> TaskItems {get; set;}

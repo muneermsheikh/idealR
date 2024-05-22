@@ -34,9 +34,13 @@ namespace api.Controllers
         public async Task<ActionResult<PagedList<SelDecisionDto>>> GetSelectionDecisionsAsync(SelDecisionParams selParams)
         {
              
-           var decs = await _selRepo.GetSelectionDecisions(selParams);
-            if (decs != null) return Ok(decs);
-            return NotFound(new ApiException(404, "no records found"));
+            var pagedList = await _selRepo.GetSelectionDecisions(selParams);
+            if (pagedList == null) return NotFound(new ApiException(404, "no records found"));
+             
+            Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
+                pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
+            
+            return Ok(pagedList);
         }
 
         [HttpPost]
@@ -90,7 +94,7 @@ namespace api.Controllers
             
         }
 
-        [HttpGet("pendingselections")]
+        /*[HttpGet("pendingselections")]
         public async Task<ActionResult<PagedList<CVRefDto>>> SelectionDecisionPending(CVRefParams refParams)
         {
             var data = await _cvrefRepo.GetPendingReferrals(refParams);
@@ -101,7 +105,8 @@ namespace api.Controllers
             
             return Ok(data);
         }
-        
+        */
+
         [HttpGet("employment/{employmentid}")]
         public async Task<ActionResult<Employment>> GetEmployment (int employmentid)
         {

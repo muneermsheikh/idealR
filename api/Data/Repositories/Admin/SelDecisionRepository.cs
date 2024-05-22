@@ -28,6 +28,7 @@ namespace api.Data.Repositories.Admin
         private readonly IFinanceRepository _finRepo;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
         public SelDecisionRepository(DataContext context, IComposeMessagesAdminRepository msgAdmRepo, 
                IFinanceRepository finRepo , IMapper mapper, UserManager<AppUser> userManager            )
         {
@@ -127,8 +128,8 @@ namespace api.Data.Repositories.Admin
             if(newAppUser == null) {
                 newAppUser = new AppUser{
                     Gender = empObj.Gender, KnownAs=empObj.KnownAs,
-                    DateOfBirth= DateOnly.FromDateTime(empObj.DateOfBirth),
-                    Created = DateTime.UtcNow,
+                    DateOfBirth= empObj.DateOfBirth,
+                    Created = _today,
                     City = empObj.City, Country = empObj.Country
                 };
                 
@@ -161,7 +162,7 @@ namespace api.Data.Repositories.Admin
                 .Select(x => new AppUser{
                     Gender = x.Gender, KnownAs=x.KnownAs,
                     DateOfBirth= (DateOnly)x.DOB,
-                    Created = DateTime.UtcNow,
+                    Created =_today,
                     City = x.City, Country = x.Country
                 }).FirstOrDefaultAsync();
                 
@@ -201,7 +202,7 @@ namespace api.Data.Repositories.Admin
             var vouchers = await _context.Vouchers.ToListAsync();
             var deps = await _context.Deps.ToListAsync();
 
-            //due to paucity of time, Deletebehavior.Cascad indices cd not be set, so all related
+            //Deletebehavior.Cascade for Selections and other related tables cd not be set, so all related
             //records are deleted manually
             var obj = await _context.SelectionDecisions.FindAsync(selectionId);
             if(obj == null) return "no selection object by that Selection Id";
@@ -212,6 +213,7 @@ namespace api.Data.Repositories.Admin
 
             string ErrString = "";
 
+            _context.SelectionDecisions.Remove(obj);
             _context.Entry(obj).State = EntityState.Deleted;
 
             //delete related records, as indexes for Deletebahvior.Cascade not working
@@ -223,7 +225,7 @@ namespace api.Data.Repositories.Admin
             //1 . delete employment
             var emp = await _context.Employments.Where(x => x.CVRefId==cvrefid).FirstOrDefaultAsync();
             if (emp==null) return "Failed to retrieve Employment record.  Cannot proceed with the deletion of selection";
-
+            _context.Employments.Remove(emp);
             _context.Entry(emp).State = EntityState.Deleted;
         
             //2 - update CVRef.SelectionStatus
@@ -239,6 +241,7 @@ namespace api.Data.Repositories.Admin
 
             //3 - Delete Deployments
             var dep = await _context.Deps.Where(x => x.CVRefId == cvrefid).Include(x => x.DepItems).FirstOrDefaultAsync();
+            _context.Deps.Remove(dep);
             _context.Entry(dep).State = EntityState.Deleted;
             
             //4 = DELETE VOUCHERS
@@ -246,7 +249,10 @@ namespace api.Data.Repositories.Admin
                 var voucher = await _context.Vouchers
                     .Where(x => x.CVRefId == cvrefid && x.COAId == coaRecruitmentSales
                         && x.VoucherDated == offerAcceptedOn).FirstOrDefaultAsync();
-                if(voucher != null) _context.Entry(voucher).State = EntityState.Deleted; 
+                if(voucher != null) {
+                    _context.Vouchers.Remove(voucher);
+                    _context.Entry(voucher).State = EntityState.Deleted; 
+                }
             }
 
             try {
@@ -564,7 +570,7 @@ namespace api.Data.Repositories.Admin
             if(tasks != null) {
                 foreach(var task in tasks) {
                     task.TaskStatus = "Completed";
-                    task.CompletedOn = DateTime.UtcNow;
+                    task.CompletedOn = _today;
                 }
             }
         

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/app/environments/environment';
-import { ChecklistHRDto, IChecklistHRDto } from '../../dtos/hr/checklistHRDto';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
+import { ChecklistHRDto, IChecklistHRDto } from 'src/app/_dtos/hr/checklistHRDto';
+import { IChecklistHR } from 'src/app/_models/hr/checklistHR';
 
 @Injectable({
   providedIn: 'root'
@@ -20,16 +21,23 @@ export class ChecklistService {
   constructor(private http: HttpClient) { }
 
   getChecklist(candidateid: number, orderitemid: number) {
-    return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/checklisthr/' + candidateid  + '/' + orderitemid);
+    return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/checklistHR/' + candidateid  + '/' + orderitemid);
   }
 
-  updateChecklist(checklist: IChecklistHRDto) {
+  updateChecklist(checklist: IChecklistHR) {
     //console.log(checklist);
     return this.http.put(this.apiUrl + 'checklist/checklisthr', checklist);
   }
 
-  addNewChecklistHR(candidateId: number, orderItemId: number) {
-    return this.http.post<ChecklistHRDto>(this.apiUrl + 'Checklist/' + candidateId + '/' + orderItemId, {})
+  generateChecklistHR(candidateid: number, orderitemid: number) {
+      return this.http.get<IChecklistHR>(this.apiUrl + 'Checklist/' + candidateid + '/' + orderitemid)
+  }
+
+  saveNewChecklistHR(checklisthr: IChecklistHR) {
+    return this.http.post<IChecklistHR>(this.apiUrl + 'Checklist', checklisthr);
   }
   
+  deleteChecklistHR(checklistid: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'Checklist/checklist' + checklistid);
+  }
 }

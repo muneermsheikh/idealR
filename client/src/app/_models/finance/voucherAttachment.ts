@@ -6,7 +6,7 @@ export interface IVoucherAttachment {
     fileName: string;
     url: string;
     dateUploaded: Date;
-    uploadedByEmployeeId: number;
+    uploadedByUsername: string;
 }
 
 export class VoucherAttachment implements IVoucherAttachment {
@@ -16,5 +16,5 @@ export class VoucherAttachment implements IVoucherAttachment {
     fileName: string='';
     url: string='';
     dateUploaded: Date=new Date();
-    uploadedByEmployeeId: number=0;
+    uploadedByUsername="";
 }

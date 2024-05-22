@@ -14,7 +14,7 @@ import { IChecklistHRDto } from '../_dtos/hr/checklistHRDto';
 import { ICandidateAssessmentAndChecklist } from '../_models/hr/candidateAssessmentAndChecklist';
 import { ICandidateAssessedDto } from '../_dtos/hr/candidateAssessedDto';
 import { CVBriefParam } from '../_models/params/hr/cvBriefParam';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { GetHttpParamsForCVRefBrief, getPaginatedResult } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -44,12 +44,9 @@ export class CVAssessService {
     const response = this.cache.get(Object.values(cvParams).join('-'));
     if(response) return of(response);
 
-    let params = getPaginationHeaders(cvParams.pageNumber, cvParams.pageSize);
+    let params = GetHttpParamsForCVRefBrief(cvParams);
 
-    if(cvParams.candidateId !== 0) params = params.append('candidateId', cvParams.candidateId.toString());
-    if(cvParams.assessmentId !== 0) params = params.append('assessmentId', cvParams.assessmentId.toString());
-    
-    return getPaginatedResult<CandidateBriefDto[]>(this.apiUrl + 'candidate', params, this.http).pipe(
+    return getPaginatedResult<CandidateBriefDto[]>(this.apiUrl + 'Candidate', params, this.http).pipe(
       map(response => {
         this.cache.set(Object.values(cvParams).join('-'), response);
         return response;
@@ -59,26 +56,16 @@ export class CVAssessService {
   }
 
 
-  updateCVAssessment(model: any) {
-    return this.http.put(this.apiUrl + 'candidateassessment/assess', model);
+  updateCVAssessment(model: ICandidateAssessment) {
+    return this.http.put<boolean>(this.apiUrl + 'CandidateAssessment/assessment', model);
   }
 
   getOrderItemAssessmentQs(orderitemid: number) {
-    return this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'orderassessment/itemassessmentQ/' + orderitemid);
-  }
-
-  updateCVAssessmentHeader(model: ICandidateAssessment) {
-    return this.http.put<ICandidateAssessmentWithErrorStringDto>(this.apiUrl + 'candidateassessment', model);
-  }
-
-  insertCVAssessmentHeader(requireReview: boolean, candidateid: number, orderitemid: number, dt: Date) {
-    
-    return this.http.post<ICandidateAssessmentWithErrorStringDto>(this.apiUrl + 'candidateassessment/assess/' 
-      +  requireReview + '/' + candidateid + '/' + orderitemid, {});
+    return this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'OrderAssessment/orderitemassessmentQ/' + orderitemid);
   }
 
   getCVAssessmentObject(requireReview: boolean, candidateid: number, orderitemid: number, dt: Date) {
-    return this.http.get<ICandidateAssessment>(this.apiUrl + 'candidateassessment/assessobject/' +  requireReview + '/' + candidateid + '/' + orderitemid);
+    return this.http.get<ICandidateAssessment>(this.apiUrl + 'CandidateAssessment/assessobject/' +  requireReview + '/' + candidateid + '/' + orderitemid);
   }
 
 

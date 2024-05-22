@@ -4,7 +4,7 @@ import { of } from "rxjs";
 import { IUserHistoryDto } from "src/app/_dtos/admin/userHistoryDto";
 
 import { UserHistoryParams } from "src/app/_models/params/userHistoryParams";
-import { CandidateHistoryService } from "src/app/_services/candidate-history.service";
+import { CandidateHistoryService } from "src/app/_services/user-history.service";
 
 export const CandidateHistoryResolver: ResolveFn<IUserHistoryDto | null | undefined> = (
     route: ActivatedRouteSnapshot,

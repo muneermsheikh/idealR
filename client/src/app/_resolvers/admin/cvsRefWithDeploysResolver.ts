@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { ICVReferredDto } from "../../shared/dtos/admin/cvReferredDto";
-import { CvrefService } from "../../shared/services/hr/cvref.service";
+import { ICVReferredDto } from "src/app/_dtos/admin/cvReferredDto";
+import { CvrefService } from "src/app/_services/hr/cvref.service";
 
  export const CVsRefWithDeploysResolver: ResolveFn<ICVReferredDto | undefined> = (
    route: ActivatedRouteSnapshot,

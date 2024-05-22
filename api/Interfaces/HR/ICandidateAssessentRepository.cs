@@ -8,16 +8,17 @@ namespace api.Interfaces.HR
     public interface ICandidateAssessentRepository
     {
          
-        
+        Task<CandidateAssessmentAndChecklistDto> GetChecklistAndAssessment(int candidateid, int orderitemid, string username);
         Task<CandidateAssessment> GenerateCandidateAssessment(int candidateid, int orderItemId, string Username);
         Task<CandidateAssessment> SaveCandidateAssessment(CandidateAssessment candidateAssessment, string Username);
         Task<string> EditCandidateAssessment(CandidateAssessment candidateAssessment, string username);
         Task<bool> DeleteCandidateAssessment(int id);
         Task<bool> DeleteCandidateAssessmentItem(int id);
-        Task<PagedList<CandidateAssessmentDto>> GetCandidateAssessments(CandidateAssessmentParams assessmentParams);
+        Task<PagedList<CandidateAssessedDto>> GetCandidateAssessments(CandidateAssessmentParams assessmentParams);
         Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessmentParams);
         Task<CandidateAssessment> GetCandidateAssessmentWithItems(CandidateAssessmentParams assessmentParams);
         Task<bool> AddCandidateAssessmentItems(int candidateAssessmentId);
         Task<string> UpdateCandidateAssessmentStatus(int candidateAssessmentId, string username);
+        
     }
 }

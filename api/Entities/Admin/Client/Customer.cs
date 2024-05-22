@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 
-namespace api.Entities.Admin.Client 
+namespace api.Entities.Admin.Client
 {
     public class Customer: BaseEntity
     {
@@ -27,6 +26,7 @@ namespace api.Entities.Admin.Client
         public DateTime CreatedOn { get; set; }= DateTime.UtcNow;
         public string Introduction { get; set; }
         public string CustomerStatus {get; set;}="Active";
+        public bool IsBlackListed { get; set; }
         public ICollection<CustomerIndustry> CustomerIndustries { get; set; }
         public ICollection<CustomerOfficial> CustomerOfficials { get; set; }
         public virtual ICollection<AgencySpecialty> AgencySpecialties {get; set;}

@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IFinanceVoucher } from "../../shared/models/finance/financeVoucher";
-import { VouchersService } from "src/app/shared/services/finance/vouchers.service";
+import { IFinanceVoucher } from "src/app/_models/finance/voucher";
+import { VouchersService } from "src/app/_services/finance/vouchers.service";
 
 export const FinanceVoucherResolver: ResolveFn<IFinanceVoucher|any> = (
 	route: ActivatedRouteSnapshot,

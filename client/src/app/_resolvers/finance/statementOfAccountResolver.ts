@@ -1,10 +1,10 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IStatementofAccountDto } from "../../shared/dtos/finance/statementOfAccountDto";
-import { VouchersService } from "src/app/shared/services/finance/vouchers.service";
+import { IStatementofAccountDto } from "src/app/_dtos/finance/statementOfAccountDto";
+import { VouchersService } from "src/app/_services/finance/vouchers.service";
 
-export const StatementOfAccountResolver: ResolveFn<IStatementofAccountDto|null|undefined> = (
+export const StatementOfAccountResolver: ResolveFn<IStatementofAccountDto | null | undefined> = (
     route: ActivatedRouteSnapshot
   ) => {
 

@@ -7,10 +7,12 @@ namespace api.Interfaces
 {
     public interface IChecklistRepository
     {
-        Task<ChecklistObj> AddNewChecklistHR(int candidateId, int orderItemId, string Username);
+        Task<ChecklistObj> GetOrGenerateChecklist(int candidateId, int orderItemId, string Username);
+        Task<ChecklistHR> GetChecklist(int candidateId, int orderItemId);
         Task<bool> DeleteChecklistHRDataAsync(ChecklistHRData checklistHRData);
         Task<bool> EditChecklistHRDataAsync(ChecklistHRData checklistHRData);
         Task<ICollection<ChecklistHRData>> GetChecklistHRDataListAsync();
+        Task<ChecklistObj> SaveNewChecklist (ChecklistHR checklisthr, string Username);
         
 
         //checklistHR

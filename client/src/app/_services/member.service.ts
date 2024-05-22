@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.development';
 import { Member } from '../_models/member';
@@ -6,7 +6,7 @@ import { User } from '../_models/user';
 import { UserParams } from '../_models/params/userParams';
 import { AccountService } from './account.service';
 import { map, of, take } from 'rxjs';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getHttpParamsForUserParams, getPaginatedResult} from './paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class MemberService {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user)
-          this.userParams = new UserParams(user);
+          this.userParams = new UserParams();
           this.user = user;
       }
     })
@@ -36,11 +36,8 @@ export class MemberService {
     const response = this.memberCache.get(Object.values(userParams).join('-'));
     if(response) return of(response);
 
-    let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
+    let params = getHttpParamsForUserParams(userParams);
 
-    if(userParams.gender !== '') params = params.append('gender', userParams.gender);
-    if(userParams.orderBy !== '') params = params.append('orderBy', userParams.orderBy);
-    
     return getPaginatedResult<Member[]>(this.baseUrl + 'users', params, this.http).pipe(
       map(response => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
@@ -60,7 +57,8 @@ export class MemberService {
       console.log('returned from cache');
       return of(member);
     }
-    console.log('getting member deteail from api');
+    
+    //console.log('getting member deteail from api');
     return this.http.get<Member>(this.baseUrl + 'users/byusername' + '/' + username);
   }
 
@@ -75,7 +73,7 @@ export class MemberService {
 
   resetUserParams() {
     if (this.user) {
-      this.userParams = new UserParams(this.user);
+      this.userParams = new UserParams();
       return this.userParams;
     }
     return;
@@ -87,7 +85,11 @@ export class MemberService {
 
   getLikes(predicate: string, pageNumber: number, pageSize: number) {
 
-    let params = getPaginationHeaders(pageNumber, pageSize);
+    var hParams = new UserParams();
+    hParams.pageNumber = pageNumber;
+    hParams.pageSize = pageSize;
+
+    let params = getHttpParamsForUserParams(hParams);
     params = params.append('predicate', predicate);
 
     return getPaginatedResult<Member[]>(this.baseUrl + 'likes', params, this.http);

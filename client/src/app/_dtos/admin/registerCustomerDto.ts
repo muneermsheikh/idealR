@@ -1,10 +1,12 @@
-import { IAgencySpecialty } from "../../models/admin/agencySpecialty";
-import { ICustomerIndustry } from "../../models/admin/customerIndustry";
+
+import { ICustomerIndustry } from "src/app/_models/admin/customerIndustry";
 import { ICustomerOfficialToCreateDto } from "./customerOfficialToCreateDto";
+import { IAgencySpecialty } from "src/app/_models/admin/agencySpecialty";
 
 export interface IRegisterCustomerDto
 {
      id: number;
+     customerName: string;
      customerType: string;
      knownAs: string;
      add: string;

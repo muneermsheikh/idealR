@@ -13,7 +13,7 @@ namespace api.Entities.HR
         [ForeignKey("CandidateId")]
         public int CandidateId { get; set; }
         public DateOnly ReferredOn { get; set; } 
-        public int HRExecId { get; set; }
+        public string HRExecUsername { get; set; }
         public string RefStatus { get; set; }// =Referred
         public DateOnly RefStatusDate {get; set;}
         public string SelectionStatus {get; set;}

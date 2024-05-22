@@ -16,8 +16,8 @@ namespace api.Interfaces.Admin
         Task<MessageWithError> MakeReferrals (ICollection<int> CVReviewIds, string Username);
         Task<bool> EditReferral (CVRef cvref);
         Task<bool> DeleteReferral (int CVRefId);
-        Task<CVRef> GetCVRef (int CVRefId);
-        Task<ICollection<Message>> ComposeSelectionDecisionReminderMessage(ICollection<int> cvRefIds, string username);
+        Task<CVRefDto> GetCVRefDto (int CVRefId);
+        Task<string> ComposeSelectionDecisionReminderMessage(int customerId, string username);
         Task<int> UpdateCandidateAssessmentWithCVRefId();
     }
 }

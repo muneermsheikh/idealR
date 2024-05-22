@@ -5,7 +5,6 @@ namespace api.DTOs.Admin
         public string CustomerName { get; set; }
         public int OrderNo { get; set; }
         public string ProfessionName { get; set; }
-        public DateTime SelectionDate {get; set;}
         public string SelectionStatus { get; set; }
         public string RejectionReason { get; set; }
         public DateOnly SelectedOn { get; set; }

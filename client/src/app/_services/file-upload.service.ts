@@ -19,6 +19,7 @@ export class FileUploadService {
               catchError(err => this.handleError(err))
           );
   }
+  
   private handleError(error: any) {
       return throwError(error);
   }

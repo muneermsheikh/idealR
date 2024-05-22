@@ -16,8 +16,8 @@ namespace api.DTOs.Admin.Orders
         public string CityOfWorking { get; set; }
         public int ContractReviewId { get; set; }
         public string ContractReviewStatus {get; set;}
-        public string Status { get; set; } = "Awaiting Review";
-        public DateTime? ForwardedToHRDeptOn { get; set; }
+        public string Status { get; set; } 
+        public DateOnly ForwardedToHRDeptOn { get; set; }
         public ICollection<OrderItemDisplayDto> OrderItems { get; set; }
     }
 }

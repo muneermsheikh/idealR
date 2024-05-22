@@ -2,7 +2,6 @@ using api.DTOs;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.HR;
-using api.Entities.Messages;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
@@ -43,26 +42,24 @@ namespace api.Controllers
 
      
           [HttpGet("cvref/{cvrefid}")]
-          public async Task<ActionResult<CVRef>> GetCVRef(int cvrefid)
+          public async Task<ActionResult<CVRefDto>> GetCVRef(int cvrefid)
           {
-               var cvref = await _cvrefRepo.GetCVRef(cvrefid);
+               var cvref = await _cvrefRepo.GetCVRefDto(cvrefid);
 
-               if (cvref == null)
-               {
-                        return NotFound(new ApiException(404, "Not Found"));
-               }
-               else
-               {
-                    return Ok(cvref);
-               }
+               if (cvref == null)  return NotFound(new ApiException(404, "Not Found"));
+
+               return cvref;
           }
 
         
           [HttpGet("selDecisionReminder/{CustomerId}")]
-          public async Task<ActionResult<Message>> SelDecisionReminderMessage(int CustomerId )
+          public async Task<ActionResult<bool>> SelDecisionReminderMessage(int CustomerId )
           {
-               return await _adminMsgRepo.ComposeSelDecisionRemindersToClient(CustomerId, User.GetUsername());
-               
+               var msg = await _adminMsgRepo.ComposeSelDecisionRemindersToClient(CustomerId, User.GetUsername());
+               if(msg == null) 
+                    return BadRequest(new ApiException(400, "Bad Request", "Failed to compose reminder message"));
+
+               return Ok("Selection Reminder message composed and saved");
           }
           
           [HttpGet("cvrefwithdeploys/{cvrefid}")]
@@ -93,7 +90,7 @@ namespace api.Controllers
           }
 
           //[Authorize(Roles="Admin, DocumentControllerAdmin, HRManager, HRSupervisor, HRExecutive, HRTrainee")]
-          [HttpGet("cvsreadytoforward")]
+          [HttpGet("cvsreferred")]
           public async Task<ActionResult<PagedList<CVRefDto>>> CustomerReferralsPending()
           {
                var cvrefParams = new CVRefParams
@@ -113,7 +110,7 @@ namespace api.Controllers
           }
 
           [HttpGet("cvsavailabletorefer")]
-          public async Task<ActionResult<PagedList<CandidateAssessmentDto>>> CandidatesReadyToRefer(CandidateAssessmentParams candAssessParam)
+          public async Task<ActionResult<PagedList<CandidateAssessedDto>>> CandidatesReadyToRefer(CandidateAssessmentParams candAssessParam)
           {
                var dto = await _candAssessRepo.GetCandidateAssessments(candAssessParam);
                if (dto==null && dto.Count == 0) return NotFound(new ApiException(402, "No CVs pending for forwarding to customers"));

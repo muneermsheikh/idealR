@@ -1,6 +1,7 @@
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Helpers;
+using api.Interfaces.Messages;
 using api.Params.Orders;
 
 namespace api.Interfaces
@@ -12,27 +13,20 @@ namespace api.Interfaces
         Task<bool> DeleteOrder(int orderid);
         Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams);
         Task<OrderDisplayDto> GetOrderByIdWithAllRelatedProperties (int id);
-        Task<OrderDisplayWithItemsDto> GetOrderByIdWithItemsAsyc (int id);
-        Task<bool> ComposeMsg_AckToClient(int orderid);
+        Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc (int id);
+        Task<MessageWithError> ComposeMsg_AckToClient(int orderid);
             
         //order items
+        Task<PagedList<OpenOrderItemCategoriesDto>> GetOpenItemCategories(OpenOrderItemsParams orderItemParams);
         Task<OrderItem> AddOrderItem(OrderItemToCreateDto orderItem);
         Task<bool> EditOrderItem(OrderItem orderItem, bool DoNotSave);
         Task<bool> DeleteOrderItem (int orderItemId);
         Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsMatchingAProfession(int professionId);
-            
+        Task<PagedList<OrderItemBriefDto>> GetOpenOrderItems(OpenOrderItemsParams itemParams);
+        Task<OrderItemBriefDto> GetOrderItemBrief(int orderitemid);
+        Task<string> GetOrderItemRefCode(int orderitemid);
+        Task<ICollection<OpenOrderItemCategoriesDto>> GetOpenItemCategoryList();
 
-        //Job descriptions
-        Task<JobDescription> GetJDOfOrderItem(int OrderItemId);
-        Task<JobDescription> AddJobDescription(JobDescription jobDescription);
-        Task<bool> EditJobDescription(JobDescription jobDescription);
-        Task<bool> DeleteJobDescription (int jobDescriptionId);
-
-    // Remuneations
-        Task<Remuneration> GetRemuneratinOfOrderItem(int OrderItemId);
-        Task<Remuneration> AddRemuneration(Remuneration remuneration);
-        Task<bool> EditRemuneration(Remuneration remuneration);
-        Task<bool> DeleteRemuneration (int remunerationId);
-    
+        
     }
 }

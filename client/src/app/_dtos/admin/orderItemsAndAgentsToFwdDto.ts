@@ -1,5 +1,5 @@
 
-import { ICustomerOfficialDto } from "../../models/admin/customerOfficialDto";
+import { ICustomerOfficialDto } from "src/app/_models/admin/customerOfficialDto";
 import { IOrderItemToFwdDto } from "./orderItemToFwdDto";
 
 export interface IOrderItemsAndAgentsToFwdDto

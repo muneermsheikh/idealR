@@ -6,7 +6,7 @@ export class UserHistoryParams
     personName = '';
     personId? = 0;
     customerOfficialId = 0;
-    applicationNo? = 0;
+    applicationNo = 0;
     aadharNo = '';
     emailId = '';
     mobileNo = '';

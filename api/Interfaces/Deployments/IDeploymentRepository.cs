@@ -14,6 +14,7 @@ namespace api.Interfaces.Deployments
         Task<string> EditDepItem (DepItem depItem);
         Task<string> DeleteDepItem (int deployItemId);
         Task<string> DeleteDep(int depId);
+        Task<ICollection<DeployStatus>> GetDeploymentStatusData();
         
     }
 }

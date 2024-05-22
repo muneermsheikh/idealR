@@ -1,12 +1,11 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IPagination } from "../../shared/models/pagination";
-import { ICVReferredDto } from "../../shared/dtos/admin/cvReferredDto";
-import { CVRefParams } from "../../shared/params/admin/cvRefParams";
-import { CvrefService } from "../../shared/services/hr/cvref.service";
+import { ICVReferredDto } from "src/app/_dtos/admin/cvReferredDto";
+import { CVRefParams } from "src/app/_models/params/Admin/cvRefParams";
+import { CvrefService } from "src/app/_services/hr/cvref.service";
 
-export const CVsReferredResolver: ResolveFn<IPagination<ICVReferredDto[]> | undefined | null> = (
+export const CVsReferredResolver: ResolveFn<ICVReferredDto[] | undefined | null> = (
     route: ActivatedRouteSnapshot,
   ) => {
     var id = route.paramMap.get('orderid');

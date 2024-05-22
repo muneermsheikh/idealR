@@ -5,7 +5,7 @@ namespace api.Entities.HR
     public class Employment: BaseEntity
     {
         public int CVRefId { get; set; }    
-        public int? SelectionDecisionId { get; set; }
+        public int SelectionDecisionId { get; set; }
         public DateOnly SelectedOn { get; set; }
         public int ChargesFixed {get; set;}
         public int Charges {get; set;}
@@ -22,6 +22,7 @@ namespace api.Entities.HR
         public bool FoodNotProvided { get; set; }
         public bool TransportProvidedFree { get; set; }
         public int TransportAllowance { get; set; }
+        public bool TransportNotProvided{get; set;}
         public int OtherAllowance { get; set; }
         public int LeavePerYearInDays { get; set; }
         public int LeaveAirfareEntitlementAfterMonths {get; set;}

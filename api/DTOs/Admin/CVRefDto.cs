@@ -19,7 +19,7 @@ namespace api.DTOs.Admin
         public int SrNo {get; set;}
         public string ProfessionName { get; set; }
         public string CategoryRef { get; set; }
-        public string PPNo {get; set;}
+        //public string PPNo {get; set;}
         public DateOnly ReferredOn { get; set; }
         public string RefStatus { get; set; }
         public string SelectionStatus { get; set; }

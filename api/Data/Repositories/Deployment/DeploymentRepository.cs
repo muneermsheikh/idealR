@@ -97,7 +97,8 @@ namespace api.Data.Repositories.Deployment
             
             var obj = await _context.Deps.FindAsync(depId);
             if (obj == null) return "The deployment object does not exist";
-
+            
+            _context.Deps.Remove(obj); 
             _context.Entry(obj).State = EntityState.Deleted;
             
              try 
@@ -123,6 +124,7 @@ namespace api.Data.Repositories.Deployment
             var items = await _context.DepItems.Where(x => x.Sequence == obj.Sequence || x.Sequence > obj.Sequence).ToListAsync();
 
             foreach(var item in items) {
+                _context.DepItems.Remove(item);
                 _context.Entry(item).State = EntityState.Deleted;
                 await UpdateDepStatus(item.DepId, false);
             }
@@ -273,6 +275,11 @@ namespace api.Data.Repositories.Deployment
             return paged;
         }
 
+        public async Task<ICollection<DeployStatus>> GetDeploymentStatusData()
+        {
+            return await _context.DeployStatuses.OrderBy(x => x.Sequence).ToListAsync();
+        }
+
         /* public async Task<PagedList<DeploymentRecordsDto>> GetDeploymentHistory()
         {
            group t by new { t.MonthName, t.FeeParticularName } into grp
@@ -315,5 +322,6 @@ namespace api.Data.Repositories.Deployment
 
         }
         */
+
     }
 }

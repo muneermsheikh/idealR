@@ -27,5 +27,26 @@ namespace api.Extensions
             if (customer == null) return null;
             return customer;
         }
+
+        
+        public async static Task<string> OfficialNameFromOfficialId(this DataContext dataContext, int customerOfficialId)
+        {
+            var officialName = await dataContext.CustomerOfficials
+                .Where(x => x.Id == customerOfficialId)
+                .Select(x => x.OfficialName)
+                .FirstOrDefaultAsync();
+
+            return officialName;               
+        }
+
+        public async static Task<int> OfficialAppUserIdFromOfficialId(this DataContext dataContext, int customerOfficialId)
+        {
+            var appuserid = await dataContext.CustomerOfficials
+                .Where(x => x.Id == customerOfficialId)
+                .Select(x => x.AppUserId)
+                .FirstOrDefaultAsync();
+
+            return appuserid;               
+        }
     }
 }

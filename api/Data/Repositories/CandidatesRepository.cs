@@ -1,10 +1,14 @@
+using System.Data.Common;
+using api.Data.Repositories.Admin;
+using api.DTOs;
 using api.DTOs.HR;
+using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
-using api.Entities.Master;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.Orders;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -18,18 +22,43 @@ namespace api.Data.Repositories
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        public CandidatesRepository(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
+        private readonly IComposeMessagesHRRepository _hrMsgRepo;
+        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        public CandidatesRepository(DataContext context, UserManager<AppUser> userManager, 
+            IMapper mapper, IComposeMessagesHRRepository hrMsgRepo)
         {
+            _hrMsgRepo = hrMsgRepo;
             _userManager = userManager;
             _mapper = mapper;
             _context = context;
         }
 
+        public async Task<bool> AadharNoExists(string aadharNo)
+        {
+            var obj = await _context.Candidates
+                .Where(x => x.AadharNo == aadharNo)
+                .Select(x => x.AadharNo)
+                .FirstOrDefaultAsync();
+            
+            return obj != null;
+        }
+
+        public async Task<bool> CheckPPExists(string PPNo)
+        {
+             var obj = await _context.Candidates
+                .Where(x => x.PpNo == PPNo)
+                .Select(x => x.PpNo)
+                .FirstOrDefaultAsync();
+            
+            return obj != null;
+        }
 
         public async Task<bool> DeleteCandidate(int Id)
         {
             var candidate = await _context.Candidates.FindAsync(Id);
             if (candidate == null) return false;
+
+            _context.Candidates.Remove(candidate);
             _context.Entry(candidate).State = EntityState.Deleted;
 
             try{
@@ -59,6 +88,26 @@ namespace api.Data.Repositories
                 }
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<CandidateBriefDto> GetCandidateBriefFromParams(CandidateParams cParams)
+        {
+            
+            var query = _context.Candidates.AsQueryable();
+            
+            if(cParams.Id != 0) {
+                query = query.Where(x => x.Id == cParams.Id);
+            } else if(cParams.ApplicationNo !=0) {
+                query = query.Where(x => x.ApplicationNo == cParams.ApplicationNo);
+            } else {
+                return null;
+            }
+
+            var obj = await query.ProjectTo<CandidateBriefDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync();
+
+            return obj;
+        }
+
 
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
         {
@@ -235,6 +284,144 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
     
+        public async Task<Candidate> CreateCandidateAsync(RegisterDto registerDto, string Username)
+          {
+                var cand = await CreateCandidateObject(registerDto, Username);
 
+                _context.Candidates.Add(cand);
+
+                if (registerDto.NotificationDesired) {
+                        await _hrMsgRepo.ComposeHTMLToAckToCandidateByEmail(cand);
+                }
+                
+                try {
+                    await _context.SaveChangesAsync();
+                } catch {
+                    return null;
+                }
+                
+            //create COA for the candidate    
+                var coa = new COA{
+                     AccountClass = "R", AccountType = "B", 
+                     AccountName = cand.ApplicationNo + "-" + cand.FullName,
+                     Divn = "Candidate"
+                };
+
+                _context.COAs.Add(coa);
+                
+               await _context.SaveChangesAsync();
+
+               return cand;
+          }
+
+        public async Task<Candidate> CreateCandidateObject(RegisterDto registerDto, string Username)
+        {
+            var NextAppNo = await _context.Candidates.MaxAsync(x => x.ApplicationNo);
+            NextAppNo = NextAppNo == 0 ? 10001 : NextAppNo+1;
+
+        var cand = new Candidate {
+            Gender = registerDto.Gender, AppUserId = registerDto.AppUserId,
+            ApplicationNo= NextAppNo, FirstName = registerDto.FirstName,SecondName = registerDto.SecondName ?? "", 
+            FamilyName = registerDto.FamilyName ?? "",  KnownAs = registerDto.KnownAs ?? "",
+            DOB =registerDto.DOB, AadharNo = registerDto.AadharNo ?? "", Email =registerDto.Email,
+            NotificationDesired = registerDto.NotificationDesired, Nationality = registerDto.Nationality, 
+            CustomerId = registerDto.CompanyId, PpNo = registerDto.PpNo ?? "", City = registerDto.City, 
+            Pin = registerDto.Pin, UserPhones = registerDto.UserPhones, UserProfessions = registerDto.UserProfessions,
+        };
+
+        if (registerDto.UserAttachments != null && registerDto.UserAttachments.Count > 0) {
+                foreach(var att in registerDto.UserAttachments) {
+                        att.Name = NextAppNo + "-" + att.Name;
+                        att.UploadedLocation = Directory.GetCurrentDirectory();
+                        att.UploadedbyUserName = Username;
+
+                        if(att.AttachmentType.ToLower()=="photograph") cand.PhotoUrl=att.UploadedLocation + "/" + att.Name;
+                }
+                cand.UserAttachments = registerDto.UserAttachments;
+            }
+            return cand;
+        }
+
+        public async Task<ICollection<UserAttachment>> AddUserAttachments(ICollection<UserAttachment> userAttachments, string Username)
+        {
+            var attachmentsPosted = new List<UserAttachment>();
+
+            foreach(var attachment in userAttachments)
+            {
+                var existing = await _context.UserAttachments
+                    .Where(x => x.Name.ToLower() == attachment.Name.ToLower()).FirstOrDefaultAsync();
+                if (existing != null) {
+                    _context.UserAttachments.Remove(existing);
+                    _context.Entry(existing).State = EntityState.Deleted;
+                }
+                
+                var newAttachment = new UserAttachment{
+                    CandidateId = attachment.CandidateId,  AppUserId = attachment.AppUserId, 
+                    AttachmentType = attachment.AttachmentType, Name = attachment.Name, 
+                    UploadedbyUserName = Username, UploadedLocation = attachment.UploadedLocation,
+                    UploadedOn = _today,  Length = attachment.Length
+                };
+
+                _context.Entry(newAttachment).State = EntityState.Added;
+                attachmentsPosted.Add(newAttachment);
+            }
+
+            return await _context.SaveChangesAsync() > 0 ? attachmentsPosted : null;
+        }
+
+        public async Task<bool> DeleteUserAttachment(int attachmentId)
+        {
+            var exists = await _context.UserAttachments.FindAsync(attachmentId);
+            if(exists == null) return false;
+
+            _context.UserAttachments.Remove(exists);
+            _context.Entry(exists).State = EntityState.Deleted;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<ICollection<UserAttachment>> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments)
+        {
+            var attachmentsToReturn = new List<UserAttachment>();
+
+            foreach(var attach in userAttachments)
+            {
+                var existing = await _context.UserAttachments.Where(x => x.Name == attach.Name).FirstOrDefaultAsync();
+                if(existing != null)  {
+                    _context.Entry(existing).CurrentValues.SetValues(attach);
+                    _context.Entry(existing).State = EntityState.Modified;
+
+                    attachmentsToReturn.Add(existing);
+                }
+            }
+
+            return await _context.SaveChangesAsync() > 0 ? attachmentsToReturn : null;
+        }
+
+        public async Task<UserAttachment> GetUserAttachmentById(int attachmentId)
+        {
+            return await _context.UserAttachments.FindAsync(attachmentId);
+        }
+
+        public async Task<int> GetApplicationNoFromCandidateId(int candidateId)
+        {
+            var appno = await _context.GetApplicationNoFromCandidateId(candidateId);
+
+            return appno;
+        } 
+
+        public async Task<int> GetAppUserIdOfCandidate(int candidateId)
+        {
+            var id = await _context.GetAppUserIdOfCandidate(candidateId);
+
+            return id;
+        }
+
+        public async Task<ICollection<UserAttachment>> GetUserAttachmentByCandidateId (int candidateid)
+        {
+            var objs = await _context.UserAttachments.Where(x => x.CandidateId == candidateid).ToListAsync();
+
+            return objs;
+        }
     }
 }

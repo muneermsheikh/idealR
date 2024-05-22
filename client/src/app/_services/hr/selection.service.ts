@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { Observable, ReplaySubject, map, of, take } from 'rxjs';
-import { SelDecisionParams } from '../../params/admin/selDecisionParams';
-import { IPagination } from '../../models/pagination';
-import { ISelPendingDto } from '../../dtos/admin/selPendingDto';
+import { ReplaySubject, map, of, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AccountsService } from '../accounts.service';
-import { selDecisionsToAddParams } from '../../params/admin/selDecisionsToAddParams';
-import { ISelectionMsgsAndEmploymentsDto } from '../../dtos/admin/selectionMsgsAndEmploymentsDto';
-import { ISelectionDecision } from '../../models/admin/selectionDecision';
-import { ISelectionStatus } from '../../models/admin/selectionStatus';
-import { IEmployment } from '../../models/admin/employment';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
+import { Pagination } from 'src/app/_models/pagination';
+import { AccountService } from '../account.service';
+import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
+import { getPaginatedResult, getPaginationHeadersSelectionParams} from '../paginationHelper';
+import { createSelDecisionDto, selDecisionsToAddParams } from 'src/app/_dtos/admin/createSelDecisionDto';
+import { ISelectionMsgsAndEmploymentsDto } from 'src/app/_dtos/admin/selectionMsgsAndEmploymentsDto';
+import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
+import { IEmployment } from 'src/app/_models/admin/employment';
+import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
+import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,18 +22,19 @@ import { IEmployment } from '../../models/admin/employment';
 export class SelectionService {
 
   apiUrl = environment.apiUrl;
-  user?: IUser;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  user?: User;
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   sParams = new SelDecisionParams();
 
-  pagination?: IPagination<ISelPendingDto[]>;  // = new paginationSelPending();
+  pagination: Pagination | undefined;
 
   cache = new Map();
+  cacheSel = new Map();
 
   constructor(private activatedRoute: ActivatedRoute,
       private http: HttpClient, 
-      private accountService: AccountsService) {
+      private accountService: AccountService) {
         this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
           this.user = user!;
         })
@@ -45,104 +48,80 @@ export class SelectionService {
      return this.sParams;
    }
 
-  private getHttpParams(): HttpParams {
-    
-    let params = new HttpParams();
+ 
 
-    if (this.sParams.orderItemId !== 0) 
-      params = params.append('orderItemId', this.sParams.orderItemId.toString());
-    
-    if (this.sParams.categoryId !== 0) 
-      params = params.append('categoryId', this.sParams.categoryId.toString());
-    if (this.sParams.categoryName !== '') 
-      params = params.append('categoryName', this.sParams.categoryName);
-    if (this.sParams.orderId !== 0) 
-      params = params.append('orderId', this.sParams.orderId!.toString());
-    if (this.sParams.orderNo !== 0) 
-      params = params.append('orderNo', this.sParams.orderNo!.toString());
-    if (this.sParams.candidateId !== 0) 
-      params = params.append('candidateId', this.sParams.candidateId!.toString());
-    if (this.sParams.applicationNo !== 0) 
-      params = params.append('applicationNo', this.sParams.applicationNo!.toString());
-    if (this.sParams.cVRefId !== 0) 
-      params = params.append('cVRefId', this.sParams.cVRefId!.toString());
-    if (this.sParams.includeEmployment === true) 
-      params = params.append('includeEmployment', "true");
-    if (this.sParams.search) 
-      params = params.append('search', this.sParams.search);
-    
-    params = params.append('sort', this.sParams.sort);
-    params = params.append('pageIndex', this.sParams.pageIndex.toString());
-    params = params.append('pageSize', this.sParams.pageSize.toString());
-    
-    return params;
-  }
+  getPendingSelections(oParams: SelDecisionParams) {   //: Observable<IPagination<ISelPendingDto[]>> {
 
-  getPendingSelections(useCache: boolean): Observable<IPagination<ISelPendingDto[]>> {
+    const response = this.cache.get(Object.values(oParams).join('-'));
+    if(response) return of(response);
 
-    if (useCache === false) this.cache = new Map();
-
-    if (this.cache.size > 0 && useCache) {
-      if (this.cache.has(Object.values(this.sParams).join('-'))) {
-        this.pagination = this.cache.get(Object.values(this.sParams).join('-'));
-        if(this.pagination) return of(this.pagination);
-      }
-    }
+    let params = getPaginationHeadersSelectionParams(oParams);
     
-    var params = this.getHttpParams();
-
-    return this.http.get<IPagination<ISelPendingDto[]>>(this.apiUrl + 
-      'selectionDecision/pendingseldecisions', {params})
-    .pipe(
+    return getPaginatedResult<ISelPendingDto[]>(this.apiUrl + 'selection/pendingselections', params, this.http).pipe(
       map(response => {
-        this.cache.set(Object.values(this.sParams).join('-'), response);
-        this.pagination = response!;
+        this.cache.set(Object.values(oParams).join('-'), response);
         return response;
       })
     )
-    
-    
+ 
   }
 
 
-  registerSelectionDecisions(selDecisions: selDecisionsToAddParams) {
-    return this.http.post<ISelectionMsgsAndEmploymentsDto>(this.apiUrl + 'selectiondecision', selDecisions);
+  registerSelectionDecisions(selDecisions: createSelDecisionDto) {
+    return this.http.post<boolean>(this.apiUrl + 'Selection', selDecisions);
   }
 
-  getSelectionDecisions(selDecision: SelDecisionParams)
+  getSelectionDecisions(sParams: SelDecisionParams)
   {
-       var params=this.getHttpParams();
+    const response = this.cacheSel.get(Object.values(sParams).join('-'));
+    if(response) return of(response);
 
-      return this.http.get<ISelectionDecision[]>(this.apiUrl + 'seldecision', {observe: 'response', params})
+    let params = getPaginationHeadersSelectionParams(sParams);
+
+    return getPaginatedResult<ISelDecisionDto[]>(this.apiUrl 
+      + 'Selection', params, this.http).pipe(
+    map(response => {
+      this.cacheSel.set(Object.values(sParams).join('-'), response);
+      return response;
+    }))
+
   }
 
   editSelectionDecision(seldecision: ISelectionDecision) {
-    return this.http.put<boolean>(this.apiUrl + 'selectiondecision', seldecision);
+    return this.http.put<boolean>(this.apiUrl + 'selection', seldecision);
   }
 
   deleteSelectionDecision(id: number) {
     
-    return this.http.delete<boolean>(this.apiUrl + 'selectiondecision/' + id);
-  }
-
-  getSelectionStatus() {
-    return this.http.get<ISelectionStatus[]>(this.apiUrl + 'selectiondecision/selectionstatus');
+    return this.http.delete<boolean>(this.apiUrl + 'selection/' + id);
   }
 
   getEmployment(cvrefid: number) {
-    return this.http.get<IEmployment>(this.apiUrl + 'selectiondecision/employment/' + cvrefid);
+    return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentbycvrefid/' + cvrefid);
+  }
+
+  getEmploymentFromEmploymentId(employmentid: number) {
+    return this.http.get<IEmployment>(this.apiUrl + 'selection/employment/' + employmentid);
+    
   }
 
   getEmploymentFromSelectionId(id: number) {
-    return this.http.get<IEmployment>(this.apiUrl + 'selectiondecision/employmentfromSelId/' + id);
+    return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
     
   }
 
   updateEmployment(emp: IEmployment) {
-    return this.http.put<boolean>(this.apiUrl + 'selectiondecision/employment', emp);
+    return this.http.put<boolean>(this.apiUrl + 'selection/employment', emp);
   }
 
   getSelectionDtoByOrderNo(orderno: number) {
     
   }
+
+  registerOfferAccepted(acceptedDto: IOfferConclusioDto[]) {
+    return this.http.put<boolean>(this.apiUrl + 'selection/offeraccepted', acceptedDto);
+  }
+
+  
+
 }

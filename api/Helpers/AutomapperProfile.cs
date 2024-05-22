@@ -3,15 +3,19 @@ using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.DTOs.Finance;
 using api.DTOs.HR;
+using api.DTOs.Order;
 using api.DTOs.Process;
 using api.Entities;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
 using api.Entities.Deployments;
+using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
+using api.Entities.Master;
 using api.Entities.Messages;
+using api.Entities.Tasks;
 using api.Extensions;
 using AutoMapper;
 
@@ -55,15 +59,17 @@ namespace api.Helpers
 
             CreateMap<ChecklistHR, ChecklistHRDto>();
 
+
             CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
 
             CreateMap<CVRefDto, CVRefDto>();
             
             CreateMap<OrderItemAssessmentQ, CandidateAssessmentItem>();
 
-            CreateMap<CandidateAssessment, CandidateAssessmentDto>();
+            CreateMap<CandidateAssessment, CandidateAssessedDto>();
 
             CreateMap<Employee, EmployeeBriefDto>();
+            CreateMap<EmployeeToAddDto, Employee>();
 
             CreateMap<SelectionDecision, SelDecisionDto>();
                 //.ForMember(d => d.Accepted, o => o.MapFrom())
@@ -75,7 +81,28 @@ namespace api.Helpers
             CreateMap<DeploymentPendingTempDto, DeploymentPendingDto>();
 
             CreateMap<Dep, DeploymentPendingDto>();
-                
+
+            CreateMap<CreateCustomerDto, Customer>();
+            CreateMap<Customer, CustomerAndOfficialsDto>();
+
+            CreateMap<Employment, Employment>();    //AutoMapper configuration needs the mapping even between similar objects
+            CreateMap<OpenOrderItemCategoriesDto, OpenOrderItemCategoriesDto>();
+
+            CreateMap<Profession, Profession>();
+            CreateMap<Qualification, Qualification>();
+            CreateMap<Industry, Industry>();
+            
+            CreateMap<OrderItemBriefDto, OrderItemAssignmentDto>();
+
+            CreateMap<AppTask, TaskInBriefDto>();
+
+            CreateMap<UserHistory, UserHistoryDto>();
+            CreateMap<UserHistory,UserHistoryBriefDto>();
+
+            //finance
+            CreateMap<COA, COA>();
+            CreateMap<Voucher, Voucher>();
+                            
         }
 
     }

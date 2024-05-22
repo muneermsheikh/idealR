@@ -1,114 +1,79 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { orderParams } from '../../params/admin/orderParams';
-import { IPagination } from '../../models/pagination';
-import { IOrder, Order } from '../../models/admin/order';
-import { IOrderCity } from '../../models/admin/orderCity';
-import { ICustomerNameAndCity } from '../../models/admin/customernameandcity';
-import { IProfession } from '../../models/masters/profession';
-import { IOrderBriefDto } from '../../dtos/admin/orderBriefDto';
-import { IOpenOrderItemCategoriesDto } from '../../dtos/admin/openOrderItemCategriesDto';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { IOrderItemBriefDto } from '../../dtos/admin/orderItemBriefDto';
-import { IJDDto } from '../../dtos/admin/jdDto';
-import { IRemunerationDto } from '../../dtos/admin/remunerationDto';
-import { idAndDate } from '../../params/admin/idAndDate';
+import { ReplaySubject, map, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { orderParams } from 'src/app/_models/params/Admin/orderParams';
+import { Pagination } from 'src/app/_models/pagination';
+import { IOrderCity } from 'src/app/_models/admin/orderCity';
+import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
+import { IProfession } from 'src/app/_models/masters/profession';
+import { IOpenOrderItemCategoriesDto } from 'src/app/_dtos/admin/openOrderItemCategriesDto';
+import { getHttpParamsForOrderItems, getHttpParamsForOrders, getPaginatedResult } from '../paginationHelper';
+import { IOrderBriefDto } from 'src/app/_dtos/admin/orderBriefDto';
+import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
+import { IOrder } from 'src/app/_models/admin/order';
+import { IJDDto } from 'src/app/_dtos/admin/jdDto';
+import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
+import { OpenOrderItemsParams } from 'src/app/_models/params/Admin/openOrderItemsParams';
+import { IOrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
+import { IOrderToCreateDto } from 'src/app/_dtos/orders/orderToCreateDto';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class OrderService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   oParams = new orderParams();
-  pagination?: IPagination<IOrder[]>;
+  pagination: Pagination | undefined; 
   cities: IOrderCity[]=[];
   customers: ICustomerNameAndCity[]=[];
   professions: IProfession[]=[];
   cache = new Map();
-  cacheBrief = new Map();
-  paginationBrief?: IPagination<IOrderBriefDto[]>;
-  bParams = new orderParams();
-
+  cacheItems = new Map();
+ 
   openOrderItems?: IOpenOrderItemCategoriesDto[];
 
   constructor(private http: HttpClient) { }
 
-    getOrdersBrief(useCache: boolean=true): Observable<IPagination<IOrderBriefDto[]>> { 
+    getOrdersBrief(oParams: orderParams) { 
 
-      if (useCache === false) this.cacheBrief = new Map();
-      
-      if (this.cacheBrief.size > 0 && useCache === true) {
-        if (this.cacheBrief.has(Object.values(this.bParams).join('-'))) {
-          this.paginationBrief!.data = this.cacheBrief.get(Object.values(this.bParams).join('-'));
-          if(this.paginationBrief) return of(this.paginationBrief);
-        }
-      }
-
-      let params = new HttpParams();
-      if (this.bParams.city !== "") {
-        params = params.append('cityOfWorking', this.bParams.city);
-      }
+        const response = this.cache.get(Object.values(oParams).join('-'));
+        if(response) return of(response);
     
-      if (this.bParams.search) {
-        params = params.append('search', this.bParams.search);
-      }
-      
-      params = params.append('sort', this.bParams.sort);
-      params = params.append('pageIndex', this.bParams.pageNumber.toString());
-      params = params.append('pageSize', this.bParams.pageSize.toString());
-
-      return this.http.get<IPagination<IOrderBriefDto[]>>(this.apiUrl + 'orders/ordersbriefpaginated', {params}).pipe(
+        let params = getHttpParamsForOrders(oParams);
+    
+        return getPaginatedResult<IOrderBriefDto[]>(this.apiUrl + 
+            'orders/pagedlist', params, this.http).pipe(
           map(response => {
-            this.cacheBrief.set(Object.values(this.oParams).join('-'), response);
-            this.paginationBrief = response;
+            this.cache.set(Object.values(oParams).join('-'), response);
             return response;
           })
         )
-      }
+        
+    }
 
-    getOrders(useCache: boolean): Observable<IPagination<Order[]>> { 
-
-      if (useCache === false) this.cache = new Map();
-      
-      if (this.cache.size > 0 && useCache === true) {
-        if (this.cache.has(Object.values(this.oParams).join('-'))) {
-          this.pagination = this.cache.get(Object.values(this.oParams).join('-'));
-          if(this.pagination) return of(this.pagination);
-        }
-      }
-
-      let params = new HttpParams();
-
-      if (this.oParams.city !== "") params = params.append('cityOfWorking', this.oParams.city);
-      if (this.oParams.categoryId !== 0) params = params.append('categoryId', this.oParams.categoryId.toString());
-      if (this.oParams.search) params = params.append('search', this.oParams.search);
-      
-      params = params.append('sort', this.oParams.sort);
-      params = params.append('pageIndex', this.oParams.pageNumber.toString());
-      params = params.append('pageSize', this.oParams.pageSize.toString());
-
-      return this.http.get<IPagination<Order[]>>(this.apiUrl + 'orders/ordersbriefpaginated', 
-        {params})
-        .pipe(
-          map(response => {
-            this.cache.set(Object.values(this.oParams).join('-'), response);
-            this.pagination = response;
-            return response;
-          })
-        )
-      }
-
-    getOrderItemsBriefDto() {
-      return this.http.get<IOrderItemBriefDto[]>(this.apiUrl + 'orders/openorderitemlist');
+    getOrderItemsBriefDto(oParams: OpenOrderItemsParams) {
+            
+      const response = this.cacheItems.get(Object.values(oParams).join('-'));
+      if(response) return of(response);
+  
+      let params = getHttpParamsForOrderItems(oParams);
+  
+      return getPaginatedResult<IOrderItemBriefDto[]>(this.apiUrl + 'Orders/openorderitemcategories', params, this.http).pipe(
+        map(response => {
+          this.cacheItems.set(Object.values(oParams).join('-'), response);
+          return response;
+        })
+      )
     }
 
     acknowledgeOrderToClient(orderid: number) {
-      return this.http.get<boolean>(this.apiUrl + 'ordersget/ackToClient/' + orderid);
+      return this.http.get<boolean>(this.apiUrl + 'Orders/ackToClient/' + orderid);
     }
 
     getOpenOrderItemCategoriesDto() {
@@ -125,16 +90,27 @@ export class OrderService {
         )
     }
 
+    //why is following required
     getOrderItemIdsAssessedForACandidate(candidateid: number) {
       return this.http.get<number[]>(this.apiUrl + 'orders/referredtoorderitemids/' + candidateid);
     }
     
     getOrder(id: number) {
-      return this.http.get<IOrder>(this.apiUrl + 'orders/byid/' + id);
+      return this.http.get<IOrder>(this.apiUrl + 'orders/orderWithItems/' + id);
     }
     
+    //why is following required
     getOrderBrief(id: number) {
-      return this.http.get<IOrderBriefDto>(this.apiUrl + 'orders/orderbriefdto/' + id);
+        const cand = [...this.cache.values()]
+        .reduce((arr,elem) => arr.concat(elem.result), [])
+        .find((cand: IOrderBriefDto) => cand.id === id);
+      
+        if(cand) {
+          //console.log('returned from cache');
+          return of(cand);
+        }
+        
+        return this.http.get<IOrderBriefDto>(this.apiUrl + 'orders/orderbriefdto/' + id);
     }
 
     getJD(orderitemid: number) {
@@ -154,24 +130,20 @@ export class OrderService {
       return this.http.put(this.apiUrl + 'orders/remuneration', model);
     }
 
-    register(model: any) {
-      return this.http.post<IOrder>(this.apiUrl + 'orders', model);  // also composes email msg to customer
-      }
-    
-    UpdateOrder(model: any) {
-      return this.http.put(this.apiUrl + 'orders', model)
-    }
-      
-    setOParams(params: orderParams) {
-      this.oParams = params;
-    }
-    
-    getOParams() {
-      return this.oParams;
+    deleteRemuneration(remunId: number) {
+      return this.http.delete<boolean>(this.apiUrl + 'orders/' + remunId);
     }
 
+    register(model: IOrderToCreateDto) {    //model: OrderToCreateDto
+      return this.http.post<IOrder>(this.apiUrl + 'orders/neworder', model);  // also composes email msg to customer
+      }
     
-    getOrderCities() {
+    UpdateOrder(model: IOrder) {
+      return this.http.put<boolean>(this.apiUrl + 'orders/editorder', model)
+    }
+    
+    //why is this required
+    /*getOrderCities() {
       if (this.cities.length > 0) {
         return of(this.cities);
       }
@@ -183,19 +155,18 @@ export class OrderService {
         })
       )
     }
-
-    updateOrderWithDLFwdToHROn(orderid: number, dt: Date) {
-      var obj = new idAndDate();
-      obj.orderId=orderid;
-      obj.dateForwarded=dt;
-      return this.http.put(this.apiUrl + 'orders/updatedlfwd' , obj);
-    }
-
+    */
+    
     deleteOrder(orderid: number) {
-      return this.http.delete<boolean>(this.apiUrl + 'orders')
+      return this.http.delete<boolean>(this.apiUrl + 'orders/deleteorder/' + orderid);
     }
 
-    remindClientForSelections(customerId: number) {
-      return this.http.get<boolean>(this.apiUrl + 'CVRef/selDecisionReminder/' + customerId);
+    setOParams(params: orderParams) {
+      this.oParams = params;
     }
+    
+    getOParams() {
+      return this.oParams;
+    }
+
 }

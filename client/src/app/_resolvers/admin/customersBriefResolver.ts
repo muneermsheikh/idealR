@@ -1,8 +1,11 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
+import { ICustomerBriefDto } from "src/app/_dtos/admin/customerBriefDto";
+import { paramsCustomer } from "src/app/_models/params/Admin/paramsCustomer";
+import { CustomersService } from "src/app/_services/admin/customers.service";
 
- export const CustomersBriefResolver: ResolveFn<IPagination<ICustomerBriefDto[]>|null> = (
+ export const CustomersBriefResolver: ResolveFn<ICustomerBriefDto[] | null> = (
     route: ActivatedRouteSnapshot,
   ) => {
     var id = route.paramMap.get('custType');

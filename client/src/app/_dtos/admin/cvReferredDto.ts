@@ -1,4 +1,4 @@
-export interface ICVReferredDto
+export interface ICVRefWithDepDto
 {
      checked: boolean;
      cVRefId: number;
@@ -15,19 +15,19 @@ export interface ICVReferredDto
      candidateName: string;
      agentName: string;
      referredOn: Date;
-     referralDecision: number;
+     referralDecision: string;
      selectedOn: Date;
      deployments: IDeployDto[];
 }
 
-export class CVReferredDto implements ICVReferredDto
+export class CVRefWithDepDto implements ICVRefWithDepDto
 {
      checked = false;
      cVRefId= 0;
      customerName= '';
      orderId= 0;
      orderNo= 0;
-     orderDate = new Date('1900-01-01');
+     orderDate = new Date();
      orderItemId= 0;
      categoryName= '';
      categoryRef= '';
@@ -36,9 +36,9 @@ export class CVReferredDto implements ICVReferredDto
      applicationNo= 0;
      candidateName= '';
      agentName= '';
-     referredOn = new Date('1900-01-01');
-     referralDecision= 0;
-     selectedOn = new Date('1900-01-01');
+     referredOn = new Date();
+     referralDecision= '';
+     selectedOn = new Date();
      deployments: IDeployDto[] = [];
 }
 

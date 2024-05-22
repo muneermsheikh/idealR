@@ -90,7 +90,7 @@ namespace api.Data.Repositories.Admin
                     OrderItemId = cvref.OrderItemId,
                     ProfessionName = item.Profession.ProfessionName,
                     CategoryRef = o.OrderNo + "-" + item.SrNo,
-                    PPNo = cv.PpNo,
+                    //PPNo = cv.PpNo,
                     ReferredOn = cvref.ReferredOn,
                     RefStatus = cvref.RefStatus
                 })
@@ -127,7 +127,7 @@ namespace api.Data.Repositories.Admin
                     OrderItemId = cvref.OrderItemId,
                     ProfessionName = item.Profession.ProfessionName,
                     CategoryRef = o.OrderNo + "-" + item.SrNo,
-                    PPNo = cv.PpNo,
+                    //PPNo = cv.PpNo,
                     ReferredOn = cvref.ReferredOn,
                     RefStatus = cvref.RefStatus
                 })
@@ -188,7 +188,7 @@ namespace api.Data.Repositories.Admin
                         OrderItemId = cvref.OrderItemId,
                         ProfessionName = item.Profession.ProfessionName,
                         CategoryRef = o.OrderNo + "-" + item.SrNo,
-                        PPNo = cv.PpNo,
+                        //PPNo = cv.PpNo,
                         ReferredOn = cvref.ReferredOn,
                         Deployments = (ICollection<DTOs.Process.DeployDto>)dep
                     })
@@ -229,7 +229,7 @@ namespace api.Data.Repositories.Admin
                         CandidateName = cand.FullName,
                         DocControllerAdminTaskId = r.TaskIdDocControllerAdmin,
                         ChargesAgreed = checklist==null ? 0 : checklist.ChargesAgreed,
-                        HRExecId = checklist.HRExecId,
+                        HRExecUsername = checklist.HRExecUsername,
                         TaskDescription= "CV approved to send to client: Application No.:" + 
                             cand.ApplicationNo + ", Candidate: " + cand.FullName +
                             "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 
@@ -284,7 +284,7 @@ namespace api.Data.Repositories.Admin
                     CandidateAssessmentId = q.CandidateAssessment.Id,
                     OrderItemId=q.OrderItemId, CandidateId = q.CandidateId, 
                     CustomerId =  q.CustomerId, ReferredOn = DateOnly.FromDateTime(dateTimeNow), 
-                    HRExecId = q.HRExecId, RefStatus = "Referred",
+                    HRExecUsername = q.HRExecUsername, RefStatus = "Referred",
                     RefStatusDate = DateOnly.FromDateTime(DateTime.UtcNow)
                 };
                 
@@ -374,7 +374,8 @@ namespace api.Data.Repositories.Admin
                         var task = await _context.Tasks.Include(x => x.TaskItems).Where(x => x.Id==id).FirstOrDefaultAsync();
                         if(task != null) {
                             task.TaskStatus = "Completed";
-                            task.TaskItems.Add(new TaskItem{AppTaskId=id, TransactionDate=DateTime.UtcNow,
+                            task.TaskItems.Add(new TaskItem{AppTaskId=id, 
+                                TransactionDate=DateOnly.FromDateTime(DateTime.UtcNow),
                                 TaskItemDescription="Task Completed", UserName=Username});
                             _context.Entry(task).State = EntityState.Modified;
                         }
@@ -456,14 +457,43 @@ namespace api.Data.Repositories.Admin
             return ErrorString;
         }
             
-        public async Task<CVRef> GetCVRef(int CVRefId)
+        public async Task<CVRefDto> GetCVRefDto(int CVRefId)
         {
-            return await _context.CVRefs.FindAsync(CVRefId);
+            var query = await (from cvref in _context.CVRefs where cvref.Id == CVRefId 
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join o in _context.Orders on item.OrderId equals o.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+        
+                select new CVRefDto{
+                    CVRefId = cvref.Id,
+                    Checked = false,
+                    CustomerId = o.CustomerId,
+                    CustomerName = o.Customer.CustomerName,
+                    CandidateId = cvref.CandidateId,
+                    CandidateName = cv.FullName,
+                    ApplicationNo = cv.ApplicationNo,
+                    OrderId = item.OrderId,
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = cvref.OrderItemId,
+                    ProfessionName = item.Profession.ProfessionName,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    //PPNo = cv.PpNo,
+                    ReferredOn = cvref.ReferredOn,
+                    RefStatus = cvref.RefStatus
+                }).FirstOrDefaultAsync();
+                
+            return query;
         }
 
-        public Task<ICollection<Message>> ComposeSelectionDecisionReminderMessage(ICollection<int> cvRefIds, string username)
+        public async Task<string> ComposeSelectionDecisionReminderMessage(int CustomerId, string username)
         {
-            throw new NotImplementedException();
+            var msg = await _composeMsgAdmin.ComposeSelDecisionRemindersToClient(CustomerId, username);
+            if(msg == null) return "Failed to compose the message";
+            
+            _context.Entry(msg).State = EntityState.Added;
+
+            return await _context.SaveChangesAsync() > 0 ? "" : "Message composed, but failed to save it";
         }
 
     }

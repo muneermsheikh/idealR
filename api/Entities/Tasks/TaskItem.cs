@@ -7,12 +7,12 @@ namespace api.Entities.Tasks
         [Required]
         public int AppTaskId { get; set; }
         [Required]
-        public DateTime TransactionDate { get; set; }
+        public DateOnly TransactionDate { get; set; }
         [Required]
         public string TaskItemDescription {get; set;}
         [Required]
         public string UserName {get; set;}
-        public DateTime? NextFollowupOn {get; set;}
+        public DateOnly? NextFollowupOn {get; set;}
         public string NextFollowupByName {get; set;}
     }
 }

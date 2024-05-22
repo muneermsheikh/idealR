@@ -9,7 +9,7 @@ namespace api.Entities.HR
         [Required]
         public int OrderItemId { get; set; }
         public int CandidateId {get; set;}
-        public DateTime AssessedOn { get; set; }
+        public DateOnly AssessedOn { get; set; }
         public string AssessedByEmployeeName {get; set;}
         [Required]
         public bool RequireInternalReview {get; set;}

@@ -1,6 +1,7 @@
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Master;
+using api.Errors;
 using api.Extensions;
 using api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +18,20 @@ namespace api.Controllers
             _repo = repo;
         }
 
-        [HttpPost("newchecklist/{candidateid}/{orderitemid}")]
-        public async Task<ActionResult<ChecklistHR>> AdNewChecklist(int candidateid, int orderitemid)
+        [HttpGet("generate/{candidateid}/{orderitemid}")]
+        public async Task<ActionResult<ChecklistHR>> GenerateNewChecklist(int candidateid, int orderitemid)
         {
-            var checklist = await _repo.AddNewChecklistHR(candidateid, orderitemid, User.GetUsername());
+            var checkobj = await _repo.GetOrGenerateChecklist(candidateid, orderitemid, User.GetUsername());
+
+            if(!string.IsNullOrEmpty(checkobj.ErrorString)) return BadRequest(new ApiException(500, "Bad Request", checkobj.ErrorString));
+
+            return Ok(checkobj.ChecklistHR);
+        }
+
+        [HttpPost("newchecklist")]
+        public async Task<ActionResult<ChecklistHR>> SaveNewChecklist (ChecklistHR checklisthr)
+        {
+            var checklist = await _repo.SaveNewChecklist(checklisthr, User.GetUsername());
 
             if(!string.IsNullOrEmpty(checklist.ErrorString)) return BadRequest(checklist.ErrorString);
 
@@ -77,7 +88,7 @@ namespace api.Controllers
             return Ok(data);
         }
 
-        [HttpDelete("checklistHR/{id}")]
+        [HttpDelete("checklist/{id}")]
         public async Task<ActionResult<bool>> DeleteChecklistHR (int id)
         {
             var data = await _repo.DeleteChecklistHR(id);

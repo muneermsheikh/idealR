@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, map, of } from 'rxjs';
+import { ReplaySubject, map, of } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
 import { UserHistoryParams } from '../_models/params/userHistoryParams';
 import { Pagination } from '../_models/pagination';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getHttpParamsForUserHistoryParams, getPaginatedResult } from './paginationHelper';
 import { IUserHistoryDto } from '../_dtos/admin/userHistoryDto';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IUserHistory } from '../_models/admin/userHistory';
@@ -13,6 +13,7 @@ import { IUserHistoryItem } from '../_models/admin/userHistoryItem';
 @Injectable({
   providedIn: 'root'
 })
+
 export class CallRecordsService {
   
   apiUrl = environment.apiUrl;
@@ -29,17 +30,9 @@ export class CallRecordsService {
     const response = this.cache.get(Object.values(hParams).join('-'));
     if(response) return of(response);
 
-    let params = getPaginationHeaders(hParams.pageNumber, hParams.pageSize);
-
-    if(hParams.userName !== '') params = params.append('userName', hParams.userName);
-    if(hParams.applicationNo !== 0) params = params.append('applicationNo', hParams.applicationNo.toString());
-    if(hParams.emailId !== '') params = params.append('emailId', hParams.emailId);
-    if(hParams.applicationNo !== undefined) params = params.append('applicationNo', hParams.applicationNo?.toString());
-    if(hParams.mobileNo !== '') params = params.append('mobileNo', hParams.mobileNo);
-    if(hParams.personName !== '') params = params.append('personName', hParams.personName);
-    if(hParams.status !== '') params = params.append('status', hParams.status);
+    let params = getHttpParamsForUserHistoryParams(hParams);
     
-    return getPaginatedResult<IUserHistoryDto[]>(this.apiUrl + 'userHistory/paginated', params, this.http).pipe(
+    return getPaginatedResult<IUserHistoryDto[]>(this.apiUrl + 'userHistory/pagedlist', params, this.http).pipe(
         map(response => {
           this.cache.set(Object.values(hParams).join('-'), response);
           return response;

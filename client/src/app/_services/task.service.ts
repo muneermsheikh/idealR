@@ -4,13 +4,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
-import { userTaskParams } from '../_models/params/Admin/userTaskParams';
 import { Pagination } from '../_models/pagination';
 import { IApplicationTaskInBrief } from '../_models/admin/applicationTaskInBrief';
 import { IOrderAssignmentDto } from '../_dtos/admin/orderAssignmentDto';
 import { IApplicationTask } from '../_models/admin/applicationTask';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getHttpParamsForTask, getPaginatedResult} from './paginationHelper';
 import { ITaskItem } from '../_models/admin/taskItem';
+import { TaskParams } from '../_models/params/Admin/taskParams';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class TaskService {
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   
-  oParams = new userTaskParams();
+  oParams = new TaskParams();
   pagination: Pagination | undefined; 
   tasks: IApplicationTaskInBrief[]=[];
   cache = new Map();
@@ -43,7 +43,7 @@ export class TaskService {
       this.oParams.pageNumber + '/' + this.oParams.pageSize);
   }
 
-  setOParams(params: userTaskParams) {
+  setOParams(params: TaskParams) {
     this.oParams = params;
   }
   
@@ -52,26 +52,12 @@ export class TaskService {
   }
   
 
-  getTasksPaged(oParams: userTaskParams): any {     //returns IPaginationAppTask
+  getTasksPaged(oParams: TaskParams): any {     //returns IPaginationAppTask
     
       const response = this.cache.get(Object.values(oParams).join('-'));
       if(response) return of(response);
   
-      let params = getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
-  
-      if(this.oParams.candidateId !==0 ) {
-        params = params.append('candidateId', this.oParams.candidateId.toString());
-        params = params.append('personType', 'candidate');
-      } 
-      if (this.oParams.taskStatus !== "" && this.oParams.taskStatus !== undefined ) params = params.append('taskStatus', this.oParams.taskStatus); 
-      if (this.oParams.orderId !== 0 && this.oParams.orderId !== undefined) params = params.append('orderId', this.oParams.orderId.toString()); 
-      if (this.oParams.assignedToId !== 0 && this.oParams.assignedToId !== undefined) params = params.append('assignedToId', this.oParams.assignedToId?.toString()); 
-      if (this.oParams.assignedToNameLike !== '' && this.oParams.assignedToNameLike !== undefined ) params = params.append('assignedToNameLike', this.oParams.assignedToNameLike); 
-      if (new Date(this.oParams.taskDate).getFullYear() > 2000) params = params.append('taskDate', this.oParams.taskDate.toString()); 
-            
-      if (this.oParams.search) params = params.append('search', this.oParams.search);
-    
-      params = params.append('sort', this.oParams.sort);
+      let params = getHttpParamsForTask(oParams);
         
       return getPaginatedResult<IApplicationTaskInBrief[]>(this.apiUrl + 'task/paginatedtasksOfloggedinuser', 
         params, this.http).pipe(map(response => {
@@ -101,7 +87,7 @@ export class TaskService {
   getOrCreateTaskFromParams(resumeid: string) {
     var tparams = this.oParams;
     tparams.resumeId=resumeid;
-    tparams.taskTypeId=27;    //prospective candidate followup
+    tparams.taskType="Prospective";    //No. 27
     return this.http.post<IApplicationTask>(this.apiUrl + 'task/getorcreatetaskfromparams', tparams);
   }
 

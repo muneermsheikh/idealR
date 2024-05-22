@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { orderItemParams } from '../../params/admin/orderItemParams';
-import { IOrderItemBriefDto } from '../../dtos/admin/orderItemBriefDto';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { orderItemParams } from 'src/app/_models/params/Admin/orderItemParams';
+import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 export class OrderitemsService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   oParams = new orderItemParams();
   cache = new Map();
@@ -21,16 +21,9 @@ export class OrderitemsService {
 
   constructor(private http: HttpClient) { }
 
-    getOrderItems(orderid: number, useCache: boolean) {
-      if(useCache === false) this.cache = new Map();
-      if(this.cache.size > 0 && useCache === true) {
-          if (this.cache.has(Object.values(this.oParams).join('-'))) {
-            this.orderitems = this.cache.get(Object.values(this.oParams).join('-'));
-            return of(this.orderitems);
-        }
-      }
+    getOrderItems(orderid: number) {
 
-      return this.http.get<IOrderItemBriefDto[]>(this.apiUrl + 'orders/orderitemsbyorderid/'+orderid)
+      return this.http.get<IOrderItemBriefDto[]>(this.apiUrl + 'orders/orderWithItems/'+orderid)
         .pipe(
           map(response => {
             this.cache.set(Object.values(this.oParams).join('-'), response);
@@ -48,7 +41,7 @@ export class OrderitemsService {
     
     if (item) return of(item);
     
-    var oitem = this.http.get<IOrderItemBriefDto>(this.apiUrl + 'orders/itemdtobyid/' + orderitem);
+    var oitem = this.http.get<IOrderItemBriefDto>(this.apiUrl + 'orders/itembrief/' + orderitem);
     return oitem;
   }
 
@@ -70,7 +63,7 @@ export class OrderitemsService {
     )
     */
     
-    return this.http.get<string>(this.apiUrl + 'orders/refcodefromorderitemid/' + orderitemid);
+    return this.http.get<string>(this.apiUrl + 'orders/orderitemrefcode/' + orderitemid);
 
   }
 

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Pagination } from 'src/app/_models/pagination';
 import { User } from 'src/app/_models/user';
-import { AdminService } from 'src/app/_services/admin.service';
+import { AdminService } from 'src/app/_services/admin/admin.service';
 import { RolesModalComponent } from 'src/app/modals/roles-modal/roles-modal.component';
 
 @Component({
@@ -14,6 +15,7 @@ export class UserManagementComponent implements OnInit{
   users: User[] = [];
   bsModalRef: BsModalRef<RolesModalComponent> = new BsModalRef<RolesModalComponent>();
   clBtnName='';
+  pagination: Pagination | undefined;
   
   availableRoles = [
     'Candidate', 'Employee', 'Client', 'Admin', 'HR Manager', 'HR Supervisor', 'HR Executive',
@@ -33,11 +35,18 @@ export class UserManagementComponent implements OnInit{
   }
 
   getUsersWithRoles() {
-    this.adminService.getUsersWithRoles().subscribe({
-      next: (users: User[]) => this.users = users
-    })
     
+    this.adminService.getUsersWithRolesPaginated(1,10).subscribe({
+      next: response => {
+        if(response.result && response.pagination) {
+          this.users = response.result;
+          this.pagination = response.pagination;
+        }
+      }
+    })
   }
+
+  
 
   openRolesModal(user: User) {
 
@@ -49,7 +58,6 @@ export class UserManagementComponent implements OnInit{
         selectedRoles: [...user.roles]
       }
     }
-    console.log('config: ', config);
 
     this.bsModalRef = this.modalService.show(RolesModalComponent, config);
     this.bsModalRef.onHide?.subscribe({
@@ -57,7 +65,7 @@ export class UserManagementComponent implements OnInit{
         const selectedRoles = this.bsModalRef.content?.selectedRoles;
         if (!this.arrayEqual(selectedRoles, user.roles)) {
           this.adminService.updateUserRoles(user.userName, selectedRoles!).subscribe({
-            next: roles => user.roles = roles
+            next: () => console.log('succeeded updatng user roles')
           })
         }
       }

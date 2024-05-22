@@ -20,10 +20,10 @@ namespace api.DTOs.Admin
         public string ProfessionName { get; set; }
         public string CategoryRef { get; set; }
        
-        public string PPNo {get; set;}
+        //public string PPNo {get; set;}
         public string AgentName {get; set;}
         public DateOnly ReferredOn { get; set; }
-        public int ReferralDecision { get; set; }
+        public string ReferralDecision { get; set; }
         public DateTime SelectedOn { get; set; }
         public ICollection<DeployDto> Deployments { get; set; }
     }

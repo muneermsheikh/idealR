@@ -19,7 +19,7 @@ namespace api.Controllers
             _depRepo = depRepo;
         }
 
-        [HttpGet("byid/{cvrefid}")]
+        [HttpGet("bycvrefid/{cvrefid}")]
         public async Task<ActionResult<Dep>> GetDeploymentByCVRefId (int cvrefid)
         {
             var data = await _depRepo.GetDeploymentByCVRefId(cvrefid);
@@ -29,6 +29,17 @@ namespace api.Controllers
             return Ok(data);
         }
     
+        [HttpGet("deployStatusData}")]
+        public async Task<ActionResult<Dep>> GetDeploymentStatusData ()
+        {
+            var data = await _depRepo.GetDeploymentStatusData();
+            
+            if(data == null) return NotFound(new ApiException(400, "No record found", ""));
+
+            return Ok(data);
+        }
+    
+
         [HttpGet("deployments")]
         public async Task<ActionResult<PagedList<DeploymentPendingDto>>> GetDeployments (DeployParams depParams)
         {

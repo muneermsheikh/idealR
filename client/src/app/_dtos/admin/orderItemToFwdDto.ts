@@ -1,4 +1,5 @@
-import { IDLForwardDate } from "../../models/admin/dlForwardDate";
+import { IDLForwardDate } from "src/app/_models/admin/dlForwardDate";
+
 
 export interface IOrderItemToFwdDto
 {

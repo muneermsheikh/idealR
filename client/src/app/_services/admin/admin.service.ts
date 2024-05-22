@@ -1,11 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
-import { IUser } from 'src/app/_models/admin/user';
+import { map, of } from 'rxjs';
 import { Pagination } from 'src/app/_models/pagination';
 import { UserParams } from 'src/app/_models/params/userParams';
 import { environment } from 'src/environments/environment.development';
-import { getPaginatedResult, getPaginationHeaders } from '../paginationHelper';
+import { getHttpParamsForUserParams, getPaginatedResult } from '../paginationHelper';
 import { User } from 'src/app/_models/user';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto';
@@ -70,8 +69,10 @@ export class AdminService {
   getUsersWithRolesPaginated(pageNumber: number, pageSize: number) {
     //console.log('calling api for getuserswithroles');
     //return this.http.get<Pagination<User[]> | undefined | null>(this.baseUrl + 'admin/users-with-roles-paginated');
-
-    let params = getPaginationHeaders(pageNumber, pageSize);
+    let params = new HttpParams();
+    params = params.append('pageNumber', pageNumber.toString() );
+    params = params.append('pageSize', pageSize.toString());
+    
     //params = params.append('predicate', predicate);
 
     return getPaginatedResult<User[]>(this.baseUrl + 'admin/"users-with-roles', params, this.http);
@@ -87,15 +88,7 @@ export class AdminService {
     return this.http.get<string[]>(this.baseUrl + 'admin/identityroles');
   }
 
-  getOfficialDto() {
-    //return this.http.get<IChooseAgentDto[]>(this.baseUrl + 'customers/agentdetails');
-    return this.http.get<ICustomerOfficialDto[]>(this.baseUrl + 'customers/agentdetails');
-  }
 
-  //forward DL to agents
-  forwardDLtoSelectedAgents(itemsAndAgents: IOrderItemsAndAgentsToFwdDto) {
-    return this.http.post(this.baseUrl + 'DLForward', itemsAndAgents )
-  }
 
   addNewRole(newRoleName: string) {
 

@@ -14,6 +14,7 @@ import { MemberLikedListComponent } from './members/member-liked-list/member-lik
 import { memberDetailedResolver } from './_resolvers/member-detailed.resolver';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { adminGuard } from './_guards/admin.guard';
+import { CandidateMenuComponent } from './candidates/candidate-menu/candidate-menu.component';
 
 
 const routes: Routes = [
@@ -23,6 +24,8 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard,],
     children: [
+      {path: 'candidates', loadChildren:() => import('./candidates/candidate.module').then(mod => mod.CandidateModule), data: {breadcrumb: 'Candidates'}},
+      {path: 'candidates', component: CandidateMenuComponent},
       {path: 'members', component: MemberListComponent, canActivate: [authGuard]},
       {path: 'members/:username', component: MemberDetailsComponent,
           resolve: {member: memberDetailedResolver}},

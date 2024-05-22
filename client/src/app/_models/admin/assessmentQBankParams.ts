@@ -1,6 +1,6 @@
 export class assessmentQBankParams {
-     categoryId?=0;
-     categoryName?= '';
+     professionId=0;
+     professionName= '';
      
      sort = "name";
      pageNumber = 1;

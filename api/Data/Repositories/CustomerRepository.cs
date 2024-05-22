@@ -1,4 +1,5 @@
 using api.DTOs.Admin;
+using api.DTOs.Customer;
 using api.Entities.Admin.Client;
 using api.Entities.Identity;
 using api.Extensions;
@@ -8,6 +9,7 @@ using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -29,6 +31,7 @@ namespace api.Data.Repositories
         {
             var customer = await _context.Customers.FindAsync(CustomerId);
             if (customer == null) return false;
+            _context.Customers.Remove(customer);
             _context.Entry(customer).State = EntityState.Deleted;
             try{
                 await _context.SaveChangesAsync();
@@ -39,8 +42,16 @@ namespace api.Data.Repositories
             return true;
         
         }
+        
+        public async Task<ICollection<string>> GetCustomerCities(string customerType) {
 
-        public async Task<Customer> GetCustomerById(int Id)
+            var cities = await _context.Customers.Where(x => x.CustomerType.ToLower() == customerType.ToLower())
+                .Select(x => x.City).ToListAsync();
+            
+            return cities;
+        }
+
+        public async Task<Entities.Admin.Client.Customer> GetCustomerById(int Id)
         {
             var cust = await _context.Customers
                 .Include(x => x.CustomerOfficials)
@@ -49,7 +60,7 @@ namespace api.Data.Repositories
             return cust;
         }
 
-        public async Task<Customer> GetCustomer(CustomerParams customerParams)
+        public async Task<Entities.Admin.Client.Customer> GetCustomer(CustomerParams customerParams)
         {
             var query = _context.Customers.AsQueryable();
             if(customerParams.CustomerId > 0) {
@@ -87,7 +98,7 @@ namespace api.Data.Repositories
             return paged;
         }
 
-        public async Task<bool> InsertCustomer(Customer customer)
+        public async Task<bool> InsertCustomer(CreateCustomerDto customer)
         {
             
             foreach(var official in customer.CustomerOfficials) {
@@ -95,13 +106,16 @@ namespace api.Data.Repositories
                     _userManager, _context, customer.City );
             };
 
-            _context.Customers.Add(customer);
+            var cust = _mapper.Map<Entities.Admin.Client.Customer>(customer);
+            var offs = customer.CustomerOfficials;
+            cust.CustomerOfficials=offs;
+            _context.Customers.Add(cust);
             
             return await _context.SaveChangesAsync() > 0;
             
         }
 
-        public async Task<bool> UpdateCustomer(Customer newObject)
+        public async Task<bool> UpdateCustomer(Entities.Admin.Client.Customer newObject)
         {
             var existingObject = _context.Customers
                 .Where(x => x.Id == newObject.Id)
@@ -227,5 +241,58 @@ namespace api.Data.Repositories
 
             return false;
         }
+
+        Task<Entities.Admin.Client.Customer> ICustomerRepository.GetCustomer(CustomerParams customerParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Entities.Admin.Client.Customer> ICustomerRepository.GetCustomerById(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ICollection<ClientIdAndNameDto>> GetCustomerIdAndNames(string customerType)
+        {
+            var obj = await _context.Customers.Where(x => x.CustomerType.ToLower() == customerType.ToLower())
+                .Select(x => new ClientIdAndNameDto{
+                     customerId=x.Id, CustomerName=x.CustomerName, KnownAs = x.KnownAs,
+                }).ToListAsync();
+            
+            return obj;
+        }
+
+        public Task<bool> InsertCustomer(Entities.Admin.Client.Customer customer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ICollection<CustomerAndOfficialsDto>> GetCustomerAndOfficials(string customerType)
+        {
+            var obj = await _context.Customers.Include(x => x.CustomerOfficials)
+                .Where(x => x.CustomerType.ToLower() == customerType.ToLower())
+                .ProjectTo<CustomerAndOfficialsDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+            
+            return obj;
+        }
+
+        public async Task<CustomerOfficialDto> GetCustomerOfficialDto(int CustomerOfficialId)
+        {
+            var off = await (from c in _context.Customers
+                    .Where(x => x.CustomerStatus.ToLower()=="active" )
+                    join o in _context.CustomerOfficials on c.Id equals o.CustomerId 
+                        where o.Id == CustomerOfficialId
+                    select new CustomerOfficialDto{
+                        AboutCompany = c.Introduction, City = c.City, CompanyKnownAs = c.KnownAs, Country = c.Country,
+                        CustomerId = c.Id, CustomerIsBlacklisted = c.IsBlackListed, CustomerName = c.CustomerName, 
+                        Title = o.Title, OfficialAppUserId = o.AppUserId, OfficialEmailId = o.Email, Designation=o.Designation,
+                        OfficialId = o.Id, MobileNo = o.Mobile, OfficialName = o.OfficialName}).FirstOrDefaultAsync();
+               
+               return off;		
+        }
+
+        
+
     }
 }

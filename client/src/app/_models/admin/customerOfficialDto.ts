@@ -2,9 +2,9 @@ export interface ICustomerOfficialDto
 {
      officialId: number;
      customerId: number;
+     appUserId: number;
      customerName: string;
      city: string;
-     title: string;
      officialName: string;
      designation: string;
      officialEmailId: string;
@@ -19,6 +19,7 @@ export class CustomerOfficialDto implements ICustomerOfficialDto
 {
      officialId=0;
      customerId= 0;
+     appUserId=0;
      customerName= '';
      city= '';
      title= '';

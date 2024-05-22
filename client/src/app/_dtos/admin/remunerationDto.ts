@@ -1,14 +1,18 @@
+import { IRemuneration } from "src/app/_models/admin/remuneration";
+
 export interface IRemunerationDto
 {
      customerName: string;
      categoryName: string;
      orderDate: Date;
-     id: number; 
      orderItemId: number; 
      orderId: number; 
      orderNo: number; 
-     categoryId: number; 
-     workHours: number;
+     professionId: number; 
+     id: number; 
+     remunertion: IRemuneration;
+
+     /*workHours: number;
      salaryCurrency: string; 
      salaryMin: number; 
      salaryMax: number; 
@@ -25,4 +29,5 @@ export interface IRemunerationDto
      otherAllowance: number; 
      leavePerYearInDays: number; 
      leaveAirfareEntitlementAfterMonths: number;
+     */
 }

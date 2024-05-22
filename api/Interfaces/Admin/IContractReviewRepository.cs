@@ -1,4 +1,5 @@
 using api.DTOs.Admin;
+using api.DTOs.Order;
 using api.Entities.Admin.Order;
 using api.Entities.Master;
 using api.Helpers;
@@ -8,11 +9,14 @@ namespace api.Interfaces.Admin
 {
     public interface IContractReviewRepository
     {
-         Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams);
+        Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams);
         Task<ContractReview> AddContractReview(ContractReview contractReview);
         Task<ContractReview> EditContractReview(ContractReview contractReview);
         Task<ContractReview> GenerateContractReviewObject(int orderId, string Username);
         Task<ContractReview> GetContractReviewFromOrderId(int orderId);
+        Task<ContractReviewItem> GetContractReviewItem(int orderItemId);
+        Task<ICollection<ContractReviewItem>> GetContractReviewItems (int orderid);
+        Task<bool> UpdateContractReviewItem(ContractReviewItem contractReviewItem);
         
         Task<bool> DeleteContractReview(int orderid);
         Task<bool> DeleteContractReviewItem(int orderitemid);

@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, take } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { assessmentParams } from '../../params/admin/assessmentParam';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AccountsService } from '../accounts.service';
 import { HttpClient } from '@angular/common/http';
-import { IAssessment } from '../../models/admin/assessment';
-import { IAssessmentQ } from '../../models/admin/assessmentQ';
-import { IOrderItemAssessment } from '../../models/admin/orderItemAssessment';
-import { IOrderItemAssessmentQ } from '../../models/admin/orderItemAssessmentQ';
-import { ICandidateAssessment } from '../../models/hr/candidateAssessment';
+import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/_models/user';
+import { assessmentParams } from 'src/app/_models/params/Admin/assessmentParam';
+import { AccountService } from '../account.service';
+import { IOrderAssessment } from 'src/app/_models/admin/orderAssessment';
+import { ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
+import { IOrderItemAssessment } from 'src/app/_models/admin/orderItemAssessment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +16,15 @@ import { ICandidateAssessment } from '../../models/hr/candidateAssessment';
 export class AssessmentService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   qParams = new assessmentParams();
   routeId: string='';
-  user?: IUser;
+  user?: User;
   
   constructor(private activatedRoute: ActivatedRoute, 
     private router: Router,
-    private accountService:AccountsService,
+    private accountService:AccountService,
     private http: HttpClient) { 
       this.accountService.currentUser$.pipe(take(1))
         .subscribe(user => this.user = user!);
@@ -34,37 +32,23 @@ export class AssessmentService {
 
     getOrderItemAssessment(orderitemid: number) {
 
-      var item = this.http.get<IAssessment>(this.apiUrl + 'orderassessment/itemassessment/' + orderitemid);
+      var item = this.http.get<IOrderItemAssessment>(this.apiUrl + 'OrderAssessment/orderitemassessment/' + orderitemid);
       return item;
     }
     
-    getOrderItemAssessmentQs(orderid: number) {
-      var item = this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentQs/' + orderid);
-      return item;
-    }
     getOrderAssessment(orderid: number) {
-      return this.http.get<IAssessment>(this.apiUrl + 'OrderAssessment/orderassessment/' + orderid);
+      return this.http.get<IOrderAssessment>(this.apiUrl + 'OrderAssessment/orderassessment/' + orderid);
     }
 
-    getAssessmentQBankOfCategoryId(orderitemid: number, professionId: number) {
+    /* getAssessmentQBankOfCategoryId(orderitemid: number, professionId: number) {
       console.log('orderitemid', orderitemid);
       return this.http.get<IAssessmentQ[]>(this.apiUrl + 'AssessmentQBank/catqsbycategoryid/' 
         + orderitemid + '/' + professionId);
     }
+    */
 
-    updateCandidateAssessment(assessment: ICandidateAssessment) {
-      return this.http.put<ICandidateAssessment>(this.apiUrl + 'CandidateAssessment/assess', {assessment});
-    }
-    
-    updateAssessment(assessment: IAssessment) {
-      return this.http.put<boolean>(this.apiUrl + 'orderassessment/editassessment', assessment);
-    }
-    updateAssessmentQs(assessmentQs: IAssessmentQ[]) {
-      return this.http.put<boolean>(this.apiUrl + 'orderassessment/updateassessmentqs', assessmentQs);
-    }
-
-    updateAssessmentQ(assessmentQ: IAssessmentQ) {
-          return this.http.put<boolean>(this.apiUrl + 'orderassessment/edititemassessment', assessmentQ);
+    updateOrderAssessment(assessment: IOrderAssessment) {
+      return this.http.put<boolean>(this.apiUrl + 'OrderAssessment/assessment', assessment);
     }
 
     deleteAssessmentQ(questionId: number) {
@@ -75,7 +59,7 @@ export class AssessmentService {
       return this.http.delete<boolean>(this.apiUrl + 'orderassessment/assessment/' + orderitemid);
     }
 
-    AddNewAssessment(assessment: IAssessment) {
-      
+    AddNewAssessment(assessment: IOrderAssessment) {
+      return this.http.post<IOrderAssessment>(this.apiUrl + 'OrderAssessment/assessment', assessment);
     }
 }

@@ -1,14 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { environment } from 'src/app/environments/environment';
-import { IUser } from '../../models/admin/user';
-import { transactionParams } from '../../params/finance/tranactionParams';
-import { IFinanceVoucher } from '../../models/finance/financeVoucher';
-import { IPagination } from '../../models/pagination';
-import { IApiReturnDto } from '../../dtos/admin/apiReturnDto';
-import { IVoucherToAddNewPaymentDto } from '../../dtos/finance/voucherToAddNewPaymentDto';
-import { IStatementofAccountDto } from '../../dtos/finance/statementOfAccountDto';
+import { IApiReturnDto } from 'src/app/_dtos/admin/apiReturnDto';
+import { IVoucher } from 'src/app/_models/finance/voucher';
+import { Pagination } from 'src/app/_models/pagination';
+import { transactionParams } from 'src/app/_models/params/finance/transactionParams';
+import { User } from 'src/app/_models/user';
+import { environment } from 'src/environments/environment.development';
+import { getPaginatedResult, getPaginationHeaders } from '../paginationHelper';
+import { IStatementofAccountDto } from 'src/app/_dtos/finance/statementOfAccountDto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,76 +16,65 @@ import { IStatementofAccountDto } from '../../dtos/finance/statementOfAccountDto
 export class VouchersService {
 
   apiUrl = environment.apiUrl;
-  private currentUserSource = new ReplaySubject<IUser>(1);
+  private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   sParams = new transactionParams();
-  transactions: IFinanceVoucher[]=[];
-  pagination?: IPagination<IFinanceVoucher[]>;
+  vouchers: IVoucher[]=[];
+  pagination: Pagination | undefined;
   count = 0;
   cache = new Map();
   
   constructor(private http: HttpClient) { }
   
-  getVouchers(useCache: boolean) {
-    if (useCache === false) this.cache = new Map();
+  getVouchers(oParams: transactionParams) {
 
-    if (this.cache.size > 0 && useCache === true) {
-      if (this.cache.has(Object.values(this.sParams).join('-'))) {
-        this.pagination = this.cache.get(Object.values(this.sParams).join('-'));
-        return of(this.pagination);
-      }
-    }
+    const response = this.cache.get(Object.values(oParams).join('-'));
+    if(response) return of(response);
 
-    let params = new HttpParams();
+    let params = getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
 
-    if (this.sParams.coaId !== 0 )  params = params.append('coaId', this.sParams.coaId.toString());
-    
-    if (this.sParams.search) params = params.append('search', this.sParams.search);
-
+    if (oParams.cOAId !== 0 )  params = params.append('coaId', oParams.cOAId.toString());
+    if (oParams.voucherNo !== 0 )  params = params.append('voucherNo', oParams.voucherNo.toString());
+    if (oParams.voucherDated  !== '' )  params = params.append('vocherDated', oParams.voucherDated);
+    if (oParams.cVRefId !== 0 )  params = params.append('cVRefId', oParams.cVRefId.toString());
+    if (oParams.amount !== 0 )  params = params.append('amount', oParams.amount.toString());
+    if (oParams.accountName === '') params = params.append('accountName', oParams.accountName);
+    if (oParams.search) params = params.append('search', oParams.search);
     params = params.append('sort', this.sParams.sort);
-    params = params.append('pageIndex', this.sParams.pageNumber.toString());
+    params = params.append('pageNumber', this.sParams.pageNumber.toString());
     params = params.append('pageSize', this.sParams.pageSize.toString());
 
-    return this.http.get<IPagination<IFinanceVoucher[]>>(this.apiUrl + 'finance/vouchers', {params})
-      .pipe(
-        map((response: any) => {
-          this.cache.set(Object.values(this.sParams).join('-'), response);
-          this.pagination = response;
-          this.count = response.count;
-          return response;
-        })
-      )
-    }
+    
+    return getPaginatedResult<IVoucher[]>(this.apiUrl + 'finance/voucherspagedlist', params, this.http).pipe(
+      map(response => {
+        this.cache.set(Object.values(oParams).join('-'), response);
+        return response;
+      })
+    )
+   
+  }
 
   getVoucherFromId( id: number): any {
-    var voucher: IFinanceVoucher;
+    var voucher: IVoucher;
     if(id===0) return of(undefined);
     
-    return this.http.get<IFinanceVoucher|undefined>(this.apiUrl + 'finance/vouchers/' + id);
+    return this.http.get<IVoucher|undefined>(this.apiUrl + 'finance/vouchers/' + id);
   }
 
   deleteVoucher(id: number)
   {
-    return this.http.delete<boolean>(this.apiUrl + 'finance/voucher/' + id);
+    return this.http.delete<boolean>(this.apiUrl + 'finance/deletevoucher/' + id);
   }
 
   insertVoucherWithUploads(model: FormData) {
-    return this.http.post<IApiReturnDto>(this.apiUrl+ 'finance/RegisterNewVoucher', model, {
-      reportProgress: true,
-      observe: 'events'
-    });
-  }
-
-  insertVoucher(model: IVoucherToAddNewPaymentDto) {
-    console.log('voucher service insertvoucher model:', model)
-    return this.http.post<IApiReturnDto>(this.apiUrl+ 'finance/newpaymentfromcandidate', model, {
+    return this.http.post<string>(this.apiUrl+ 'finance/newvoucherwithattachment', model, {
       reportProgress: true,
       observe: 'events'
     });
   }
 
   public updateWithFiles(formData: FormData) {
-    return this.http.put(this.apiUrl + 'finance/updateVoucherWithFiles', formData, {
+    return this.http.put(this.apiUrl + 'finance/updateVoucherwithattachment', formData, {
       reportProgress: true,
       observe: 'events',
     });
@@ -95,22 +84,24 @@ export class VouchersService {
       return this.http.get<number>(this.apiUrl + 'finance/nextvoucherno');
   }
   
+
+  getStatementOfAccount(accountid: number, fromdate: string, uptodate: string) {
+
+    return this.http.get<IStatementofAccountDto>(this.apiUrl + 'finance/soa/' + accountid + '/' + fromdate + '/' + uptodate);
+  
+  }  
+
+  deleteVoucherFromCache(id: number) {
+    this.cache.delete(id);
+    this.pagination!.totalItems--;
+  }
+
+  
   setParams(params: transactionParams) {
     this.sParams = params;
   }
   
   getParams() {
     return this.sParams;
-  }
-
-  getStatementOfAccount(accountid: number, fromdate: string, uptodate: string) {
-
-    return this.http.get<IStatementofAccountDto>(this.apiUrl + 'finance/statementofaccount/' + accountid + '/' + fromdate + '/' + uptodate);
-  
-  }  
-
-  deleteVoucherFromCache(id: number) {
-    this.cache.delete(id);
-    this.pagination!.count--;
   }
 }

@@ -9,7 +9,6 @@ using api.Entities.Identity;
 using api.Entities.Master;
 using api.Entities.Messages;
 using api.Entities.Tasks;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -36,15 +35,22 @@ namespace api.Data
         public DbSet<Customer> Customers {get; set;}
         public DbSet<CustomerIndustry> CustomerIndustries {get; set;}
         public DbSet<CustomerOfficial> CustomerOfficials {get; set;}
+        public DbSet<CustomerReview> customerReviews {get; set;}
+        public DbSet<CustomerReviewItem> CustomerReviewItems {get; set;}
+        
         //order
         public DbSet<ContractReviewItemStddQ> ContractReviewItemStddQs {get; set;}
         public DbSet<ContractReview> ContractReviews {get; set;}
         public DbSet<ContractReviewItem> ContractReviewItems {get; set;}
         public DbSet<ContractReviewItemQ> ContractReviewItemQs {get; set;}
         public DbSet<JobDescription> JobDescriptions {get; set;}
-        public DbSet<DLForwardedToAgent> DLForwardedToAgents {get; set;}
+        public DbSet<OrderForwardToHR> orderForwardToHRs {get; set;}
+        public DbSet<OrderForwardToAgent> OrderForwardToAgents {get; set;}
+        public DbSet<OrderForwardCategory> OrderForwardCategories {get; set;}   
+        public DbSet<OrderForwardCategoryOfficial> OrderForwardCategoryOfficials {get; set;}    
         public DbSet<Order> Orders {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
+        public DbSet<OrderAssessment> OrderAssessments {get; set;}
         public DbSet<OrderItemAssessment> orderItemAssessments {get; set;}
         public DbSet<OrderItemAssessmentQ> OrderItemAssessmentQs {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
@@ -52,13 +58,17 @@ namespace api.Data
         //fINANCE
         public DbSet<COA> COAs {get; set;}
         public DbSet<FinanceVoucher> FinanceVouchers {get; set;}
-        public DbSet<VoucherEntry> VoucherEntries {get; set;}
+        //public DbSet<VoucherEntry> VoucherEntries {get; set;}
         public DbSet<Voucher> Vouchers {get; set;}
+        public DbSet<VoucherAttachment> voucherAttachments{get; set;}
         public DbSet<VoucherItem> VoucherItems {get; set;}
         
         //HR
+        public DbSet<AssessmentQBank> AssessmentQBanks {get; set;}
+        public DbSet<AssessmentStddQ> AssessmentStddQs {get; set;}
         public DbSet<AssessmentQStdd> AssessmentQStdds {get; set;}
         public DbSet<Candidate> Candidates{get; set;}
+        public DbSet<UserAttachment> UserAttachments{get; set;}
         public DbSet<CandidateAssessment> CandidateAssessments{get; set;}
         public DbSet<CandidateAssessmentItem> CandidatesItemAssessments{get;}
         public DbSet<ChecklistHR> ChecklistHRs {get; set;}
@@ -79,6 +89,7 @@ namespace api.Data
         public DbSet<Industry> Industries{get; set;}
         public DbSet<UserLike> Likes {get; set;}
         public DbSet<Profession> Professions {get; set;}
+        public DbSet<Qualification> Qualifications {get; set;}  
         public DbSet<SkillData> SkillDatas {get; set;}
         public DbSet<FeedbackStddQ> feedbackStddQs{get; set;}
 
@@ -93,6 +104,10 @@ namespace api.Data
         //Tasks
         public DbSet<AppTask> Tasks {get; set;}
         public DbSet<TaskItem> TaskItems {get; set;}
+        
+        //UserHistory
+        public DbSet<UserHistory> UserHistories {get; set;}
+        public DbSet<UserHistoryItem> UserHistoryItems {get; set;}
 
         public DbSet<Entities.Messages.MessageComposeSource> MessageComposeSources {get; set;}
 
@@ -106,6 +121,13 @@ namespace api.Data
                 .HasForeignKey(ur => ur.Id)
                 .IsRequired();
             */
+            builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<CustomerReview>().HasIndex(x => x.customerId).IsUnique();
+            builder.Entity<AssessmentQBank>().HasMany(x => x.AssessmentStddQs).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<AssessmentQBank>().HasIndex(x => x.ProfessionId).IsUnique();
+            
+            builder.Entity<OrderAssessment>().HasIndex(x => x.OrderId).IsUnique();
+            builder.Entity<OrderAssessment>().HasMany(x => x.OrderItemAssessments).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderItemAssessment>().HasIndex(x => x.OrderItemId).IsUnique();
             builder.Entity<OrderItemAssessmentQ>().HasIndex(x => new {x.OrderItemAssessmentId, x.Question}).IsUnique();
 
@@ -119,10 +141,10 @@ namespace api.Data
                 .IsRequired();
             */
 
-            //builder.Entity<profession>().HasIndex(x => x.ProfessionName).IsUnique();
-
             builder.Entity<Profession>().HasIndex(x => x.ProfessionName).IsUnique();
-
+            builder.Entity<Industry>().HasIndex(x => x.IndustryName).IsUnique();
+            builder.Entity<Qualification>().HasIndex(x => x.QualificationName).IsUnique();
+            
             builder.Entity<CVRef>().HasOne(o => o.Process);
             builder.Entity<CVRef>().HasIndex(i => new {i.OrderItemId, i.CandidateId}).IsUnique();
             
@@ -144,12 +166,10 @@ namespace api.Data
             builder.Entity<AssessmentQStdd>().HasIndex(x => x.QuestionNo).IsUnique();
             builder.Entity<AssessmentQStdd>().HasIndex(x => x.Question).IsUnique();
             
-            builder.Entity<COA>().HasIndex(i => i.AccountName).IsUnique();
-            
             builder.Entity<Order>().HasOne(x => x.ContractReview).WithOne(e => e.Order)
                 .HasForeignKey<ContractReview>(x => x.OrderId);
             
-            builder.Entity<DLForwardedToAgent>().HasIndex(x => new {x.CustomerOfficialId, x.DateForwarded, x.OrderItemId}).IsUnique();
+            builder.Entity<OrderForwardToHR>().HasIndex(x => new {x.OrderId, x.DateOnlyForwarded}).IsUnique();
 
             builder.Entity<ContractReview>().HasIndex(x => x.OrderId).IsUnique();
             builder.Entity<ContractReview>().HasMany(x => x.ContractReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
@@ -182,7 +202,12 @@ namespace api.Data
             builder.Entity<DepItem>().HasIndex(x => new {x.DepId, x.Sequence}).IsUnique();
             
             builder.Entity<Voucher>().HasMany(x => x.VoucherItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<VoucherAttachment>().HasIndex(x => new {x.FileName, x.VoucherId}).IsUnique();
+            builder.Entity<COA>().HasIndex(i => i.AccountName).IsUnique();
 
+            builder.Entity<UserHistory>().HasMany(x => x.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<UserHistory>().HasIndex(x => x.CandidateId).HasFilter("CandidateId Is Null").IsUnique();
+            
         //Identity
            builder.Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)
@@ -210,6 +235,15 @@ namespace api.Data
                 .WithMany(l => l.LikedByUsers)
                 .HasForeignKey(s => s.TargetUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            builder.Entity<OrderForwardToAgent>().HasIndex(x => x.OrderId).IsUnique();
+            
+            builder.Entity<OrderForwardCategory>()
+                .HasIndex(x => x.OrderItemId).IsUnique();
+            
+            builder.Entity<OrderForwardCategoryOfficial>()
+                .HasIndex(x => new {x.OrderForwardCategoryId, 
+                    x.DateOnlyForwarded, x.CustomerOfficialId}).IsUnique();
             
             
             /*builder.Entity<Message>()

@@ -19,11 +19,11 @@ namespace api.Entities.Admin.Order
         public int ContractReviewId { get; set; }
         public string ContractReviewStatus {get; set;}
         public string Status { get; set; } = "Awaiting Review";
-        public DateTime? ForwardedToHRDeptOn { get; set; }
+        public DateOnly? ForwardedToHRDeptOn { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         public Customer Customer {get; set;}
         public ContractReview ContractReview {get; set;}
-        public ICollection<DLForwardedToAgent> DLForwarded {get; set;}
+        public ICollection<OrderForwardToAgent> DLForwarded {get; set;}
         
     }
 }

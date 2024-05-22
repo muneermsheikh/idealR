@@ -8,9 +8,9 @@ namespace api.Entities.HR
         public int CandidateId { get; set; }
         public int OrderItemId { get; set; }
         public string UserName { get; set; }
-        public DateTime CheckedOn {get; set;}
+        public DateOnly CheckedOn {get; set;}
         public String UserComments {get; set;}
-        public int HRExecId { get; set; }
+        public string HRExecUsername { get; set; }
         public int Charges {get; set;}
         public int ChargesAgreed {get; set;}
         public bool ExceptionApproved {get; set;}
