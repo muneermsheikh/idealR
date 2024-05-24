@@ -1,0 +1,77 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 5px;
+	display: inline-block;
+	margin-top: 5px;
+}
+
+.inputCheck {
+    margin-right: 5px;
+    width: 40px;
+    margin-left: 10px;
+    border: 2px;
+    border-color: #000000;
+}
+
+input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #fff;
+	border-radius: 50%;
+	margin-right: 10px;
+	background-color: rgb(195, 177, 177);
+	position: relative;
+}
+
+input[type="radio"]:checked::before {
+	content: "";
+	display: block;
+	width: 12px;
+	height: 12px;
+	background-color: #4a0fec;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: appear 0.8s;
+}
+
+
+.lblS {
+    font-weight: 125;
+    font-size:smaller;
+    display: inline-block;
+    vertical-align: top;
+    font-weight: bold;
+	width: 40px;
+	margin-top: 5px;
+}
+.lbl {
+    font-weight: 125;
+    font-size:smaller;
+    display: inline-block;
+    font-weight: bold;
+	width: 100px;
+	margin-top: 5px;
+	margin-left: 5px;
+	vertical-align: middle;
+}
+.chkLabel {
+    width: 100px;
+    margin-right: 2px;
+    padding-left: 2px;
+}    
+
+.tAlignR {text-align: right;}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}
+.w350 {width: 350px;}
+
+.red {color: red;}

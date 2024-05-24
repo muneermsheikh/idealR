@@ -1,0 +1,59 @@
+<div *ngIf="cv===null">
+    No candidate detail available
+</div>
+
+<div class="stdd row" style="margin-left: 25px;" *ngIf="cv!==null && cv!==undefined">
+
+     <input type="checkbox"
+          class="form-check-input"
+          [checked]="cv!.checked"
+          value="cv.id"
+          (change)="CVChecked(cv!)"
+     >
+
+     <div class="stdd w50" title="click to edit" mouseover="style.cursor = 'pointer'" 
+          routerLink="/candidates/edit/{{cv.id}}">{{cv.applicationNo}}</div>
+     
+     <div class="stdd mx-1 w180" routerLink = "/candidate/historyfromcvid/{{cv.id}}" 
+          title="contact history of the candidate" >{{cv.fullName}}</div> 
+
+     <div class="stdd mx-1 w100">{{cv.city}}</div>
+     <div class="stdd mx-1 w200" >{{cv.referredByName}}</div>
+     
+     <div class="stdd mx-1 fSmall w200" style="border:aqua" >
+          <span style="white-space: normal;" *ngFor="let item of cv.userProfessions">
+               {{item.professionId}} 
+               <div style="display: inline-block" *ngIf="cv.userProfessions.length>1"></div> 
+          </span>
+     </div> 
+     
+     <!-- 
+          <tx-document-viewer width="800px" class="stdd w100"
+          height="800px"
+          basePath="https://localhost:5001"
+          dock="Fill"
+          toolbarDocked=true
+          isSelectionActivated=true
+          showThumbnailPane=true>
+     </tx-document-viewer>
+     -->
+          <!-- <button class="w30 fa fa-pencil" style="display: inline-block;" type="button" routerLink="/candidate/edit/{{cv.id}}" ></button> -->
+          <!-- <button class="stdd fSmall fa fa-eye" type="button" routerLink="/candidate/view/{{cv.id}}" ></button> -->
+     <button (click)="editCV(cv.id)" type="button" 
+          class="btn btn-outline-secondary fa fa-solid fa-pencil w50" type="button" 
+          title="edit the candidate profile">
+     </button>
+
+     <button (click)="cvAssessClicked(cv)" type="button" 
+          class="btn btn-outline-secondary mx-2 fa fa-solid fa-balance-scale w50" type="button" 
+          title="Assess the CV">
+     </button>
+
+     <button (click)="download(cv.id)" type="button" 
+          class="btn btn-outline-secondary fa fa-regular fa-trash w50" type="button" 
+          title="download the CV">
+     </button>
+     
+     <!-- <app-cv-assess *ngIf="currentId===item.id" [header]="header" [candidateAssessment]="assessment" ></app-cv-assess> -->
+</div>
+

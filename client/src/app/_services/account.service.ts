@@ -41,6 +41,18 @@ export class AccountService {
     )
   }
 
+  
+  checkEmailExists(email: string) {
+    return this.http.get(this.baseUrl + 'account/emailexists?email=' + email);
+  }
+
+  
+  checkPPExists(ppnumber: string) {
+    return this.http.get(this.baseUrl + 'Candidate/ppexists/' + ppnumber);
+  }
+
+
+
   setCurrentUser(user: User) {
     user.roles=[];
     const roles = this.getDecodedToken(user.token);

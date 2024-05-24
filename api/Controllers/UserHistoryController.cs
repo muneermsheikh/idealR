@@ -60,7 +60,7 @@ namespace api.Controllers
         }
 
         
-        [HttpDelete("{userhistoryId}")]
+        [HttpDelete("deletehist/{userhistoryId}")]
         public async Task<bool> DeleteUserContactById(int userhistoryId)
         {
             return await _histRepo.DeleteUserHistory(userhistoryId);

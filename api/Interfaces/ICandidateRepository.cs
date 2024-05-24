@@ -12,6 +12,7 @@ namespace api.Interfaces
          Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams);
          Task<CandidateBriefDto> GetCandidateBriefFromParams(CandidateParams candParams);
          Task<Candidate> GetCandidate(CandidateParams candidateParams);
+         Task<Candidate> GetCandidateById(int candidateid);
          Task<bool> UpdateCandidate(Candidate candidate);
          Task<bool> DeleteCandidate(int Id);
          Task<bool> InsertCandidate(Candidate candidate);

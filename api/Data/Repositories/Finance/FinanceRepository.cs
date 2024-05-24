@@ -312,7 +312,7 @@ namespace api.Data.Repositories.Finance
             foreach(var item in attachments) {
                 if(item.VoucherId ==0 || string.IsNullOrEmpty(item.FileName) || item.AttachmentSizeInBytes ==0) continue;
                 ct++;
-                _context.voucherAttachments.Add(item);
+                _context.VoucherAttachments.Add(item);
             }
 
             if(ct==0) return ct + " number of file attachments invalid";
@@ -379,7 +379,7 @@ namespace api.Data.Repositories.Finance
 			{
 				if(!model.VoucherAttachments.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
 				{
-					_context.voucherAttachments.Remove(existingItem);
+					_context.VoucherAttachments.Remove(existingItem);
 					_context.Entry(existingItem).State=EntityState.Deleted;
 					//prepare to delete files physically from storage folder
 					var filepath = existingItem.Url ?? fileDirectory + "/assets/images";

@@ -57,6 +57,16 @@ namespace api.Controllers
             return await _candidateRepo.GetCandidateBriefFromParams(candParams);
         }
 
+        [HttpGet("byid/{candidateid}")]
+        public async Task<ActionResult<Candidate>> GetCandidateByParams(int candidateid)
+        { 
+            var candidate = await _candidateRepo.GetCandidateById(candidateid);
+
+            if(candidate == null) return NotFound("Not found");
+
+            return Ok(candidate);
+
+        }
         [HttpGet("byparams")]
         public async Task<ActionResult<Candidate>> GetCandidateByParams([FromQuery]CandidateParams candidateParams)
         { 

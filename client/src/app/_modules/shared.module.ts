@@ -9,9 +9,17 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons'
 import { TimeagoModule } from 'ngx-timeago';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { TextInputComponent } from '../_forms/text-input/text-input.component';
+import { DatePickerComponent } from '../_forms/date-picker/date-picker.component';
+
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    TextInputComponent,
+    DatePickerComponent
+  ],
   imports: [
     CommonModule,
     BsDropdownModule.forRoot(),
@@ -28,7 +36,11 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
     TimeagoModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelectModule
+    
   ],
   exports: [
     BsDropdownModule,
@@ -39,7 +51,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ButtonsModule,
     TimeagoModule,
     ToastrModule,
-    ModalModule
+    ModalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TextInputComponent,
+    DatePickerComponent
   ]
 })
 export class SharedModule { }

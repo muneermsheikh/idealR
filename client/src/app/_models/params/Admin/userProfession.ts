@@ -1,8 +1,7 @@
 export interface IUserProfession {
      id: number;
      candidateId: number;
-     categoryId: number;
-     profession: string;
+     professionId: number;
      industryId: number;
      isMain: boolean;
 }

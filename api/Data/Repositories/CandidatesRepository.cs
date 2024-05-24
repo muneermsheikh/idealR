@@ -112,9 +112,10 @@ namespace api.Data.Repositories
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
         {
             var query = _context.Candidates.AsQueryable();
+
             if(candidateParams.Id > 0) {
                 query = query.Where(x => x.Id == candidateParams.Id);}
-                else {
+            else {
                     if(!string.IsNullOrEmpty(candidateParams.CandidateName)) 
                         query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.CandidateName.ToLower()));
                     
@@ -167,6 +168,7 @@ namespace api.Data.Repositories
                 .Include(x => x.UserProfessions)
                 .Include(x => x.UserExperiences)
                 .Include(x => x.UserPhones)
+                .AsSplitQuery()
                 .AsNoTracking()
                 .SingleOrDefault();
             
@@ -423,5 +425,19 @@ namespace api.Data.Repositories
 
             return objs;
         }
+
+        public async Task<Candidate> GetCandidateById(int candidateid)
+        {
+            var obj = await _context.Candidates
+                .Include(x => x.UserPhones)
+                .Include(x => x.UserAttachments)
+                .Include(x => x.UserProfessions)
+                .Include(x => x.UserExperiences)
+                .Include(x => x.UserQualifications)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync();
+            return obj;
+        }
+
     }
 }

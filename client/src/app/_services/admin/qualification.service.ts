@@ -19,7 +19,7 @@ export class QualificationService {
   constructor(private http: HttpClient) { }
 
   getQualificationList(){
-    return this.http.get<IQualification[]>(this.apiUrl + 'Qualification/qualificatinlist');
+    return this.http.get<IQualification[]>(this.apiUrl + 'Qualification/qualificationlist');
   }
 
  

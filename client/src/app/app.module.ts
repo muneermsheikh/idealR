@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
@@ -20,8 +20,6 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { RegisterComponent } from './register/register.component';
-import { TextInputComponent } from './_forms/text-input/text-input.component';
-import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
 import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
@@ -29,6 +27,10 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
 import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
+import { IdsModalComponent } from './modals/ids-modal/ids-modal.component';
+import { ProfileListComponent } from './profiles/profile-list/profile-list.component';
+import { ProfileItemComponent } from './profiles/profile-item/profile-item.component';
+import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit.component';
 
 
 @NgModule({
@@ -45,8 +47,6 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
     MemberCardComponent,
     MemberEditComponent,
     RegisterComponent,
-    TextInputComponent,
-    DatePickerComponent,
     MemberLikedListComponent,
     AdminPanelComponent,
     HasRoleDirective,
@@ -54,7 +54,10 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
     PhotoManagementComponent,
     RolesModalComponent,
     ConfirmDialogComponent,
-  
+    IdsModalComponent,
+    ProfileListComponent,
+    ProfileItemComponent,
+    CandidateEditComponent
   ],
   imports: [
     BrowserModule,
@@ -70,6 +73,7 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

@@ -45,6 +45,7 @@ namespace api.Entities.HR
         public ICollection<UserProfession> UserProfessions {get; set;}
         public ICollection<UserExp> UserExperiences {get; set;}
         public ICollection<UserAttachment> UserAttachments { get; set; }
+        public ICollection<UserQualification> UserQualifications {get; set;} 
         public string FullName {get => FirstName + " " + SecondName + " " + FamilyName;}
     }
 }

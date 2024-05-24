@@ -1,4 +1,4 @@
-import { IUserProfession } from "../../params/admin/userProfession";
+import { IUserProfession } from "src/app/_models/params/Admin/userProfession";
 
 export interface ICandidateBriefDto {
      checked: boolean;

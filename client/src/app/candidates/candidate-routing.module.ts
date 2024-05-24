@@ -4,18 +4,20 @@ import { Routes } from '@angular/router';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
 import { CandidateEditComponent } from './candidate-edit/candidate-edit.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
-import { QualificationsResolver } from '../_resolvers/qualificationsResolver';
 import { CandidateResolver } from '../_resolvers/admin/candidateResolver';
 import { CandidateHistoryComponent } from './candidate-history/candidate-history.component';
+import { CandidateMenuComponent } from './candidate-menu/candidate-menu.component';
+import { QualificationListResolver } from '../_resolvers/qualificationListResolver';
+import { AgentsResolver } from '../_resolvers/admin/agents.resolver';
 
 
 const routes: Routes = [
-  {path: 'candidatelist', component: CandidateListComponent, data: {breadcrumb: 'Candidate List'}},
+  {path: '', component: CandidateListComponent, data: {breadcrumb: 'Candidate List'}},
   {path: 'register/edit/:id', component:CandidateEditComponent, 
       resolve: {
         categories: CategoryListResolver,
-        qualifications: QualificationsResolver,
-        //agents: AgentsResolver,
+        qualifications: QualificationListResolver,
+        agents: AgentsResolver,
         candidate: CandidateResolver
       },
       data: {breadcrumb: 'Edit Candidate'}},

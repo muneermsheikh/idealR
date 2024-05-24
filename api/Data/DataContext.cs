@@ -35,7 +35,7 @@ namespace api.Data
         public DbSet<Customer> Customers {get; set;}
         public DbSet<CustomerIndustry> CustomerIndustries {get; set;}
         public DbSet<CustomerOfficial> CustomerOfficials {get; set;}
-        public DbSet<CustomerReview> customerReviews {get; set;}
+        public DbSet<CustomerReview> CustomerReviews {get; set;}
         public DbSet<CustomerReviewItem> CustomerReviewItems {get; set;}
         
         //order
@@ -44,7 +44,7 @@ namespace api.Data
         public DbSet<ContractReviewItem> ContractReviewItems {get; set;}
         public DbSet<ContractReviewItemQ> ContractReviewItemQs {get; set;}
         public DbSet<JobDescription> JobDescriptions {get; set;}
-        public DbSet<OrderForwardToHR> orderForwardToHRs {get; set;}
+        public DbSet<OrderForwardToHR> OrderForwardToHRs {get; set;}
         public DbSet<OrderForwardToAgent> OrderForwardToAgents {get; set;}
         public DbSet<OrderForwardCategory> OrderForwardCategories {get; set;}   
         public DbSet<OrderForwardCategoryOfficial> OrderForwardCategoryOfficials {get; set;}    
@@ -58,9 +58,9 @@ namespace api.Data
         //fINANCE
         public DbSet<COA> COAs {get; set;}
         public DbSet<FinanceVoucher> FinanceVouchers {get; set;}
-        //public DbSet<VoucherEntry> VoucherEntries {get; set;}
+        public DbSet<VoucherEntry> VoucherEntries {get; set;}
         public DbSet<Voucher> Vouchers {get; set;}
-        public DbSet<VoucherAttachment> voucherAttachments{get; set;}
+        public DbSet<VoucherAttachment> VoucherAttachments{get; set;}
         public DbSet<VoucherItem> VoucherItems {get; set;}
         
         //HR
@@ -122,7 +122,7 @@ namespace api.Data
                 .IsRequired();
             */
             builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<CustomerReview>().HasIndex(x => x.customerId).IsUnique();
+            builder.Entity<CustomerReview>().HasIndex(x => x.CustomerId).IsUnique();
             builder.Entity<AssessmentQBank>().HasMany(x => x.AssessmentStddQs).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<AssessmentQBank>().HasIndex(x => x.ProfessionId).IsUnique();
             

@@ -29,7 +29,7 @@ namespace api.Controllers
             return Ok(data);
         }
     
-        [HttpGet("deployStatusData}")]
+        [HttpGet("deployStatusData")]
         public async Task<ActionResult<Dep>> GetDeploymentStatusData ()
         {
             var data = await _depRepo.GetDeploymentStatusData();

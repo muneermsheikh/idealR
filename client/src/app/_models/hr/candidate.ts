@@ -22,7 +22,7 @@ export interface ICandidate {
      placeOfBirth: string;
      aadharNo: string;
      ppNo: string;
-     ecnr: string;
+     ecnr: boolean;
      address: string;
      city: string;
      pin: string;
@@ -66,7 +66,7 @@ export class Candidate implements ICandidate {
      placeOfBirth= '';
      aadharNo= '';
      ppNo= '';
-     ecnr='f';
+     ecnr=false;
      address= '';
      city= '';
      pin= '';

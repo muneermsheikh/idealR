@@ -44,6 +44,7 @@ namespace api.Helpers
             CreateMap<Customer, CustomerDto>();
             CreateMap<CreateCustomerDto, Customer>();
             CreateMap<Candidate, CandidateBriefDto>();
+
             CreateMap<CreateCandidateDto, Candidate>();
             CreateMap<FeedbackStddQ, FeedbackItem>();
 

@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, map, of } from 'rxjs';
+import { Observable, ReplaySubject, map, of, take } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 import { ICandidateCity } from '../_models/hr/candidateCity';
 import { CandidateBriefDto, ICandidateBriefDto } from '../_dtos/admin/candidateBriefDto';
 import { Pagination } from '../_models/pagination';
 import { getHttpParamsForCandidate, getPaginatedResult } from './paginationHelper';
 import { ICandidate } from '../_models/hr/candidate';
 import { IApiReturnDto } from '../_dtos/admin/apiReturnDto';
-import { ICVReviewDto, cvReviewDto } from '../_dtos/admin/cvReviewDto';
 import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
+import { AccountService } from './account.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,23 +21,37 @@ export class CandidateService {
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   cvParams: candidateParams | undefined;
+
   pagination: Pagination | undefined;   // IPagination<ICandidateBriefDto[]>;
   paginationBrief: Pagination | undefined;    //<CandidateBriefDto[]>;
   cities: ICandidateCity[]=[];
   cache= new Map;
   cacheBrief = new Map;
+  user?: User | null;
 
-  constructor(private http: HttpClient, private toastr: ToastrService, private router: Router) {}
+  constructor(private http: HttpClient, private accountService: AccountService) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if (user)
+          this.cvParams = new candidateParams();
+          this.user = user;
+      }
+    })
+  }
   
   async onClickLoadDocument() {
     // get a document from the Web API endpoint 'LoadDocument'
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
 
-  getCandidatesPaged(cvParams: candidateParams): Observable<any> { 
+  getCandidatesPaged(cvParams: candidateParams, fromCache: boolean = true): Observable<any> { 
    
-    const response = this.cacheBrief.get(Object.values(cvParams).join('-'));
-    if(response) return of(response);
+    if(!fromCache) {
+      this.cacheBrief = new Map();
+    } else {
+      const response = this.cacheBrief.get(Object.values(cvParams).join('-'));
+      if(response) return of(response);
+    }
 
     let params = getHttpParamsForCandidate(cvParams);
 
@@ -53,19 +65,11 @@ export class CandidateService {
 
   }
 
-  checkEmailExists(email: string) {
-    return this.http.get(this.apiUrl + 'account/emailexists?email=' + email);
-  }
 
-  checkPPExists(ppnumber: string) {
-    return this.http.get(this.apiUrl + 'Candidate/ppexists/' + ppnumber);
-  }
   
   getCandidate(id: number) {
-    let params = new HttpParams();
-    params.append('id', id.toString());
-
-    return this.http.get<ICandidate>(this.apiUrl + 'candidate/byparams', {params});
+    
+    return this.http.get<ICandidate>(this.apiUrl + 'candidate/byid/'+ id);
   }
 
   getCandidateBrief(id: number) {
@@ -108,6 +112,7 @@ export class CandidateService {
   }
   
   getCVParams() {
+
     return this.cvParams;
   }
 

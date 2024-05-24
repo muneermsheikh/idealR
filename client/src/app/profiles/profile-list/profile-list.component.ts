@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
-import { ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { take } from 'rxjs';
 import { ICandidateBriefDto } from 'src/app/_dtos/admin/candidateBriefDto';
 import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
@@ -12,28 +10,26 @@ import { Pagination } from 'src/app/_models/pagination';
 import { OpenOrderItemsParams } from 'src/app/_models/params/Admin/openOrderItemsParams';
 import { candidateParams } from 'src/app/_models/params/hr/candidateParams';
 import { User } from 'src/app/_models/user';
-import { AccountService } from 'src/app/_services/account.service';
 import { OrderService } from 'src/app/_services/admin/order.service';
 import { CandidateService } from 'src/app/_services/candidate.service';
 import { UploadDownloadService } from 'src/app/_services/upload-download.service';
 import { IdsModalComponent } from 'src/app/modals/ids-modal/ids-modal.component';
 
 @Component({
-  selector: 'app-candidate-list',
-  templateUrl: './candidate-list.component.html',
-  styleUrls: ['./candidate-list.component.css']
+  selector: 'app-profile-list',
+  templateUrl: './profile-list.component.html',
+  styleUrls: ['./profile-list.component.css']
 })
-export class CandidateListComponent implements OnInit{
+export class ProfileListComponent implements OnInit{
 
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
   
-  user: User | undefined;
   pagination: Pagination | undefined;
 
   cvs: ICandidateBriefDto[]=[];
   selectedCVs: ICandidateBriefDto[]=[];
 
-  cvParams = new candidateParams();
+  cvParams: candidateParams | undefined;
   totalCount: number=0;
   //candidateCities: ICandidateCity[]=[];
   professions: IProfession[]=[];
@@ -62,7 +58,7 @@ export class CandidateListComponent implements OnInit{
 
   constructor(
       private service: CandidateService, 
-      private accountService: AccountService,
+      //private accountService: AccountService,
       private router: Router,
       private activatedRoute: ActivatedRoute, 
       private modalService: BsModalService,
@@ -70,13 +66,16 @@ export class CandidateListComponent implements OnInit{
       private downloadservice: UploadDownloadService,
       private toastr: ToastrService) { 
 
-    this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
+        //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
+
+        this.cvParams = service.getCVParams();
     
       }
 
   ngOnInit(): void {
-    
-    this.getCVs(this.cvParams);
+
+    //this.getCVs(this.cvParams);
+    this.loadCandidates(false);
     
     this.activatedRoute.data.subscribe(data => {
         //this.cvs = data.candidateBriefs,
@@ -84,23 +83,45 @@ export class CandidateListComponent implements OnInit{
         this.professions = data['professions'],
         this.agents = data['agents']
       }
-
-      
     )
+
     //this.getCities();
     //this.getProfessions();
     //this.getAgents();
-    //console.log('CVs list', this.cvs);
+
+  }
+
+  loadCandidates(fromCache: boolean=true) {
+    if(this.cvParams) {
+
+      this.service.setCVParams(this.cvParams);
+
+      this.service.getCandidatesPaged(this.cvParams, fromCache).subscribe({
+        next: response => {
+          if(response.result && response.pagination) {
+            this.cvs = response.result;
+            this.pagination = response.pagination;
+          }
+        }
+      })
+    }
+
   }
   
-  getCVs(cvParams: candidateParams) {
-    this.service.getCandidatesPaged(cvParams).subscribe({
-      next: (response: { data: ICandidateBriefDto[]; count: number; }) => {
-        this.cvs = response.data;
-        this.totalCount = response.count;
-      },
-      error: (error: any) => this.toastr.error(error)
-    });
+  getCVs() {
+   
+    if(this.cvParams)   {
+      this.service.setCVParams(this.cvParams);
+
+        this.service.getCandidatesPaged(this.cvParams, true).subscribe({
+          next: response => {
+            if(response.result && response.pagination) {
+              this.cvs = response.result;
+              this.totalCount = response.count;
+            }
+          }
+        })
+    }
   }
 
   /*
@@ -116,17 +137,17 @@ export class CandidateListComponent implements OnInit{
     params.search = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
     this.service.setCVParams(params);
-    this.getCVs(params);
+    this.getCVs();
   }
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     this.cvParams = new candidateParams();
     this.service.setCVParams(this.cvParams);
-    this.getCVs(this.cvParams);
+    this.getCVs();
   }
   
-  onSortSelected(sort: any) {
+  /*onSortSelected(sort: any) {
     const prms = this.service.getCVParams() ?? new candidateParams();
     prms.sort = sort;
     prms.pageNumber=1;
@@ -143,16 +164,19 @@ export class CandidateListComponent implements OnInit{
     this.getCVs(prms);
 
   }
-  
+  */
 
    onPageChanged(event: any){
-    const params = this.service.getCVParams() ?? new candidateParams();
-    if (params.pageNumber !== event) {
-      params.pageNumber = event;
-      this.service.setCVParams(params);
-      this.getCVs(params);
+
+      if(!this.cvParams) return;
+
+      if(this.cvParams.pageNumber !== event.page) {
+        this.cvParams.pageNumber = event.page;
+        this.service.setCVParams(this.cvParams);
+        this.getCVs();
+      }
     }
-  }
+  
 
   //Having selected candidates, refer them to internal reviews or directly to client
   openChecklistModal(user: User) {
@@ -185,9 +209,9 @@ export class CandidateListComponent implements OnInit{
     prms.agentId = agentId;
     prms.pageNumber=1;
     this.service.setCVParams(prms);
-    this.getCVs(prms);
+    this.getCVs();
 
-    //console.log('after profession selected', this.cvs);
+
 
   }
 
@@ -239,7 +263,7 @@ export class CandidateListComponent implements OnInit{
           cvbrief: cvObject, 
           //openorderitems,
           //assessmentsDto,
-          userobject: this.user,
+          userobject: this.service.user,
           toedit: toedit, 
           returnUrl: '/candidates' 
         } }
@@ -263,6 +287,7 @@ export class CandidateListComponent implements OnInit{
   }
 
   cvEditClicked(id: any) {
+    console.log('edit CV emitted to profile list: ', id);
 
     this.navigateByUrl('/candidates/register/edit/' + id, undefined, true);
   }
@@ -270,4 +295,5 @@ export class CandidateListComponent implements OnInit{
   cvAssessClicked() {
     this.navigateByUrl('/hr/assessments', this.selectedCVs, false);
   }
+
 }

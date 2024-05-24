@@ -223,8 +223,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
   {
     let params = new HttpParams();
 
-    params = params.append('pageNumber', cvParams.pageNumber);
-    params = params.append('pageSize', cvParams.pageSize)
+    params = params.append('pageNumber', cvParams.pageNumber.toString());
+    params = params.append('pageSize', cvParams.pageSize.toString());
 
     if(cvParams.agentId !== 0) params = params.append('agendId', cvParams.agentId.toString());
     if(cvParams.city !== '') params = params.append('city', cvParams.city);

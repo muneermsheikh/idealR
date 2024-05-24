@@ -4,11 +4,11 @@ import { ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
 import { ICvAssessmentHeader } from 'src/app/_models/hr/cvAssessmentHeader';
 
 @Component({
-  selector: 'app-candidate-item',
-  templateUrl: './candidate-item.component.html',
-  styleUrls: ['./candidate-item.component.css']
+  selector: 'app-profile-item',
+  templateUrl: './profile-item.component.html',
+  styleUrls: ['./profile-item.component.css']
 })
-export class CandidateItemComponent implements OnInit{
+export class ProfileItemComponent implements OnInit {
 
   @Input() cv: ICandidateBriefDto|undefined;
   @Output() msgEvent = new EventEmitter<number>();
@@ -73,5 +73,6 @@ export class CandidateItemComponent implements OnInit{
 
   editCV(id: number) {
       this.cvEditEvent.emit(id);
+      console.log('profile item edit cv, id: ', id);
   }
 }

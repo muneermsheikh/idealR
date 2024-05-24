@@ -15,10 +15,10 @@ namespace api.Data.Repositories.Customer
 
         public async Task<bool> DeleteCustomerReview(int customerId)
         {
-            var review = await _context.customerReviews.Where(x => x.customerId == customerId).FirstOrDefaultAsync();
+            var review = await _context.CustomerReviews.Where(x => x.CustomerId == customerId).FirstOrDefaultAsync();
             if(review == null) return false;
 
-            _context.customerReviews.Remove(review);
+            _context.CustomerReviews.Remove(review);
             _context.Entry(review).State = EntityState.Deleted;
 
             return await _context.SaveChangesAsync() > 0;
@@ -27,9 +27,9 @@ namespace api.Data.Repositories.Customer
 
         public async Task<CustomerReview> GetCustomerReview(int customerId)
         {
-            var review =await _context.customerReviews
+            var review =await _context.CustomerReviews
                 .Include(x => x.CustomerReviewItems)
-                .Where(x => x.customerId == customerId)
+                .Where(x => x.CustomerId == customerId)
             .FirstOrDefaultAsync();
 
             return review;
@@ -37,7 +37,7 @@ namespace api.Data.Repositories.Customer
 
         public async Task<ICollection<string>> GetCustomerReviewStatusData()
         {
-            var str = await _context.customerReviews.Select(x => x.CurrentStatus)
+            var str = await _context.CustomerReviews.Select(x => x.CurrentStatus)
                 .Distinct().ToListAsync();
             
             return str;
@@ -46,7 +46,7 @@ namespace api.Data.Repositories.Customer
 
         public async Task<bool> UpdateCustomerReview(CustomerReview model, string Username)
         {
-            var existing = await _context.customerReviews
+            var existing = await _context.CustomerReviews
                 .Include(x => x.CustomerReviewItems)
                 .Where(x => x.Id == model.Id)
                 .AsNoTracking()

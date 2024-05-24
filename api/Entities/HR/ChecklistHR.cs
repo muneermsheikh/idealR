@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using api.Entities.Admin;
 using api.Entities.Admin.Order;
 
@@ -10,6 +11,7 @@ namespace api.Entities.HR
         public string UserName { get; set; }
         public DateOnly CheckedOn {get; set;}
         public String UserComments {get; set;}
+        [Required]
         public string HRExecUsername { get; set; }
         public int Charges {get; set;}
         public int ChargesAgreed {get; set;}

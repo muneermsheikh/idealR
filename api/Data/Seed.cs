@@ -102,6 +102,16 @@ namespace api.Data
                 }
             }
 
+            if (!await context.Qualifications.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/QualificationSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Qualification>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.Qualifications.Add(item);
+                }
+            }
+
             if (!await context.COAs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/COASeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
