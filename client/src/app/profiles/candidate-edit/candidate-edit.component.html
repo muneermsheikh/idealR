@@ -31,11 +31,13 @@
           <input type="radio" class="inputcheck form-check-input " value="female" formControlName="gender" >Female
            <br>
 
+          <!--
           <label class="lbl" >User Type:</label>
           <input type="radio" class="inputcheck form-check-input " value="Candidate" formControlName="userType" >Candidate
           <input type="radio" class="inputcheck form-check-input " value="Official" formControlName="userType" >Official
           <input type="radio" class="inputcheck form-check-input " value="Employee" formControlName="userType" >Employee
-          
+          -->
+
           <br>
           <label for="firstName" class="lbl">First Name</label>
           <div class="stdd w150">
@@ -62,15 +64,15 @@
           <label for="aadharNo" class="lbl">Aadhar No</label>
           <div class="stdd w150">
                <app-text-input [label]="'Aadhar No'" formControlName="aadharNo" ></app-text-input>
-          </div>          
-          <label for="ppNo" class="lbl" style="margin-left: 5px;">PP No</label>
-          <div class="stdd w150">
+          </div>      
+          <br>
+          <label for="ppNo" class="lbl" style="margin-left: 5px;">Passport No</label>
+          <div class="stdd w100">
                <app-text-input [label]="'Passport No'" formControlName="ppNo" ></app-text-input>
           </div>    
-          <br>
-          <label class="lbl">Emig Clearance: </label>
-          <input type="radio" formControlName="ecnr" value=true  class="form-check-input inputcheck"> ECNR
-          <input type="radio" formControlName="ecnr" value=false class="form-check-input inputcheck"> ECR
+          <label class="lbl" style="margin-left: 10px; margin-right: 10px;" >Emig Clearance: </label>
+          <input type="radio" formControlName="ecnr" value="true"  class="form-check-input inputcheck"> ECNR
+          <input type="radio" formControlName="ecnr" value="false" class="form-check-input inputcheck"> ECR
           
      </div>
      <div class="stdd col-6 mt-1" style="margin-left: 5px;">
@@ -154,7 +156,8 @@
                                         >
                                    </ng-select>
                                    <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
-                                   <button (click)="removeUserProfession(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
+                                   <input class="stdd w15" type="text" readonly formControlName="candidateId">
+                                   <button (click)="removeUserProfession(i)" style="margin-left: 30px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                               </div>
                          </div>
                     </div>
@@ -178,16 +181,17 @@
                                    <div class="stdd col-2">
                                         <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;" >
                                    </div>
+                                   <input class="stdd w15" type="text" formControlName="candidateId">
                                    <div class="stdd col-2">
                                         <button (click)="removeUserPhone(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                                    </div>
                               </div>
                          </div>
                     </div>
-                    <hr>
+               </tab>
+               <tab heading='Qualification' (selectTab)="onTabActivated($event)">
                     <label>Qualifications</label>
-               <!-- </tab> -->
-               <!-- <tab heading='Qualifications' (selectTab)="onTabActivated($event)"> -->
+               
                     <div formArrayName="userQualifications" style="height: 10px;font-size: small;" class="my-1 px-0">
                          <div style="width: 50px; display: inline-block;">Sr No</div>
                          <div style="width: 300px; display: inline-block;">Qualification</div>
@@ -207,12 +211,12 @@
                                         >
                                    </ng-select>
                                    <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
+                                   <input class="stdd w15" type="text" formControlName="candidateId">
                                    <button (click)="removeUserQualification(j)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                               </div>
                          </div>
                     </div>
                </tab>
-               
                <tab heading='Experience' (selectTab)="onTabActivated($event)"> 
                     <label>Experiences</label>
                     <div formArrayName="userExperiences" style="height: 10px;font-size: small;" class="my-1 px-0">
@@ -245,16 +249,16 @@
                                              formControlName = "workedUpto"
                                         ></app-date-picker>
                                    </div>
-
+                                   <input class="stdd w15" type="text" formControlName="candidateId">
                                    <button (click)="removeUserExp(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                                    </div>
                          </div>
                     </div>
                </tab>
                <tab heading='Attachments' (selectTab)="onTabActivated($event)">
-                    <div class="stdd col-8" >File to upload</div>
+                    <div class="stdd col-6" >File to upload</div>
                     <div class="stdd col-3">Type</div>
-                    <button class="stdd pull-right fa fa-plus" type="button" (click)="addUserAttachment()" ></button>
+                    <!-- <button class="stdd pull-right fa fa-plus" type="button" (click)="addUserAttachment()" ></button> -->
                     <div formArrayName="userAttachments" style="height: 12px;" >
                          <div class="stdd" style="font-size: x-small;">
                               <input class="stdd" type="file" id="file" 
@@ -263,17 +267,29 @@
                          </div>
                          <div *ngFor="let ph of userAttachments?.controls; let j=index"> 
                               <div [formGroupName]="j">
-                                    
-                                   <div class="stdd col-8">
-                                        <app-text-input [label]="'File Name'" formControlName="fileName" ></app-text-input>
+                                   
+                                   <div class="stdd col-5">
+                                        <app-text-input [label]="'File Name'" formControlName="name" ></app-text-input>
                                    </div>
                                    
-                                   <div class="stdd col-2">
+                              <!-- <div class="stdd col-2">
                                         <app-text-input [label]="'File Type'" formControlName="attachmentType" ></app-text-input>
                                    </div>
+                              -->
+                                   <ng-select 
+                                        class="stdd mx-10 w150 fSmaller"
+                                        [items]="attachmentTypes" 
+                                        [searchable]=true 
+                                        bindLabel = "typeName"
+                                        bindValue = "typeName"
+                                        formControlName="attachmentType"
+                                   >
+                                   </ng-select>
                                    
-                                   <button (click)="removeUserAttachment(j)" class="stdd red fa fa-trash"></button>
-                                   <button (click)="download(j)" class="stdd red fa fa-download"></button>
+                                   <button (click)="removeUserAttachment(j)" style="margin-left: 20px;" class="stdd red fa fa-trash"></button>
+                                   <button (click)="download(j)" class="stdd mx-1 red fa fa-download"></button>
+                                   <input class="stdd w30 mx-5" type="text" readonly formControlName="candidateId">
+                                   <input type="number" formControlName="id" readonly class="stdd w15" > 
                               </div>
                          </div>
                     </div>

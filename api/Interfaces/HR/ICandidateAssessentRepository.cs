@@ -9,12 +9,14 @@ namespace api.Interfaces.HR
     {
          
         Task<CandidateAssessmentAndChecklistDto> GetChecklistAndAssessment(int candidateid, int orderitemid, string username);
-        Task<CandidateAssessment> GenerateCandidateAssessment(int candidateid, int orderItemId, string Username);
+        Task<CandidateAssessmentWithErrDto> GenerateCandidateAssessment(int candidateid, int orderItemId, string Username);
         Task<CandidateAssessment> SaveCandidateAssessment(CandidateAssessment candidateAssessment, string Username);
         Task<string> EditCandidateAssessment(CandidateAssessment candidateAssessment, string username);
         Task<bool> DeleteCandidateAssessment(int id);
         Task<bool> DeleteCandidateAssessmentItem(int id);
         Task<PagedList<CandidateAssessedDto>> GetCandidateAssessments(CandidateAssessmentParams assessmentParams);
+        Task<ICollection<CandidateAssessedDto>> GetCandidateAssessmentsByCandidateId(int candidateId);
+        
         Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessmentParams);
         Task<CandidateAssessment> GetCandidateAssessmentWithItems(CandidateAssessmentParams assessmentParams);
         Task<bool> AddCandidateAssessmentItems(int candidateAssessmentId);

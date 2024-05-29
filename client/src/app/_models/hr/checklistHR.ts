@@ -5,14 +5,16 @@ export interface IChecklistHR{
      id: number;
      candidateId: number;
      orderItemId: number;
-     userId: number;
+     userName: string;
      checkedOn: Date;
-     hrExecRemarks: string;
+     userComments: string;
+     hRExecUsername: string;
      charges: number;
      chargesAgreed: number;
      exceptionApproved: boolean;
-     exceptionApprovedBy: string;
      exceptionApprovedOn: Date;
-
+     exceptionApprovedBy: string;
+     checklistedOk: boolean;
+     
      checklistHRItems: IChecklistHRItem[];
 }

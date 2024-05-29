@@ -14,6 +14,7 @@ namespace api.Interfaces
         Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams);
         Task<OrderDisplayDto> GetOrderByIdWithAllRelatedProperties (int id);
         Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc (int id);
+        Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsBriefDto();
         Task<MessageWithError> ComposeMsg_AckToClient(int orderid);
             
         //order items

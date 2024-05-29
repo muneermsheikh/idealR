@@ -77,7 +77,7 @@ namespace api.Extensions
             services.AddScoped<IIndustryRepository, IndustryRepository>();
             services.AddScoped<IProfessionRepository, ProfessionRepository>();
             services.AddScoped<IQualificationRepository, QualificationRepository>();
-
+            services.AddScoped<IHelpRepository, HelpRepository>();
             
             return services;
         }

@@ -14,6 +14,9 @@ import { ProfileListComponent } from './profiles/profile-list/profile-list.compo
 import { QualificationListResolver } from './_resolvers/qualificationListResolver';
 import { CandidateResolver } from './_resolvers/admin/candidateResolver';
 import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit.component';
+import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
+import { OpenOrderItemsResolver } from './_resolvers/openOrderItemsResolver';
+import { CandidateAssessedResolver } from './_resolvers/hr/candidate-assessed.resolver';
 
 
 const routes: Routes = [
@@ -35,9 +38,18 @@ const routes: Routes = [
         categories: CategoryListResolver,
         qualifications: QualificationListResolver,
         agents: AgentsResolver,
-        candidate: CandidateResolver
+        candidateBriefDto: CandidateResolver
       },
       data: {breadcrumb: 'Edit Candidate'}},
+
+      {path: 'hr/cvassess/:id', component: CvAssessComponent, 
+      resolve: {
+        openOrderItemsBrief: OpenOrderItemsResolver,
+        assessmentsDto: CandidateAssessedResolver,
+        //candidate: CandidateResolver
+      },
+      data: {breadcrumb: 'Edit Candidate'}},
+      
       /* {path: 'members', component: MemberListComponent, canActivate: [authGuard]},
       {path: 'members/:username', component: MemberDetailsComponent,
           resolve: {member: memberDetailedResolver}},

@@ -4,7 +4,7 @@ namespace api.Entities.HR
 {
     public class OrderItemAssessment: BaseEntity
     {
-        public int orderAssessmentId { get; set; }
+        //public int orderAssessmentId { get; set; }
         public int OrderItemId { get; set; }
         public string CustomerName { get; set; }
         public int OrderNo { get; set; }

@@ -1,4 +1,4 @@
-import { IChecklistHRItem } from "../../models/hr/checklistHRItem";
+import { IChecklistHRItem } from "src/app/_models/hr/checklistHRItem";
 
 
 export interface IChecklistHRDto{
@@ -12,6 +12,7 @@ export interface IChecklistHRDto{
      orderItemId: number;
      userLoggedId: number;
      userLoggedName: string;
+     hrExecUsername: string;
      checkedOn: Date;
      hrExecComments: string;
      charges: number;
@@ -36,13 +37,14 @@ export class ChecklistHRDto implements IChecklistHRDto{
      orderRef: string='';
      userLoggedId: number=0;
      userLoggedName: string='';
-     checkedOn: Date = new Date('1900-10-10');
+     hrExecUsername: string = '';
+     checkedOn: Date = new Date();
      hrExecComments: string='';
      charges: number=0;
      chargesAgreed: number=0;
      exceptionApproved: boolean=false;
      exceptionApprovedBy: string='';
-     exceptionApprovedOn: Date=new Date('1900-01-01');
+     exceptionApprovedOn: Date=new Date();
      checklistedOk: boolean=false;
      assessmentIsNull = false;
      requireInternalReview=false;

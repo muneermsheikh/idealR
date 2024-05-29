@@ -2,13 +2,14 @@ export interface IOpenOrderItemCategoriesDto
 {
      checked: boolean;
      orderId: number;
-     customerId: number;
+     //customerId: number;
      orderNo: number;
+     orderItemId: number;
      orderDate: Date;
      customerName: string;
-     orderItemId: number;
-     professionId: number;
+     //professionId: number;
      categoryRefAndName: string;
+     requireInternalReview: boolean;
      quantity: number;
 }
 
@@ -23,5 +24,6 @@ export class OpenOrderItemCategoriesDto implements IOpenOrderItemCategoriesDto
      orderItemId = 0;
      professionId: number = 0;
      categoryRefAndName = '';
+     requireInternalReview = false;
      quantity = 0;
 }

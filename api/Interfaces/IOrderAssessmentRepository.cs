@@ -10,17 +10,17 @@ namespace api.Interfaces
         Task<OrderAssessment> GetOrderAssessment (int orderId);
         
         //orderitem assessment
-        Task<OrderItemAssessment> GetOrderItemAssessment(int orderItemId);
-        Task<OrderItemAssessment> GenerateOrderItemAssessmentFromStddQ(int orderItemId, string loggedinUsername);
-        Task<OrderItemAssessment> SaveOrderItemAssessment(OrderItemAssessment orderItemAssessment);
+        Task<OrderAssessmentItem> GetOrderAssessmentItem(int orderItemId);
+        Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedinUsername);
+        Task<OrderAssessmentItem> SaveOrderAssessmentItem(OrderAssessmentItem orderItemAssessment);
         Task<bool> EditOrderAssessment(OrderAssessment orderAssessment, string Username);
-        Task<bool> EditOrderItemAssessment(OrderItemAssessment orderItemAssessment);
-        Task<bool> DeleteOrderItemAssessment(int orderItemId);
-        Task<bool> DeleteOrderItemAssessmentQ(int questionId);
+        Task<bool> EditOrderAssessmentItem(OrderAssessmentItem orderAssessmentItem);
+        Task<bool> DeleteOrderAssessmentItem(int orderItemId);
+        Task<bool> DeleteOrderAssessmentItemQ(int questionId);
  
         //orderitemassessmentQ
         Task<ICollection<AssessmentQStdd>> GetAssessmentQStdds();
-        Task<ICollection<OrderItemAssessmentQ>> GetOrderItemAssessmentQs(int orderitemid);
+        Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid);
         
     }
 }

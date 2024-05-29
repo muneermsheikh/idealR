@@ -1,4 +1,5 @@
-import { ICandidateAssessment } from "../../models/hr/candidateAssessment";
+import { ICandidateAssessment } from "src/app/_models/hr/candidateAssessment";
+
 
 export interface ICandidateAssessmentWithErrorStringDto
 {

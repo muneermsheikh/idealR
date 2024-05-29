@@ -11,10 +11,10 @@ import { IOrderItemAssessmentQ } from '../_models/admin/orderItemAssessmentQ';
 import { ICandidateAssessment } from '../_models/hr/candidateAssessment';
 import { ICandidateAssessmentWithErrorStringDto } from '../_dtos/hr/candidateAssessmentWithErrorStringDto';
 import { IChecklistHRDto } from '../_dtos/hr/checklistHRDto';
-import { ICandidateAssessmentAndChecklist } from '../_models/hr/candidateAssessmentAndChecklist';
 import { ICandidateAssessedDto } from '../_dtos/hr/candidateAssessedDto';
 import { CVBriefParam } from '../_models/params/hr/cvBriefParam';
 import { GetHttpParamsForCVRefBrief, getPaginatedResult } from './paginationHelper';
+import { ICandidateAssessmentAndChecklistDto } from '../_dtos/hr/candidateAssessmentAndChecklistDto';
 
 @Injectable({
   providedIn: 'root'
@@ -83,13 +83,13 @@ export class CVAssessService {
   
 
   getCVAssessmentAndChecklist(cvid: number, orderitemid: number) {
-    return this.http.get<ICandidateAssessmentAndChecklist>(this.apiUrl + 
+    return this.http.get<ICandidateAssessmentAndChecklistDto>(this.apiUrl + 
         'candidateassessment/assessmentandchecklist/' + orderitemid + '/' + cvid);
   }
 
 
-  getCVAssessmentsOfACandidate(cvid: number) {
-    return this.http.get<ICandidateAssessedDto[]>(this.apiUrl + 'candidateassessment/assessmentsofcandidateid/' +cvid);
+  getAssessmentsOfACandidate(cvid: number) {
+    return this.http.get<ICandidateAssessedDto[]>(this.apiUrl + 'CandidateAssessment/candidateassessments/' +cvid);
   }
 
 

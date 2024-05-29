@@ -14,6 +14,10 @@ export interface ICandidateAssessedDto
      assessResult: string;
      assessedOn: Date;
      checklistHRId: number;
+     checklistedByName: string;
+     checklistedOn: Date;
+     categoryRef: string;
+     assessedByName: string;
 }
 
 export class CandidateAssessedDto implements ICandidateAssessedDto
@@ -31,5 +35,10 @@ export class CandidateAssessedDto implements ICandidateAssessedDto
      assessedByUsername= '';
      checklistHRId= 0;
      assessResult= '';
-     assessedOn: Date = new Date('1900-01-01');
+     assessedOn: Date = new Date();
+
+     checklistedByName = '';
+     checklistedOn = new Date();
+     categoryRef = '';
+     assessedByName = '';
 }

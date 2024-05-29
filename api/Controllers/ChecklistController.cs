@@ -4,6 +4,7 @@ using api.Entities.Master;
 using api.Errors;
 using api.Extensions;
 using api.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,19 +14,22 @@ namespace api.Controllers
     public class ChecklistController : BaseApiController
     {
         private readonly IChecklistRepository _repo;
-        public ChecklistController(IChecklistRepository repo)
+        private readonly IMapper _mapper;
+
+        public ChecklistController(IChecklistRepository repo, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
         }
 
-        [HttpGet("generate/{candidateid}/{orderitemid}")]
-        public async Task<ActionResult<ChecklistHR>> GenerateNewChecklist(int candidateid, int orderitemid)
+        [HttpGet("generateorget/{candidateid}/{orderitemid}")]
+        public async Task<ActionResult<ChecklistHRDto>> GenerateNewChecklist(int candidateid, int orderitemid)
         {
             var checkobj = await _repo.GetOrGenerateChecklist(candidateid, orderitemid, User.GetUsername());
 
             if(!string.IsNullOrEmpty(checkobj.ErrorString)) return BadRequest(new ApiException(500, "Bad Request", checkobj.ErrorString));
 
-            return Ok(checkobj.ChecklistHR);
+            return Ok(checkobj.checklistDto);
         }
 
         [HttpPost("newchecklist")]
@@ -81,12 +85,14 @@ namespace api.Controllers
         [HttpGet("checklistHR/{candidateid}/{orderitemid}")]
         public async Task<ActionResult<ChecklistHRDto>> GetChecklistHR (int candidateid, int orderitemid)
         {
-            var data = await _repo.GetChecklistHRFromCandidateIdAndOrderDetailId(candidateid, orderitemid);
+            var data = await _repo.GetChecklistHRFromCandidateIdAndOrderDetailId(candidateid, orderitemid, User.GetUsername());
 
             if (data == null) return BadRequest("Failed to get the checklist HR");
 
             return Ok(data);
         }
+
+        
 
         [HttpDelete("checklist/{id}")]
         public async Task<ActionResult<bool>> DeleteChecklistHR (int id)

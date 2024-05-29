@@ -1,0 +1,118 @@
+<div class="modal-header my-0" *ngIf="chklst" >
+    <div class="stdd w75 b">Candidate:</div> 
+    <div class="stdd w200 blue mx-1">{{chklst.applicationNo}} - {{chklst.candidateName}}</div>
+
+    <button type="button" class="stdd btn btn-success fa fa-save" (click)="Edited()"></button>
+    <button type="button" class="stdd btn btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">X</button>
+</div>    
+
+<div class="modal-body my-0">
+    <div class="mx-2 mt-2" *ngIf="chklst">
+    
+    <div class="stdd w75 b">Category:</div> 
+    <div class="stdd w400 blue mx-1">{{chklst.categoryRef}} </div>
+    
+    <div class="stdd w50 b">HR Exec</div>
+    <div class="stdd w100 blue">{{chklst.hrExecUsername}}</div>
+    
+    <br><div class="stdd w75 b my-0 mx-1">Fees:</div> 
+        
+        <div *ngIf="chklst?.charges===undefined || chklst.charges===undefined" 
+            class="stdd mx-1 w100 text-danger" >Not Defined</div>
+        <div *ngIf="chklst.charges !==null" style="border: blue;" class="stdd blue w100" >{{chklst.charges}}</div>
+        <div class="stdd b mx-1">Agreed:</div> 
+        
+        <input class="form-text-input blue stdd w100 mx-1" [name]="'chargesAgreed'" 
+            (click)="ChargesDoubleClicked()"    
+            title="this is charges agreed box"
+            [(ngModel)]="chklst!.chargesAgreed">
+        
+        <label class="stdd w20" style="margin-left: 10px;">Charges Exception approved</label>
+        <input type="checkbox" style="margin-left: 80px; border: aliceblue; border:inset"
+            class="form-check-input stdd mx-1"
+            [checked]="chklst.exceptionApproved"
+            (change)="chklst.exceptionApproved !== chklst.exceptionApproved"
+            [(ngModel)]="chklst.exceptionApproved"
+        >
+        
+        <div *ngIf="chklst.charges != chklst.chargesAgreed && chklst.charges > 0" 
+               class="stdd w100 b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
+     
+           <!-- <input 
+                type="checkbox" 
+                class="form-check-input stdd mx-1"
+                [checked]="chklst.exceptionApproved"
+                (change)="chklst.exceptionApproved = !chklst.exceptionApproved"
+                [(ngModel)]="chklst.exceptionApproved"
+            > -->
+
+            <div class="stdd" *ngIf="chklst.exceptionApproved">
+                <div class="stdd w50">On: </div>
+                <div class="stdd w100 blue">{{chklst!.exceptionApprovedOn | date:'d-MMM-yy'}}</div>
+                <div class="stdd w75 ml-20 b">By:</div> 
+                <div class="stdd w75 blue">{{chklst!.exceptionApprovedBy}}</div>    
+            </div>
+        </div>
+
+        <br>
+        <div class="stdd b">checklisted on:</div> 
+        <div class="stdd blue">{{chklst.checkedOn | date: 'd-MMM-yy'}}</div>
+        <div class="stdd ml-5 b">
+           <span class="b">Checklist Completed:</span>
+           <span class="b mx-2 blue"> {{chklst.checklistedOk ? 'Yes' : 'No'}}</span>
+       </div>
+       <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span> </button> -->
+    
+        <form #checklistForm="ngForm" id="checklistForm">
+            <label class="stdd my-0 b">HR Exec comments:</label>
+            <input type="text" class="stdd w400 my-2" [(ngModel)]="chklst.hrExecComments" [name]="'hrExecComments'" >
+            <hr class="mt-0 mb-0 b">
+              <label class="lbl w25">Sr#</label>
+              <label class="lbl w300">Parameter</label>
+              <label class="lbl w50">Must<br>accept</label>
+              <label class="lbl" style="width: 70px;">Candidate<br>Response</label>
+              <label class="lbl mx-2 fontSmall" style="width: 50px;">Candidate<br>accepts</label>
+              
+              <label class="lbl w125">Exception</label>
+              <label class="lbl w75">Approved</label>
+              let index = index;trackBy:trackByIndex;
+              <div *ngFor="let lst of chklst!.checklistHRItems; let i=index;" >
+                    <label class="lbl w25">{{lst.srNo}}</label>
+                    <label class="lbl mx-1 my-0 w300">{{lst.parameter}}</label>
+                
+                  <input type="checkbox" style="margin-left: 10px;"
+                      class="form-check-input"
+                      [checked]="lst.mandatoryTrue"
+                      disabled="true"
+                  >
+                  <input style="margin-left: 25px; width: 75px; display: inline-block;" 
+                    type="text"  [name]="'response'+i" 
+                    name="response"
+                    [(ngModel)]="lst.response"
+                  >
+                  
+                  <input type="checkbox" style="margin-left: 80px;"
+                      class="form-check-input stdd mx-1"
+                      [checked]="lst.accepts"
+                      (change)="lst.accepts = !lst.accepts"
+                      name="accepts"
+                      [(ngModel)]="lst.accepts"
+                  >
+                  <input style="margin-left: 40px;" 
+                    class="stdd w125" type="text"  
+                    [name]="'exceptions'+i" 
+                    name="exceptions"
+                    [(ngModel)]="lst.exceptions"
+                  >
+            
+              </div>
+            </form>
+
+
+    </div>
+</div>
+
+   <div class="modal-footer">
+     
+   </div>

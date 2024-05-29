@@ -31,7 +31,7 @@ namespace api.Controllers
         [HttpGet("orderitemassessment/{orderItemId}")]
         public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessment(int orderItemId)
         {
-            var assessment = await _repo.GetOrderItemAssessment(orderItemId);
+            var assessment = await _repo.GetOrderAssessmentItem(orderItemId);
             if(assessment==null) return NotFound();
             return Ok(assessment);
         }
@@ -48,7 +48,7 @@ namespace api.Controllers
         [HttpGet("generateAssessment/{orderItemId}")]
         public async Task<ActionResult<OrderItemAssessment>> GenerateOrderItemAssessment(int orderItemId)
         {
-            var assessment = await _repo.GenerateOrderItemAssessmentFromStddQ(orderItemId, User.GetUsername());
+            var assessment = await _repo.GenerateOrderAssessmentItemFromStddQ(orderItemId, User.GetUsername());
             if(assessment == null) return BadRequest("Failed to generate the assessment object for the Order Item");
 
             return Ok(assessment);
@@ -65,18 +65,18 @@ namespace api.Controllers
         }
 
         [HttpPost("itemassessment")]
-        public async Task<ActionResult<OrderItemAssessment>> InsertOrderItemAssessment(OrderItemAssessment orderItemAssessment)
+        public async Task<ActionResult<OrderItemAssessment>> InsertOrderItemAssessment(OrderAssessmentItem orderItemAssessment)
         {
-            var posted = await _repo.SaveOrderItemAssessment(orderItemAssessment);
+            var posted = await _repo.SaveOrderAssessmentItem(orderItemAssessment);
             if(posted == null) return BadRequest("Failed to post the OrderItem Assessment");
 
             return Ok(posted);
         }
 
         [HttpPut("itemassessment")]
-        public async Task<ActionResult<bool>> UpdateOrderItemAssessment(OrderItemAssessment orderItemAssessment)
+        public async Task<ActionResult<bool>> UpdateOrderItemAssessment(OrderAssessmentItem orderAssessmentItem)
         {
-            var updated = await _repo.EditOrderItemAssessment(orderItemAssessment);
+            var updated = await _repo.EditOrderAssessmentItem(orderAssessmentItem);
 
             if(!updated) return BadRequest("Failed to update the Order Item Assessment");
 
@@ -95,9 +95,9 @@ namespace api.Controllers
         }
 
         [HttpGet("orderitemassessmentQ/{orderitemid}")]
-        public async Task<ActionResult<ICollection<OrderItemAssessmentQ>>> GetOrderItemAssessmentQs (int orderitemid)
+        public async Task<ActionResult<ICollection<OrderItemAssessmentQ>>> GetOrderAssessmentItemQs (int orderitemid)
         {
-            var obj = await _repo.GetOrderItemAssessmentQs(orderitemid);
+            var obj = await _repo.GetOrderAssessmentItemQs(orderitemid);
 
             if(obj == null) return BadRequest(new ApiException(402, "Bad Request", "No assessment questions returned"));
 
@@ -107,15 +107,15 @@ namespace api.Controllers
         [HttpDelete("itemAssessment/{orderItemId}")]
         public async Task<ActionResult<bool>> DeleteOrderItemAssessment(int orderItemId)
         {
-            var deleted = await _repo.DeleteOrderItemAssessment(orderItemId);
+            var deleted = await _repo.DeleteOrderAssessmentItem(orderItemId);
             if(!deleted) return BadRequest("Failed to delete the OrderItem Assessment");
             return Ok(true);
         }
 
         [HttpDelete("itemAssessmentQ/{questionId}")]
-        public async Task<ActionResult<bool>> DeleteOrderItemAssessmentQ(int questionId)
+        public async Task<ActionResult<bool>> DeleteOrderAssessmentItemQ(int questionId)
         {
-            var deleted = await _repo.DeleteOrderItemAssessmentQ(questionId);
+            var deleted = await _repo.DeleteOrderAssessmentItemQ(questionId);
             if(!deleted) return BadRequest("Failed to delete the OrderItem Assessment Question");
             return Ok(true);
         }

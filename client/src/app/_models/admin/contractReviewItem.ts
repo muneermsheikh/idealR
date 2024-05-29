@@ -15,5 +15,6 @@ export interface IContractReviewItem
      requireAssess: boolean; 
      sourceFrom: string; 
      reviewItemStatus: number;
+     hRExecUsername: string;
      reviewItems: IReviewItem[];
 }

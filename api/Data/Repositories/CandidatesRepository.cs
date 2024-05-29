@@ -168,6 +168,7 @@ namespace api.Data.Repositories
                 .Include(x => x.UserProfessions)
                 .Include(x => x.UserExperiences)
                 .Include(x => x.UserPhones)
+                .Include(x => x.UserQualifications)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .SingleOrDefault();
@@ -177,7 +178,7 @@ namespace api.Data.Repositories
             _context.Entry(existingObject).CurrentValues.SetValues(newObject);
 
             //delete records in existingObject that are not present in new object
-            foreach (var existingItem in existingObject.UserProfessions.ToList())
+            foreach (var existingItem in existingObject.UserProfessions?.ToList())
             {
                 if(!newObject.UserProfessions.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
@@ -189,7 +190,7 @@ namespace api.Data.Repositories
             //items in current object - either updated or new items
             foreach(var newItem in newObject.UserProfessions)
             {
-                var existingItem = existingObject.UserProfessions
+                var existingItem = existingObject.UserProfessions?
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
                 {
@@ -210,7 +211,7 @@ namespace api.Data.Repositories
             }
 
             //edit UserPhones
-            foreach (var existingItem in existingObject.UserPhones.ToList())
+            foreach (var existingItem in existingObject.UserPhones?.ToList())
             {
                 if(!newObject.UserPhones.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
@@ -222,7 +223,8 @@ namespace api.Data.Repositories
             //items in current object - either updated or new items
             foreach(var newItem in newObject.UserPhones)
             {
-                var existingItem = existingObject.UserPhones
+
+                var existingItem = existingObject.UserPhones?
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
                 {
@@ -281,6 +283,39 @@ namespace api.Data.Repositories
                 }
             }
 
+            //edit UserQualifications
+            foreach (var existingItem in existingObject.UserQualifications.ToList())
+            {
+                if(!newObject.UserQualifications.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.UserQualifications.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted; 
+                }
+            }
+
+            //items in current object - either updated or new items
+            foreach(var newItem in newObject.UserQualifications)
+            {
+                var existingItem = existingObject.UserQualifications
+                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                if(existingItem != null)    //update navigation record
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                } else {    //insert new navigation record
+                    var itemToInsert = new UserQualification
+                    {
+                        CandidateId = existingObject.Id,
+                        QualificationId = newItem.QualificationId,
+                        IsMain = newItem.IsMain
+                    };
+
+                    existingObject.UserQualifications.Add(itemToInsert);
+                    _context.Entry(itemToInsert).State = EntityState.Added;
+                }
+            }
+
+            
             _context.Entry(existingObject).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0;
@@ -344,31 +379,59 @@ namespace api.Data.Repositories
             return cand;
         }
 
-        public async Task<ICollection<UserAttachment>> AddUserAttachments(ICollection<UserAttachment> userAttachments, string Username)
+        public async Task<ICollection<UserAttachment>> AddAndSaveUserAttachments(ICollection<UserAttachment> newObject, string Username)
         {
             var attachmentsPosted = new List<UserAttachment>();
+            var candId = newObject.Select(x => x.CandidateId).FirstOrDefault();
 
-            foreach(var attachment in userAttachments)
+            var existing = await  (_context.UserAttachments
+                    .Where(x => x.CandidateId == candId)
+                    .AsNoTracking()
+                ).ToListAsync();
+                 
+            var filesDeleted = new List<string>();
+            foreach(var existingItem in existing)
             {
-                var existing = await _context.UserAttachments
-                    .Where(x => x.Name.ToLower() == attachment.Name.ToLower()).FirstOrDefaultAsync();
-                if (existing != null) {
-                    _context.UserAttachments.Remove(existing);
-                    _context.Entry(existing).State = EntityState.Deleted;
+                if(!newObject.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.UserAttachments.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted;
+                    filesDeleted.Add(existingItem.UploadedLocation + "//" + existingItem.Name);
                 }
+            }
                 
-                var newAttachment = new UserAttachment{
-                    CandidateId = attachment.CandidateId,  AppUserId = attachment.AppUserId, 
-                    AttachmentType = attachment.AttachmentType, Name = attachment.Name, 
-                    UploadedbyUserName = Username, UploadedLocation = attachment.UploadedLocation,
-                    UploadedOn = _today,  Length = attachment.Length
-                };
+            foreach(var newItem in newObject)
+            {
+                var existingItem = existing?.Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                if(existingItem != null) {
+                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                } else {
+                    var appuserObj= await _userManager.FindByNameAsync(Username);
+                    var appuserid = appuserObj == null ? 0 : appuserObj.Id;
 
-                _context.Entry(newAttachment).State = EntityState.Added;
-                attachmentsPosted.Add(newAttachment);
+                    var itemToInsert = new UserAttachment{
+                        CandidateId = newItem.CandidateId, AppUserId = appuserid, 
+                        AttachmentType = newItem.AttachmentType, Name = newItem.Name, 
+                        UploadedbyUserName = Username, UploadedLocation = newItem.UploadedLocation,
+                        UploadedOn = _today,  Length = newItem.Length
+                    };
+                    
+                    _context.Entry(itemToInsert).State = EntityState.Added;
+                    attachmentsPosted.Add(newItem);
+                }
+               
             }
 
-            return await _context.SaveChangesAsync() > 0 ? attachmentsPosted : null;
+            if (await _context.SaveChangesAsync() > 0 ) {
+                foreach(var filename in filesDeleted) {
+                    if(File.Exists(filename)) File.Delete(filename);
+                }
+                return attachmentsPosted;
+            } else {
+                return null;
+            }
+            
         }
 
         public async Task<bool> DeleteUserAttachment(int attachmentId)
@@ -402,7 +465,8 @@ namespace api.Data.Repositories
 
         public async Task<UserAttachment> GetUserAttachmentById(int attachmentId)
         {
-            return await _context.UserAttachments.FindAsync(attachmentId);
+            var obj = await _context.UserAttachments.FindAsync(attachmentId);
+            return obj;
         }
 
         public async Task<int> GetApplicationNoFromCandidateId(int candidateId)

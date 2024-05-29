@@ -68,6 +68,10 @@ input[type="radio"]:checked::before {
 
 .tAlignR {text-align: right;}
 
+.fSmaller {font-size: smaller;}
+
+.w15 {width: 15px;}
+.w30 {width: 30px;}
 .w75 {width: 75px;}
 .w100 {width: 100px;}
 .w150 {width: 150px;}

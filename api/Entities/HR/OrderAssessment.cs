@@ -5,6 +5,6 @@ namespace api.Entities.HR
         public int OrderId { get; set; }
         public DateOnly OrderDate { get; set; }
         public string DesignedByUsername { get; set; }
-        public ICollection<OrderItemAssessment> OrderItemAssessments { get; set; }
+        public ICollection<OrderAssessmentItem> OrderAssessmentItems { get; set; }
     }
 }

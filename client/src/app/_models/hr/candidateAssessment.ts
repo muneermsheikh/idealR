@@ -5,7 +5,7 @@ export interface ICandidateAssessment
      id: number;
      orderItemId: number;
      candidateId: number;
-     assessedById: number;
+     //assessedById: number;
      assessedByName: string;
      assessedOn: Date;
      assessResult: string;
@@ -17,14 +17,14 @@ export interface ICandidateAssessment
 }
 export class CandidateAssessment implements ICandidateAssessment
 {
-     constructor(_orderitemid: number, _candidateid: number, _assessedbyid: number,  _assessedByName: string, _assessedon: Date, _requireInternalReview: boolean, 
-          _hrChecklistId: number, _items: ICandidateAssessmentItem[]) {
+     constructor(_orderitemid: number, _candidateid: number,  _assessedByName: string, _assessedon: Date, 
+           _hrChecklistId: number, _items: ICandidateAssessmentItem[]) {
           this.orderItemId = _orderitemid;
           this.candidateId = _candidateid;
-          this.assessedById = _assessedbyid;
+          //this.assessedById = _assessedbyid;
           this.assessedByName = _assessedByName;
           this.assessedOn = _assessedon;
-          this.requireInternalReview = _requireInternalReview;
+          //this.requireInternalReview = _requireInternalReview;
           this.hrChecklistId = _hrChecklistId
           this.candidateAssessmentItems = _items;
           this.id = 0;   //so as to patch values
@@ -32,11 +32,10 @@ export class CandidateAssessment implements ICandidateAssessment
      id= 0;
      orderItemId =0;
      candidateId= 0;
-     assessedById= 0;
      assessedByName= '';
      assessedOn: Date;
      assessResult= "";
-     requireInternalReview: boolean;
+     requireInternalReview = false;
      hrChecklistId= 0;
      remarks= '';
      cvRefId= 0;

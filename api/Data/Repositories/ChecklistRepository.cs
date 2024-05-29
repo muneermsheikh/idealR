@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Master;
@@ -13,23 +14,43 @@ namespace api.Data.Repositories
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private readonly DateTime _today;
         public ChecklistRepository(DataContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
         }
 
-        public async Task<ChecklistObj> GetOrGenerateChecklist(int candidateId, int orderItemId, string Username)
+        public async Task<ChecklistDtoObj> GetOrGenerateChecklist(int candidateId, int orderItemId, string Username)
         {
-            var checkobj = new ChecklistObj();
+            var checkobj = new ChecklistDtoObj();
+            var checklist = new ChecklistHR();
 
-            var errString = await CandidateAlreadyChecklisted(candidateId, orderItemId);
-            if(!string.IsNullOrEmpty(errString)) {
-                checkobj.ErrorString = errString;
-                return checkobj;
+            checklist = await CandidateAlreadyChecklisted(candidateId, orderItemId);
+
+            if(checklist == null) {
+
+                var obj = await ComposeChecklistHR(candidateId, orderItemId, Username);
+                if(!string.IsNullOrEmpty(obj.ErrorString)) {
+                    checkobj.ErrorString = obj.ErrorString;
+                    return checkobj;
+                } else {
+                    checklist = obj.ChecklistHR;
+                }
             }
 
-            checkobj = await ComposeChecklistHR(candidateId, orderItemId, Username);
+           var dto = _mapper.Map<ChecklistHRDto>(checklist);
+
+            if(dto.ApplicationNo == 0) dto.ApplicationNo = 
+                await _context.GetApplicationNoFromCandidateId(dto.CandidateId);
+            if(string.IsNullOrEmpty(dto.CandidateName)) dto.CandidateName = 
+                await _context.GetCandidateNameFromCandidateId(dto.CandidateId);
+            if(string.IsNullOrEmpty(dto.CategoryRef)) dto.CategoryRef = 
+                await _context.GetOrderItemDescriptionFromOrderItemId(dto.OrderItemId);
+            if(string.IsNullOrEmpty(dto.HrExecUsername)) 
+                dto.HrExecUsername = await _context.GetHRExecUsernameFromOrderItemId(dto.OrderItemId);
+
+            checkobj.checklistDto = dto;
 
             return checkobj;
         }
@@ -42,14 +63,16 @@ namespace api.Data.Repositories
             return obj;
         }
 
-        private async Task<string> CandidateAlreadyChecklisted(int candidateId, int orderItemId)
+        private async Task<ChecklistHR> CandidateAlreadyChecklisted(int candidateId, int orderItemId)
         {
-            var checkedOn = await _context.ChecklistHRs.Where(x => x.CandidateId == candidateId && x.OrderItemId == orderItemId)
-                .Select(x => x.CheckedOn).FirstOrDefaultAsync();
-            if (checkedOn.Year > 2000) 
-                return "Checklist on the candidate for the same requirement has been done on " + checkedOn;
+            var chklst = await _context.ChecklistHRs.Include(x => x.ChecklistHRItems)
+                .Where(x => x.CandidateId == candidateId && x.OrderItemId == orderItemId)
+                .FirstOrDefaultAsync();
             
-            return "";
+            //if (chklst == null) 
+                //return "Checklist on the candidate for the same requirement has been done on " + chklst.CheckedOn;
+
+            return chklst;
 
         }
         
@@ -103,19 +126,23 @@ namespace api.Data.Repositories
             //populate the checklistHRItem
             var data = await _context.ChecklistHRDatas.OrderBy(x => x.SrNo).ToListAsync();
             var charges  = await _context.GetServiceChargesFromOrderItemId(orderItemId);
+            
 
-            foreach (var item in data)
-            {
-                if(item.Parameter.ToLower() == "willing to pay service charges") item.Parameter += charges == 0 ? "" : " " + charges;
-                itemList.Add(new ChecklistHRItem{SrNo = item.SrNo, Parameter = item.Parameter, MandatoryTrue=item.IsMandatory});
+            foreach(var item in data) {
+                var newItem = new ChecklistHRItem{
+                    Parameter=item.Parameter,SrNo=item.SrNo, MandatoryTrue=item.IsMandatory
+                };
+                itemList.Add(newItem);
             }
+
+            var hrexecusername = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
+                .Select(x => x.HRExecUsername).FirstOrDefaultAsync();
 
             var hrTask = new ChecklistHR{
                 CandidateId=candidateId, OrderItemId= orderItemId, 
-                UserName = Username, CheckedOn = DateOnly.FromDateTime(System.DateTime.UtcNow), 
-                Charges = await _context.GetServiceChargesFromOrderItemId(orderItemId),
-                ChecklistHRItems = itemList,
-                Candidate = null};
+                UserName = Username, CheckedOn = _today, 
+                Charges = charges,
+                ChecklistHRItems = itemList, HrExecUsername = hrexecusername };
             
             checkobj.ChecklistHR = hrTask;
 
@@ -186,8 +213,8 @@ namespace api.Data.Repositories
                     existing.ChecklistHRItems.Add(newItem);
                     _context.Entry(newItem).State = EntityState.Added;
                 }
-
             }
+            
             var test1 = !model.ChecklistHRItems.Any(c => !c.Accepts);
             var test2 = model.ChecklistHRItems.Any(c => c.MandatoryTrue && model.ExceptionApproved);
 
@@ -196,7 +223,7 @@ namespace api.Data.Repositories
             
             if(existing.ExceptionApproved && string.IsNullOrEmpty(existing.ExceptionApprovedBy)) {
                 existing.ExceptionApprovedBy = Username;
-                existing.ExceptionApprovedOn = DateTime.UtcNow;
+                existing.ExceptionApprovedOn = _today;
             }
             _context.Entry(existing).State = EntityState.Modified;
             
@@ -241,8 +268,10 @@ namespace api.Data.Repositories
         }
 
         public async Task<ChecklistHRDto> GetChecklistHRFromCandidateIdAndOrderDetailId(int candidateId, 
-            int orderItemId)
+            int orderItemId, string username)
         {
+            var dto = await GetOrGenerateChecklist(candidateId, orderItemId, username);
+            
             var lst = await(from checklist in _context.ChecklistHRs 
                     where checklist.CandidateId == candidateId && checklist.OrderItemId == orderItemId
                 join orderitem in _context.OrderItems on checklist.OrderItemId equals orderitem.Id
@@ -255,6 +284,7 @@ namespace api.Data.Repositories
                     //OrderRef =  order.OrderNo + "-" + orderitem.SrNo + "-" + orderitem.Profession.ProfessionName,
                     UserName = checklist.UserName, 
                     CheckedOn = checklist.CheckedOn, 
+                    HrExecUsername = rvwitem.HRExecUsername,
                     //UserComments = checklist.UserComments,
                     ChecklistHRItems = checklist.ChecklistHRItems,
                     Charges = rvwitem.Charges,
@@ -306,10 +336,11 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<ICollection<ChecklistHRData>> GetChecklistHRDataListAsync()
+        public async Task<ICollection<ChecklistHRData>> GetChecklistHRDataListAsync()
         {
-            throw new System.NotImplementedException();
+            return await _context.ChecklistHRDatas.OrderBy(x => x.SrNo).ToListAsync();
         }
 
+        
     }
 }

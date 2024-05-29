@@ -12,9 +12,11 @@ import { IApiReturnDto } from '../_dtos/admin/apiReturnDto';
 import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
+import { ICandidateAndErrorStringDto } from '../_dtos/hr/candidateAndErrorStringDto';
 @Injectable({
   providedIn: 'root'
 })
+
 export class CandidateService {
 
   apiUrl = environment.apiUrl;
@@ -65,8 +67,6 @@ export class CandidateService {
 
   }
 
-
-  
   getCandidate(id: number) {
     
     return this.http.get<ICandidate>(this.apiUrl + 'candidate/byid/'+ id);
@@ -91,6 +91,13 @@ export class CandidateService {
         'Candidate/briefbyparams', {params});
   }
 
+  getCandidateBriefDtoFromId(candidateId: number) {
+    
+    var params = new HttpParams();
+    params  = params.append('candidateId', candidateId.toString());
+    return this.http.get<ICandidateBriefDto>(this.apiUrl + 'Candidate/briefbyparams', {params});
+  }
+
   registerNewWithFiles(model: any) {
     return this.http.post<IApiReturnDto>(this.apiUrl + 'Candidate/RegisterByUpload', model );
     
@@ -98,7 +105,7 @@ export class CandidateService {
 
 
   UpdateCandidateWithFiles(model: any) {
-      return this.http.put<string>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
+      return this.http.put<ICandidateAndErrorStringDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }
     
   setCurrentUser(user: User) {

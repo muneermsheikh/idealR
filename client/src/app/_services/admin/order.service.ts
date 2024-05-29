@@ -57,6 +57,10 @@ export class OrderService {
         
     }
 
+    getOpenOrderItemsBriefListDto() {
+        return this.http.get<IOrderItemBriefDto[]>(this.apiUrl + 'Orders/openorderitemcategorylist');
+    }
+
     getOrderItemsBriefDto(oParams: OpenOrderItemsParams) {
             
       const response = this.cacheItems.get(Object.values(oParams).join('-'));

@@ -5,7 +5,7 @@ export interface IUserAttachment {
      appUserId: number;
      attachmentType: string;
      attachmentSizeInBytes: number;
-     fileName: string;
+     name: string;
      url: string;
      dateUploaded: Date;
      uploadedByEmployeeId: number;
@@ -17,7 +17,7 @@ export class UserAttachment implements IUserAttachment {
      appUserId=0;
      attachmentType='';
      attachmentSizeInBytes = 0;
-     fileName='';
+     name='';
      url = '';
      dateUploaded = new Date();
      uploadedByEmployeeId = 0;

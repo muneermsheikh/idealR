@@ -31,7 +31,7 @@ namespace api.Controllers
             if (attachment==null) return NotFound(new ApiException(402, "Not Found","the requested record does not exist"));
 
             var FileName=attachment.UploadedLocation + '/' + attachment.Name;
-            if(string.IsNullOrEmpty(FileName)) return BadRequest("No URL found in the attachment record");
+            //if(string.IsNullOrEmpty(FileName)) return BadRequest("No URL found in the attachment record");
 
             if(!System.IO.File.Exists(FileName)) return NotFound("the File " + attachment.Name + " does not exist");
 
@@ -45,7 +45,9 @@ namespace api.Controllers
             //if (!File.Exists(FileName)) return false;
 
             var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
-            return File(bytes, contentType, Path.GetFileName(FileName));
+            var dto = File(bytes, contentType, Path.GetFileName(FileName));
+            
+            return dto;
         }
 
      
@@ -174,7 +176,7 @@ namespace api.Controllers
                 return  BadRequest(new ApiException(400, "failed to upload the file(s)", ex.Message));
             }
 
-            if(await _candRepo.AddUserAttachments(attachments, User.GetUsername()) == null) 
+            if(await _candRepo.AddAndSaveUserAttachments(attachments, User.GetUsername()) == null) 
                 return BadRequest(new ApiException(400, "File(s) downloaded, but failed to save data to datanase"));
 
             return Ok();

@@ -5,19 +5,16 @@ import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { ToastrService } from 'ngx-toastr';
 import { map, of, switchMap, timer } from 'rxjs';
 import { IApiReturnDto } from 'src/app/_dtos/admin/apiReturnDto';
+import { ICandidateAndErrorStringDto } from 'src/app/_dtos/hr/candidateAndErrorStringDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { ICandidate } from 'src/app/_models/hr/candidate';
 import { IQualification } from 'src/app/_models/hr/qualification';
-import { IUserAttachment } from 'src/app/_models/hr/userAttachment';
-import { IUserExp } from 'src/app/_models/hr/userExp';
 import { IProfession } from 'src/app/_models/masters/profession';
-import { IUserPhone } from 'src/app/_models/params/Admin/userPhone';
-import { IUserProfession } from 'src/app/_models/params/Admin/userProfession';
-import { IUserQualification } from 'src/app/_models/params/Admin/userQualification';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { QualificationService } from 'src/app/_services/admin/qualification.service';
 import { CandidateService } from 'src/app/_services/candidate.service';
+import { FileService } from 'src/app/_services/file.service';
 
 @Component({
   selector: 'app-candidate-edit',
@@ -95,10 +92,11 @@ export class CandidateEditComponent implements OnInit {
     private candidateService: CandidateService,
     private router: Router,
     passwordElement: ElementRef,
-    private qualService: QualificationService
+    private qualService: QualificationService,
+    private downloadService: FileService
     ) {
         //initialize controls
-            this.registerForm = this.fb.group({
+            /* this.registerForm = this.fb.group({
               id: 0,
               userType: ['candidate', Validators.required],
               applicationNo:0,        
@@ -119,12 +117,12 @@ export class CandidateEditComponent implements OnInit {
               referredByName: '',
               
               password: ['']  , /*[Validators.required, 
-                Validators.minLength(4), Validators.maxLength(8)]], */
+                Validators.minLength(4), Validators.maxLength(8)]], 
               confirmPassword: '',  // [Validators.required, this.matchValues('password')]],
-              
+             
             //}),
             //userAddressForm: this.fb.group({
-              address: '',
+             /* address: '',
               address2: '',
               city: ['Mumbai', Validators.required],
               pin: '401107',
@@ -149,6 +147,7 @@ export class CandidateEditComponent implements OnInit {
             })
         
           }
+          */
         //end of initilize controls
       
       
@@ -186,22 +185,16 @@ export class CandidateEditComponent implements OnInit {
        
     });
 
-    this.initializeForm();
-
-    //if(!this.isAddMode) this.editCandidate(this.candidate!);
-    if(!this.isAddMode && this.candidate) this.InitializeAndPopulateFormArray(this.candidate);
+    if(this.candidate) this.InitializeAndPopulateFormArray(this.candidate);
   }
 
   InitializeAndPopulateFormArray(cv: ICandidate) {
-
-    console.log('candidate in initialize: ', cv);
-    
+  
     this.registerForm = this.fb.group({
       id: [cv.id, Validators.required], 
-      userType: [cv.userType, Validators.required],
-      applicationNo: [cv.applicationNo, Validators.required],
+      applicationNo: [cv.applicationNo],
       gender: [cv.gender, Validators.required],
-      nationality: ['Indian', Validators.required],
+      nationality: ['Indian'],
       firstName: [cv.firstName, Validators.required],
       secondName: [cv.secondName],
       familyName: [cv.familyName],
@@ -211,7 +204,7 @@ export class CandidateEditComponent implements OnInit {
       aadharNo: [cv.aadharNo],
       ppNo: [cv.ppNo],
       ecnr: [cv.ecnr],
-      referredBy: [cv.referredBy, Validators.required],
+      referredBy: [cv.referredBy],
       referredByName: [cv.referredByName],
 
       address: [cv.address],
@@ -223,10 +216,10 @@ export class CandidateEditComponent implements OnInit {
       userPhones: this.fb.array(
         cv.userPhones.map(x => (
           this.fb.group({
-            id: x.id, candidateId: [x.candidateId, Validators.required],
+            id: x.id, candidateId: [x.candidateId],
             mobileNo: [x.mobileNo, Validators.required],
             isMain: [x.isMain],
-            remarks: [x.remarks, Validators.required],
+            remarks: [x.remarks],
             isValid: [x.isValid]
           })
         ))
@@ -235,7 +228,7 @@ export class CandidateEditComponent implements OnInit {
       userQualifications: this.fb.array(
         cv.userQualifications.map(x => (
           this.fb.group({
-            id: x.id, candidateId: [x.candidateId, Validators.required],
+            id: x.id, candidateId: [x.candidateId],
             qualificationId: [x.qualificationId, Validators.required],
             isMain: [x.isMain]
           })
@@ -269,183 +262,25 @@ export class CandidateEditComponent implements OnInit {
           this.fb.group({
             id: x.id, candidateId: x.candidateId,
             appUserId: x.appUserId,
-            fileName: x.fileName,
+            attachmentType: x.attachmentType,
+            name: [x.name, Validators.required],
             attachmentSizeInBytes: x.attachmentSizeInBytes,
-            url: x.url, attacahmentType: x.attachmentType
+            url: x.url
           })
         ))
       )
 
     })
-  }
 
-  initializeForm() {
-    this.registerForm = this.fb.group({
-        id: 0,
-        userType: ['candidate', Validators.required],
-        applicationNo:0,        
-        gender: ['male', Validators.required],
-        nationality: ['Indian', Validators.required],
-        knownAs: ['kadir', Validators.required],
-        username: 'kadir.hassan@gmail.com',
-        firstName: ['Kadir', Validators.required],
-        secondName: 'Hassan',
-        familyName: 'Shaikh',
-        dOB: '1990-10-10T12:00:00',
-        placeOfBirth: 'Latur',
-        aadharNo: '123456654321',
-        photoUrl: '',
-        ppNo: 'X-3945999',
-        ecnr: true,
-        referredBy: 9,    //direct
-        referredByName: '',
-        
-        password: ['']  , /*[Validators.required, 
-          Validators.minLength(4), Validators.maxLength(8)]], */
-        confirmPassword: '',  // [Validators.required, this.matchValues('password')]],
-        
-      //}),
-      //userAddressForm: this.fb.group({
-        address: '',
-        address2: '',
-        city: ['Mumbai', Validators.required],
-        pin: '401107',
-        district:'',
-        country: ['India'],
-        email: ['kadir.hassan@gmail.com', Validators.email],
-      //})
-      
-      userPhones: this.fb.array([]),
-      userQualifications: this.fb.array([]), 
-      userProfessions: this.fb.array([]),
-      //userPassports: this.fb.array([]),
-      //entityAddresses: this.fb.array([]),
-      userExperiences: this.fb.array([]),
-      userAttachments: this.fb.array([])
-
-    });
-
-    if(this.registerForm.controls['password']) {
+    /*if(this.registerForm.controls['password']) {
       this.registerForm.controls['password'].valueChanges.subscribe({
         next: () => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
       })
 
-    }
-
-
+    } */
   }
 
   //edit form
-
-  editCandidate(cv: ICandidate) {
-    //const dob = this.getDateOnly(this.registerForm.controls['dOB'].value!);
-    //const values = {...this.registerForm.value!, dateOfBirth: dob!};
-    this.registerForm.patchValue( {
-      id: cv.id, userType: cv.userType , applicationNo: cv.applicationNo, gender: cv.gender, 
-      firstName: cv.firstName, secondName: cv.secondName, familyName: cv.familyName, knownAs: cv.knownAs, 
-      referredBy: cv.referredBy, dOB: cv.dOB, placeOfBirth: cv.placeOfBirth, aadharNo: cv.aadharNo, 
-      ppNo: cv.ppNo, ecnr: cv.ecnr, city: cv.city, pin: cv.pin, nationality: cv.nationality, 
-      email: cv.email, companyId: cv.companyId, notificationDesired: cv.notificationDesired
-    });
-      if(cv.photoUrl) this.memberPhotoUrl = 'https://localhost:5001/api/assets/images/' + cv.photoUrl;
-      
-      //if (cv.userProfessions) 
-        this.registerForm.setControl('userProfessions', this.setExistingProfs(cv.userProfessions));
-      //if (cv.userPhones) 
-        this.registerForm.setControl('userPhones', this.setExistingPhones(cv.userPhones));
-      //if (cv.userQualifications) 
-        this.registerForm.setControl('userQualifications', this.setExistingQ(cv.userQualifications));
-      //if (cv.userExperiences) 
-        this.registerForm.setControl('userExperiences', this.setExistingExps(cv.userExperiences));
-      //if (cv.userAttachments) 
-        this.registerForm.setControl('userAttachments', this.setExistingAttachments(cv.userAttachments));
-    
-  }
-
-  setExistingPhones(userphones: IUserPhone[]) {
-
-    console.log('setExistingphones', userphones);
-
-    userphones?.forEach(ph => {
-      this.userPhones.push(
-        this.fb.group({
-          id: ph.id,
-        candidateId: ph.candidateId,
-        mobileNo: ph.mobileNo,
-        isMain: ph.isMain,
-        remarks: ph.remarks,
-        isValid: ph.isValid
-        }))
-    })
-    
-}
-
-  setExistingQ(userQ: IUserQualification[]) {
-      userQ?.forEach(q => {
-        this.userQualifications.push(
-          this.fb.group({
-            id: q.id,
-            candidateId: q.candidateId,
-            qualificationId: q.qualificationId,
-            qualification: q.qualification,
-            isMain: q.isMain
-          })
-        )
-      })  
-    }
-
-  setExistingProfs(userProfs: IUserProfession[]) {
-    console.log('setExistingProfs', userProfs);
-    userProfs?.forEach(p => {
-      this.userProfessions.push(
-        this.fb.group({
-          professionId: p.professionId,
-          isMain: false,
-          candidateId: p.candidateId
-        })
-      )
-    })
-
-   
-    }
-
-  setExistingExps(userExps: IUserExp[]){
-    userExps.forEach(p => {
-      this.userExperiences.push(
-        this.fb.group({
-          id: p.id,
-        candidateId: p.candidateId,
-        employer: p.employer,
-        position: p.position,
-        salaryCurrency: p.salaryCurrency,
-        monthlySalaryDrawn: p.monthlySalaryDrawn,
-        workedFrom: p.workedFrom,
-        workedUpto: p.workedUpto
-        })
-      )
-    })
-   
-  }  
-
-  setExistingAttachments(userAttachs: IUserAttachment[]) {
-
-    userAttachs.forEach(p => {
-      this.userAttachments.push(
-        this.fb.group({
-          id: p.id,
-          candidateId: p.candidateId,
-          appUserId: p.appUserId,
-          fileName: p.fileName,
-          attachmentSizeInBytes: p.attachmentSizeInBytes,
-          url: p.url,
-          attachmentType: p.attachmentType
-        })
-      )
-    })
-       
-  } 
-  
-  
   //getters
   get userPhones() : FormArray {
     return this.registerForm.get("userPhones") as FormArray
@@ -466,6 +301,7 @@ export class CandidateEditComponent implements OnInit {
   //add controls to formarrays
   newUserPhone(): FormGroup {
     return this.fb.group({
+      candidateId: this.candidate?.id,
       mobileNo: ['', Validators.required],
       isMain: false,
       remarks: ''
@@ -481,6 +317,7 @@ export class CandidateEditComponent implements OnInit {
   
   newQualification(): FormGroup {
     return this.fb.group({
+      candidateId: this.candidate?.id,
       qualificationId: 0,
       qualificationName: '',
       isMain: [false]
@@ -497,7 +334,8 @@ export class CandidateEditComponent implements OnInit {
   newUserProfession(): FormGroup {
     return this.fb.group({
       professionId: [0, Validators.required],
-      isMain: [false, Validators.required]
+      isMain: [false, Validators.required],
+      candidateId: this.candidate?.id
     })
   }
 
@@ -518,6 +356,7 @@ export class CandidateEditComponent implements OnInit {
   
   newUserExp(): FormGroup {
     return this.fb.group({
+      candidateId: this.candidate?.id,
       srNo: [0, Validators.required],
       position: ['', Validators.required],
       company: ['', Validators.required],
@@ -542,8 +381,8 @@ export class CandidateEditComponent implements OnInit {
     return this.fb.group({
       id:0,
       candidateId: this.candidate===undefined ? 0 : this.candidate.id,
-      attachmentType: ['', Validators.required],
-      fileName: ['', Validators.required],
+      attachmentType: [''],
+      name: ['', Validators.required],
       attachmentSizeInBytes: 0,
       url: ''
     })
@@ -554,7 +393,7 @@ export class CandidateEditComponent implements OnInit {
       id:0,
       candidateId: this.candidate===undefined ? 0 : this.candidate.id,
       attachmentType: ['', Validators.required],
-      fileName: [f.name, Validators.required],
+      name: [f.name, Validators.required],
       attachmentSizeInBytes: f.size,
       url: ''
     })
@@ -574,7 +413,7 @@ export class CandidateEditComponent implements OnInit {
         next: response => {
           this.candidate = response;
           //this.candidate  = {...this.candidate, userType: 'candidate'};
-          this.editCandidate(this.candidate);
+          this.InitializeAndPopulateFormArray(this.candidate);
         },
         error: error => this.toastrService.error('failed to get candidate to edit:', error)
       })
@@ -680,16 +519,8 @@ export class CandidateEditComponent implements OnInit {
     if(nowDate < this.lastTimeCalled+ microsecondsDiff) return;
     
     this.lastTimeCalled=Date.now();
-    /*if (!this.candidate && this.passwordElement?.nativeElement === undefined) {
-      this.toastrService.error('Password not provided');
-      return;
-    }
-    */
-    //this.myPassword = this.passwordElement!.nativeElement!.value;
-
-    const formData = new FormData();
+     const formData = new FormData();
     const formValue = this.registerForm.value;
-
     
     if(this.userFiles.length > 0) {
       this.userFiles.forEach(f => {
@@ -702,7 +533,7 @@ export class CandidateEditComponent implements OnInit {
       this.toastrService.info('Password not provided');
       return;
     }
- 
+
     if(this.candidate!.id ===0 ) {   //insert new cv
       this.toastrService.info('inserting ...');
 
@@ -719,9 +550,10 @@ export class CandidateEditComponent implements OnInit {
     })} else {
         this.toastrService.info('udating ...');
         this.candidateService.UpdateCandidateWithFiles(formData).subscribe({
-          next: (response: string) => {
-            if(response !== '') {
-              this.toastrService.error('failed to update the candidate', response);
+          next: (response: ICandidateAndErrorStringDto) => {
+            console.log('returned from api:', response);
+            if(response?.errorString !== '') {
+              this.toastrService.error('failed to update the candidate', response.errorString);
             } else {
               this.toastrService.success('updated the candidate successfully');
               this.router.navigateByUrl(this.returnUrl);
@@ -740,7 +572,21 @@ export class CandidateEditComponent implements OnInit {
   }
 
   download(index: number) {
-
+    var attachmentid = this.userAttachments.at(index).get('id')?.value;
+    if(attachmentid ===0) {
+      this.toastrService.warning('this item has no primary key value');
+      return;
+    }
+    
+    this.toastrService.info('downloading from api server');
+    this.downloadService.download(attachmentid).subscribe(x => {
+      next: () => 
+        {
+          this.toastrService.success('file downloaded successfully');
+          this.toastrService.success('downloaded successfully');
+        }
+      error: (error: any) => this.toastrService.error('failed to download the file', error)
+    })
   }
 
   IsNewAttachment(index: number): boolean {

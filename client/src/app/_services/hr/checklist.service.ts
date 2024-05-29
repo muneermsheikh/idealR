@@ -21,12 +21,14 @@ export class ChecklistService {
   constructor(private http: HttpClient) { }
 
   getChecklist(candidateid: number, orderitemid: number) {
-    return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/checklistHR/' + candidateid  + '/' + orderitemid);
+    return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/generateorget/' + candidateid  + '/' + orderitemid);
   }
 
-  updateChecklist(checklist: IChecklistHR) {
-    //console.log(checklist);
-    return this.http.put(this.apiUrl + 'checklist/checklisthr', checklist);
+  getOrComposeChecklist(candidateid: number, orderitemid: number) {
+    return this.http.get<IChecklistHRDto>(this.apiUrl + 'checklist/')
+  }
+  updateChecklist(checklist: IChecklistHRDto) {
+    return this.http.put(this.apiUrl + 'Checklist/checklisthr', checklist);
   }
 
   generateChecklistHR(candidateid: number, orderitemid: number) {

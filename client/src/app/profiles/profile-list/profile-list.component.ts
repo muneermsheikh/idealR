@@ -74,6 +74,8 @@ export class ProfileListComponent implements OnInit{
 
   ngOnInit(): void {
 
+    this.toastr.info('profiles listing');
+    
     //this.getCVs(this.cvParams);
     this.loadCandidates(false);
     
@@ -147,25 +149,6 @@ export class ProfileListComponent implements OnInit{
     this.getCVs();
   }
   
-  /*onSortSelected(sort: any) {
-    const prms = this.service.getCVParams() ?? new candidateParams();
-    prms.sort = sort;
-    prms.pageNumber=1;
-    prms.pageSize=10;
-    this.service.setCVParams(prms);
-    this.getCVs(prms);
-  }
-
-  onProfSelected(profId: any) {
-    const prms = this.service.getCVParams() ?? new candidateParams();
-    prms.professionId = profId;
-    prms.pageNumber=1;
-    this.service.setCVParams(prms);
-    this.getCVs(prms);
-
-  }
-  */
-
    onPageChanged(event: any){
 
       if(!this.cvParams) return;
@@ -287,8 +270,7 @@ export class ProfileListComponent implements OnInit{
   }
 
   cvEditClicked(id: any) {
-    console.log('edit CV emitted to profile list: ', id);
-
+    
     this.navigateByUrl('/candidates/register/edit/' + id, undefined, true);
   }
 

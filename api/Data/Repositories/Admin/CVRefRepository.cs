@@ -229,7 +229,7 @@ namespace api.Data.Repositories.Admin
                         CandidateName = cand.FullName,
                         DocControllerAdminTaskId = r.TaskIdDocControllerAdmin,
                         ChargesAgreed = checklist==null ? 0 : checklist.ChargesAgreed,
-                        HRExecUsername = checklist.HRExecUsername,
+                        HRExecUsername = checklist.HrExecUsername,
                         TaskDescription= "CV approved to send to client: Application No.:" + 
                             cand.ApplicationNo + ", Candidate: " + cand.FullName +
                             "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 

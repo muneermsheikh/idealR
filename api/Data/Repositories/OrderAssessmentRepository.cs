@@ -26,13 +26,13 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0 ? orderAssessment : null;
         }
 
-        public async Task<bool> DeleteOrderItemAssessment(int orderItemId)
+        public async Task<bool> DeleteOrderAssessmentItem(int orderItemId)
         {
-            var obj = await _context.orderItemAssessments.Include(x => x.OrderItemAssessmentQs)
+            var obj = await _context.OrderAssessmentItems.Include(x => x.OrderAssessmentItemQs)
                 .Where(x => x.OrderItemId == orderItemId).FirstOrDefaultAsync();
             
             if(obj == null) return false;
-            _context.orderItemAssessments.Remove(obj);
+            _context.OrderAssessmentItems.Remove(obj);
             _context.Entry(obj).State = EntityState.Deleted;
 
             try {
@@ -45,12 +45,12 @@ namespace api.Data.Repositories
 
         }
 
-        public async Task<bool> DeleteOrderItemAssessmentQ(int questionId)
+        public async Task<bool> DeleteOrderAssessmentItemQ(int questionId)
         {
-            var obj = await _context.OrderItemAssessmentQs.FindAsync(questionId);
+            var obj = await _context.OrderAssessmentItemQs.FindAsync(questionId);
             if(obj == null) return false;
             
-            _context.OrderItemAssessmentQs.Remove(obj);
+            _context.OrderAssessmentItemQs.Remove(obj);
             _context.Entry(obj).State = EntityState.Deleted;
 
             try{
@@ -66,8 +66,8 @@ namespace api.Data.Repositories
         {
              var existingObject = _context.OrderAssessments
                 .Where(x => x.Id == newObject.Id)
-                .Include(x => x.OrderItemAssessments)
-                .ThenInclude(x => x.OrderItemAssessmentQs)
+                .Include(x => x.OrderAssessmentItems)
+                .ThenInclude(x => x.OrderAssessmentItemQs)
                 .AsNoTracking()
                 .SingleOrDefault();
             
@@ -77,18 +77,18 @@ namespace api.Data.Repositories
             _context.Entry(existingObject).CurrentValues.SetValues(newObject);
 
             //delete records in existingObject that are not present in new object
-            foreach (var existingItem in existingObject.OrderItemAssessments.ToList())
+            foreach (var existingItem in existingObject.OrderAssessmentItems.ToList())
             {
-                if(!newObject.OrderItemAssessments.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                if(!newObject.OrderAssessmentItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
-                    _context.orderItemAssessments.Remove(existingItem);
+                    _context.OrderAssessmentItems.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted; 
                 }
 
                  //items in current object - either updated or new items
-                foreach(var newItem in newObject.OrderItemAssessments)
+                foreach(var newItem in newObject.OrderAssessmentItems)
                 {
-                    var itemExisting = existingObject.OrderItemAssessments
+                    var itemExisting = existingObject.OrderAssessmentItems
                         .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                     
                     if(itemExisting != null)    //update navigation record
@@ -96,7 +96,7 @@ namespace api.Data.Repositories
                         _context.Entry(itemExisting).CurrentValues.SetValues(newItem);
                         _context.Entry(itemExisting).State = EntityState.Modified;
                     } else {    //insert new navigation record
-                        var itemToInsert = new OrderItemAssessment
+                        var itemToInsert = new OrderAssessmentItem
                         {
                             CustomerName = newItem.CustomerName,
                             DateDesigned = _todaydate,
@@ -106,22 +106,22 @@ namespace api.Data.Repositories
                             RequireCandidateAssessment = itemExisting.RequireCandidateAssessment
                         };
 
-                        existingObject.OrderItemAssessments.Add(itemToInsert);
+                        existingObject.OrderAssessmentItems.Add(itemToInsert);
                         _context.Entry(itemToInsert).State = EntityState.Added;
                     }
 
-                    foreach (var existingSubItem in existingItem.OrderItemAssessmentQs.ToList())
+                    foreach (var existingSubItem in existingItem.OrderAssessmentItemQs.ToList())
                     {
-                        if(!existingItem.OrderItemAssessmentQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                        if(!existingItem.OrderAssessmentItemQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                         {
-                            _context.OrderItemAssessmentQs.Remove(existingSubItem);
+                            _context.OrderAssessmentItemQs.Remove(existingSubItem);
                             _context.Entry(existingSubItem).State = EntityState.Deleted; 
                         }
 
                         //items in current object - either updated or new items
-                        foreach(var newSubItem in newItem.OrderItemAssessmentQs)
+                        foreach(var newSubItem in newItem.OrderAssessmentItemQs)
                         {
-                            var subItemExisting = existingItem.OrderItemAssessmentQs
+                            var subItemExisting = existingItem.OrderAssessmentItemQs
                                 .Where(c => c.Id == newSubItem.Id && c.Id != default(int)).SingleOrDefault();
                             
                             if(subItemExisting != null)    //update navigation record
@@ -129,9 +129,9 @@ namespace api.Data.Repositories
                                 _context.Entry(subItemExisting).CurrentValues.SetValues(newSubItem);
                                 _context.Entry(subItemExisting).State = EntityState.Modified;
                             } else {    //insert new navigation record
-                                var subItemToInsert = new OrderItemAssessmentQ
+                                var subItemToInsert = new OrderAssessmentItemQ
                                 {
-                                    OrderItemAssessmentId = existingSubItem.Id,
+                                    OrderAssessmentItemId = existingSubItem.Id,
                                     QuestionNo = newSubItem.QuestionNo,
                                     Subject = newSubItem.Subject,
                                     Question = newSubItem.Question,
@@ -139,7 +139,7 @@ namespace api.Data.Repositories
                                     IsMandatory = newSubItem.IsMandatory
                                 };
 
-                                existingItem.OrderItemAssessmentQs.Add(subItemToInsert);
+                                existingItem.OrderAssessmentItemQs.Add(subItemToInsert);
                                 _context.Entry(subItemToInsert).State = EntityState.Added;
                             }
                         }
@@ -158,11 +158,11 @@ namespace api.Data.Repositories
             return true;
         }
 
-        public async Task<bool> EditOrderItemAssessment(OrderItemAssessment newObject)
+        public async Task<bool> EditOrderAssessmentItem(OrderAssessmentItem newObject)
         {
-             var existingObject = _context.orderItemAssessments
+             var existingObject = _context.OrderAssessmentItems
                 .Where(x => x.Id == newObject.Id)
-                .Include(x => x.OrderItemAssessmentQs)
+                .Include(x => x.OrderAssessmentItemQs)
                 .AsNoTracking()
                 .SingleOrDefault();
             
@@ -171,18 +171,18 @@ namespace api.Data.Repositories
             _context.Entry(existingObject).CurrentValues.SetValues(newObject);
 
             //delete records in existingObject that are not present in new object
-            foreach (var existingItem in existingObject.OrderItemAssessmentQs.ToList())
+            foreach (var existingItem in existingObject.OrderAssessmentItemQs.ToList())
             {
-                if(!newObject.OrderItemAssessmentQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                if(!newObject.OrderAssessmentItemQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
-                    _context.OrderItemAssessmentQs.Remove(existingItem);
+                    _context.OrderAssessmentItemQs.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted; 
                 }
 
                  //items in current object - either updated or new items
-                foreach(var newItem in newObject.OrderItemAssessmentQs)
+                foreach(var newItem in newObject.OrderAssessmentItemQs)
                 {
-                    var itemExisting = existingObject.OrderItemAssessmentQs
+                    var itemExisting = existingObject.OrderAssessmentItemQs
                         .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                     
                     if(itemExisting != null)    //update navigation record
@@ -190,9 +190,9 @@ namespace api.Data.Repositories
                         _context.Entry(itemExisting).CurrentValues.SetValues(newItem);
                         _context.Entry(itemExisting).State = EntityState.Modified;
                     } else {    //insert new navigation record
-                        var itemToInsert = new OrderItemAssessmentQ
+                        var itemToInsert = new OrderAssessmentItemQ
                         {
-                            OrderItemAssessmentId = existingObject.Id,
+                            OrderAssessmentItemId = existingObject.Id,
                             QuestionNo = newItem.QuestionNo,
                             Subject = newItem.Subject,
                             Question = newItem.Question,
@@ -200,7 +200,7 @@ namespace api.Data.Repositories
                             IsMandatory = newItem.IsMandatory
                         };
 
-                        existingObject.OrderItemAssessmentQs.Add(itemToInsert);
+                        existingObject.OrderAssessmentItemQs.Add(itemToInsert);
                         _context.Entry(itemToInsert).State = EntityState.Added;
                     }
                 }
@@ -217,7 +217,7 @@ namespace api.Data.Repositories
             return true;
         }
 
-        public async Task<OrderItemAssessment> GenerateOrderItemAssessmentFromStddQ(int orderItemId, string loggedInUserName)
+        public async Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedInUserName)
         {   
             //verify orderItemId is valid
             var exists = await _context.OrderItems.FindAsync(orderItemId);
@@ -226,10 +226,10 @@ namespace api.Data.Repositories
             var OrderNumber = await _context.GetOrderNoFromOrderItemId(orderItemId);
             var stdd = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
 
-            var ListQ=new List<OrderItemAssessmentQ>();
+            var ListQ=new List<OrderAssessmentItemQ>();
             foreach (var q in stdd)
             {
-                ListQ.Add(new OrderItemAssessmentQ{
+                ListQ.Add(new OrderAssessmentItemQ{
                     QuestionNo = q.QuestionNo,
                     Question=q.Question,
                     Subject=q.Subject,
@@ -238,14 +238,14 @@ namespace api.Data.Repositories
                 });
             }
 
-            var newAssessment = new OrderItemAssessment{
+            var newAssessment = new OrderAssessmentItem{
                 OrderItemId = orderItemId,
                 CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemId),
                 OrderNo = OrderNumber,
                 AssessmentRef = OrderNumber + "-" + _context.GetSrNoFromOrderItemId(orderItemId),
                 DateDesigned = _todaydate,
                 DesignedBy = loggedInUserName,
-                OrderItemAssessmentQs = ListQ
+                OrderAssessmentItemQs = ListQ
             };
 
             return newAssessment;
@@ -259,25 +259,25 @@ namespace api.Data.Repositories
         public async Task<OrderAssessment> GetOrderAssessment(int orderId)
         {
             return await _context.OrderAssessments
-                .Include(x => x.OrderItemAssessments)
-                .ThenInclude(x => x.OrderItemAssessmentQs)
+                .Include(x => x.OrderAssessmentItems)
+                .ThenInclude(x => x.OrderAssessmentItemQs)
                 .Where(x => x.OrderId == orderId)
                 .FirstOrDefaultAsync();
         }
     
-        public async Task<OrderItemAssessment> GetOrderItemAssessment(int orderItemId)
+        public async Task<OrderAssessmentItem> GetOrderAssessmentItem(int orderItemId)
         {
-            var assessmt = await _context.orderItemAssessments
-                .Include(x => x.OrderItemAssessmentQs)
+            var assessmt = await _context.OrderAssessmentItems
+                .Include(x => x.OrderAssessmentItemQs)
                 .Where(x => x.OrderItemId == orderItemId)
                 .FirstOrDefaultAsync();
             
             return assessmt;
         }
 
-        public async Task<OrderItemAssessment> SaveOrderItemAssessment(OrderItemAssessment orderItemAssessment)
+        public async Task<OrderAssessmentItem> SaveOrderAssessmentItem(OrderAssessmentItem orderItemAssessment)
         {
-            if(orderItemAssessment.OrderItemAssessmentQs.Count == 0) throw new Exception("Assessment Questions not defined");
+            if(orderItemAssessment.OrderAssessmentItemQs.Count == 0) throw new Exception("Assessment Questions not defined");
 
             orderItemAssessment.CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemAssessment.OrderItemId);
 
@@ -286,8 +286,8 @@ namespace api.Data.Repositories
             orderItemAssessment.AssessmentRef = orderNo + "-"; // + _context.GetSrNoFromOrderItemId(orderItemAssessment.OrderItemId);
 
             //_context.Entry(orderItemAssessment).State = EntityState.Added;
-            _context.orderItemAssessments.Add(orderItemAssessment);
-            //_context.Entry(orderItemAssessment.OrderItemAssessmentQs).State = EntityState.Added;
+            _context.OrderAssessmentItems.Add(orderItemAssessment);
+            //_context.Entry(orderItemAssessment.OrderAssessmentItemQs).State = EntityState.Added;
 
             try {
                 await _context.SaveChangesAsync();
@@ -297,11 +297,11 @@ namespace api.Data.Repositories
             return orderItemAssessment;
         }
 
-        public async Task<ICollection<OrderItemAssessmentQ>> GetOrderItemAssessmentQs(int orderitemid)
+        public async Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid)
         {
             var obj = await (from assessment in  _context.orderItemAssessments 
                     where assessment.OrderItemId == orderitemid
-                join Q in _context.OrderItemAssessmentQs on assessment.Id equals Q.OrderItemAssessmentId
+                join Q in _context.OrderAssessmentItemQs on assessment.Id equals Q.OrderAssessmentItemId
                 select Q).ToListAsync();
             
             return obj;

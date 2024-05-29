@@ -25,11 +25,15 @@ namespace api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ICandidateRepository _candidateRepo;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<CandidateController> _logger;
+
         private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
         public CandidateController(ICandidateRepository candidateRepo, UserManager<AppUser> userManager, 
-            IMapper mapper, ITokenService tokenService)
+            IMapper mapper, ITokenService tokenService, ILogger<CandidateController> logger)
         {
             _tokenService = tokenService;
+            _logger = logger;
+
             _candidateRepo = candidateRepo;
             _userManager = userManager;
             _mapper = mapper;
@@ -296,14 +300,16 @@ namespace api.Controllers
                     //var modelData = Request.Form["data"];
                     //CompanyId=null DOB null, remove entityaddress, remove userPassports,
                     if(!await _candidateRepo.UpdateCandidate(modelData)) {
+                        dtoToReturn.ErrorString = "Failed to update candidate obkect";
                         return BadRequest(new ApiException(404, "Bad Request", "Failed to update candidate object"));
 
                     }
-                    
+                    applicationno = modelData.ApplicationNo.ToString();
                     var folderName = Path.Combine("Assets", "Images");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                     pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
-
+                    //D:\idealr_\IdealR\api\Assets\Images
+                    //D:\\idealr_\\IdealR\api\\Assets\\Images 
                     //var attachmentTypes = modelData.UserAttachments;
                     var files = Request.Form.Files;
                     foreach (var file in files)
@@ -313,8 +319,9 @@ namespace api.Controllers
                          //The userAttachments could already be having files uploaded earlier, and existing in the images folder, those are to be 
                          //ignored and not added to the _context.UserAttachments object
                         
-                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                         fileName = applicationno + "-" + fileName;
+                        var filenameWOPath = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                         //var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                         var fileName = applicationno + "-" + filenameWOPath;
                          if(System.IO.File.Exists(pathToSave + @"\" + fileName)) continue;
                          
                          //the filename syntax is: application No + "-" + filename
@@ -326,14 +333,27 @@ namespace api.Controllers
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
+                        var attach = new UserAttachment {
+                            CandidateId = modelData.Id, AppUserId = modelData.AppUserId,
+                                Length=filenameWOPath.Length/1024,
+                                Name=fileName, UploadedbyUserName=User.GetUsername(), 
+                                UploadedLocation=pathToSave, UploadedOn=_today
+                        };
+                        
+                        userattachmentlist.Add(attach);
                     }
-                    
-                    //var existingItem = await _candidateRepo.UpdateCandidateAttachmentsWithFileNames(modelData.Id, files)
 
-                    //var attachmentsUpdated = await _userService.AddUserAttachments(userattachmentlist);
+                    //stream contains only new files uploaded.  ADd to it old files that
+                    //existed, else they would be considered as not existing in the model
+                    //and deleted in the following procedure
+                    foreach(var item in modelData.UserAttachments) {
+                        if(item.Name[..applicationno.Length] == applicationno ) userattachmentlist.Add(item);
+                    }
+                    var attachmentsUpdated = await _candidateRepo.AddAndSaveUserAttachments(userattachmentlist, User.GetUsername());                   
                     //candidateObject.UserAttachments=attachmentsUpdated;
-
-                    return Ok("");
+                    dtoToReturn.candidate=modelData;
+                    if(string.IsNullOrEmpty(dtoToReturn.ErrorString)) dtoToReturn.ErrorString="";
+                    return Ok(dtoToReturn);
                }
                catch (Exception ex)
                {
@@ -347,7 +367,7 @@ namespace api.Controllers
             var attachmentList = new List<UserAttachment>();
             attachmentList.Add(userattachment);
 
-            var attachment = await _candidateRepo.AddUserAttachments(attachmentList, User.GetUsername());
+            var attachment = await _candidateRepo.AddAndSaveUserAttachments(attachmentList, User.GetUsername());
             if(attachment != null) return Ok(attachment.FirstOrDefault());
 
             return null;

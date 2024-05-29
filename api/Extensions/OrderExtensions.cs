@@ -49,7 +49,8 @@ namespace api.Extensions
             var CustomerName = await (from Orders in context.Orders
                 join items in context.OrderItems on Orders.Id equals items.OrderId
                 where items.Id == orderItemId
-                select Orders.OrderNo + "-" + items.SrNo + "-" + items.Profession.ProfessionName +  " for " + Orders.Customer.CustomerName
+                select Orders.OrderNo + "-" + items.SrNo + "-" + items.Profession.ProfessionName +  " for " + 
+                    Orders.Customer.KnownAs
             )
             .FirstOrDefaultAsync();
 
@@ -57,16 +58,23 @@ namespace api.Extensions
             return CustomerName;
         }
 
+        public async static Task<string> GetHRExecUsernameFromOrderItemId(this DataContext context, int orderItemId)
+        {
+            var username = await context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
+                .Select(x => x.HRExecUsername).FirstOrDefaultAsync();
+            
+            return username ?? "";
+        }
+
+
         public async static Task<int> GetServiceChargesFromOrderItemId(this DataContext context, int orderItemId)
         {
             var charges = await (from rvw in context.ContractReviewItems 
                 where rvw.OrderItemId==orderItemId
-                join qs in context.ContractReviewItemQs  on rvw.Id equals qs.ContractReviewItemId
-                    where qs.SrNo==9
-                select qs.ResponseText
+                select rvw.Charges
             ).FirstOrDefaultAsync();
 
-            return string.IsNullOrEmpty(charges) ? 0 : Convert.ToInt32(charges);
+            return charges;
         }
         public async static Task<bool> RequireAssessment(this DataContext context, int orderItemId)
         {

@@ -9,7 +9,6 @@ import { IUserExp } from "./userExp";
 export interface ICandidate {
      //checked: boolean;
      id: number;
-     userType: string;
      applicationNo: number;
      gender: string;
      firstName: string;
@@ -22,7 +21,7 @@ export interface ICandidate {
      placeOfBirth: string;
      aadharNo: string;
      ppNo: string;
-     ecnr: boolean;
+     ecnr: string;
      address: string;
      city: string;
      pin: string;
@@ -53,7 +52,6 @@ export interface ICandidate {
 export class Candidate implements ICandidate {
      //checked: boolean;
      id= 0;
-     userType = '';
      applicationNo= 0;
      gender= '';
      firstName= '';
@@ -66,7 +64,7 @@ export class Candidate implements ICandidate {
      placeOfBirth= '';
      aadharNo= '';
      ppNo= '';
-     ecnr=false;
+     ecnr='';
      address= '';
      city= '';
      pin= '';

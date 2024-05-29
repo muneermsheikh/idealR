@@ -54,6 +54,14 @@ namespace api.Controllers
             return Ok(true);
         }
 
+        [HttpGet("candidateassessments/{candidateid}")]
+        public async Task<ActionResult<ICollection<CandidateAssessedDto>>> GetCandidateAssessmentsDto(int candidateid)
+        {
+            var dtos = await _repo.GetCandidateAssessmentsByCandidateId(candidateid);
+
+            return Ok(dtos);
+        }
+
         [HttpGet("assessmentspaged")]
         public async Task<ActionResult<PagedList<CandidateAssessedDto>>> GetCandidateAssessments([FromQuery]CandidateAssessmentParams assessmentParams)
         {
@@ -99,14 +107,22 @@ namespace api.Controllers
             return Ok("updated to " + errorString);
         }
     
-        [HttpGet("assessmentandchecklist/{orderItemId}/{candidateId}")]
-        public async Task<ActionResult<CandidateAssessmentAndChecklistDto>> GetCandidateAssessmentWithChecklist(int orderItemId, int candidateId)
+        [HttpGet("assessmentandchecklist/{candidateId}/{orderItemId}")]
+        public async Task<ActionResult<CandidateAssessmentAndChecklistDto>> GetCandidateAssessmentWithChecklist(int candidateId, int orderItemId)
         {
-            var assessment = await _repo.GetChecklistAndAssessment(candidateId, orderItemId, User.GetUsername());
+            var assessmentWithErr = await _repo.GetChecklistAndAssessment(candidateId, orderItemId, User.GetUsername());
             
-            if(assessment == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to get the checklist and/or the candidate assessment"));
+            if(!string.IsNullOrEmpty(assessmentWithErr.ErrorString)) {
+                return BadRequest(new ApiException(400, "Bad Request", assessmentWithErr.ErrorString));
+            }
 
-            return Ok(assessment);
+            var dto = new CandidateAssessmentAndChecklistDto {
+                Assessed = assessmentWithErr.Assessed,
+                ChecklistHRDto = assessmentWithErr.ChecklistHRDto
+            };
+
+
+            return Ok(dto);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace api.DTOs.Admin
         public string CandidateName { get; set; }
         public int ApplicationNo { get; set; }
         public string PassportNo { get; set; }
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public int DocControllerAdminTaskId { get; set; }
         public int ChargesAgreed { get; set; }
         public string HRExecUsername { get; set; }

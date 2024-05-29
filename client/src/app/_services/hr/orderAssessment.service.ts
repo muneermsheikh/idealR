@@ -7,13 +7,13 @@ import { User } from 'src/app/_models/user';
 import { assessmentParams } from 'src/app/_models/params/Admin/assessmentParam';
 import { AccountService } from '../account.service';
 import { IOrderAssessment } from 'src/app/_models/admin/orderAssessment';
-import { ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
 import { IOrderItemAssessment } from 'src/app/_models/admin/orderItemAssessment';
+import { IOrderItemAssessmentQ } from 'src/app/_models/admin/orderItemAssessmentQ';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AssessmentService {
+export class OrderAssessmentService {
 
   apiUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<User>(1);
@@ -61,5 +61,11 @@ export class AssessmentService {
 
     AddNewAssessment(assessment: IOrderAssessment) {
       return this.http.post<IOrderAssessment>(this.apiUrl + 'OrderAssessment/assessment', assessment);
+    }
+
+    
+    getOrderItemAssessmentQs(orderitemid: number) {
+      var item = this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentQs/' + orderitemid);
+      return item;
     }
 }

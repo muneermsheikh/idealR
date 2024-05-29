@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CandidateEditComponent } from './candidate-edit/candidate-edit.component';
 import { CandidateItemComponent } from './candidate-item/candidate-item.component';
-import { ChecklistModalComponent } from './checklist-modal/checklist-modal.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../_modules/shared.module';
 import { CandidateRoutingModule } from './candidate-routing.module';
@@ -13,10 +11,7 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
 
 @NgModule({
   declarations: [
-
-    CandidateEditComponent,
     CandidateItemComponent,
-    ChecklistModalComponent,
     CandidateHistoryComponent,
     CandidateMenuComponent,
     CandidateListComponent

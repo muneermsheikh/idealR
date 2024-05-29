@@ -25,7 +25,7 @@ namespace api.Entities.HR
         public DateOnly? DOB { get; set; }
         public string PpNo { get; set; } 
         public string AadharNo {get; set;}
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}
         public string Country {get; set;}

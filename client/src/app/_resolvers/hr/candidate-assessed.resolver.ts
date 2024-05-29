@@ -11,7 +11,7 @@ export const CandidateAssessedResolver: ResolveFn<ICandidateAssessedDto[]|null> 
 
     var id = route.paramMap.get('id');
     if (id===null) return of(null);
-    return inject(CVAssessService).getCVAssessmentsOfACandidate(+id!);
+    return inject(CVAssessService).getAssessmentsOfACandidate(+id!);
 
 };
 

@@ -23,7 +23,7 @@ namespace api.Interfaces
          Task<int> GetAppUserIdOfCandidate(int candidateid);
 
          //attachments
-         Task<ICollection<UserAttachment>> AddUserAttachments(ICollection<UserAttachment> userAttachments, string username);
+         Task<ICollection<UserAttachment>> AddAndSaveUserAttachments(ICollection<UserAttachment> userAttachments, string username);
          Task<bool> DeleteUserAttachment(int userAttachmentId);
          Task<ICollection<UserAttachment>> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments);
          //Task<bool> UpdateCandidateAttachmentsWithFileNames (ICollection<string> filenames, int candidateId);

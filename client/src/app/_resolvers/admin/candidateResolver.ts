@@ -9,7 +9,6 @@ export const CandidateResolver: ResolveFn<ICandidate|null> = (
   ) => {
     var id = route.paramMap.get('id');
     if (id===null ||  id === '' || id === '0') {
-      console.log('returning a new object from CandidateREsolver');
       return of(new Candidate());
     }
     return inject(CandidateService).getCandidate(+id);

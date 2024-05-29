@@ -22,6 +22,14 @@ namespace api.Extensions
             return appno;
         }
         
+        
+        public static async Task<string> GetCandidateNameFromCandidateId(this DataContext context, int candidateId)
+        {
+            var candName = await context.Candidates.Where(x => x.Id == candidateId)
+                .Select(x => x.FullName).FirstOrDefaultAsync();
+            return candName;
+        }
+
         public static async Task<string> GetCandidateDescriptionFromCandidateId(this DataContext context, int candidateId)
         {
             var appno = await context.Candidates.Where(x => x.Id == candidateId)

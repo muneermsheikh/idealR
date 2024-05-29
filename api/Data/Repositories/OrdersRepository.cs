@@ -381,6 +381,24 @@ namespace api.Data.Repositories
             return paged;
         }
 
+        public async Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsBriefDto()
+        {
+               var qry = await (from order in _context.Orders where order.Status != "Completed"
+                        join item in _context.OrderItems on order.Id equals item.OrderId
+                    select new OrderItemBriefDto {
+                        OrderId = order.Id, OrderNo = order.OrderNo, OrderDate = order.OrderDate,
+                        AboutEmployer = order.Customer.Introduction,
+                        CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
+                        OrderItemId = item.Id, SrNo = item.SrNo, ProfessionId = item.ProfessionId,
+                        ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
+                        Ecnr = item.Ecnr, CompleteBefore = item.CompleteBefore,
+                        JobDescription = item.JobDescription, Remuneration = item.Remuneration,
+                        Status = item.Status
+                    }).ToListAsync();
+                
+            return qry;
+        }
+
         public async Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc(int orderid)
         {
                var qry = await (from order in _context.Orders where order.Id == orderid
@@ -480,9 +498,9 @@ namespace api.Data.Repositories
             if(orderParams.OrderId != 0) query = query.Where(x => x.OrderId == orderParams.OrderId);
             if(orderParams.OrderItemIds.Count > 0) 
                 query = query.Where(x => orderParams.OrderItemIds.Contains(x.OrderItemId));
-            if(orderParams.ProfessionIds.Count > 0)
-                query = query.Where(x => orderParams.ProfessionIds.Contains(x.ProfessionId));
-            if(orderParams.CustomerId != 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
+            //if(orderParams.ProfessionIds.Count > 0)
+                //query = query.Where(x => orderParams.ProfessionIds.Contains(x.ProfessionId));
+            //if(orderParams.CustomerId != 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
 
             var paged = await PagedList<OpenOrderItemCategoriesDto>.CreateAsync(query.AsNoTracking()
                 .ProjectTo<OpenOrderItemCategoriesDto>(_mapper.ConfigurationProvider),
@@ -499,10 +517,17 @@ namespace api.Data.Repositories
                 where item.Status != "Completed" orderby item.SrNo
                 join order in _context.Orders on item.OrderId equals order.Id 
                     where order.Status != "Completed" orderby order.OrderNo
+                join assmtItem in _context.OrderAssessmentItems on item.Id equals assmtItem.OrderItemId
+                join rvwitem in _context.ContractReviewItems on item.Id equals rvwitem.OrderItemId 
+                //into rvwGroup
+                //from rg in rvwGroup.DefaultIfEmpty()
+                //join prof in _context.Professions on item.ProfessionId equals prof.Id
                 select new OpenOrderItemCategoriesDto {
                     OrderItemId = item.Id, OrderDate = order.OrderDate,
                     CustomerName = order.Customer.CustomerName,
                     OrderNo = order.OrderNo, Quantity = item.Quantity,
+                    RequireInternalReview = rvwitem.ContractReviewItemQs.Count > 0,
+                    AssessmentQDesigned = assmtItem.OrderAssessmentItemQs.Count > 0,
                     CategoryRefAndName = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName
                 }).ToListAsync();
 

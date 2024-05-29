@@ -123,7 +123,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("AgencySpecialties", (string)null);
+                    b.ToTable("AgencySpecialties");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.Customer", b =>
@@ -199,7 +199,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CustomerName", "City")
                         .IsUnique();
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerIndustry", b =>
@@ -225,7 +225,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("IndustryId");
 
-                    b.ToTable("CustomerIndustries", (string)null);
+                    b.ToTable("CustomerIndustries");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerOfficial", b =>
@@ -290,7 +290,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CustomerId", "OfficialName")
                         .IsUnique();
 
-                    b.ToTable("CustomerOfficials", (string)null);
+                    b.ToTable("CustomerOfficials");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerReview", b =>
@@ -319,7 +319,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("CustomerReviews", (string)null);
+                    b.ToTable("CustomerReviews");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerReviewItem", b =>
@@ -353,7 +353,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CustomerReviewId");
 
-                    b.ToTable("CustomerReviewItems", (string)null);
+                    b.ToTable("CustomerReviewItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Employee", b =>
@@ -451,7 +451,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Feedback", b =>
@@ -477,7 +477,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Feedbacks", (string)null);
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.FeedbackItem", b =>
@@ -523,7 +523,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("FeedbackId");
 
-                    b.ToTable("FeedbackItems", (string)null);
+                    b.ToTable("FeedbackItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.FeedbackStddQ", b =>
@@ -558,7 +558,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("feedbackStddQs", (string)null);
+                    b.ToTable("feedbackStddQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
@@ -599,7 +599,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("ContractReviews", (string)null);
+                    b.ToTable("ContractReviews");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItem", b =>
@@ -616,6 +616,9 @@ namespace api.Data.Migrations
 
                     b.Property<bool>("Ecnr")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("HRExecUsername")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
@@ -642,7 +645,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId")
                         .IsUnique();
 
-                    b.ToTable("ContractReviewItems", (string)null);
+                    b.ToTable("ContractReviewItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItemQ", b =>
@@ -682,7 +685,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("ContractReviewItemId");
 
-                    b.ToTable("ContractReviewItemQs", (string)null);
+                    b.ToTable("ContractReviewItemQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReviewItemStddQ", b =>
@@ -714,7 +717,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContractReviewItemStddQs", (string)null);
+                    b.ToTable("ContractReviewItemStddQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.JobDescription", b =>
@@ -751,7 +754,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId")
                         .IsUnique();
 
-                    b.ToTable("JobDescriptions", (string)null);
+                    b.ToTable("JobDescriptions");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.Order", b =>
@@ -806,7 +809,39 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderAssessmentItemQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderAssessmentItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderAssessmentItemId", "Question")
+                        .IsUnique();
+
+                    b.ToTable("OrderAssessmentItemQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
@@ -840,7 +875,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId")
                         .IsUnique();
 
-                    b.ToTable("OrderForwardCategories", (string)null);
+                    b.ToTable("OrderForwardCategories");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategoryOfficial", b =>
@@ -878,7 +913,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderForwardCategoryId", "DateOnlyForwarded", "CustomerOfficialId")
                         .IsUnique();
 
-                    b.ToTable("OrderForwardCategoryOfficials", (string)null);
+                    b.ToTable("OrderForwardCategoryOfficials");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardToAgent", b =>
@@ -913,7 +948,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderForwardToAgents", (string)null);
+                    b.ToTable("OrderForwardToAgents");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardToHR", b =>
@@ -936,7 +971,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderId", "DateOnlyForwarded")
                         .IsUnique();
 
-                    b.ToTable("OrderForwardToHRs", (string)null);
+                    b.ToTable("OrderForwardToHRs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>
@@ -990,7 +1025,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("ProfessionId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderItemAssessmentQ", b =>
@@ -1022,12 +1057,11 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderItemAssessmentId");
+
                     b.HasIndex("OrderItemId");
 
-                    b.HasIndex("OrderItemAssessmentId", "Question")
-                        .IsUnique();
-
-                    b.ToTable("OrderItemAssessmentQs", (string)null);
+                    b.ToTable("OrderItemAssessmentQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.Remuneration", b =>
@@ -1097,7 +1131,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId")
                         .IsUnique();
 
-                    b.ToTable("Remunerations", (string)null);
+                    b.ToTable("Remunerations");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.UserHistory", b =>
@@ -1176,7 +1210,7 @@ namespace api.Data.Migrations
                         .IsUnique()
                         .HasFilter("CandidateId Is Null");
 
-                    b.ToTable("UserHistories", (string)null);
+                    b.ToTable("UserHistories");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.UserHistoryItem", b =>
@@ -1212,7 +1246,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("UserHistoryId");
 
-                    b.ToTable("UserHistoryItems", (string)null);
+                    b.ToTable("UserHistoryItems");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
@@ -1241,7 +1275,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CVRefId")
                         .IsUnique();
 
-                    b.ToTable("Deps", (string)null);
+                    b.ToTable("Deps");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.DepItem", b =>
@@ -1270,7 +1304,7 @@ namespace api.Data.Migrations
                     b.HasIndex("DepId", "Sequence")
                         .IsUnique();
 
-                    b.ToTable("DepItems", (string)null);
+                    b.ToTable("DepItems");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.DeployStatus", b =>
@@ -1297,7 +1331,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeployStatuses", (string)null);
+                    b.ToTable("DeployStatuses");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.Deployment", b =>
@@ -1323,7 +1357,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deployments", (string)null);
+                    b.ToTable("Deployments");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.Process", b =>
@@ -1346,7 +1380,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CVRefId")
                         .IsUnique();
 
-                    b.ToTable("Processes", (string)null);
+                    b.ToTable("Processes");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.ProcessItem", b =>
@@ -1374,7 +1408,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("ProcessId");
 
-                    b.ToTable("ProcessItems", (string)null);
+                    b.ToTable("ProcessItems");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.COA", b =>
@@ -1409,7 +1443,7 @@ namespace api.Data.Migrations
                     b.HasIndex("AccountName")
                         .IsUnique();
 
-                    b.ToTable("COAs", (string)null);
+                    b.ToTable("COAs");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
@@ -1443,7 +1477,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FinanceVouchers", (string)null);
+                    b.ToTable("FinanceVouchers");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.Voucher", b =>
@@ -1480,7 +1514,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vouchers", (string)null);
+                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.VoucherAttachment", b =>
@@ -1514,7 +1548,7 @@ namespace api.Data.Migrations
                     b.HasIndex("FileName", "VoucherId")
                         .IsUnique();
 
-                    b.ToTable("VoucherAttachments", (string)null);
+                    b.ToTable("VoucherAttachments");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.VoucherEntry", b =>
@@ -1561,7 +1595,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("FinanceVoucherId");
 
-                    b.ToTable("VoucherEntries", (string)null);
+                    b.ToTable("VoucherEntries");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.VoucherItem", b =>
@@ -1607,7 +1641,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("VoucherId");
 
-                    b.ToTable("VoucherItems", (string)null);
+                    b.ToTable("VoucherItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentQBank", b =>
@@ -1627,7 +1661,7 @@ namespace api.Data.Migrations
                     b.HasIndex("ProfessionId")
                         .IsUnique();
 
-                    b.ToTable("AssessmentQBanks", (string)null);
+                    b.ToTable("AssessmentQBanks");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentQStdd", b =>
@@ -1659,7 +1693,7 @@ namespace api.Data.Migrations
                     b.HasIndex("QuestionNo")
                         .IsUnique();
 
-                    b.ToTable("AssessmentQStdds", (string)null);
+                    b.ToTable("AssessmentQStdds");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentStddQ", b =>
@@ -1693,7 +1727,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("AssessmentQBankId");
 
-                    b.ToTable("AssessmentStddQs", (string)null);
+                    b.ToTable("AssessmentStddQs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CVRef", b =>
@@ -1737,7 +1771,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId", "CandidateId")
                         .IsUnique();
 
-                    b.ToTable("CVRefs", (string)null);
+                    b.ToTable("CVRefs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.Candidate", b =>
@@ -1776,8 +1810,8 @@ namespace api.Data.Migrations
                     b.Property<DateOnly?>("DOB")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Ecnr")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Ecnr")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -1833,7 +1867,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CVRefId");
 
-                    b.ToTable("Candidates", (string)null);
+                    b.ToTable("Candidates");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CandidateAssessment", b =>
@@ -1880,7 +1914,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CandidateId", "OrderItemId")
                         .IsUnique();
 
-                    b.ToTable("CandidateAssessments", (string)null);
+                    b.ToTable("CandidateAssessments");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CandidateAssessmentItem", b =>
@@ -1920,7 +1954,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateAssessmentId");
 
-                    b.ToTable("CandidatesItemAssessments", (string)null);
+                    b.ToTable("CandidatesItemAssessments");
                 });
 
             modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
@@ -1938,7 +1972,7 @@ namespace api.Data.Migrations
                     b.Property<int>("ChargesAgreed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("CheckedOn")
+                    b.Property<DateTime>("CheckedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ChecklistedOk")
@@ -1953,7 +1987,7 @@ namespace api.Data.Migrations
                     b.Property<DateTime>("ExceptionApprovedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("HRExecUsername")
+                    b.Property<string>("HrExecUsername")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -1973,7 +2007,7 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderItemId", "CandidateId")
                         .IsUnique();
 
-                    b.ToTable("ChecklistHRs", (string)null);
+                    b.ToTable("ChecklistHRs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.ChecklistHRItem", b =>
@@ -2007,7 +2041,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("ChecklistHRId");
 
-                    b.ToTable("ChecklistHRItems", (string)null);
+                    b.ToTable("ChecklistHRItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.Employment", b =>
@@ -2102,7 +2136,7 @@ namespace api.Data.Migrations
                     b.HasIndex("SelectionDecisionId")
                         .HasFilter("SelectionDecisionId is NOT NULL");
 
-                    b.ToTable("Employments", (string)null);
+                    b.ToTable("Employments");
                 });
 
             modelBuilder.Entity("api.Entities.HR.HRSkill", b =>
@@ -2130,7 +2164,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("HRSkills", (string)null);
+                    b.ToTable("HRSkills");
                 });
 
             modelBuilder.Entity("api.Entities.HR.OrderAssessment", b =>
@@ -2153,7 +2187,50 @@ namespace api.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("OrderAssessments", (string)null);
+                    b.ToTable("OrderAssessments");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.OrderAssessmentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AssessmentRef")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("DateDesigned")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DesignedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("RequireCandidateAssessment")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("orderAssessmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId")
+                        .IsUnique();
+
+                    b.HasIndex("orderAssessmentId");
+
+                    b.ToTable("OrderAssessmentItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.OrderItemAssessment", b =>
@@ -2177,9 +2254,6 @@ namespace api.Data.Migrations
                     b.Property<string>("DesignedBy")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("OrderAssessmentId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
 
@@ -2191,12 +2265,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderAssessmentId");
-
-                    b.HasIndex("OrderItemId")
-                        .IsUnique();
-
-                    b.ToTable("orderItemAssessments", (string)null);
+                    b.ToTable("orderItemAssessments");
                 });
 
             modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
@@ -2221,7 +2290,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("OtherSkills", (string)null);
+                    b.ToTable("OtherSkills");
                 });
 
             modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
@@ -2262,7 +2331,7 @@ namespace api.Data.Migrations
                     b.HasIndex("CVRefId")
                         .IsUnique();
 
-                    b.ToTable("SelectionDecisions", (string)null);
+                    b.ToTable("SelectionDecisions");
                 });
 
             modelBuilder.Entity("api.Entities.HR.UserAttachment", b =>
@@ -2299,7 +2368,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateId");
 
-                    b.ToTable("UserAttachments", (string)null);
+                    b.ToTable("UserAttachments");
                 });
 
             modelBuilder.Entity("api.Entities.HR.UserExp", b =>
@@ -2340,7 +2409,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateId");
 
-                    b.ToTable("UserExps", (string)null);
+                    b.ToTable("UserExps");
                 });
 
             modelBuilder.Entity("api.Entities.HR.UserPhone", b =>
@@ -2370,7 +2439,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateId");
 
-                    b.ToTable("UserPhones", (string)null);
+                    b.ToTable("UserPhones");
                 });
 
             modelBuilder.Entity("api.Entities.HR.UserProfession", b =>
@@ -2395,7 +2464,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateId");
 
-                    b.ToTable("UserProfessions", (string)null);
+                    b.ToTable("UserProfessions");
                 });
 
             modelBuilder.Entity("api.Entities.HR.UserQualification", b =>
@@ -2415,7 +2484,9 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserQualifications", (string)null);
+                    b.HasIndex("CandidateId");
+
+                    b.ToTable("UserQualifications");
                 });
 
             modelBuilder.Entity("api.Entities.Identity.AppRole", b =>
@@ -2575,7 +2646,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CategoryAssessmentQBanks", (string)null);
+                    b.ToTable("CategoryAssessmentQBanks");
                 });
 
             modelBuilder.Entity("api.Entities.Master.ChecklistHRData", b =>
@@ -2595,7 +2666,72 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChecklistHRDatas", (string)null);
+                    b.ToTable("ChecklistHRDatas");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.Help", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Topic")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Topic")
+                        .IsUnique();
+
+                    b.ToTable("Helps");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.HelpItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HelpId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HelpText")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HelpId", "Sequence")
+                        .IsUnique();
+
+                    b.ToTable("HelpItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.HelpSubItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("HelpItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubText")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("helpId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HelpItemId");
+
+                    b.ToTable("HelpSubItem");
                 });
 
             modelBuilder.Entity("api.Entities.Master.Industry", b =>
@@ -2612,7 +2748,7 @@ namespace api.Data.Migrations
                     b.HasIndex("IndustryName")
                         .IsUnique();
 
-                    b.ToTable("Industries", (string)null);
+                    b.ToTable("Industries");
                 });
 
             modelBuilder.Entity("api.Entities.Master.Profession", b =>
@@ -2629,7 +2765,7 @@ namespace api.Data.Migrations
                     b.HasIndex("ProfessionName")
                         .IsUnique();
 
-                    b.ToTable("Professions", (string)null);
+                    b.ToTable("Professions");
                 });
 
             modelBuilder.Entity("api.Entities.Master.Qualification", b =>
@@ -2646,7 +2782,7 @@ namespace api.Data.Migrations
                     b.HasIndex("QualificationName")
                         .IsUnique();
 
-                    b.ToTable("Qualifications", (string)null);
+                    b.ToTable("Qualifications");
                 });
 
             modelBuilder.Entity("api.Entities.Master.SkillData", b =>
@@ -2660,7 +2796,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SkillDatas", (string)null);
+                    b.ToTable("SkillDatas");
                 });
 
             modelBuilder.Entity("api.Entities.Messages.Message", b =>
@@ -2726,7 +2862,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("api.Entities.Messages.MessageComposeSource", b =>
@@ -2749,7 +2885,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MessageComposeSources", (string)null);
+                    b.ToTable("MessageComposeSources");
                 });
 
             modelBuilder.Entity("api.Entities.Photo", b =>
@@ -2774,7 +2910,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.AppTask", b =>
@@ -2846,7 +2982,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("TaskType");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
@@ -2879,7 +3015,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("AppTaskId");
 
-                    b.ToTable("TaskItems", (string)null);
+                    b.ToTable("TaskItems");
                 });
 
             modelBuilder.Entity("api.Entities.UserLike", b =>
@@ -2894,7 +3030,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("TargetUserId");
 
-                    b.ToTable("UserLike", (string)null);
+                    b.ToTable("UserLike");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -3041,6 +3177,15 @@ namespace api.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderAssessmentItemQ", b =>
+                {
+                    b.HasOne("api.Entities.HR.OrderAssessmentItem", null)
+                        .WithMany("OrderAssessmentItemQs")
+                        .HasForeignKey("OrderAssessmentItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
@@ -3262,12 +3407,13 @@ namespace api.Data.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("api.Entities.HR.OrderItemAssessment", b =>
+            modelBuilder.Entity("api.Entities.HR.OrderAssessmentItem", b =>
                 {
                     b.HasOne("api.Entities.HR.OrderAssessment", null)
-                        .WithMany("OrderItemAssessments")
-                        .HasForeignKey("OrderAssessmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("OrderAssessmentItems")
+                        .HasForeignKey("orderAssessmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
@@ -3328,6 +3474,15 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.HR.UserQualification", b =>
+                {
+                    b.HasOne("api.Entities.HR.Candidate", null)
+                        .WithMany("UserQualifications")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Identity.AppUserRole", b =>
                 {
                     b.HasOne("api.Entities.Identity.AppRole", "Role")
@@ -3345,6 +3500,22 @@ namespace api.Data.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.HelpItem", b =>
+                {
+                    b.HasOne("api.Entities.Master.Help", null)
+                        .WithMany("HelpItems")
+                        .HasForeignKey("HelpId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Master.HelpSubItem", b =>
+                {
+                    b.HasOne("api.Entities.Master.HelpItem", null)
+                        .WithMany("HelpSubItems")
+                        .HasForeignKey("HelpItemId");
                 });
 
             modelBuilder.Entity("api.Entities.Messages.Message", b =>
@@ -3520,6 +3691,8 @@ namespace api.Data.Migrations
                     b.Navigation("UserPhones");
 
                     b.Navigation("UserProfessions");
+
+                    b.Navigation("UserQualifications");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CandidateAssessment", b =>
@@ -3534,7 +3707,12 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.HR.OrderAssessment", b =>
                 {
-                    b.Navigation("OrderItemAssessments");
+                    b.Navigation("OrderAssessmentItems");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.OrderAssessmentItem", b =>
+                {
+                    b.Navigation("OrderAssessmentItemQs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.OrderItemAssessment", b =>
@@ -3556,6 +3734,16 @@ namespace api.Data.Migrations
                     b.Navigation("UserRoles");
 
                     b.Navigation("photos");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.Help", b =>
+                {
+                    b.Navigation("HelpItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Master.HelpItem", b =>
+                {
+                    b.Navigation("HelpSubItems");
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.AppTask", b =>

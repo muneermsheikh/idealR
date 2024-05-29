@@ -106,6 +106,26 @@ namespace api.Controllers
             return Ok(obj);
         }
 
+        [HttpGet("openorderitemBriefDto")]
+        public async Task<ActionResult<ICollection<OrderItemBriefDto>>> GetBriefOrderDto (int orderid)
+        {
+            var order = await _repo.GetOrderByIdWithItemsAsyc(orderid);
+
+            if(order != null) return Ok(order);
+
+            return NotFound("Order not found");
+        }
+
+        
+        [HttpGet("brieforderitemsdto")]
+        public async Task<ActionResult<ICollection<OrderItemBriefDto>>> GetOrderWithItemsBriefDto (int orderid)
+        {
+            var order = await _repo.GetOpenOrderItemsBriefDto();
+
+            if(order != null) return Ok(order);
+
+            return NotFound("Order not found");
+        }
 
         [HttpGet("orderWithItems/{orderid}")]
         public async Task<ActionResult<ICollection<OrderItemBriefDto>>> GetOrderWithItems (int orderid)

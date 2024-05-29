@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { HomeComponent } from './home/home.component';
 import { MessagesComponent } from './messages/messages/messages.component';
 import { SharedModule } from './_modules/shared.module';
@@ -31,6 +31,12 @@ import { IdsModalComponent } from './modals/ids-modal/ids-modal.component';
 import { ProfileListComponent } from './profiles/profile-list/profile-list.component';
 import { ProfileItemComponent } from './profiles/profile-item/profile-item.component';
 import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit.component';
+import { HelpModalComponent } from './modals/help-modal/help-modal.component';
+import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
+import { CandidateAssessmentComponent } from './hr/candidate-assessment/candidate-assessment.component';
+import { ChecklistModalComponent } from './profiles/checklist-modal/checklist-modal.component';
+import { CandidateAssessComponent } from './hr/candidate-assess/candidate-assess.component';
+import { ChecklistrModalComponent } from './profiles/checklistr-modal/checklistr-modal.component';
 
 
 @NgModule({
@@ -57,15 +63,22 @@ import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit
     IdsModalComponent,
     ProfileListComponent,
     ProfileItemComponent,
-    CandidateEditComponent
+    CandidateEditComponent,
+    HelpModalComponent,
+    CvAssessComponent,
+    CandidateAssessmentComponent,
+    ChecklistModalComponent,
+    CandidateAssessComponent,
+    ChecklistrModalComponent
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
+    //FormsModule,
+    //ReactiveFormsModule,
     SharedModule
   ],
   providers: [

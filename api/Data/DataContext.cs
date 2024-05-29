@@ -53,6 +53,9 @@ namespace api.Data
         public DbSet<OrderAssessment> OrderAssessments {get; set;}
         public DbSet<OrderItemAssessment> orderItemAssessments {get; set;}
         public DbSet<OrderItemAssessmentQ> OrderItemAssessmentQs {get; set;}
+
+        public DbSet<OrderAssessmentItem> OrderAssessmentItems {get; set;}
+        public DbSet<OrderAssessmentItemQ> OrderAssessmentItemQs {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
        
         //fINANCE
@@ -111,6 +114,9 @@ namespace api.Data
 
         public DbSet<Entities.Messages.MessageComposeSource> MessageComposeSources {get; set;}
 
+        public DbSet<Help> Helps {get; set;}
+        public DbSet<HelpItem> HelpItems {get; set;}
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -127,9 +133,9 @@ namespace api.Data
             builder.Entity<AssessmentQBank>().HasIndex(x => x.ProfessionId).IsUnique();
             
             builder.Entity<OrderAssessment>().HasIndex(x => x.OrderId).IsUnique();
-            builder.Entity<OrderAssessment>().HasMany(x => x.OrderItemAssessments).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<OrderItemAssessment>().HasIndex(x => x.OrderItemId).IsUnique();
-            builder.Entity<OrderItemAssessmentQ>().HasIndex(x => new {x.OrderItemAssessmentId, x.Question}).IsUnique();
+            builder.Entity<OrderAssessment>().HasMany(x => x.OrderAssessmentItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<OrderAssessmentItem>().HasIndex(x => x.OrderItemId).IsUnique();
+            builder.Entity<OrderAssessmentItemQ>().HasIndex(x => new {x.OrderAssessmentItemId, x.Question}).IsUnique();
 
             builder.Entity<Customer>().HasIndex(x => new {x.CustomerName, x.City}).IsUnique();
             builder.Entity<CustomerOfficial>().HasIndex(x => new{x.CustomerId, x.OfficialName}).IsUnique();
@@ -160,7 +166,9 @@ namespace api.Data
             builder.Entity<OrderItem>().HasOne(x => x.ContractReviewItem)
                 .WithOne().HasForeignKey<ContractReviewItem>(x => x.OrderItemId).OnDelete(DeleteBehavior.Cascade);
             
-              builder.Entity<ChecklistHR>()
+            builder.Entity<ContractReviewItem>().HasIndex(x => x.OrderItemId).IsUnique();
+            
+            builder.Entity<ChecklistHR>()
                 .HasMany(x => x.ChecklistHRItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AssessmentQStdd>().HasIndex(x => x.QuestionNo).IsUnique();
@@ -208,6 +216,7 @@ namespace api.Data
             builder.Entity<UserHistory>().HasMany(x => x.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<UserHistory>().HasIndex(x => x.CandidateId).HasFilter("CandidateId Is Null").IsUnique();
             
+            
         //Identity
            builder.Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)
@@ -245,6 +254,9 @@ namespace api.Data
                 .HasIndex(x => new {x.OrderForwardCategoryId, 
                     x.DateOnlyForwarded, x.CustomerOfficialId}).IsUnique();
             
+            builder.Entity<Help>().HasMany(x => x.HelpItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Help>().HasIndex(x => x.Topic).IsUnique();
+            builder.Entity<HelpItem>().HasIndex(x => new {x.HelpId, x.Sequence}).IsUnique();
             
             /*builder.Entity<Message>()
                 .HasOne(s => s.Recipient)
