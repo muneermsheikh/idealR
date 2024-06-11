@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Interfaces.Orders;
@@ -90,9 +91,7 @@ namespace api.Data.Repositories.Orders
 
         public async Task<Remuneration> GetRemuneratinOfOrderItem(int OrderItemId)
         {
-            var remun = await _context.Remunerations.Where(x => x.OrderItemId == OrderItemId).FirstOrDefaultAsync();
-
-            return remun;
+            return await _context.Remunerations.Where(x => x.OrderItemId == OrderItemId).FirstOrDefaultAsync();
         }
 
 
@@ -142,8 +141,8 @@ namespace api.Data.Repositories.Orders
        public async Task<bool> EditRemuneration(Remuneration remuneration)
         {
             var existingObject = await _context.Remunerations.FindAsync(remuneration.Id);
-            if (existingObject == null) throw new Exception("no such remuneration record");
-            
+            if (existingObject == null) return false;
+
             _context.Entry(existingObject).CurrentValues.SetValues(remuneration);
 
             try{
@@ -155,18 +154,36 @@ namespace api.Data.Repositories.Orders
             return true;
         }
 
-        public async Task<RemunerationDto> GetRemunerationOfOrderItem(int OrderItemId)
+        public async Task<RemunerationDto> GetRemunerationDtoOfOrderItem(int OrderItemId)
         {
             var query = await (from remun in _context.Remunerations 
                     where remun.OrderItemId == OrderItemId
                 join item in _context.OrderItems on remun.OrderItemId equals item.Id
                 join order in _context.Orders on item.OrderId equals order.Id
                 select new RemunerationDto {
-                    Remuneration = remun,
+                    Id = remun.Id,
                     CategoryName = item.Profession.ProfessionName,
                     CustomerName = order.Customer.CustomerName,
                     OrderDate = order.OrderDate,
-                    OrderNo = order.OrderNo
+                    OrderNo = order.OrderNo,
+                    OrderItemId= item.Id,
+                    WorkHours = remun.WorkHours,
+                    SalaryCurrency = remun.SalaryCurrency,
+                    SalaryMin = remun.SalaryMin,
+                    SalaryMax = remun.SalaryMax,
+                    ContractPeriodInMonths = remun.ContractPeriodInMonths,
+                    HousingAllowance = remun.HousingAllowance,
+                    HousingNotProvided = remun.HousingNotProvided,
+                    HousingProvidedFree = remun.HousingProvidedFree,
+                    FoodAllowance = remun.FoodAllowance,
+                    FoodNotProvided = remun.FoodNotProvided,
+                    FoodProvidedFree = remun.FoodProvidedFree,
+                    TransportAllowance = remun.TransportAllowance,
+                    TransportNotProvided = remun.TransportNotProvided,
+                    TransportProvidedFree = remun.TransportProvidedFree,
+                    OtherAllowance = remun.OtherAllowance,
+                    LeaveAirfareEntitlementAfterMonths = remun.LeaveAirfareEntitlementAfterMonths,
+                    LeavePerYearInDays = remun.LeavePerYearInDays
                 }).FirstOrDefaultAsync();
             
             return query;

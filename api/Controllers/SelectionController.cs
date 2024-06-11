@@ -43,14 +43,26 @@ namespace api.Controllers
             return Ok(pagedList);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<bool>> RegisterSelections(ICollection<CreateSelDecisionDto> dtos)
+        [HttpGet("selectionBySelDecisionId/{selDecisionId}")]
+        public async Task<ActionResult<SelectionDecision>> GetSelectionById(int selDecisionId)
         {
-            var decs = await _selRepo.RegisterSelections(dtos, User.GetUsername());
+            var sel = await _selRepo.GetSelectionDecisionFromId(selDecisionId);
 
-            if(!string.IsNullOrEmpty(decs.ErrorString)) return BadRequest(new ApiException(400, "Failed to register the selections", decs.ErrorString));
+            if(sel == null) return NotFound(new ApiException(404, "Not Found", "Failed to find the selection object"));
 
-            return Ok("Selections registered");
+            return Ok(sel);
+        }
+        [HttpPost]
+        public async Task<ActionResult<ICollection<int>>> RegisterSelections(ICollection<CreateSelDecisionDto> dtos)
+        {
+            if(dtos.Count == 0) return BadRequest(new ApiException(404, "Bad Request", "Blank array"));
+            
+            var msgWithErr = await _selRepo.RegisterSelections(dtos, User.GetUsername());
+
+            if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) 
+                return BadRequest(new ApiException(400, "Failed to register the selections", msgWithErr.ErrorString));
+
+            return Ok(msgWithErr.CVRefIdsInserted);
         }
      
         [HttpPut]

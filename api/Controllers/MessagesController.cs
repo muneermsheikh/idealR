@@ -2,11 +2,14 @@
 using api.DTOs;
 using api.Entities;
 using api.Entities.Admin;
+using api.Entities.Admin.Order;
 using api.Entities.Messages;
+using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.Messages;
+using api.Interfaces.Orders;
 using api.Params;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +23,11 @@ namespace api.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
-        public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository,
-            IMapper mapper)
+        private readonly IComposeMessagesHRRepository _msgHRRepo;
+        public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository, 
+            IComposeMessagesHRRepository msgHRRepo, IMapper mapper)
         {
+            _msgHRRepo = msgHRRepo;
             _mapper = mapper;
             _messageRepository = messageRepository;
             _userRepository = userRepository;
@@ -90,6 +95,16 @@ namespace api.Controllers
             if (await _messageRepository.SaveAllAsync()) return Ok();
 
             return BadRequest("Problem deleting the message");
+        }
+            
+        public async Task<ActionResult<string>> ComposeMsgsToForwardOrdersToAgents(OrderForwardToAgent orderForward)
+        {
+            
+            var msg= await _msgHRRepo.ComposeMsgsToForwardOrdersToAgents(orderForward, User.GetUsername());
+
+            if(msg==null) return BadRequest(new ApiException(400,"Bad Request", "failed to compose message for the Order Forwards"));
+
+            return Ok("Order Forarding Messages composed. These messages are available for edit in the Messages section");
         }
     }       
 }

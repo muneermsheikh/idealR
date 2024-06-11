@@ -6,7 +6,7 @@ namespace api.Params.Admin
         public int OrderItemId { get; set; }
         public int ProfessionId { get; set; }
         public string ProfessionName { get; set; }
-        public DateOnly SelectedOn { get; set; }
+        public DateTime SelectedOn { get; set; }
         public string RefStatus { get; set; }
     }
 }

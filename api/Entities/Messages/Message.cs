@@ -9,6 +9,7 @@ namespace api.Entities.Messages
         }
 
 
+        public int CvRefId { get; set; }
         public string MessageType { get; set; }
         public  int SenderAppUserId { get; set; }
         public AppUser Sender {get; set;}

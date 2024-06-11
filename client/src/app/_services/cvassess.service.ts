@@ -7,14 +7,14 @@ import { User } from '../_models/user';
 import { CandidateBriefDto, ICandidateBriefDto } from '../_dtos/admin/candidateBriefDto';
 import { Pagination } from '../_models/pagination';
 import { AccountService } from './account.service';
-import { IOrderItemAssessmentQ } from '../_models/admin/orderItemAssessmentQ';
 import { ICandidateAssessment } from '../_models/hr/candidateAssessment';
-import { ICandidateAssessmentWithErrorStringDto } from '../_dtos/hr/candidateAssessmentWithErrorStringDto';
 import { IChecklistHRDto } from '../_dtos/hr/checklistHRDto';
 import { ICandidateAssessedDto } from '../_dtos/hr/candidateAssessedDto';
 import { CVBriefParam } from '../_models/params/hr/cvBriefParam';
 import { GetHttpParamsForCVRefBrief, getPaginatedResult } from './paginationHelper';
 import { ICandidateAssessmentAndChecklistDto } from '../_dtos/hr/candidateAssessmentAndChecklistDto';
+import { IOrderAssessmentItemQ } from '../_models/admin/orderAssessmentItemQ';
+import { ICandidateAssessedShortDto } from '../_dtos/hr/candidateAssessedShortDto';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +61,7 @@ export class CVAssessService {
   }
 
   getOrderItemAssessmentQs(orderitemid: number) {
-    return this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'OrderAssessment/orderitemassessmentQ/' + orderitemid);
+    return this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/orderitemassessmentQ/' + orderitemid);
   }
 
   getCVAssessmentObject(requireReview: boolean, candidateid: number, orderitemid: number, dt: Date) {
@@ -89,7 +89,7 @@ export class CVAssessService {
 
 
   getAssessmentsOfACandidate(cvid: number) {
-    return this.http.get<ICandidateAssessedDto[]>(this.apiUrl + 'CandidateAssessment/candidateassessments/' +cvid);
+    return this.http.get<ICandidateAssessedShortDto[]>(this.apiUrl + 'CandidateAssessment/candidateassessments/' +cvid);
   }
 
 

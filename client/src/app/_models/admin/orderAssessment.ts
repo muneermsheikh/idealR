@@ -1,4 +1,5 @@
-import { IOrderItemAssessment } from "./orderItemAssessment";
+import { IOrderAssessmentItem } from "./orderAssessmentItem";
+
 
 export interface IOrderAssessment {
      id: number;
@@ -6,10 +7,10 @@ export interface IOrderAssessment {
      customerName: string;
      orderId: number;
      orderNo: number;
-     orderItemAssessments: IOrderItemAssessment[];
+     orderAssessmentItems: IOrderAssessmentItem[];
 }
 
-export interface IAssessmentDto {
+export interface IOrderAssessmentDto {
      id: number;
      orderAssessmentId: number;
      customerName: string;

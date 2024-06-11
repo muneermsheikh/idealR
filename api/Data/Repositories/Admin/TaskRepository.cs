@@ -1,18 +1,14 @@
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Identity;
-using api.Entities.Messages;
 using api.Entities.Tasks;
-using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Interfaces.Orders;
 using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Office2013.WebExtentionPane;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Admin
@@ -24,7 +20,7 @@ namespace api.Data.Repositories.Admin
         private readonly UserManager<AppUser> _userManager;
         private readonly IComposeMessagesHRRepository _msgHRRepo;
         private readonly IComposeMessagesAdminRepository _admnMsgRepo;
-        private readonly DateOnly _today;
+        private readonly DateTime _today = DateTime.Now;
         private readonly IMapper _mapper;
         public TaskRepository(DataContext context, IConfiguration config, IComposeMessagesHRRepository msgHRRepo, IComposeMessagesAdminRepository admnMsgRepo,
             UserManager<AppUser> userManager, IMapper mapper)
@@ -35,7 +31,6 @@ namespace api.Data.Repositories.Admin
             _userManager = userManager;
             _config = config;
             _context = context;
-            _today = DateOnly.FromDateTime(DateTime.UtcNow);
         }
 
         public async Task<AppTask> GetTaskByParams(TaskParams taskParams)
@@ -61,7 +56,7 @@ namespace api.Data.Repositories.Admin
         {
             
             task.TaskStatus = "Completed";
-            task.CompletedOn= DateOnly.FromDateTime(DateTime.UtcNow);
+            task.CompletedOn= DateTime.UtcNow;
             var taskitem = new TaskItem {
                 AppTaskId = task.Id, TransactionDate =_today,
                 TaskItemDescription = (taskStatus=="Completed" ? "task completed for: " : "new task for") + candidateDescription,
@@ -88,7 +83,7 @@ namespace api.Data.Repositories.Admin
             var newTask = new AppTask{
                 TaskType = taskType,
                 CandidateAssessmentId = candidateAssessmentId,
-                TaskDate = DateOnly.FromDateTime(taskDate),
+                TaskDate = taskDate,
                 TaskOwnerUsername = taskOwnername,
                 AssignedToUsername = assignedToUserName,
                 OrderId = orderId, OrderNo = orderNo,
@@ -96,7 +91,7 @@ namespace api.Data.Repositories.Admin
                 ApplicationNo = appNo,
                 CandidateId = candidateId,
                 TaskDescription = taskDescription,
-                CompleteBy = DateOnly.FromDateTime(completeBy),
+                CompleteBy = completeBy,
                 TaskStatus = taskStatus,
                 TaskItems = taskitemList
             };
@@ -169,31 +164,29 @@ namespace api.Data.Repositories.Admin
 
         }
 
-        public async Task<string> AssignTasksToHRExecs(ICollection<OrderItemIdAndHRExecEmpNoDto> ItemIdAndHRExecDto, 
-            string Username)
+        public async Task<string> AssignTasksToHRExecs(ICollection<int> orderItemIds, string Username)
         {
-            var assignments = await (from order in _context.Orders 
-                join item in _context.OrderItems on order.Id equals item.OrderId 
-                join dto in ItemIdAndHRExecDto on item.Id equals dto.OrderItemId
-                select new OrderAssignmentDto 
+            var assignments = await (from item in _context.OrderItems where orderItemIds.Contains(item.Id)
+                join order in _context.Orders on item.OrderId equals order.Id
+                join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId
+                select new OrderAssignmentDto
                 {
                     CategoryRef = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName,
                     CityOfWorking = order.CityOfWorking, CompleteBy = item.CompleteBefore, 
                     CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
-                    HrExecId = dto.HRExecEmpId, OrderDate = order.OrderDate, OrderId = order.Id,
+                    HrExecUsername = rvw.HrExecUsername, OrderDate = order.OrderDate, OrderId = order.Id,
                     OrderItemId = item.Id, OrderNo = order.OrderNo, ProfessionId = item.ProfessionId,
                     ProfessionName = item.Profession.ProfessionName, ProjectManagerId = order.ProjectManagerId,
                     Quantity = item.Quantity
-                }).ToListAsync();
-               
+                }).ToListAsync();    
+
                var tasks = new List<AppTask>();
                var task = new AppTask();
 
                 foreach(var t in assignments)
                 {
-                    int recipientAppUserId= await _context.GetAppUserIdOfEmployee(t.HrExecId);
-                    var recipientObj=await _userManager.FindByIdAsync(recipientAppUserId.ToString());
-
+                    var recipientObj= await _userManager.FindByNameAsync(t.HrExecUsername);
+                    
                     if (t.CompleteBy.Year < 2000) t.CompleteBy = _today.AddDays(7);
                     var taskitems = new List<TaskItem>
                     {
@@ -289,7 +282,7 @@ namespace api.Data.Repositories.Admin
             if(task==null) return "invalid task id";
 
             task.TaskStatus = "Completed";
-            task.CompletedOn=DateOnly.FromDateTime(DateTime.UtcNow);
+            task.CompletedOn=DateTime.UtcNow;
 
             _context.Entry(task).State = EntityState.Modified;
 

@@ -4,3 +4,10 @@ export interface IOfferConclusioDto
     acceptedString: string;
     conclusionDate: Date;
 }
+
+export class OfferConclusioDto implements IOfferConclusioDto
+{
+    employmentId = 0;
+    acceptedString = '';
+    conclusionDate= new Date();
+}

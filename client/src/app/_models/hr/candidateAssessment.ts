@@ -5,11 +5,15 @@ export interface ICandidateAssessment
      id: number;
      orderItemId: number;
      candidateId: number;
-     //assessedById: number;
+     
+     customerName: string;
+     categoryRefAndName: string;
+     orderDate: Date;
+
      assessedByName: string;
      assessedOn: Date;
      assessResult: string;
-     requireInternalReview: boolean;
+     requireInternalReview: string;
      hrChecklistId: number;
      taskIdDocControllerAdmin: number;
      remarks: string;
@@ -17,25 +21,19 @@ export interface ICandidateAssessment
 }
 export class CandidateAssessment implements ICandidateAssessment
 {
-     constructor(_orderitemid: number, _candidateid: number,  _assessedByName: string, _assessedon: Date, 
-           _hrChecklistId: number, _items: ICandidateAssessmentItem[]) {
-          this.orderItemId = _orderitemid;
-          this.candidateId = _candidateid;
-          //this.assessedById = _assessedbyid;
-          this.assessedByName = _assessedByName;
-          this.assessedOn = _assessedon;
-          //this.requireInternalReview = _requireInternalReview;
-          this.hrChecklistId = _hrChecklistId
-          this.candidateAssessmentItems = _items;
-          this.id = 0;   //so as to patch values
-     }
+   
      id= 0;
      orderItemId =0;
+
+     customerName='';
+     categoryRefAndName = '';
+     orderDate = new Date();
+     
      candidateId= 0;
      assessedByName= '';
-     assessedOn: Date;
+     assessedOn= new Date();
      assessResult= "";
-     requireInternalReview = false;
+     requireInternalReview = 'N';
      hrChecklistId= 0;
      remarks= '';
      cvRefId= 0;

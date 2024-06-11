@@ -4,8 +4,9 @@ namespace api.Entities.Admin.Order
     {
         public int OrderForwardCategoryId { get; set; }
         public int CustomerOfficialId { get; set; }
+        public string OfficialName { get; set; }
         public string AgentName {get; set;}
-        public DateOnly DateOnlyForwarded {get; set;}
+        public DateTime DateForwarded {get; set;}
         public string EmailIdForwardedTo { get; set; }
         public string PhoneNoForwardedTo { get; set; }
         public string WhatsAppNoForwardedTo { get; set; }

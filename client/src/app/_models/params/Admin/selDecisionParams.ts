@@ -7,10 +7,9 @@ export class SelDecisionParams
      orderNo: number=0;
      applicationNo: number=0;
      customerName: string='';
-     categoryId: number=0;
-     categoryName: string='';
-     candidateName: string='';
-     referredOn:string = '';
+     professionId: number=0;
+     professionName: string='';
+     referredOn:Date = new Date();
      cVRefId: number=0;
      includeSelection: boolean=false;
      includeEmployment: boolean=false;

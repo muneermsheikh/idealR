@@ -1,0 +1,69 @@
+<form [formGroup]="form" style="margin-left: 20px;">
+     <div *ngIf="reviewItem !== undefined" class="mx-2">
+          <div style="font-size:medium;font-weight: bold; vertical-align: top;"> <strong>Edit Contract review of a category</strong>
+               <h5 style="margin-left: 5px; display: inline-block; vertical-align: top;">{{reviewItem.professionName}}</h5>
+               <div><strong>Customer:</strong> {{reviewItem.customerName}}</div>
+
+               <div class="stdd"><strong>Order No:</strong> {{reviewItem.orderNo}} <strong>dtd</strong>:{{reviewItem.orderDate | date}}</div>
+               
+               <strong class="stdd w150">reviewItem status</strong>
+               <ng-select *ngIf="reviewStatus" 
+                    class="stdd w150"
+                    [items]="reviewStatus"
+                    bindLabel="name"
+                    bindValue="name"
+                    labelForId="reviewItemStatus"
+                    clearAllText="Clear"
+                    formControlName="reviewItemStatus"
+                    >
+               </ng-select>
+               <br>
+               <label class="lbl w150 b">Assessment Reqd</label>
+               <input type="radio" class="inputcheck form-check-input mx-2 " value= 1 formControlName="requireAssess" >Yes
+               <input type="radio" class="inputcheck form-check-input mx-2" value= 0 formControlName="requireAssess" >No
+
+               <button type="button" class="mL15 btn btn-success fa fa-save" (click)="confirm()"></button>
+               <button type="button" class="btn pull-right fa fa-window-close fa-2x" (click)="decline()"></button>
+
+          </div>
+     </div>
+
+     <br>
+     <div style="font-size: small; vertical-align: middle;">
+          <label class="lbl w35">Sr#</label>
+          <label class="lbl w35">Manda-<br>tory</label>
+          <label class="lbl mL10 w350">Parameter</label>
+          <!-- <label class="lbl w50">Response</label> -->
+          <label class="lbl w75">Response<br>YES</label>
+          <!-- <label class="lbl w50">Response<br>Yes/No</label> -->
+          <label class="lbl w150">Remarks</label>
+          <button class="btn btn-primary fa fa-plus" (click)="addQ()" ></button>
+          <div formArrayName="contractReviewItemQs" class="mt-2 my-1 px-0">
+               <div *ngFor="let q of contractReviewItemQs.controls; let i=index">
+                    <div [formGroupName]="i">
+                         <div class="stdd w35">
+                              <app-text-input [label]="'Sr#'" formControlName="srNo" ></app-text-input>
+                         </div>
+                         <input type="checkbox" class="stdd w35" formControlName="isMandatoryTrue" >
+                         <div class="stdd w350">
+                              <app-text-input [label]="'Parameter'" formControlName="reviewParameter" style="font-size: small;"></app-text-input>
+                         </div>
+                         <input type="checkbox" class="stdd w75" formControlName="response">
+                         <!-- <div class="stdd w100">
+                              <app-text-input [label]="'Response Text'" formControlName="responseText" style="font-size: small;"></app-text-input>
+                         </div>
+                         <input type="checkbox" class="stdd w35" formControlName="isReponseBoolean"> -->
+                         <div class="stdd w150">
+                              <app-text-input [label]="'Remarks'" style="font-size: small;" formControlName="remarks"></app-text-input>
+                         </div>
+                         <button class="btn mL10 fa fa-trash fa-sm red" (click)="removeQ(i)" ></button>
+                    </div>
+
+               </div>      
+          </div>   
+     </div>
+</form>
+
+<div style="font-size: smaller;">
+     {{form.value | json}}
+</div>

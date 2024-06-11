@@ -1,3 +1,5 @@
+using api.Entities.HR;
+
 namespace api.DTOs.HR
 {
     public class CandidateBriefDto
@@ -11,6 +13,7 @@ namespace api.DTOs.HR
         public string Email { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
+        public ICollection<UserProfession> userProfessions { get; set; }
 
         public string Status {get; set;} = "NotReferred";
     }

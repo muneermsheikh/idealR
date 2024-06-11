@@ -10,9 +10,10 @@ namespace api.Entities.Admin.Order
         public int Quantity { get; set; }
         public bool Ecnr { get; set; }
         public string SourceFrom { get; set; }
-        public bool RequireAssess { get; set; }
+        [MaxLength(1)]
+        public string RequireAssess { get; set; }
         public int Charges { get; set; }
-        public string HRExecUsername { get; set; }
+        public string HrExecUsername { get; set; }
         public string ReviewItemStatus {get; set;}="NotReviewed";
          
         public ICollection<ContractReviewItemQ> ContractReviewItemQs {get; set;}     //copies data from ReviewItemData

@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { ICustomer } from 'src/app/_models/admin/customer';
 import { ICustomerReview } from 'src/app/_models/admin/customerReview';
-import { ICustomerReviewData } from 'src/app/_models/admin/customerReviewData';
 import { environment } from 'src/environments/environment.development';
 
 @Injectable({

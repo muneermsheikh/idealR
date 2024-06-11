@@ -54,12 +54,15 @@ namespace api.Helpers
             CreateMap<OrderItem, OrderItemBriefDto>();
             CreateMap<OrderItemToCreateDto, OrderItem>();
             CreateMap<Order, OrderDisplayWithItemsDto>();
+            CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>();
+            CreateMap<OrderForwardCategory, OrderForwardCategoryDto>();
+            //CreateMap<OrderForwardCategoryOfficial, OrderForwardCategoryOffDto>();
             
             CreateMap<ContractReviewItemQ, ContractReviewItemStddQ>();
             CreateMap<ContractReview, ContractReviewDto>();
 
             CreateMap<ChecklistHR, ChecklistHRDto>();
-
+            CreateMap<ChecklistHRDto, ChecklistHR>();
 
             CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
 
@@ -68,6 +71,9 @@ namespace api.Helpers
             CreateMap<OrderItemAssessmentQ, CandidateAssessmentItem>();
 
             CreateMap<CandidateAssessment, CandidateAssessedDto>();
+            CreateMap<OrderAssessmentItemQ, CandidateAssessmentItem>();
+
+            CreateMap<AssessmentQStdd, OrderAssessmentItemQ>();
 
             CreateMap<Employee, EmployeeBriefDto>();
             CreateMap<EmployeeToAddDto, Employee>();

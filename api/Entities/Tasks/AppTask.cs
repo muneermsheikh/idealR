@@ -11,7 +11,7 @@ namespace api.Entities.Tasks
         public int? CVRefId { get; set; }
         public string TaskType { get; set; }
         public int? CandidateAssessmentId { get; set; }
-        public DateOnly TaskDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+        public DateTime TaskDate { get; set; } =DateTime.UtcNow;
         [Required]
         public string TaskOwnerUsername {get; set;}
         [Required]
@@ -26,10 +26,10 @@ namespace api.Entities.Tasks
         [Required]
         public string TaskDescription {get; set;}
         [Required]
-        public DateOnly CompleteBy {get; set;}
+        public DateTime CompleteBy {get; set;}
         [Required]
         public string TaskStatus {get; set;}="Not Started";
-        public DateOnly? CompletedOn { get; set; }
+        public DateTime? CompletedOn { get; set; }
         public int? HistoryItemId { get; set; }
         public string PostTaskAction { get; set; } ="Do Not Compose Message";
         public virtual ICollection<TaskItem> TaskItems {get; set;}

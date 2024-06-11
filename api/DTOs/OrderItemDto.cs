@@ -19,7 +19,7 @@ namespace api.DTOs
         public int MinCVs { get; set; }
         public int MaxCVs { get; set; }
         public bool Ecnr { get; set; }=false;
-        public DateOnly CompleteBefore { get; set; }
+        public DateTime CompleteBefore { get; set; }
         public string Status { get; set; }
         public JobDescription JobDescription { get; set; }
         public Remuneration Remuneration { get; set; }

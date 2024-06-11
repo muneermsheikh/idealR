@@ -1,0 +1,80 @@
+<form [formGroup]="form" (ngSubmit)="form.valid && updateAssessment()" autocomplete="off" *ngIf="orderAssessment" >
+
+    <div class="stdd mt-2" style="border-style: groove; margin-left: 15px;">
+        <div class="stdd w15">
+            <app-text-input formControlName="orderId"></app-text-input>
+        </div>
+        <div class="stdd w15">
+            <app-text-input formControlName="orderNo"></app-text-input>
+        </div>
+        <div class="stdd w150">
+            <app-text-input [label]="'Customer Name'" formControlName="customerName"></app-text-input>
+        </div>
+
+        <label class="stdd w100">Order Assessment Items</label>
+
+        <div formArrayName="orderAssessmentItems" class="formArray">
+            <button type="button" (click)="addOrderAssessmentItem()" class="my-1 fa fa-plus" style="color: blue;"></button>
+
+            <div *ngFor="let item of orderAssessmentItems.controls; let itemIndex=index">
+                <div [formGroupName]="itemIndex" >
+                    <div class="stdd w15">
+                        <app-text-input formControlName="orderAssessmentId"></app-text-input>
+                    </div>
+                    <div class="stdd w15">
+                        <app-text-input formControlName="orderId"></app-text-input>
+                    </div>
+                    <div class="stdd w15">
+                        <app-text-input formControlName="orderItemId"></app-text-input>
+                    </div>
+                    <div class="stdd w15">
+                        <app-text-input formControlName="orderId"></app-text-input>
+                    </div>
+                    <div class="stdd w150">
+                        <app-text-input [label]="'Profession Name'" formControlName="professionName"></app-text-input>
+                    </div>
+                    <button (click)="removeOrderAssessmentItem(itemIndex)" style="margin-left: 20px;" class="stdd fa fa-trash red"></button>
+
+                    <div formArrayName="orderAssessmentItemQs" class="formArray" style="margin-left: 15px;">
+                        <button class="my-1 fa fa-plus" (click)="addNewOrderAssessmentItemQ(itemIndex)" ></button>
+                        <div *ngFor="let q of orderAssessmentItemQs(itemIndex).controls; let qIndex=index">
+                            <div [formGroupName]="qIndex">
+
+                            </div>
+                            <div class="stdd w15">
+                                <app-text-input formControlName="id"></app-text-input>
+                            </div>
+                            <div class="stdd w15">
+                                <app-text-input formControlName="orderAssessmentItemId"></app-text-input>
+                            </div>
+                            <div class="stdd w15">
+                                <app-text-input formControlName="orderItemId"></app-text-input>
+                            </div>
+                            <div class="stdd w15">
+                                <app-text-input formControlName="orderId"></app-text-input>
+                            </div>
+                            <div class="stdd w50">
+                                <app-text-input [label]="'Question No'" formControlName="questionNo"></app-text-input>
+                            </div>
+                            <div class="stdd w150">
+                                <app-text-input [label]="'subject'" formControlName="subject"></app-text-input>
+                            </div>
+                            <div class="stdd w200">
+                                <app-text-input [label]="'Question'" formControlName="question"></app-text-input>
+                            </div>
+                            <div class="stdd w50">
+                                <app-text-input [type]="'number'" [label]="'Max Points'" formControlName="maxPoints"></app-text-input>
+                            </div>
+                            <input type="checkbox" class="stdd w15" formControlName="isMandatory">
+                            <button (click)="removeOrderAssessmentItemQ(itemIndex, qIndex)" style="margin-left: 20px;" class="stdd fa fa-trash red"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    
+        </div>
+    
+    </div>
+
+</form>

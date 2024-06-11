@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IOrder } from "../shared/models/admin/order";
-import { OrderService } from "../shared/services/admin/order.service";
+import { IOrder } from "../_models/admin/order";
+import { OrderService } from "../_services/admin/order.service";
 
 export const OrderResolver: ResolveFn<IOrder | null> = (
     route: ActivatedRouteSnapshot,

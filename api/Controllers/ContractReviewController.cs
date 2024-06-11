@@ -1,5 +1,4 @@
-using System.Diagnostics.Contracts;
-using api.DTOs.Admin.Orders;
+using api.DTOs.Admin;
 using api.DTOs.Order;
 using api.Entities.Admin.Order;
 using api.Errors;
@@ -7,12 +6,11 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "ContractReviewPolicy")]
+    //[Authorize(Policy = "ContractReviewPolicy")]
     public class ContractReviewController : BaseApiController
     {
         private readonly IContractReviewRepository _repo;
@@ -37,7 +35,7 @@ namespace api.Controllers
         [HttpPut("reviewitem")]
         public async Task<ActionResult<bool>> UpdateReviewItem(ContractReviewItem reviewitem)
         {
-            return await _repo.UpdateContractReviewItem(reviewitem);
+            return await _repo.EditContractReviewItem(reviewitem);
         }
 
         [HttpPost("contractreview")]
@@ -60,9 +58,9 @@ namespace api.Controllers
         }
 
         [HttpGet("reviewitem/{orderitemid}")]
-        public async Task<ActionResult<ContractReviewItem>> GetContractReviewItem(int orderitemid)
+        public async Task<ActionResult<ContractReviewItemDto>> GetContractReviewItem(int orderitemid)
         {
-                var item = await _repo.GetContractReviewItem(orderitemid);
+                var item = await _repo.GetContractReviewItem(orderitemid, User.GetUsername());
                 if (item == null) return NotFound(new ApiException(400, "Bad Request", "Failed to retrieve the contract review item"));
 
                 return Ok(item);
@@ -80,7 +78,7 @@ namespace api.Controllers
         [HttpGet("generate/{orderId}")]
         public async Task<ActionResult<ContractReview>> GenerateContractReview (int orderId)
         {
-            var review = await _repo.GenerateContractReviewObject(orderId, User.GetUsername());
+            var review = await _repo.GetOrGenerateContractReview(orderId, User.GetUsername());
 
             if(review == null) return BadRequest();
             return Ok(review);

@@ -292,7 +292,21 @@ namespace api.Data.Repositories
                return off;		
         }
 
-        
+        public async Task<ICollection<OfficialAndCustomerNameDto>> GetOfficialsAndCustomerNames(string customerType)
+        {
+            var query = await (from off in _context.CustomerOfficials
+                join cust in _context.Customers on off.CustomerId equals cust.Id
+                     where cust.CustomerType==customerType
+                select new OfficialAndCustomerNameDto{
+                    CustomerId = cust.Id, CustomerName=cust.CustomerName, Id=off.Id,
+                    OfficialName = off.OfficialName + "-" + cust.KnownAs
+                }).OrderBy(x => x.CustomerName).ThenBy(x => x.OfficialName)
+                .ToListAsync();
+            
+            return query;
+                
+        }
 
+        
     }
 }

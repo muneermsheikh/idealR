@@ -1,19 +1,12 @@
 export class candidateParams {
-    candidateId= 0;
+    id= 0;
     applicationNoFrom = 0;
     applicationNoUpto = 0;
+    candidateName = '';
+    passportNo?='';
     professionId = 0;
     agentId = 0;
-    associateId = 0;
-    appUserId = 0;
-    city ='';
-    disrict ='';
-    state = '';
-    email= '';
-    mobile= '';
-    fullName='';
-
-    passportNo?='';
+    typeOfCandidate='';
 
     sort = "name";
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { ProspectiveListComponent } from '../prospectives/prospective-list/prospective-list.component';
+import { ProspectiveListComponent } from '../Administration/Prospectives/prospective-list/prospective-list.component';
+
 
 
 @Injectable({

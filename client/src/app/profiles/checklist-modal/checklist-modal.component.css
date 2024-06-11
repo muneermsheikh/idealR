@@ -8,11 +8,23 @@
     margin-top: 0px;
 }
 
+.stddT {
+    display: inline-block;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    vertical-align: top;
+    margin-left: 1px;
+    margin-right: 1px;
+    font-size: small;
+}
+
 
 .lbl {
     display: inline-block;
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
     margin-top: 0px;
     white-space: normal;
     vertical-align:middle;
@@ -20,12 +32,16 @@
     font-weight: bold;
 }
 .b {font-weight: bold;}
+
 .blue{color: blue;}
+.red {color: red;}
+
 .fontSmall {font-size: small;}
+
 .w15 {width: 15px;}
-.w25 {width: 25px;}
+.w40 {width: 40px;}
 .w50 {width: 50px;}
-.w75 {width: 75px;}
+.w70 {width: 75px;}
 .w100 {width: 100px;}
 .w150 {width: 150px;}
 .w175 {width: 175px;}

@@ -36,10 +36,10 @@ export class ChecklistService {
   }
 
   saveNewChecklistHR(checklisthr: IChecklistHR) {
-    return this.http.post<IChecklistHR>(this.apiUrl + 'Checklist', checklisthr);
+    return this.http.post<IChecklistHR>(this.apiUrl + 'Checklist/newchecklist', checklisthr);
   }
   
   deleteChecklistHR(checklistid: number) {
-    return this.http.delete<boolean>(this.apiUrl + 'Checklist/checklist' + checklistid);
+    return this.http.delete<boolean>(this.apiUrl + 'Checklist/checklist/' + checklistid);
   }
 }

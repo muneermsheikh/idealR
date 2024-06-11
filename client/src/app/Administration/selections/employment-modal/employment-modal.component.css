@@ -1,0 +1,25 @@
+
+.w20 {width: 20px;}
+.w35 {width: 35px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+
+.bordernone {border:none;}
+.hAlignCenter {text-align: center;}
+
+.stdd {
+    display: inline-block;
+    font-size: smaller;
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.b {font-weight: bold;}
+
+
+

@@ -19,7 +19,7 @@ namespace api.Entities.Admin
         public string Position { get; set; }
         public string Qualifications {get; set;}
         [Required]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string PlaceOfBirth { get; set; }
         public string AadharNo { get; set; }
         public string Nationality {get; set;} = "Indian";
@@ -27,7 +27,7 @@ namespace api.Entities.Admin
         public string OfficialEmail {get; set;}
         public string OfficialPhoneNo { get; set; }
         public string OfficialMobileNo { get; set; }
-        public DateOnly DateOfJoining {get; set;}
+        public DateTime DateOfJoining {get; set;}
         public string Department { get; set; }
         public string Remarks { get; set; }        
         public string EmployeeAddress {get; set;}

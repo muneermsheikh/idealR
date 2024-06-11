@@ -1,6 +1,8 @@
 using api.DTOs.Admin;
+using api.DTOs.Customer;
 using api.Entities.Admin.Client;
 using api.Entities.Identity;
+using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
@@ -108,6 +110,17 @@ namespace api.Controllers
             var succeeded = await _customerRepo.UpdateCustomerOfficialWithAppuserId(official);
             if(succeeded) return Ok();
             return BadRequest("failed to  update the data");
+        }
+
+        [HttpGet("officialidandcustomernames/{customerType}")]
+        public async Task<ActionResult<ICollection<OfficialAndCustomerNameDto>>> GetOfficialIdAndCustomerNames(string customerType)
+        {
+            var obj = await _customerRepo.GetOfficialsAndCustomerNames(customerType);
+
+            if(obj == null) return BadRequest(new ApiException(404,"Bad Request", "No records returned for customer type " + customerType));
+
+            return Ok(obj);
+
         }
     }
 }

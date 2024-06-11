@@ -9,7 +9,6 @@ import { TaskParams } from 'src/app/_models/params/Admin/taskParams';
 import { IApplicationTaskInBrief } from 'src/app/_models/admin/applicationTaskInBrief';
 import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { getHttpParamsForTask, getPaginatedResult } from '../paginationHelper';
-import { ITaskItem } from 'src/app/_models/admin/taskItem';
 import { IOrderItemIdAndHRExecEmpNoDto } from 'src/app/_dtos/admin/orderItemIdAndHRExecEmpNoDto';
 
 @Injectable({
@@ -29,8 +28,8 @@ export class TaskService {
 
   constructor(private http: HttpClient, private toastr:ToastrService) { }
 
-  createOrderAssignmentTasks(assignmentTasks: IOrderItemIdAndHRExecEmpNoDto[]) {
-    return this.http.post(this.apiUrl + 'Task/assignToHRExecs', assignmentTasks);
+  createOrderAssignmentTasks(orderItemIds: number[]) {
+    return this.http.post<string>(this.apiUrl + 'Task/assignToHRExecs', orderItemIds);
   }
 
   addTask(task: IApplicationTask)

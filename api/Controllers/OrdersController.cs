@@ -48,7 +48,7 @@ namespace api.Controllers
         }
 
         [HttpGet("pagedlist")]
-        public async Task<ActionResult<PagedList<OrderBriefDto>>> GetOrdersPagedList(OrdersParams orderParams)
+        public async Task<ActionResult<PagedList<OrderBriefDto>>> GetOrdersPagedList([FromQuery]OrdersParams orderParams)
         {
             var pagedList = await _repo.GetOrdersAllAsync(orderParams);
 
@@ -128,7 +128,7 @@ namespace api.Controllers
         }
 
         [HttpGet("orderWithItems/{orderid}")]
-        public async Task<ActionResult<ICollection<OrderItemBriefDto>>> GetOrderWithItems (int orderid)
+        public async Task<ActionResult<Order>> GetOrderWithItems (int orderid)
         {
             var order = await _repo.GetOrderByIdWithItemsAsyc(orderid);
 
@@ -241,7 +241,7 @@ namespace api.Controllers
         [HttpGet("remuneration/{OrderItemId}")]
         public async Task<ActionResult<RemunerationDto>> GetRemunerationofOrderItem (int OrderItemId)
         {
-            var remun = await _jdAndRemunRepo.GetRemuneratinOfOrderItem(OrderItemId);
+            var remun = await _jdAndRemunRepo.GetRemunerationDtoOfOrderItem(OrderItemId);
             if(remun == null) return NotFound("That Order Item does not have any Remuneration defined");
             return Ok(remun);
         }

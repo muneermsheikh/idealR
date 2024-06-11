@@ -1,0 +1,42 @@
+<div *ngIf="cv===null">
+    No candidate detail available
+</div>
+
+<div class="stdd row" style="margin-left: 75px; margin-top: 0px; margin-bottom: 0px;" *ngIf="cv!==null && cv!==undefined">
+
+     <input type="checkbox"
+          class="stdd form-check-input"
+          style="border-color: black ;"
+          [checked]="cv!.checked"
+          value="cv.id"
+          (change)="CVChecked(cv!)"
+     >
+     <!-- <div class="stdd fSmall w10">{{cv.id}}</div> -->
+     <div class="stdd fSmall w25 mx-1" style="text-align: center;">{{cv.gender}}</div>
+    
+     <div class="stdd fSmall w50 mx-1" title="click to edit" mouseover="style.cursor = 'pointer'" 
+          style="margin-left: 10px;" routerLink="/candidates/edit/{{cv.candidateId}}">{{cv.applicationNo}}</div>
+     
+     <div class="stdd fSmall w130 mx-1" routerLink = "/candidate/historyfromcvid/{{cv.candidateId}}" 
+          title="contact history of the candidate" >{{cv.fullName}}</div> 
+
+     <div class="stdd fSmall mx-1 w100">{{cv.city}}</div>
+     <div class="stdd fSmaller mx-1 w300" >{{cv.orderCategoryRef}}</div>
+     <div class="stdd fSmall mx-1 w100" >{{cv.assessedOn | date: 'dd-MMM-yy'}}</div>
+     <div class="stdd fSmall w50 mx-1 blue cursorpointer" style="text-align: center;" (click)="displayAssessment()" >{{cv.gradeAssessed}}</div>
+     
+     <div class="stdd mx-1 fSmall w200 mx-1" style="border:aqua" >
+          <span style="white-space: normal;" *ngFor="let item of cv.userProfessions">
+               {{item.professionName}} , 
+               <div style="display: inline-block" *ngIf="cv.userProfessions.length>1"></div> 
+          </span>
+     </div> 
+     
+     
+     <button (click)="download(cv.candidateId)" type="button" 
+          class="btn btn-outline-secondary fa fa-regular fa-download w40" type="button" 
+          title="download the CV">
+     </button>
+     
+</div>
+

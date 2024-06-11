@@ -10,6 +10,7 @@ namespace api.Interfaces
     {
          
          Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams);
+         Task<PagedList<cvsAvailableDto>> GetAvailableCandidates(CandidateParams candidateParams);
          Task<CandidateBriefDto> GetCandidateBriefFromParams(CandidateParams candParams);
          Task<Candidate> GetCandidate(CandidateParams candidateParams);
          Task<Candidate> GetCandidateById(int candidateid);

@@ -73,7 +73,7 @@ namespace api.Controllers
         }
 
         [HttpPut("checklisthr")]
-        public async Task<ActionResult<string>> EditChecklistHR (ChecklistHR checklistHR)
+        public async Task<ActionResult<string>> EditChecklistHR (ChecklistHRDto checklistHR)
         {
             var errorList = await _repo.EditChecklistHR(checklistHR, User.GetUsername());
 

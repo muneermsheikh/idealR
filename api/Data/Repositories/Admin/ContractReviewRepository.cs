@@ -1,4 +1,5 @@
 using api.Data.Migrations;
+using api.DTOs.Admin;
 using api.DTOs.Order;
 using api.Entities.Admin.Order;
 using api.Extensions;
@@ -7,6 +8,7 @@ using api.Interfaces.Admin;
 using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Admin
@@ -192,21 +194,21 @@ namespace api.Data.Repositories.Admin
           }
 
           //returns the object, without inserting in DB
-          public async Task<ContractReview> GenerateContractReviewObject(int orderId, string Username)
+          public async Task<ContractReview> GetOrGenerateContractReview(int orderId, string Username)
           {
                //check if Remuneration for all the order items exist
                var itemIds = await _context.OrderItems.Where(x => x.OrderId == orderId).Select(x => x.Id).ToListAsync();
                
-               if (itemIds.Count == 0) throw new Exception("Order Items not created");
+               if (itemIds.Count == 0) return null;    //throw new Exception("Order Items not created");
 
                var orderitems = await _context.OrderItems.Where(x => itemIds.Contains(x.Id))
                     .Include(x => x.Remuneration)
                     .ToListAsync();
-               if (orderitems == null || orderitems.Count == 0) throw new Exception("Remunerations need to be defined for all the items before the contract review");
+               if (orderitems == null || orderitems.Count == 0) return null;    // throw new Exception("Remunerations need to be defined for all the items before the contract review");
 
                //check if the object exists
                var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderId).Include(x => x.ContractReviewItems).FirstOrDefaultAsync();
-               if (contractReview != null) throw new System.Exception("Contract Review Object already exists");
+               if (contractReview != null) return contractReview;     //throw new System.Exception("Contract Review Object already exists");
 
                var order = await _context.Orders.Where(x => x.Id == orderId)
                     .Include(x => x.OrderItems).FirstOrDefaultAsync();
@@ -248,7 +250,9 @@ namespace api.Data.Repositories.Admin
                     ContractReviewItems = contractReviewItems
                };
 
-               return contractReview;
+               _context.Entry(contractReview).State = EntityState.Added;
+
+               return await _context.SaveChangesAsync() > 0 ? contractReview : null;
           }
 
           public  ICollection<int> ConvertCSVToAray(string csv) {
@@ -336,10 +340,38 @@ namespace api.Data.Repositories.Admin
                return true;
           }
 
-          public async Task<ContractReviewItem> GetContractReviewItem(int orderItemId)
+          public async Task<ContractReviewItemDto> GetContractReviewItem(int orderItemId, string username)
           {
-               return await _context.ContractReviewItems
-                    .Where(x => x.OrderItemId == orderItemId).FirstOrDefaultAsync();
+               var rvwItem = await _context.ContractReviewItems.Include(x => x.ContractReviewItemQs)
+                    .Where(x => x.OrderItemId == orderItemId)
+                    .FirstOrDefaultAsync();
+               if (rvwItem == null) {
+                    //check if contractreviewObj exists
+                    var orderitem = await _context.OrderItems.FindAsync(orderItemId);
+                    if(orderitem==null) return null;
+                    var contractreview = await GetOrGenerateContractReview(orderitem.OrderId, username);
+
+               }
+
+               var query = await (from item in _context.OrderItems where item.Id == orderItemId 
+                    join order in _context.Orders on item.OrderId equals order.Id
+                    select new {
+                         CustomerName=order.Customer.CustomerName,
+                         OrderDate = order.OrderDate, OrderId=order.Id,
+                         OrderNo = order.OrderNo, Quantity = item.Quantity,
+                         SrNo=item.SrNo, ProfessionName= item.Profession.ProfessionName
+                    }).FirstOrDefaultAsync();
+               
+               var dto = new ContractReviewItemDto{
+                    ProfessionName = query.ProfessionName, Charges=rvwItem.Charges,
+                    ContractReviewId=rvwItem.ContractReviewId, ContractReviewItemQs = rvwItem.ContractReviewItemQs,
+                    CustomerName=query.CustomerName, Ecnr = rvwItem.Ecnr, Id=rvwItem.Id, OrderDate=query.OrderDate,
+                    OrderId = query.OrderId, OrderNo = query.OrderNo, Quantity=rvwItem.Quantity,
+                    OrderItemId=orderItemId, RequireAssess=rvwItem.RequireAssess, ReviewItemStatus=rvwItem.ReviewItemStatus,
+                    SourceFrom=rvwItem.SourceFrom, SrNo=query.SrNo
+               };
+
+              return dto;
           }
 
           public async Task<ICollection<ContractReviewItem>> GetContractReviewItems(int orderid)
@@ -351,16 +383,92 @@ namespace api.Data.Repositories.Admin
                return query;
           }
 
-        public async Task<bool> UpdateContractReviewItem(ContractReviewItem contractReviewItem)
+        public async Task<ContractReviewItem> AddContractReviewItem(int orderitemid)
         {
-               var obj = await _context.ContractReviewItems.Where(x => x.Id == contractReviewItem.Id)
-                    .AsNoTracking().FirstOrDefaultAsync();
+               var contractreviewitem = await _context.ContractReviewItems.Include(x => x.ContractReviewItemQs)
+                    .Where(x => x.OrderItemId == orderitemid).FirstOrDefaultAsync();
 
-               if(obj == null) return false;
+               if (contractreviewitem != null) return contractreviewitem;
+            
+               var orderitem = await _context.OrderItems.FindAsync(orderitemid);
+               if(orderitem == null) return null;
 
-               _context.Entry(obj).CurrentValues.SetValues(contractReviewItem);
+               var contractreview = await _context.ContractReviews.Where(x => x.OrderId == orderitem.OrderId).FirstOrDefaultAsync(); 
+               if(contractreview == null) return null;
+
+               contractreviewitem = new ContractReviewItem{
+                    ContractReviewId = contractreview.Id, OrderItemId=orderitemid,
+                    ProfessionName=orderitem.Profession.ProfessionName, Quantity=orderitem.Quantity,
+                    RequireAssess="f", ReviewItemStatus="Not Reviewed", SourceFrom="India"
+               };
+
+               _context.Entry(contractreviewitem).State = EntityState.Added;
+
+               return await _context.SaveChangesAsync() > 0 ? contractreviewitem : null;
+            
+        }
+
+        public async Task<bool> EditContractReviewItem(ContractReviewItem model)
+        {
+             // thanks to @slauma of stackoverflow
+               var existingObj = await _context.ContractReviewItems
+               .Include(x => x.ContractReviewItemQs)
+               .Where(p => p.Id == model.Id)
+               .AsNoTracking()
+               .SingleOrDefaultAsync();
+
+               if (existingObj == null) throw new Exception("The Contract Review Item model does not exist");
+               if (existingObj.ContractReviewItemQs == null) throw new Exception("The Contract Review Items collection does not exist in the database");
+        
+               _context.Entry(existingObj).CurrentValues.SetValues(model);   //saves only the parent, not children
+
+               //Delete children that exist in existing record, but not in the new model order
+               foreach (var existingItem in existingObj.ContractReviewItemQs.ToList())
+               {
+                    if (!model.ContractReviewItemQs.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                    {
+                         _context.ContractReviewItemQs.Remove(existingItem);
+                         _context.Entry(existingItem).State = EntityState.Deleted;
+                    }
+               }
+
+               //children that are not deleted, are either updated or new ones to be added
+               foreach(var newItem in model.ContractReviewItemQs)
+               {
+                    var existingItem = existingObj.ContractReviewItemQs
+                         .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                    
+                    if(existingItem != null)    //update navigation record
+                    {
+                         _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                         _context.Entry(existingItem).State = EntityState.Modified;
+                    } else {    //insert new navigation record
+                         var itemToInsert = new ContractReviewItemQ
+                         {
+                              OrderItemId=newItem.OrderItemId, 
+                              ContractReviewItemId= newItem.ContractReviewItemId, 
+                              SrNo = newItem.SrNo, ReviewParameter = newItem.ReviewParameter,
+                              Response = newItem.Response, ResponseText = newItem.ResponseText, 
+                              IsResponseBoolean=newItem.IsResponseBoolean, 
+                              IsMandatoryTrue=newItem.IsMandatoryTrue, 
+                              Remarks=newItem.Remarks
+                         };
+
+                         existingObj.ContractReviewItemQs.Add(itemToInsert);
+                         _context.Entry(itemToInsert).State = EntityState.Added;
+                    }
+               }
+
+               _context.Entry(existingObj).State = EntityState.Modified;
+
+               try {
+                    await _context.SaveChangesAsync();
+               } catch (Exception ex) {
+                    throw new Exception(ex.Message, ex);
+               }
+
+               return true;
                
-               return await _context.SaveChangesAsync() > 0;
         }
 
     }

@@ -1,4 +1,5 @@
 using api.Data;
+using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
@@ -58,10 +59,24 @@ namespace api.Extensions
             return CustomerName;
         }
 
+        public async static Task<string> GetCategoryRefFromOrderItemId(this DataContext context, int orderItemId)
+        {
+            var CatRef = await (from Orders in context.Orders
+                join item in context.OrderItems on Orders.Id equals item.OrderId
+                    where item.Id == orderItemId
+                join cat in context.Professions on item.ProfessionId equals cat.Id
+                
+                select Orders.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName 
+            )
+            .FirstOrDefaultAsync();
+
+            return CatRef;
+        }
+
         public async static Task<string> GetHRExecUsernameFromOrderItemId(this DataContext context, int orderItemId)
         {
             var username = await context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
-                .Select(x => x.HRExecUsername).FirstOrDefaultAsync();
+                .Select(x => x.HrExecUsername).FirstOrDefaultAsync();
             
             return username ?? "";
         }
@@ -76,7 +91,7 @@ namespace api.Extensions
 
             return charges;
         }
-        public async static Task<bool> RequireAssessment(this DataContext context, int orderItemId)
+        public async static Task<string> RequireAssessment(this DataContext context, int orderItemId)
         {
             var assess = await (from rvw in context.ContractReviewItems
                 where rvw.OrderItemId==orderItemId
@@ -99,8 +114,52 @@ namespace api.Extensions
             var intList = new List<int> {obj.Id, obj.CustomerId};
             
             return intList;
+        }
+
+        public async static Task<string> GetCustomerIdAndNameFromOrderId(this DataContext context, int OrderId)
+        {
+            var obj = await context.Orders.Where(x => x.Id == OrderId)
+                .Select(x => x.CustomerId + "|" + x.Customer.CustomerName).FirstOrDefaultAsync();
+            
+            return obj;
+        }
+
+        public async static Task<string> GetProfessionNameFromOrderItemId(this DataContext context, int OrderItemId)
+        {
+            var obj = await (from item in context.OrderItems where item.Id == OrderItemId
+                join cat in context.Professions on item.ProfessionId equals cat.Id
+                select cat.ProfessionName).FirstOrDefaultAsync();
+            
+            return obj;
+        }
+
+        public async static Task<OrdIdProfNmCustNmCatRefDto> GetDetailsFromOrderItemId(this DataContext context, int OrderItemId, int CandidateId)
+        {
+            var obj = await (from item in context.OrderItems where item.Id == OrderItemId
+                join rvwitem in context.ContractReviewItems on item.Id equals rvwitem.OrderItemId
+                join cat in context.Professions on item.ProfessionId equals cat.Id
+                join ord in context.Orders on item.OrderId equals ord.Id
+                select new  OrdIdProfNmCustNmCatRefDto{ ProfessionName=cat.ProfessionName, 
+                    CategoryRef = ord.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
+                    CustomerName=ord.Customer.CustomerName}).FirstOrDefaultAsync();
+            
+            if(obj==null) return null;
+
+            var cand = await context.Candidates.Where(x => x.Id == CandidateId)
+                .Select(x => new {x.ApplicationNo, x.FullName}).FirstOrDefaultAsync();
+    
+            var dto = new OrdIdProfNmCustNmCatRefDto
+            {
+                OrderId = obj.OrderId, CategoryRef = obj.CategoryRef, CustomerName=obj.CustomerName, 
+                ProfessionName=obj.ProfessionName, ApplicationNo = (int)(cand?.ApplicationNo), 
+                CandidateName = cand?.FullName, HrExecUsername = obj.HrExecUsername
+            };
+
+            return dto;
 
         }
+
+
     }
     
 }

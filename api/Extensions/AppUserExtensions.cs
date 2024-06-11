@@ -22,7 +22,7 @@ namespace api.Extensions
                     KnownAs = official.KnownAs,
                     City = cityName,
                     UserName = official.UserName,
-                    Created = DateOnly.FromDateTime(DateTime.UtcNow),
+                    Created = DateTime.UtcNow,
                     Email = official.Email
                 };
                 
@@ -43,7 +43,7 @@ namespace api.Extensions
                     KnownAs = employee.KnownAs,
                     City = cityName,
                     UserName = employee.UserName,
-                    Created = DateOnly.FromDateTime(DateTime.UtcNow)
+                    Created = DateTime.UtcNow
                 };
                 await userManager.CreateAsync(off, "Pa$$w0rd");
                 await userManager.AddToRoleAsync(off, "Client");
@@ -62,7 +62,7 @@ namespace api.Extensions
                     KnownAs = candidate.KnownAs,
                     City = candidate.City,
                     UserName = candidate.UserName,
-                    Created = DateOnly.FromDateTime(DateTime.UtcNow)
+                    Created = DateTime.UtcNow
                 };
 
                 await userManager.CreateAsync(off, "Pa$$w0rd");

@@ -1,14 +1,17 @@
+using System.Data.Odbc;
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Errors;
 using api.Extensions;
+using api.Helpers;
 using api.Interfaces.Admin;
-using Microsoft.AspNetCore.Authorization;
+using api.Params.Orders;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "OrderForwardPolicy")]
+    //[Authorize(Policy = "OrderForwardPolicy")]
     public class OrderForwardController : BaseApiController
     {
         private readonly IOrderForwardRepository _orderFwdRepo;
@@ -19,11 +22,24 @@ namespace api.Controllers
             _orderFwdRepo = orderFwdRepo;
         }
 
-        [HttpGet("generateOrderFwdToAgent/{orderid}")]
+        [HttpGet("pagedlist")]
+        public async Task<ActionResult<PagedList<OrderForwardToAgentDto>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
+        {
+            var fwds = await _orderFwdRepo.GetPagedListOfOrderFwds(fParams);
+
+            if(fwds == null) return NotFound("No matching Order Forward records found");
+
+            Response.AddPaginationHeader(new PaginationHeader(fwds.CurrentPage, fwds.PageSize, 
+                fwds.TotalCount, fwds.TotalPages));
+            
+            return Ok(fwds);
+        }
+
+        [HttpGet("getOrGenerateOrderFwdToAgent/{orderid}")]
         public async Task<ActionResult<OrderForwardToAgent>> GenerateOrderForwardToAgents(int orderid)
         {
             
-            var obj = await _orderFwdRepo.GenerateOrderForwardObjForAgentByOrderId(orderid);
+            var obj = await _orderFwdRepo.GenerateOrderForwardToAgent(orderid);
             
             if(obj != null) return Ok(obj);
             
@@ -40,19 +56,7 @@ namespace api.Controllers
             return BadRequest(new ApiException(404, "Failed to generate the Order Forward object for HR Dept"));
         }
 
-
-
-        [HttpPost]
-        public async Task<ActionResult<string>> UpdateOrderForwardedToAgents(OrderForwardToAgent orderforward)
-        {
-            
-            var errorString = await _orderFwdRepo.UpdateOrderForwardedToAgents(orderforward );
-            if(string.IsNullOrEmpty(errorString)) return Ok();
-            
-            return BadRequest(new ApiException(404, "Failed to forward Order to Associates", errorString));
-        }
-
-        [HttpPost("updateOrderFwdToHR")]
+        [HttpPost("insertOrderFwdToHR")]
         public async Task<ActionResult<string>> UpdateOrderForwardedToHR(OrderForwardToHR orderFwdHR)
         {
             var errorString = await _orderFwdRepo.UpdateForwardOrderToHR(orderFwdHR, User.GetUsername());
@@ -61,13 +65,23 @@ namespace api.Controllers
             return BadRequest(new ApiException(404, "Failed to forward Order to HR Dept", errorString));
         }
 
-        [HttpPost("updateOrderFwdToAgent")]
-        public async Task<ActionResult<string>> UpdateOrderForwardedToAgent(OrderForwardToAgent orderFwd)
+        [HttpPut("updateOrderFwdToAgent")]
+        public async Task<ActionResult<string>> UpdateOrderForwardedToAgent(OrderForwardToAgent fwd)
         {
-            var errorString = await _orderFwdRepo.UpdateOrderForwardedToAgents(orderFwd);
+            var errorString = await _orderFwdRepo.UpdateOrderForwardedToAgents (fwd, User.GetUsername());
+            
             if(string.IsNullOrEmpty(errorString)) return Ok();
             
-            return BadRequest(new ApiException(404, "Failed to forward Order to HR Dept", errorString));
+            return BadRequest(new ApiException(404, "Failed to forward Order to Associates", errorString));
+        }
+
+        [HttpPost("insertOrderFwdToAgent")]
+        public async Task<ActionResult<string>> InsertOrderForwardedToAgent(OrderForwardToAgent orderFwd)
+        {
+            var errorString = await _orderFwdRepo.InsertOrderForwardedToAgents(orderFwd, User.GetUsername());
+            if(string.IsNullOrEmpty(errorString)) return Ok();
+            
+            return BadRequest(new ApiException(404, "Failed to forward Order to selected Associates", errorString));
         }
 
       
@@ -91,5 +105,23 @@ namespace api.Controllers
             return Ok(forwarded);
         }
             
+        [HttpDelete("deleteOrderFwd/{orderid}")]
+        public async Task<ActionResult<bool>> DeleteOrderForward(int orderid) {
+            var succeeded = await _orderFwdRepo.DeleteOrderForward(orderid);
+            return succeeded;
+        }
+
+        [HttpDelete("deleteOrderFwdCategory/{orderitemid}")]
+        public async Task<ActionResult<bool>> DeleteOrderForwardCategory(int orderitemid) {
+            var succeeded = await _orderFwdRepo.DeleteOrderForwardCategory(orderitemid);
+            return succeeded;
+        }
+
+        [HttpDelete("deleteOrderFwdCatOfficial/{catofficialid}")]
+        public async Task<ActionResult<bool>> DeleteOrderForwardCategoryOfficial(int catofficialid) {
+            var succeeded = await _orderFwdRepo.DeleteOrderForwardCategoryOfficial(catofficialid);
+            return succeeded;
+        }
+
     }
 }

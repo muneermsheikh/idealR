@@ -4,7 +4,7 @@ namespace api.Params.Admin
     {
         public int TaskId { get; set; }
         public string TaskType { get; set; }
-        public DateOnly TaskDate { get; set; }
+        public DateTime TaskDate { get; set; }
         public int candidateId { get; set; }
         public int ApplicationNo { get; set; }
         public string ResumeId { get; set; }   

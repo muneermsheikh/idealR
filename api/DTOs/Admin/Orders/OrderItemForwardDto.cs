@@ -7,7 +7,7 @@ namespace api.DTOs.Admin.Orders
          public bool AssessmentQDesigned { get; set; }
          public int OrderId { get; set; }
          public int OrderNo { get; set; }
-         public DateOnly OrderDate { get; set; }
+         public DateTime OrderDate { get; set; }
          public string CustomerName { get; set; }
          public string AboutEmployer { get; set; }
          public int ProfessionId { get; set; }

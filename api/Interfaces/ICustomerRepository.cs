@@ -22,5 +22,8 @@ namespace api.Interfaces
          
          Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official);
          Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official);
+
+         Task<ICollection<OfficialAndCustomerNameDto>> GetOfficialsAndCustomerNames(string customerType);
+
     }
 }

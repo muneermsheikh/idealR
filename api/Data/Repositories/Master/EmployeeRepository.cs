@@ -170,7 +170,7 @@ namespace api.Data.Repositories.Master
 
         public async Task<ICollection<EmployeeIdAndKnownAsDto>> GetEmployeeIdAndKnownAs()
         {
-            return await _context.Employees.Where(x => x.Status.ToLower() == "active")
+            return await _context.Employees.Where(x => x.Status.ToLower() == "employed")
                 .Select(x => new EmployeeIdAndKnownAsDto {
                     Id = x.Id, KnownAs = x.KnownAs
                 }).OrderBy(x => x.KnownAs).ToListAsync();

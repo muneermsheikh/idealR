@@ -15,12 +15,13 @@ namespace api.Interfaces.HR
         Task<bool> DeleteCandidateAssessment(int id);
         Task<bool> DeleteCandidateAssessmentItem(int id);
         Task<PagedList<CandidateAssessedDto>> GetCandidateAssessments(CandidateAssessmentParams assessmentParams);
-        Task<ICollection<CandidateAssessedDto>> GetCandidateAssessmentsByCandidateId(int candidateId);
+        Task<ICollection<CandidateAssessedShortDto>> GetCandidateAssessmentsByCandidateId(int candidateId);
         
         Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessmentParams);
+        Task<CandidateAssessmentAndChecklistDto> GetCandidateAssessmentById(int candidateAssessmentId, string username);
         Task<CandidateAssessment> GetCandidateAssessmentWithItems(CandidateAssessmentParams assessmentParams);
         Task<bool> AddCandidateAssessmentItems(int candidateAssessmentId);
         Task<string> UpdateCandidateAssessmentStatus(int candidateAssessmentId, string username);
-        
+        Task<CandidateAssessmentDto> GetCandidateAssessmentDtoWithItems(int candidateid, int orderitemid);
     }
 }

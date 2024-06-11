@@ -8,6 +8,6 @@ namespace api.DTOs.Admin.Orders
         public int ProfessionId { get; set; }
         public string ProfessionName { get; set; }
         public int Charges { get; set; }
-        public ICollection<AssociatesOrderForwardedToDto> OfficialsDto { get; set; }
+        public ICollection<OrderForwardToOfficialDto> OfficialsDto { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using api.DTOs.Orders;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Extensions;
@@ -72,8 +73,7 @@ namespace api.Data.Repositories
                 .SingleOrDefault();
             
             if (existingObject == null) return false;
-
-            
+ 
             _context.Entry(existingObject).CurrentValues.SetValues(newObject);
 
             //delete records in existingObject that are not present in new object
@@ -251,24 +251,46 @@ namespace api.Data.Repositories
             return newAssessment;
         }
 
-        public async Task<ICollection<AssessmentQStdd>> GetAssessmentQStdds()
+        public async Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQStdds()
         {
-            return await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
+            var qs = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
+            
+            var mapped = _mapper.Map<ICollection<OrderAssessmentItemQ>>(qs);
+
+            return mapped;
+            
         }
 
+        public async Task<ICollection<OrderAssessmentItemQ>> GetCustomAssessmentQsForAProfession(int professionid)
+        {
+            var qs = await _context.AssessmentQBanks
+                .Include(x => x.AssessmentStddQs.OrderBy(x => x.QNo))
+                .Where(x => x.ProfessionId == professionid)
+                .Select(x => x.AssessmentStddQs)
+                .ToListAsync();
+
+            var mapped = _mapper.Map<ICollection<OrderAssessmentItemQ>>(qs);
+
+            return mapped;
+            
+        }
         public async Task<OrderAssessment> GetOrderAssessment(int orderId)
         {
-            return await _context.OrderAssessments
-                .Include(x => x.OrderAssessmentItems)
-                .ThenInclude(x => x.OrderAssessmentItemQs)
+            var assessment = await _context.OrderAssessments
+                .Include(x => x.OrderAssessmentItems.OrderBy(x => x.OrderItemId))
+                .ThenInclude(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
                 .Where(x => x.OrderId == orderId)
                 .FirstOrDefaultAsync();
+            
+            return assessment;
         }
     
         public async Task<OrderAssessmentItem> GetOrderAssessmentItem(int orderItemId)
         {
+                
             var assessmt = await _context.OrderAssessmentItems
-                .Include(x => x.OrderAssessmentItemQs)
+
+                .Include(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
                 .Where(x => x.OrderItemId == orderItemId)
                 .FirstOrDefaultAsync();
             

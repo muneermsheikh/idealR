@@ -6,9 +6,10 @@ export class createSelDecisionDto
 	cVRefId: number=0;
 	decisionDate: Date=new Date();
 	selectionStatus: string='';
-	rejectionReason: string = '';
 	remarks: string='';
 }
+
+
 
 export class selDecisionsToAddParams
 {

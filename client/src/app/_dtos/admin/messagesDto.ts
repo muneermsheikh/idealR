@@ -1,4 +1,5 @@
-import { IMessage } from "../../models/admin/message";
+import { IMessage } from "src/app/_models/admin/message";
+
 
 export interface IMessagesDto
 {

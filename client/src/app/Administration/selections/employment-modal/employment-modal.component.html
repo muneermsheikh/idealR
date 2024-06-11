@@ -1,0 +1,110 @@
+<div class="modal-header my-0" *ngIf="emp" >
+    Employment details of:
+    <label for="applicationNo" class="stdd w100 b">App No:</label> 
+        <div class="stdd w75" >{{emp.applicationNo}}</div>
+    <label for="candidateName" class="stdd w100 ml-5 b">Candidate: </label> 
+        <div class="stdd w150" >{{emp.candidateName}}</div>
+</div>
+<div class="modal-body my-0">
+    <form [formGroup]="form">
+        <div *ngIf="emp !== undefined">
+
+            <input type="checkbox" style="margin-left: 25px;"
+                class="stdd form-check-input w20 hAlignCenter"
+                formControlName="offerAccepted"
+            >
+
+            <div class="stdd w110">
+                <app-date-picker [maxDate]="maxDate" formControlName="offerAcceptedOn" 
+                [label]="'Accepted On'"></app-date-picker>
+           </div>
+            <label for="orderNo" class="stdd b w100"></label> 
+                <div class="stdd w75" >{{emp.orderNo}}</div>
+            <label for="customerName" class="stdd w100 b"></label> 
+                <div class="stdd w150">{{emp.customerName}}</div>
+            <div class="stdd pull-right">
+                <button class="btn fa fa-checkmark" (click)="offerAccepted()" ></button>
+                <button class="btn fa fa-crossmark" (click)="offerRejected()"></button>
+            </div>
+            <br>
+            
+            <label for="categoryName" class="stdd w100 b"></label> 
+            <div class="stdd w150" >{{emp.categoryName}}</div>
+            <br> <label for="selectedOn" class="stdd w100 b">Selected On:</label> 
+            <input class="stdd w150"
+                type="text"
+                placeholder="Date"
+                formControlName="selectedOn"
+                bsDatepicker
+                [bsValue]="bsValueDate"
+                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+            >
+        
+            <button class="btn pull-right bordernone fa fa-close" title="Close" (click)="close()" ></button>
+            <hr style="border: double; margin-top:2px; margin-bottom: 2px;">
+        
+            <label  class="stdd w150 b">Remuneration</label> 
+            <br>
+            <label class="stdd w150 b">Salary Currency</label> 
+                <input type="text" class="stdd w100 ml-10" title="salary currency" 
+                    formControlName="salaryCurrency">
+            <label class="stdd w150 b">Salary</label> 
+                <input type="text" class="stdd 100" title="salary currency" 
+                    formControlName="salary">
+            
+            <hr style="border: double;">
+            <label class="stdd w150 b">Perks</label> 
+            <label class="stdd w150 b">Allowance</label> 
+            <label class="stdd w100 b">Provided<br>Free</label> 
+            <label class="stdd w100 b">Not<br>Provided</label> 
+            
+            
+            <label for="housingAllowance" class="stdd w150" >Housing</label>
+            <input type="text" class="stdd w150"  
+                title="housing allowance" formControlName="housingAllowance">
+            <input type="checkbox" style="margin-left: 25px;"
+                class="form-check-input w20 hAlignCenter"
+                formControlName="housingProvidedFree"
+            >
+            <input type="checkbox" class="form-check-input w20 hAlignCenter"
+                formControlName="housingNotProvided"
+            >
+        
+            <label for="housingAllowance" class="stdd w150" >Food</label>
+            <input type="text" class="stdd w150"  
+                title="Food Allowance" formControlName="foodllowance">
+            <input type="checkbox" style="margin-left: 25px;"
+                class="form-check-input w20 hAlignCenter"
+                formControlName="foodProvidedFree"
+            >
+            <input type="checkbox" class="form-check-input w20 hAlignCenter"
+                formControlName="foodNotProvided"
+            >
+        
+            <br><label for="Transportation" class="stdd w150" >Transportation</label>
+            <input type="text" class="stdd 100"  
+                title="Transportation allowance" formControlName="transportAllowance">
+            
+            <input type="checkbox" class="form-check-input stdd hAlignCenter"
+                formControlName="transportProvidedFree"
+            >
+            
+            <input type="checkbox" class="form-check-input stdd hAlignCenter"
+                formControlName="transportNotProvided"
+            >
+            
+            <br><label for="otherAllowance" class="stdd w150" >Other Allowance</label>
+            <input type="text" class="stdd 100" style="margin-left: 300px;" 
+                title="Other allowance" formControlName="otherAllowance">
+        
+            <div class="mx-1" style="display: inline-block; width: 200px;">
+                 <button class="w35 bordernone fa fa-pencil" style="margin-left: 50x;"
+                    title="edit emp data"    (click)="updateEmployment()" ></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer my-0">
+
+</div>

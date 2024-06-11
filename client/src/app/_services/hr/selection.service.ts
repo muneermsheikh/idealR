@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
@@ -9,8 +9,7 @@ import { Pagination } from 'src/app/_models/pagination';
 import { AccountService } from '../account.service';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { getPaginatedResult, getPaginationHeadersSelectionParams} from '../paginationHelper';
-import { createSelDecisionDto, selDecisionsToAddParams } from 'src/app/_dtos/admin/createSelDecisionDto';
-import { ISelectionMsgsAndEmploymentsDto } from 'src/app/_dtos/admin/selectionMsgsAndEmploymentsDto';
+import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
@@ -32,23 +31,20 @@ export class SelectionService {
   cache = new Map();
   cacheSel = new Map();
 
-  constructor(private activatedRoute: ActivatedRoute,
-      private http: HttpClient, 
+  constructor(private http: HttpClient, 
       private accountService: AccountService) {
-        this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
-          this.user = user!;
-        })
+    this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
+      this.user = user!;
+    })
   }
 
   setParams(params: SelDecisionParams) {
     this.sParams = params;
    }
 
-   getParams(): SelDecisionParams {
+  getParams(): SelDecisionParams {
      return this.sParams;
-   }
-
- 
+  }
 
   getPendingSelections(oParams: SelDecisionParams) {   //: Observable<IPagination<ISelPendingDto[]>> {
 
@@ -56,8 +52,8 @@ export class SelectionService {
     if(response) return of(response);
 
     let params = getPaginationHeadersSelectionParams(oParams);
-    
-    return getPaginatedResult<ISelPendingDto[]>(this.apiUrl + 'selection/pendingselections', params, this.http).pipe(
+
+    return getPaginatedResult<ISelPendingDto[]>(this.apiUrl + 'CVRef/cvsreferred', params, this.http).pipe(
       map(response => {
         this.cache.set(Object.values(oParams).join('-'), response);
         return response;
@@ -67,11 +63,11 @@ export class SelectionService {
   }
 
 
-  registerSelectionDecisions(selDecisions: createSelDecisionDto) {
-    return this.http.post<boolean>(this.apiUrl + 'Selection', selDecisions);
+  registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
+    return this.http.post<number[]>(this.apiUrl + 'Selection', selDecisions);
   }
 
-  getSelectionDecisions(sParams: SelDecisionParams)
+  getSelectionRecords(sParams: SelDecisionParams)
   {
     const response = this.cacheSel.get(Object.values(sParams).join('-'));
     if(response) return of(response);
@@ -92,7 +88,6 @@ export class SelectionService {
   }
 
   deleteSelectionDecision(id: number) {
-    
     return this.http.delete<boolean>(this.apiUrl + 'selection/' + id);
   }
 
@@ -122,6 +117,8 @@ export class SelectionService {
     return this.http.put<boolean>(this.apiUrl + 'selection/offeraccepted', acceptedDto);
   }
 
-  
+  getSelectionBySelDecisionId(selDecisionId: any) {
+    return this.http.get<ISelectionDecision>(this.apiUrl + 'selection/selectionBySelDecisionId/' + selDecisionId);
+  }
 
 }

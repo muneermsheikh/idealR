@@ -10,6 +10,10 @@ export interface IContractReview{
      reviewedBy?: number;
      reviewedOn: Date;
      rvwStatusId: number;          //enumReviewStatus
+     medicalProcessInchargeUsername: string;
+     visaProcessInchargeUsername: string;
+     emigProcessInchargeUsername: string;
+     travelProcessInchargeUsername: string;
      releasedForProduction: boolean;
      contractReviewItems: IContractReviewItem[];
 }

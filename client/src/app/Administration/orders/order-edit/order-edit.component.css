@@ -1,0 +1,110 @@
+.stdd {
+    display: inline-block !important;
+    vertical-align: top;
+    margin-left: 3px;
+    margin-right:3px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+   font-size: smaller;
+}
+
+label{display: inline-block;}
+
+.dropdown {
+ display: inline-block !important;
+ vertical-align: top;
+ margin: 1px;
+}
+
+.cursorpointer {cursor: pointer; color: darkblue; font-weight: bold;}
+
+.pullright {text-align: right;}
+
+.ml80 {margin-left: 80px;
+}
+
+.lbl {
+    display: inline-block !important;
+    font-size: small;
+    font-weight: bold;
+    margin-left: 2px;
+    margin-right:2px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.chk {
+  display: inline-block !important;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.tAlignLeft {text-align: left;}
+.tAlignRight {text-align: right;}
+
+.vAlignMiddle {vertical-align: middle !important;}
+.vAlignTop {vertical-align: top;}
+.fontSmall {font-size: small;}
+.fontSmaller {font-size: smaller;}
+
+
+.w10 {width: 10px;}
+.w20 {width: 20px;}
+.w30 {width: 30px;}
+.w35 {width: 35px;}
+.w40 {width: 40px;}
+.w50 {width: 50px;}
+.w65 {width: 65px;}
+.w75 {width: 75px;}
+.w80 {width: 80px;}
+.w90 {width: 90px;}
+.w100 {width: 100px;}
+.w110 {width: 110px;}
+.w125 {width: 125px;}
+.w115 {width: 115px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w175 {width: 175px;}
+.w200 {width: 200px;}
+.w225 {width: 225px;}
+.w240 {width: 240px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}
+.w400 {width: 400px;}
+.w500 {width: 500px;}
+
+.b {font-weight: bold;}
+
+.alignR {float: right;}
+
+.blue {color: blue;}
+.black {color: black;}
+.red {color: red;}
+.green {color: green}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+  
+  /* Tooltip text */
+  .tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%; /* To the right of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  
+  

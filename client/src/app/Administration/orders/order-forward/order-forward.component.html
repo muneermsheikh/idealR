@@ -1,0 +1,81 @@
+<form class="mt-5" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <label class="stdd w150 b">Customer Name</label> 
+    <div class="stdd w250 mx-2 blue">{{orderFwd?.customerName}}</div>
+    <label class="stdd w100 b">Order No</label> 
+    <div class="stdd w755 mx-2 blue">{{orderFwd?.orderNo}}</div>
+    <label class="stdd w125 b">Order Dated</label> 
+    <div class="stdd w125 mx-2">{{orderFwd?.orderDate | date: 'dd-MMM-yy'}}</div>
+
+    <button class="btn fa-success fa fa-save fa-2x green" title="Save this form" type="submit"></button>
+    <button class="btn fa-primary fa fa-undo fa-2x" title="Close this form" type="button" (click)="close()"></button>
+    <button class="btn fa-primary fa fa-trash red pull-right" title="Delete this Order Forard" type="button" (click)="removeForward()"></button>
+
+    <hr style="border: double; color: darkblue; margin: 0px; padding: 0px;">
+    	
+    <div formArrayName="orderForwardCategories">
+        <label class="stdd b w250">Category</label>
+        <label class="stdd b w100 mx-2">Charges</label>
+        <button class="btn btn-primary stdd fa fa-plus" title="add a category" (click)="addCategory()"></button>
+        <br style="margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;">
+        
+        <div *ngFor="let category of orderForwardCategories().controls; let bi=index">
+            <div [formGroupName]="bi" >
+                <div class="stdd w250">
+                    <app-text-input [label]="'Category'" readonly formControlName="professionName"></app-text-input>
+                </div>
+                <div class="stdd mx-2 w100">
+                    <app-text-input [label]="'Charges'" formControlName="charges"></app-text-input>
+                </div>
+                <!-- <button class="stdd mx-5 fa fa-trash red" title="remove this category" (click)="removeCategory(bi)"></button> -->
+                
+                <div formArrayName="orderForwardCategoryOfficials" style="margin: 0px; padding: 0px; ">
+                    <label class="stdd mL355 w110 b">Date Forwarded</label>
+                    <label class="stdd mx-2 w300 b">Agent</label>
+                    <label class="stdd b mx-2 w250">Official Name</label>
+                    <button type="button" class="stdd mx-20 fa fa-plus" (click)="addOfficial(bi)"></button>
+
+                    <div *ngFor="let official of orderForwardCategoryOfficials(bi).controls; let si=index">
+                        <div [formGroupName]="si" style="margin-left: 355px;">
+                            <input 
+                                bsDatepicker  
+                                style="display:inline-block; width: 100px; font-size: small;"
+                                class="mx-2"
+                                [bsValue]="bsValueDate" 
+                                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                                type="text" 
+                                placeholder="Forwarded On" 
+                                formControlName="dateTimeForwarded"
+                            >
+                            <ng-select 
+                                    style="display: inline-block;  font-size: small; width: 300px;"
+                                    [items]="customers"
+                                    bindLabel="officialName"
+                                    bindValue="id"
+                                    labelForId="customerId"
+                                    clearAllText="Clear"
+                                    formControlName="customerOfficialId"
+                                    (change)="officialClicked($event, bi, si)"
+                            ></ng-select>
+
+                            <!-- <div class="stdd mx-2 w300">
+                                <app-text-input [label]="'Agent Name'" formControlName="agentName"></app-text-input>
+                            </div> -->
+                            <div class="stdd mx-2 w250">
+                                <app-text-input [label]="'Official Name'" formControlName="officialName" style="font-size: small;"></app-text-input>
+                            </div>
+                            <button class="btn fa fa-sm fa-trash red" (click)="removeOfficial(bi,si)"></button>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-bottom: blue; border-bottom-style:solid; border-width: 2px ; color: darkblue; margin: 0px; padding: 0px;">
+            </div>
+        </div>
+    </div>
+    
+	 
+</form>
+
+<div class="ml-5" style="font-size: smaller">
+	{{this.form.value | json}}
+</div>

@@ -73,7 +73,8 @@ namespace api.Data
         public DbSet<Candidate> Candidates{get; set;}
         public DbSet<UserAttachment> UserAttachments{get; set;}
         public DbSet<CandidateAssessment> CandidateAssessments{get; set;}
-        public DbSet<CandidateAssessmentItem> CandidatesItemAssessments{get;}
+        //public DbSet<CandidateAssessmentItem> CandidatesItemAssessments{get;}
+        public DbSet<CandidateAssessmentItem> CandidatesAssessmentItems{get;}
         public DbSet<ChecklistHR> ChecklistHRs {get; set;}
         public DbSet<ChecklistHRItem> ChecklistHRItems{get;}
         public DbSet<CVRef> CVRefs {get; set;}
@@ -246,13 +247,11 @@ namespace api.Data
                 .OnDelete(DeleteBehavior.Cascade);
             
             builder.Entity<OrderForwardToAgent>().HasIndex(x => x.OrderId).IsUnique();
-            
-            builder.Entity<OrderForwardCategory>()
-                .HasIndex(x => x.OrderItemId).IsUnique();
-            
-            builder.Entity<OrderForwardCategoryOfficial>()
-                .HasIndex(x => new {x.OrderForwardCategoryId, 
-                    x.DateOnlyForwarded, x.CustomerOfficialId}).IsUnique();
+            builder.Entity<OrderForwardToAgent>().HasMany(x => x.OrderForwardCategories).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<OrderForwardCategory>().HasMany(x => x.OrderForwardCategoryOfficials).WithOne().OnDelete(DeleteBehavior.Cascade);    
+            builder.Entity<OrderForwardCategory>().HasIndex(x => x.OrderItemId).IsUnique();
+            builder.Entity<OrderForwardCategoryOfficial>().HasIndex(x => new {x.OrderForwardCategoryId, 
+                    x.DateForwarded, x.CustomerOfficialId}).IsUnique();
             
             builder.Entity<Help>().HasMany(x => x.HelpItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Help>().HasIndex(x => x.Topic).IsUnique();

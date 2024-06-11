@@ -11,10 +11,13 @@ export interface IEmployment
 	contractPeriodInMonths: number;
 	weeklyHours: number;
 	housingProvidedFree: boolean;
+	housingNotProvided: boolean;
 	housingAllowance: number;
 	foodProvidedFree: boolean;
+	foodNotProvided: boolean;
 	foodAllowance: number;
 	transportProvidedFree: boolean;
+	transportNotProvided: boolean;
 	transportAllowance: number;
 	otherAllowance: number;
 	leavePerYearInDays: number;

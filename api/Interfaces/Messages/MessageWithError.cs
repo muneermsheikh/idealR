@@ -8,7 +8,7 @@ namespace api.Interfaces.Messages
         {
         }
 
-
+        public ICollection<int> CVRefIdsInserted { get; set; }
         public List<Message> Messages { get; set; }
         public string ErrorString { get; set; }
         public string Notification { get; set; }

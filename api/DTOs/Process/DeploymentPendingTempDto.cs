@@ -10,13 +10,13 @@ namespace api.DTOs.Process
         public string CustomerName { get; set; }
         public int OrderNo { get; set; }
         public int OrderItemId { get; set; }
-        public DateOnly OrderDate { get; set; }
+        public DateTime OrderDate { get; set; }
         public string CategoryName { get; set; }
-        public DateOnly SelectedOn {get; set;}
+        public DateTime SelectedOn {get; set;}
         public string   CurrentSeqName { get; set; }
-        public DateOnly CurrentSeqDate { get; set; }
+        public DateTime CurrentSeqDate { get; set; }
         public string NextSeqName { get; set; }
-        public DateOnly NextStageDate { get; set; }
+        public DateTime NextStageDate { get; set; }
         public int DaysSinceLastSequence { get; set; }
         public int DepId { get; set; }
 

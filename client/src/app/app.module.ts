@@ -21,22 +21,17 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { RegisterComponent } from './register/register.component';
 import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
-import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
 import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
 import { IdsModalComponent } from './modals/ids-modal/ids-modal.component';
-import { ProfileListComponent } from './profiles/profile-list/profile-list.component';
-import { ProfileItemComponent } from './profiles/profile-item/profile-item.component';
-import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit.component';
 import { HelpModalComponent } from './modals/help-modal/help-modal.component';
 import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
 import { CandidateAssessmentComponent } from './hr/candidate-assessment/candidate-assessment.component';
-import { ChecklistModalComponent } from './profiles/checklist-modal/checklist-modal.component';
 import { CandidateAssessComponent } from './hr/candidate-assess/candidate-assess.component';
-import { ChecklistrModalComponent } from './profiles/checklistr-modal/checklistr-modal.component';
+import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 
 
 @NgModule({
@@ -54,23 +49,20 @@ import { ChecklistrModalComponent } from './profiles/checklistr-modal/checklistr
     MemberEditComponent,
     RegisterComponent,
     MemberLikedListComponent,
-    AdminPanelComponent,
     HasRoleDirective,
     UserManagementComponent,
     PhotoManagementComponent,
     RolesModalComponent,
     ConfirmDialogComponent,
     IdsModalComponent,
-    ProfileListComponent,
-    ProfileItemComponent,
-    CandidateEditComponent,
+   
     HelpModalComponent,
     CvAssessComponent,
     CandidateAssessmentComponent,
-    ChecklistModalComponent,
+   
     CandidateAssessComponent,
-    ChecklistrModalComponent
-
+         CvAssessModalComponent,
+    
   ],
   imports: [
     BrowserModule,

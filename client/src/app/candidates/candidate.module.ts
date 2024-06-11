@@ -14,7 +14,8 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
     CandidateItemComponent,
     CandidateHistoryComponent,
     CandidateMenuComponent,
-    CandidateListComponent
+    CandidateListComponent,
+
   ],
   imports: [
     CommonModule,

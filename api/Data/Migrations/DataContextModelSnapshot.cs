@@ -380,10 +380,10 @@ namespace api.Data.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("DateOfJoining")
+                    b.Property<DateTime>("DateOfJoining")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Department")
@@ -573,7 +573,13 @@ namespace api.Data.Migrations
                     b.Property<string>("CustomerName")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("OrderDate")
+                    b.Property<string>("EmigProcessInchargeUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MedicalProcessInchargeUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderId")
@@ -592,6 +598,12 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ReviewedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TravelProcessInchargeUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("VisaProcessInchargeUsername")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -617,7 +629,7 @@ namespace api.Data.Migrations
                     b.Property<bool>("Ecnr")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("HRExecUsername")
+                    b.Property<string>("HrExecUsername")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderItemId")
@@ -629,8 +641,9 @@ namespace api.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("RequireAssess")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("RequireAssess")
+                        .HasMaxLength(1)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ReviewItemStatus")
                         .HasColumnType("TEXT");
@@ -766,7 +779,7 @@ namespace api.Data.Migrations
                     b.Property<string>("CityOfWorking")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("CompleteBy")
+                    b.Property<DateTime>("CompleteBy")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ContractReviewId")
@@ -781,10 +794,10 @@ namespace api.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly?>("ForwardedToHRDeptOn")
+                    b.Property<DateTime?>("ForwardedToHRDeptOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("OrderDate")
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderNo")
@@ -793,7 +806,7 @@ namespace api.Data.Migrations
                     b.Property<string>("OrderRef")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("OrderRefDate")
+                    b.Property<DateTime>("OrderRefDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ProjectManagerId")
@@ -890,10 +903,13 @@ namespace api.Data.Migrations
                     b.Property<int>("CustomerOfficialId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("DateOnlyForwarded")
+                    b.Property<DateTime>("DateForwarded")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmailIdForwardedTo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OfficialName")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderForwardCategoryId")
@@ -910,7 +926,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderForwardCategoryId", "DateOnlyForwarded", "CustomerOfficialId")
+                    b.HasIndex("OrderForwardCategoryId", "DateForwarded", "CustomerOfficialId")
                         .IsUnique();
 
                     b.ToTable("OrderForwardCategoryOfficials");
@@ -928,7 +944,7 @@ namespace api.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("OrderDate")
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderId")
@@ -957,7 +973,7 @@ namespace api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("DateOnlyForwarded")
+                    b.Property<DateTime>("DateOnlyForwarded")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderId")
@@ -980,13 +996,10 @@ namespace api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Charges")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("Checked")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("CompleteBefore")
+                    b.Property<DateTime>("CompleteBefore")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Ecnr")
@@ -1757,7 +1770,7 @@ namespace api.Data.Migrations
                     b.Property<DateOnly>("RefStatusDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("ReferredOn")
+                    b.Property<DateTime>("ReferredOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SelectionStatus")
@@ -1807,7 +1820,7 @@ namespace api.Data.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly?>("DOB")
+                    b.Property<DateTime?>("DOB")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ecnr")
@@ -1883,7 +1896,7 @@ namespace api.Data.Migrations
                     b.Property<string>("AssessedByEmployeeName")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("AssessedOn")
+                    b.Property<DateTime>("AssessedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CVRefId")
@@ -1892,8 +1905,17 @@ namespace api.Data.Migrations
                     b.Property<int>("CandidateId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CategoryRefAndName")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ChecklistHRId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
@@ -1901,8 +1923,9 @@ namespace api.Data.Migrations
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("RequireInternalReview")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("RequireInternalReview")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TaskIdDocControllerAdmin")
                         .HasColumnType("INTEGER");
@@ -1954,7 +1977,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("CandidateAssessmentId");
 
-                    b.ToTable("CandidatesItemAssessments");
+                    b.ToTable("CandidatesAssessmentItems");
                 });
 
             modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
@@ -1988,7 +2011,6 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HrExecUsername")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OrderItemId")
@@ -2216,6 +2238,12 @@ namespace api.Data.Migrations
 
                     b.Property<int>("OrderNo")
                         .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProfessionName")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("RequireCandidateAssessment")
                         .HasColumnType("INTEGER");
@@ -2460,6 +2488,9 @@ namespace api.Data.Migrations
                     b.Property<int>("ProfessionId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ProfessionName")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CandidateId");
@@ -2535,10 +2566,10 @@ namespace api.Data.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -2814,6 +2845,9 @@ namespace api.Data.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateOnly>("MessageComposedOn")
                         .HasColumnType("TEXT");
 
@@ -2935,10 +2969,10 @@ namespace api.Data.Migrations
                     b.Property<int>("CandidateId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("CompleteBy")
+                    b.Property<DateTime>("CompleteBy")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly?>("CompletedOn")
+                    b.Property<DateTime?>("CompletedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("HistoryItemId")
@@ -2960,7 +2994,7 @@ namespace api.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("TaskDate")
+                    b.Property<DateTime>("TaskDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TaskDescription")
@@ -2997,14 +3031,14 @@ namespace api.Data.Migrations
                     b.Property<string>("NextFollowupByName")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly?>("NextFollowupOn")
+                    b.Property<DateTime?>("NextFollowupOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TaskItemDescription")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("TransactionDate")
+                    b.Property<DateTime>("TransactionDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")

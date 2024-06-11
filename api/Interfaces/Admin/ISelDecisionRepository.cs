@@ -11,6 +11,7 @@ namespace api.Interfaces.Admin
     {
          Task<MessageWithError> RegisterSelections(ICollection<CreateSelDecisionDto> selDtos, string Username);
          Task<SelectionDecision> GetSelectionDecisionFromCVRefId(int cvrefid);
+         Task<SelectionDecision> GetSelectionDecisionFromId(int selDecisionId);
          Task<PagedList<EmploymentDto>> GetEmploymentsPaged (EmploymentParams empParams);
          Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams);
          Task<Employment> GetEmployment(int employmentId);

@@ -13,7 +13,7 @@ namespace api.Interfaces.Orders
         JobDescription CreateNewJobDescription(JobDescription newJD, int OrderItemId);
     // Remuneations
         Task<Remuneration> GetRemuneratinOfOrderItem(int OrderItemId);
-        Task<RemunerationDto> GetRemunerationOfOrderItem(int OrderItemId);
+        Task<RemunerationDto> GetRemunerationDtoOfOrderItem(int OrderItemId);
         Task<Remuneration> AddRemuneration(Remuneration remuneration);
         Task<bool> EditRemuneration(Remuneration remuneration);
         Task<bool> DeleteRemuneration (int remunerationId);

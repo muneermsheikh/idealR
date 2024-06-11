@@ -28,7 +28,7 @@ namespace api.Data.Repositories.Admin
         private readonly IFinanceRepository _finRepo;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public SelDecisionRepository(DataContext context, IComposeMessagesAdminRepository msgAdmRepo, 
                IFinanceRepository finRepo , IMapper mapper, UserManager<AppUser> userManager            )
         {
@@ -153,28 +153,32 @@ namespace api.Data.Repositories.Admin
             if (candidateObj.AppUserId  != 0) return await _userManager
                 .FindByIdAsync(candidateObj.AppUserId.ToString());
             
-            //check if AppUser has the record
-            AppUser newAppUser;
-            newAppUser = await _userManager.FindByNameAsync(candidateObj.UserName);
+            //user does not have appuser object
+            
+            //there might be an AppUser record for the candidate, but the candidate object does not have the AppUserId info
+            var newAppUser = new AppUser();
 
-            if(newAppUser == null) {
-                await _context.Candidates.Where(x => x.Id == x.Id)
-                .Select(x => new AppUser{
-                    Gender = x.Gender, KnownAs=x.KnownAs,
-                    DateOfBirth= (DateOnly)x.DOB,
-                    Created =_today,
-                    City = x.City, Country = x.Country
-                }).FirstOrDefaultAsync();
+            if(!string.IsNullOrEmpty(candidateObj.UserName)) {
+                newAppUser = await _userManager.FindByNameAsync(candidateObj.UserName);
+            }
+            
+            if(newAppUser.Id == 0) {        //appuser not found
+                newAppUser.Gender = candidateObj.Gender; newAppUser.KnownAs=candidateObj.KnownAs;
+                newAppUser.DateOfBirth= (DateTime)candidateObj.DOB; newAppUser.Created =_today;
+                newAppUser.City = candidateObj.City; newAppUser.Country = candidateObj.Country;
+                newAppUser.Email = candidateObj.Email; 
+                newAppUser.PhoneNumber = candidateObj.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault();
                 
                 await _userManager.CreateAsync(newAppUser, "Pa$$w0rd");
             }
 
-            if(newAppUser != null) {
+            if(newAppUser.Id != 0) {
                 candidateObj.AppUserId = newAppUser.Id;
                 _context.Entry(candidateObj).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
-            return newAppUser;
+            
+            return newAppUser.Id == 0 ? null : newAppUser;
 
         }
 
@@ -207,7 +211,7 @@ namespace api.Data.Repositories.Admin
             var obj = await _context.SelectionDecisions.FindAsync(selectionId);
             if(obj == null) return "no selection object by that Selection Id";
             var cvrefid = obj.CVRefId;
-            DateOnly offerAcceptedOn;
+            DateTime offerAcceptedOn;
             int coaRecruitmentSales=11;
             int appno=0;
 
@@ -248,7 +252,7 @@ namespace api.Data.Repositories.Admin
             if(offerAcceptedOn.Year > 2000) {
                 var voucher = await _context.Vouchers
                     .Where(x => x.CVRefId == cvrefid && x.COAId == coaRecruitmentSales
-                        && x.VoucherDated == offerAcceptedOn).FirstOrDefaultAsync();
+                        &&  DateOnly.FromDateTime(x.VoucherDated) == DateOnly.FromDateTime(offerAcceptedOn)).FirstOrDefaultAsync();
                 if(voucher != null) {
                     _context.Vouchers.Remove(voucher);
                     _context.Entry(voucher).State = EntityState.Deleted; 
@@ -330,7 +334,7 @@ namespace api.Data.Repositories.Admin
                                 Dr = dto.Charges},
                         new() {
                                 VoucherId = voucher.Id,
-                                TransDate = DateOnly.FromDateTime(DateTime.UtcNow), 
+                                TransDate = DateTime.UtcNow, 
                                 COAId = dto.coaCR.Id,
                                 AccountName = dto.coaCR.AccountName, 
                                 Narration = "Sales towards recruitment of the candidate",
@@ -390,7 +394,6 @@ namespace api.Data.Repositories.Admin
             return true;
         }
 
-
         public async Task<bool> EditSelection(SelectionDecision model)
         {
             // thanks to @slauma of stackoverflow
@@ -414,12 +417,27 @@ namespace api.Data.Repositories.Admin
 
         public async Task<PagedList<SelDecisionDto>> GetSelectionDecisions(SelDecisionParams selParams)
         {
-            var query = _context.SelectionDecisions.AsQueryable();
+            var query = (from sel in _context.SelectionDecisions 
+                join item in _context.OrderItems on sel.OrderItemId equals item.Id
+                join ord in _context.Orders on item.OrderId equals ord.Id
+                join cvref in _context.CVRefs on sel.CVRefId equals cvref.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
+                select new SelDecisionDto {
+                    ApplicationNo = cv.ApplicationNo, 
+                    CandidateName = cv.FullName,
+                    CategoryRef = ord.OrderNo + "-" + item.SrNo + "-" + sel.ProfessionName,
+                    CustomerName = ord.Customer.CustomerName, 
+                    ReferredOn = cvref.ReferredOn,
+                    SelDecisionId = sel.Id,
+                    SelectedOn = sel.SelectedOn, 
+                    SelectionStatus = sel.SelectionStatus,
+                    CVRefId = sel.CVRefId
+                }).AsQueryable();
 
             if(selParams.CVRefId > 0) query = query.Where(x => x.CVRefId == selParams.CVRefId);
             if(selParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId == selParams.OrderItemId);
-            if(selParams.ProfessionId > 0) query = query.Where(x => x.ProfessionId == selParams.ProfessionId);
-            if(selParams.SelectedOn.Year > 2000) query = query.Where(x => x.SelectedOn == selParams.SelectedOn);
+            //if(selParams.ProfessionId > 0) query = query.Where(x => x.ProfessionId == selParams.ProfessionId);
+            if(selParams.SelectedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(selParams.SelectedOn));
 
             var paged = await PagedList<SelDecisionDto>.CreateAsync(
                 query.AsNoTracking()
@@ -438,20 +456,19 @@ namespace api.Data.Repositories.Admin
             
             var cvrefids = selDtos.Select(x => x.CVRefId).ToList();
             //verify the CVRefIds are not already selected
-            var cvrefsAlreadySelected = await _context.CVRefs
+            var excludeCVRefsAlreadySelected = await _context.CVRefs
                 .Where(x => cvrefids.Contains(x.Id) && x.SelectionStatus == "Selected").Select(x => x.Id).ToListAsync();
-            if(cvrefsAlreadySelected.Count > 0) cvrefids = cvrefids
-                .Where(x => !cvrefsAlreadySelected.Contains(x)).ToList();
+            //exclude already selected records from cvrefids
+            if(excludeCVRefsAlreadySelected.Count > 0) cvrefids = cvrefids
+                .Where(x => !excludeCVRefsAlreadySelected.Contains(x)).ToList();
 
             if(cvrefids.Count ==0) {
                 dtoToReturn.ErrorString = "All the candidates are already selected";
                 return dtoToReturn;
             }
             
-            
-            if(cvrefids.Count == 0) return null;
 
-        //create selectiondecision records
+            //create selectiondecision records
             var selDetails = await  (from cvref in _context.CVRefs 
                     where cvrefids.Contains(cvref.Id)
                 //join dtos in selDtos on cvref.Id equals dtos.CVRefId
@@ -471,29 +488,35 @@ namespace api.Data.Repositories.Admin
                     CVRef = cvref
                 }).ToListAsync();
 
+            //above query does not exclude selDtos, as that wd cause error at client processing; once the query is
+            //retrieved, update selectedOn and selectionStatus
             foreach(var sel in selDetails) {
-                sel.SelectedOn = selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => x.DecisionDate).FirstOrDefault();
-                sel.SelectionStatus =  selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => x.SelectionStatus).FirstOrDefault();
-                sel.Remarks = selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => x.Remarks).FirstOrDefault();
+                    
+                sel.SelectedOn = selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => Convert.ToDateTime(x.DecisionDate)).FirstOrDefault();
+                sel.SelectionStatus = selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => x.SelectionStatus).FirstOrDefault();
+                sel.Remarks =selDtos.Where(x => x.CVRefId == sel.CVRefId).Select(x => x.Remarks).FirstOrDefault();
+            
                 _context.Entry(sel).State = EntityState.Added;
 
                 //update cvref fields 
                 sel.CVRef.SelectionStatus = sel.SelectionStatus;
-                sel.CVRef.SelectionStatusDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                sel.CVRef.SelectionStatusDate = DateTime.UtcNow;
                 _context.Entry(sel.CVRef).State = EntityState.Modified;
             }
          
-           try {
-            await _context.SaveChangesAsync();          //required before creating employment records
-           } catch (DbException ex) {
-                dtoToReturn.ErrorString += ex.Message;
-           } catch (Exception ex){
-                dtoToReturn.ErrorString +=ex.Message;
-           }
+            try {
+                await _context.SaveChangesAsync();          //required before creating employment records
+            } catch (DbException ex) {
+                    dtoToReturn.ErrorString += ex.Message;
+            } catch (Exception ex){
+                    dtoToReturn.ErrorString +=ex.Message;
+            }
 
-           if(!string.IsNullOrEmpty(dtoToReturn.ErrorString)) return dtoToReturn;
+            if(!string.IsNullOrEmpty(dtoToReturn.ErrorString)) return dtoToReturn;
 
-        //create employment records
+            dtoToReturn.CVRefIdsInserted=cvrefids;
+
+            //create employment records
             var orderItemIdsForSelected = selDetails.Where(x => x.SelectionStatus=="Selected").Distinct().Select(x => x.OrderItemId).ToList();
             var remunerations = await _context.Remunerations
                 .Where(x => orderItemIdsForSelected.Contains(x.OrderItemId))
@@ -571,6 +594,7 @@ namespace api.Data.Repositories.Admin
                 foreach(var task in tasks) {
                     task.TaskStatus = "Completed";
                     task.CompletedOn = _today;
+                    _context.Entry(task).State = EntityState.Modified;
                 }
             }
         
@@ -599,7 +623,8 @@ namespace api.Data.Repositories.Admin
             if(empParams.CVRefIds.Count > 0)
                 query = query.Where(x => empParams.CVRefIds.Contains(x.CVRefId));
             
-            if(empParams.SelectedOn.Year > 2000) query = query.Where(x => x.SelectedOn == empParams.SelectedOn);
+            if(empParams.SelectedOn.Year > 2000) query = query
+                .Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(empParams.SelectedOn));
 
              var paged = await PagedList<EmploymentDto>.CreateAsync(
                 query.AsNoTracking()
@@ -663,5 +688,13 @@ namespace api.Data.Repositories.Admin
         {
             return await _context.SelectionDecisions.Where(x => x.CVRefId == cvrefid).FirstOrDefaultAsync();
         }
+
+        public async Task<SelectionDecision> GetSelectionDecisionFromId(int selDecisionId)
+        {
+            var sel = await _context.SelectionDecisions.FindAsync(selDecisionId);
+
+            return sel;
+        }
+
     }
 }

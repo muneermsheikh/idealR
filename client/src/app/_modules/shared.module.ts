@@ -28,11 +28,12 @@ import { DatePickerComponent } from '../_forms/date-picker/date-picker.component
       type: 'line-scale-party'
     }),
     BsDatepickerModule.forRoot(),
-   ToastrModule.forRoot({
+    ToastrModule.forRoot(),
+    /* ToastrModule.forRoot({
       positionClass: 'toastr-top-right',
       preventDuplicates: true,
       
-    }),
+    }), */
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
     TimeagoModule.forRoot(),

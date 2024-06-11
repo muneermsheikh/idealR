@@ -46,22 +46,6 @@ export class OrderitemsService {
   }
 
   getOrderItemRefCode(orderitemid: number) {
-    /*let item: IOrderItemBriefDto|undefined;
-
-    this.cache.forEach((items: IOrderItemBriefDto[]) => {
-      item = items.find(p => p.orderItemId === orderitemid);
-    })
-    
-    if (item) return of(item);
-    
-    return this.http.get<string>(this.apiUrl + 'orders/refcodefromorderitemid/' + orderitemid)
-    .pipe(
-      map(response => {
-        this.cache.set(Object.values(this.oParams).join('-'), response);
-        return response;
-      })
-    )
-    */
     
     return this.http.get<string>(this.apiUrl + 'orders/orderitemrefcode/' + orderitemid);
 

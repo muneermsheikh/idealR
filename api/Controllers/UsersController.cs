@@ -28,6 +28,13 @@ namespace api.Controllers
        
         }
 
+        [HttpGet("userswithroles")]
+        public async Task<ActionResult<ICollection<MemberDto>>> GetUsersWithRoles()
+        {
+            var users = await _userRepository.GetMembersWithRoles();
+            return Ok(users);
+        }
+
         [HttpGet]
         public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {

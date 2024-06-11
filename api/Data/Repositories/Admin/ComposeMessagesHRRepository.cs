@@ -86,31 +86,57 @@ namespace api.Data.Repositories.Admin
         public async Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(OrderForwardToAgent dlforward, 
             string Username)
         {
+            var msgData = new List<OrderItemBriefDtoWithOfficialIdsDto>();
+            
             var projManagerId = dlforward.ProjectManagerId;
             if(projManagerId == 0) return null;
-            var projManagerAppUserId = await _context.GetAppUserIdOfEmployee(projManagerId);
-            if(projManagerAppUserId == 0) return null;
-
+            var projManagerAppUserId =  await _context.GetAppUserIdOfEmployee(projManagerId);
+            if(projManagerAppUserId == 0) projManagerAppUserId = Convert.ToInt32(_config["HRSupAppuserId"] ?? "0");
+            
             var fwdOfficials = new List<OrderForwardCategoryOfficial>();
             
-            var OrderItemIds = new List<int>();
-
             var msgs = new List<Message>();
 
-            foreach(var item in dlforward.OrderForwardCategories)
+            foreach(var itm in dlforward.OrderForwardCategories)
             {
-                OrderItemIds.Add(item.OrderItemId);
-                foreach(var dt in item.OrderForwardCategoryOfficials)
+                foreach(var dt in itm.OrderForwardCategoryOfficials)
                 {
                     fwdOfficials.Add(dt);
                 }
             }
 
-            var query = _context.OrderItems.Where(x => OrderItemIds.Contains(x.Id))
-                .Distinct().OrderBy(x => new {x.OrderId, x.SrNo}).AsQueryable();
-            
-            var ItemBriefDtos = await query.ProjectTo<OrderItemBriefDto>(_mapper.ConfigurationProvider).ToListAsync();
-            
+            fwdOfficials = fwdOfficials.Distinct().ToList();
+
+            var distinctOrderItemIds = dlforward.OrderForwardCategories.Select(x => x.OrderItemId).Distinct().ToList();
+            //queries that has to use expressions at client level - like distinctOrderItemIds.contains(xx) - 
+            //are not translated by EF Core.  The query ahs to be redesigned
+
+            var item = new OrderItemBriefDto();
+            var ItemBriefDtos = new List<OrderItemBriefDto>();
+
+            var orderAndItems = await _context.Orders
+                .Include(x => x.OrderItems).ThenInclude(x => x.JobDescription)
+                .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
+                .Where(x => x.Id == dlforward.OrderId).FirstOrDefaultAsync();
+    
+            foreach(var itm in orderAndItems.OrderItems) {
+                item = new OrderItemBriefDto {
+                    OrderItemId = itm.Id, AboutEmployer = orderAndItems.Customer?.Introduction,
+                     CustomerId = orderAndItems.CustomerId, CustomerName = orderAndItems.Customer?.CustomerName,
+                      Ecnr = itm.Ecnr, CompleteBefore = itm.CompleteBefore, JobDescription = itm.JobDescription,
+                      Remuneration = itm.Remuneration, OrderDate = orderAndItems.OrderDate,
+                       OrderId=orderAndItems.Id, OrderNo = orderAndItems.OrderNo, ProfessionId=itm.ProfessionId,
+                       ProfessionName = itm.Profession?.ProfessionName, Quantity=itm.Quantity, SrNo=itm.SrNo,
+                    Status = itm.Status
+                };
+                ItemBriefDtos.Add(item);
+            }
+
+            foreach(var itm in ItemBriefDtos) {
+                if(string.IsNullOrEmpty(itm.CustomerName)) itm.CustomerName = await _context.CustomerNameFromId(itm.CustomerId);
+                if(string.IsNullOrEmpty(itm.ProfessionName)) itm.ProfessionName = await _context.GetProfessionNameFromId(itm.ProfessionId);
+            }
+
             var OfficialIdsForEmails = fwdOfficials.Where(x => !string.IsNullOrEmpty(x.EmailIdForwardedTo))
                 .Select(x => x.CustomerOfficialId).ToList();
             
@@ -345,7 +371,7 @@ namespace api.Data.Repositories.Admin
                      OrderItemId = item.Id, Quantity = item.Quantity
                 }).ToListAsync();
             
-            var empIds = ItemAndHRExecIds.Select(x => x.HRExecEmpId).ToList();
+            var empIds = ItemAndHRExecIds.Select(x => x.HrExecEmpId).ToList();
 
             var emps = await _context.Employees.Where(x => empIds.Contains(x.Id))
                 .Select(x => new {EmployeeId=x.Id, AppUserId=x.AppUserId}).ToListAsync();
@@ -353,7 +379,7 @@ namespace api.Data.Repositories.Admin
             var assignmenDtos = _mapper.Map<ICollection<OrderItemAssignmentDto>>(dtos);
 
             foreach(var dto in  assignmenDtos) {
-                var empId = ItemAndHRExecIds.Where(x => x.OrderItemId == dto.OrderItemId).Select(x => x.HRExecEmpId).FirstOrDefault();
+                var empId = ItemAndHRExecIds.Where(x => x.OrderItemId == dto.OrderItemId).Select(x => x.HrExecEmpId).FirstOrDefault();
                 var appUserId = await _context.GetAppUserIdOfEmployee(empId);
                 var appUser = await _userManager.FindByIdAsync(appUserId.ToString());
 
@@ -364,7 +390,7 @@ namespace api.Data.Repositories.Admin
             
             var itemAssignmentDtos = assignmenDtos.OrderBy(x => x.AssignedToEmpId).ThenBy(x => x.OrderItemId).ToList();
 
-            var distinctEmpIds = ItemAndHRExecIds.Select(x => x.HRExecEmpId).Distinct().ToList();
+            var distinctEmpIds = ItemAndHRExecIds.Select(x => x.HrExecEmpId).Distinct().ToList();
             var msgBody="";
             foreach(var empId in distinctEmpIds) {
                 var appuserid = emps.Where(x => x.EmployeeId == empId).Select(x => x.AppUserId).FirstOrDefault();

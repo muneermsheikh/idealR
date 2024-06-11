@@ -13,6 +13,7 @@ import { ICustomerCity } from 'src/app/_models/admin/customerCity';
 import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto';
 import { IClientIdAndNameDto } from 'src/app/_dtos/admin/clientIdAndNameDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
+import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class CustomersService {
   
   getClientIdAndNames() {
     
-    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames');
+    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames/customer');
   }
 
   
@@ -75,8 +76,7 @@ export class CustomersService {
   getCustomerCities(customerType: string) {
     return this.http.get<ICustomerCity[]>(this.apiUrl + 'customers/customercities/' + customerType);
   }
-  
-  
+    
   setCustParams(params: paramsCustomer) {
     this.custParams = params;
   }
@@ -89,10 +89,18 @@ export class CustomersService {
     return this.http.put(this.apiUrl + 'customers/edit', model);
   }
 
-
   //associates
   getAgents() {
     return this.http.get<ICustomerOfficialDto[]>(this.apiUrl + 'customers/agentdetails/associate');
+  }
+
+  getOfficialAndCustomerName() {
+    return this.http.get<IOfficialAndCustomerNameDto[]>(this.apiUrl + 'customers/officialidandcustomernames/customer');
+  }
+
+  
+  getOfficialAndAgentName() {
+    return this.http.get<IOfficialAndCustomerNameDto[]>(this.apiUrl + 'customers/officialidandcustomernames/associate');
   }
 
   getAgentIdAndNames() {

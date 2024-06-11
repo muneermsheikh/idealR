@@ -9,9 +9,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Pagination } from 'src/app/_models/pagination';
 import { getPaginatedResult } from '../paginationHelper';
 import { ICandidateAssessedDto } from 'src/app/_dtos/hr/candidateAssessedDto';
-import { IOrderItemAssessmentQ } from 'src/app/_models/admin/orderItemAssessmentQ';
 import { ICandidateAssessmentWithErrorStringDto } from 'src/app/_dtos/hr/candidateAssessmentWithErrorStringDto';
 import { ICandidateAssessmentAndChecklistDto } from 'src/app/_dtos/hr/candidateAssessmentAndChecklistDto';
+import { ICandidateAssessmentDto } from 'src/app/_dtos/hr/candidateAssessmentDto';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +72,17 @@ export class CandidateAssessmentService {
       )
     }
 
+    getCandidateAssessmentById(candidateAssessmentId: number) {
+      return this.http.get<ICandidateAssessment>(this.apiUrl + 'CandidateAssessment/assessmentById/' + candidateAssessmentId);
+    }
+
+    getCandidateAssessmentDto(candidateid: number, orderitemid: number) {
+
+      return this.http.get<ICandidateAssessmentDto> (this.apiUrl + 
+          'CandidateAssessment/candidateAssessmentDto/' + candidateid + '/' + orderitemid)
+      
+    }
+    
     
     insertNewCVAssessment(requireReview: boolean, candidateId: number, orderItemId: number) {
       return this.http.post<ICandidateAssessmentWithErrorStringDto>(this.apiUrl + 
@@ -80,10 +91,10 @@ export class CandidateAssessmentService {
 
     
     deleteAssessment(assessmentid: number) {
-      return this.http.delete<boolean>(this.apiUrl + 'candidateassessment/assess/' + assessmentid);
+      return this.http.delete<boolean>(this.apiUrl + 'candidateassessment/assessment/' + assessmentid);
     }
 
-
+  
 }
 
 export function getPaginationHeaders(oParams: CandidateAssessmentParams) {

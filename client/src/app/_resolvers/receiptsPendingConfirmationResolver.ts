@@ -1,9 +1,11 @@
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { IPendingDebitApprovalDto } from "../shared/dtos/finance/pendingDebitApprovalDto";
-import { ConfirmReceiptsService } from "../shared/services/finance/confirm-receipts.service";
+import { ConfirmReceiptsService } from "../_services/finance/confirm-receipts.service";
+import { IPendingDebitApprovalDto } from "../_dtos/finance/pendingDebitApprovalDto";
+import { ParamsCOA } from "../_models/params/finance/paramsCOA";
 
 export const ReceiptsPendingConfirmtionResolver: ResolveFn<IPendingDebitApprovalDto[] | undefined | null> = (
   ) => {
-        return inject(ConfirmReceiptsService).getPendingConfirmations();
+      var oParams = new ParamsCOA();  
+      return inject(ConfirmReceiptsService).getDebitApprovalsPending(oParams);
   };

@@ -1,20 +1,19 @@
-import { IReviewItem } from "./reviewItem";
+import { IContractReviewItemQ } from "src/app/_models/orders/contractReviewItemQ";
 
 export interface IContractReviewItem
 {
      id: number; 
      contractReviewId: number; 
-     orderId: number; 
-     orderNo: number;
-     orderDate: Date;
      orderItemId: number; 
-     customerName: string;
-     categoryName: string; 
+     professionName: string; 
      quantity: number;
      ecnr: boolean; 
-     requireAssess: boolean; 
      sourceFrom: string; 
-     reviewItemStatus: number;
-     hRExecUsername: string;
-     reviewItems: IReviewItem[];
+     requireAssess: string; 
+     charges: number;
+     hrExecUsername: string;
+     reviewItemStatus: string;
+     contractReviewItemQs: IContractReviewItemQ[];
+
+     
 }

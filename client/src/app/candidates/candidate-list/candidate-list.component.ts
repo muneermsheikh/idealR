@@ -84,13 +84,7 @@ export class CandidateListComponent implements OnInit{
         this.professions = data['professions'],
         this.agents = data['agents']
       }
-
-      
     )
-    //this.getCities();
-    //this.getProfessions();
-    //this.getAgents();
-    //console.log('CVs list', this.cvs);
   }
   
   getCVs(cvParams: candidateParams) {
@@ -103,13 +97,7 @@ export class CandidateListComponent implements OnInit{
     });
   }
 
-  /*
-  getCities() {
-    this.service.getCandidateCities().subscribe(response => {
-      this.candidateCities = [{city: 'All'}, ...response];
-    })
-  }
-*/
+
   onSearch() {
     const params = this.service.getCVParams() ?? new candidateParams();
     

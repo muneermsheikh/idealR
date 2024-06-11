@@ -13,6 +13,9 @@ import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
 import { ICandidateAndErrorStringDto } from '../_dtos/hr/candidateAndErrorStringDto';
+import { ICvAssessmentHeader } from '../_models/hr/cvAssessmentHeader';
+import { ICvsAvailableDto } from '../_dtos/admin/cvsAvailableDto';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +31,6 @@ export class CandidateService {
   paginationBrief: Pagination | undefined;    //<CandidateBriefDto[]>;
   cities: ICandidateCity[]=[];
   cache= new Map;
-  cacheBrief = new Map;
   user?: User | null;
 
   constructor(private http: HttpClient, private accountService: AccountService) {
@@ -46,12 +48,33 @@ export class CandidateService {
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
 
-  getCandidatesPaged(cvParams: candidateParams, fromCache: boolean = true): Observable<any> { 
-   
+  getAvailableCandidatesPaged(cvParams: candidateParams, fromCache: boolean = true): Observable<any> { 
+
     if(!fromCache) {
-      this.cacheBrief = new Map();
+      this.cache = new Map();
     } else {
-      const response = this.cacheBrief.get(Object.values(cvParams).join('-'));
+      const response = this.cache.get(Object.values(cvParams).join('-'));
+      if(response) return of(response);
+    }
+
+    let params = getHttpParamsForCandidate(cvParams);
+
+    return getPaginatedResult<ICvsAvailableDto[]>(this.apiUrl + 
+        'candidate/cvsAvailable', params, this.http).pipe(
+      map(response => {
+        this.cache.set(Object.values(cvParams).join('-'), response);
+        return response;
+      })
+    )
+
+  }
+
+  getCandidatesPaged(cvParams: candidateParams, fromCache: boolean = true): Observable<any> { 
+    
+    if(!fromCache) {
+      this.cache = new Map();
+    } else {
+      const response = this.cache.get(Object.values(cvParams).join('-'));
       if(response) return of(response);
     }
 
@@ -60,7 +83,7 @@ export class CandidateService {
     return getPaginatedResult<CandidateBriefDto[]>(this.apiUrl + 
         'candidate', params, this.http).pipe(
       map(response => {
-        this.cacheBrief.set(Object.values(cvParams).join('-'), response);
+        this.cache.set(Object.values(cvParams).join('-'), response);
         return response;
       })
     )
@@ -74,7 +97,7 @@ export class CandidateService {
 
   getCandidateBrief(id: number) {
    
-    const candidate = [...this.cacheBrief.values()]
+    const candidate = [...this.cache.values()]
       .reduce((arr,elem) => arr.concat(elem.result), [])
       .find((candidate: ICandidate) => candidate.id === id);
     

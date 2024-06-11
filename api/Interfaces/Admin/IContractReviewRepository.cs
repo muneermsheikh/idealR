@@ -11,12 +11,13 @@ namespace api.Interfaces.Admin
     {
         Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams);
         Task<ContractReview> AddContractReview(ContractReview contractReview);
+        Task<ContractReviewItem> AddContractReviewItem(int orderitemid);
         Task<ContractReview> EditContractReview(ContractReview contractReview);
-        Task<ContractReview> GenerateContractReviewObject(int orderId, string Username);
+        Task<ContractReview> GetOrGenerateContractReview(int orderId, string Username);
         Task<ContractReview> GetContractReviewFromOrderId(int orderId);
-        Task<ContractReviewItem> GetContractReviewItem(int orderItemId);
+        Task<ContractReviewItemDto> GetContractReviewItem(int orderItemId, string username);
         Task<ICollection<ContractReviewItem>> GetContractReviewItems (int orderid);
-        Task<bool> UpdateContractReviewItem(ContractReviewItem contractReviewItem);
+        Task<bool> EditContractReviewItem(ContractReviewItem contractReviewItem);
         
         Task<bool> DeleteContractReview(int orderid);
         Task<bool> DeleteContractReviewItem(int orderitemid);

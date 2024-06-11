@@ -13,7 +13,7 @@ namespace api.Interfaces
         Task<bool> DeleteOrder(int orderid);
         Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams);
         Task<OrderDisplayDto> GetOrderByIdWithAllRelatedProperties (int id);
-        Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc (int id);
+        Task<Order> GetOrderByIdWithItemsAsyc (int id);
         Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsBriefDto();
         Task<MessageWithError> ComposeMsg_AckToClient(int orderid);
             

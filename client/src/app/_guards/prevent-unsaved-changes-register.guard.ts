@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { RegisterComponent } from '../accounts/register/register.component';
+import { RegisterComponent } from '../register/register.component';
+
 
 @Injectable({
   providedIn: 'root'

@@ -8,6 +8,6 @@ export class orderParams {
      
      sort = "orderno";
      pageNumber = 1;
-     pageSize = 10;
+     pageSize = 6;
      search: string='';
 }

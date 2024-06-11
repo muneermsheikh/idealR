@@ -1,8 +1,8 @@
 export interface IContractReviewItemReturnValueDto {
 	orderStatus: string;
-	contractReviewStatusId: number;
+	contractReviewStatus: string;
 	reviewedBy: number;
 	reviewedOn: Date;
-	orderReviewStatusId: number;
-	reviewItemStatusId: number;
+	orderReviewStatus: string;
+	reviewItemStatus: string;
 }

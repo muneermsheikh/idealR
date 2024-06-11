@@ -1,11 +1,10 @@
-import { Injectable, inject } from "@angular/core";
-import { Resolve, ResolveFn } from "@angular/router";
-import { Observable } from "rxjs";
-import { IEmployeeIdAndKnownAs } from "../shared/models/admin/employeeIdAndKnownAs";
-import { MastersService } from "../shared/services/masters.service";
+import { inject } from "@angular/core";
+import { ResolveFn } from "@angular/router";
+import { IEmployeeIdAndKnownAs } from "../_models/admin/employeeIdAndKnownAs";
+import { EmployeeService } from "../_services/admin/employee.service";
 
 
 export const EmployeeIdsAndKnownAsResolver: ResolveFn<IEmployeeIdAndKnownAs[]|null> = (
   ) => {
-    return inject(MastersService).getEmployeeIdAndKnownAs();
+    return inject(EmployeeService).getEmployeeIdAndKnownAs();
   };

@@ -14,7 +14,7 @@ namespace api.Data.Repositories
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        private readonly DateTime _today;
+        private readonly DateTime _today = DateTime.UtcNow;
         public ChecklistRepository(DataContext context, IMapper mapper)
         {
             _mapper = mapper;
@@ -39,16 +39,12 @@ namespace api.Data.Repositories
                 }
             }
 
-           var dto = _mapper.Map<ChecklistHRDto>(checklist);
-
-            if(dto.ApplicationNo == 0) dto.ApplicationNo = 
-                await _context.GetApplicationNoFromCandidateId(dto.CandidateId);
-            if(string.IsNullOrEmpty(dto.CandidateName)) dto.CandidateName = 
-                await _context.GetCandidateNameFromCandidateId(dto.CandidateId);
-            if(string.IsNullOrEmpty(dto.CategoryRef)) dto.CategoryRef = 
-                await _context.GetOrderItemDescriptionFromOrderItemId(dto.OrderItemId);
-            if(string.IsNullOrEmpty(dto.HrExecUsername)) 
-                dto.HrExecUsername = await _context.GetHRExecUsernameFromOrderItemId(dto.OrderItemId);
+            var dto = _mapper.Map<ChecklistHRDto>(checklist);
+            var dtls = await _context.GetDetailsFromOrderItemId(orderItemId, candidateId);
+             if(dtls != null) {
+                dto.CandidateName = dtls.CandidateName;
+                dto.CategoryRef = dtls.CategoryRef;
+             }
 
             checkobj.checklistDto = dto;
 
@@ -101,9 +97,9 @@ namespace api.Data.Repositories
         {
             var strErr="";
             var candidate = await _context.Candidates.FindAsync(checklisthr.CandidateId);
-            if(candidate != null) strErr = "Invalid Candidate Id";
+            if(candidate == null) strErr = "Invalid Candidate Id";
             var item = await _context.OrderItems.FindAsync(checklisthr.OrderItemId);
-            if(item != null) strErr +=" Invalid Order Item Id code";
+            if(item == null) strErr +=" Invalid Order Item Id code";
 
             return strErr;
         }
@@ -136,7 +132,7 @@ namespace api.Data.Repositories
             }
 
             var hrexecusername = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
-                .Select(x => x.HRExecUsername).FirstOrDefaultAsync();
+                .Select(x => x.HrExecUsername).FirstOrDefaultAsync();
 
             var hrTask = new ChecklistHR{
                 CandidateId=candidateId, OrderItemId= orderItemId, 
@@ -160,6 +156,7 @@ namespace api.Data.Repositories
                 return checkobj;
             }
 
+            _context.ChecklistHRs.Add(checklisthr);
             _context.Entry(checklisthr).State = EntityState.Added;
 
             try {
@@ -178,8 +175,10 @@ namespace api.Data.Repositories
             
         }
 
-        public async Task<string> EditChecklistHR(ChecklistHR model, string Username)
+        public async Task<string> EditChecklistHR(ChecklistHRDto dto, string Username)
         {
+             var model = _mapper.Map<ChecklistHR>(dto);
+
              var errorList = ChecklistErrors(model);
             if(!string.IsNullOrEmpty(errorList)) return errorList;
 
@@ -215,8 +214,8 @@ namespace api.Data.Repositories
                 }
             }
             
-            var test1 = !model.ChecklistHRItems.Any(c => !c.Accepts);
-            var test2 = model.ChecklistHRItems.Any(c => c.MandatoryTrue && model.ExceptionApproved);
+            //var test1 = !model.ChecklistHRItems.Any(c => !c.Accepts);
+            //var test2 = model.ChecklistHRItems.Any(c => c.MandatoryTrue && model.ExceptionApproved);
 
             existing.ChecklistedOk = !model.ChecklistHRItems.Any(c => !c.Accepts)
                 || model.ChecklistHRItems.Any(c => c.MandatoryTrue && model.ExceptionApproved);
@@ -284,7 +283,7 @@ namespace api.Data.Repositories
                     //OrderRef =  order.OrderNo + "-" + orderitem.SrNo + "-" + orderitem.Profession.ProfessionName,
                     UserName = checklist.UserName, 
                     CheckedOn = checklist.CheckedOn, 
-                    HrExecUsername = rvwitem.HRExecUsername,
+                    HrExecUsername = rvwitem.HrExecUsername,
                     //UserComments = checklist.UserComments,
                     ChecklistHRItems = checklist.ChecklistHRItems,
                     Charges = rvwitem.Charges,

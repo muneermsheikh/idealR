@@ -95,62 +95,7 @@ export class CandidateEditComponent implements OnInit {
     private qualService: QualificationService,
     private downloadService: FileService
     ) {
-        //initialize controls
-            /* this.registerForm = this.fb.group({
-              id: 0,
-              userType: ['candidate', Validators.required],
-              applicationNo:0,        
-              gender: ['male', Validators.required],
-              nationality: ['Indian', Validators.required],
-              knownAs: ['kadir', Validators.required],
-              username: 'kadir.hassan@gmail.com',
-              firstName: ['Kadir', Validators.required],
-              secondName: 'Hassan',
-              familyName: 'Shaikh',
-              dOB: '1990-10-10T12:00:00',
-              placeOfBirth: 'Latur',
-              aadharNo: '123456654321',
-              photoUrl: '',
-              ppNo: 'X-3945999',
-              ecnr: [true],
-              referredBy: 9,    //direct
-              referredByName: '',
-              
-              password: ['']  , /*[Validators.required, 
-                Validators.minLength(4), Validators.maxLength(8)]], 
-              confirmPassword: '',  // [Validators.required, this.matchValues('password')]],
-             
-            //}),
-            //userAddressForm: this.fb.group({
-             /* address: '',
-              address2: '',
-              city: ['Mumbai', Validators.required],
-              pin: '401107',
-              district:'',
-              country: ['India'],
-              email: ['kadir.hassan@gmail.com', Validators.email],
-            //})
-            
-            userPhones: this.fb.array([]),
-            userQualifications: this.fb.array([]), 
-            userProfessions: this.fb.array([]),
-            //userPassports: this.fb.array([]),
-            //entityAddresses: this.fb.array([]),
-            userExperiences: this.fb.array([]),
-            userAttachments: this.fb.array([])
         
-          });
-        
-          if(this.registerForm.controls['password']) {
-            this.registerForm.controls['password'].valueChanges.subscribe({
-              next: () => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
-            })
-        
-          }
-          */
-        //end of initilize controls
-      
-      
       this.passwordElement = passwordElement;    
       this.routeId = this.activatedRoute.snapshot.params['id'];
           //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);

@@ -55,7 +55,7 @@ namespace api.Controllers
         }
 
         [HttpGet("candidateassessments/{candidateid}")]
-        public async Task<ActionResult<ICollection<CandidateAssessedDto>>> GetCandidateAssessmentsDto(int candidateid)
+        public async Task<ActionResult<ICollection<CandidateAssessedShortDto>>> GetCandidateAssessmentsDto(int candidateid)
         {
             var dtos = await _repo.GetCandidateAssessmentsByCandidateId(candidateid);
 
@@ -84,11 +84,25 @@ namespace api.Controllers
 
         }
 
-        [HttpGet("candidateAssessmentWithItems")]
-        public async Task<ActionResult<CandidateAssessment>> GetCandidateAssessmentWithItems(CandidateAssessmentParams assessmentParams)
+        [HttpGet("assessmentbyid/{candidateAssessmentId}")]
+        public async Task<ActionResult<CandidateAssessmentAndChecklistDto>> GetCandidateAssessmentById(int candidateAssessmentId)
         {
-            var assessments = await _repo.GetCandidateAssessmentWithItems(assessmentParams);
-            if(assessments == null) return BadRequest("Your parameters did not produce any result");
+            var assessmentAndChecklist = await _repo.GetCandidateAssessmentById(candidateAssessmentId, User.GetUsername());
+
+            if(assessmentAndChecklist.Assessed == null && assessmentAndChecklist.ChecklistHRDto == null) 
+                return BadRequest("Your parameters did not produce any result");
+
+            return Ok(assessmentAndChecklist);
+
+        }
+
+        [HttpGet("candidateAssessmentDto/{candidateid}/{orderitemid}")]
+        public async Task<ActionResult<CandidateAssessmentDto>> GetCandidateAssessmentWithItems(int candidateid, int orderitemid)
+        {
+            if(candidateid == 0 || orderitemid == 0) return BadRequest(new ApiException(400, "Bad Request", "Candidate Id and/Or OrderItemId not provided"));
+            
+            var assessments = await _repo.GetCandidateAssessmentDtoWithItems(candidateid, orderitemid);
+            if(assessments == null) return BadRequest(new ApiException(404, "Bad Request", "Your parameters did not produce any result"));
 
             return Ok(assessments);
         }
@@ -112,6 +126,7 @@ namespace api.Controllers
         {
             var assessmentWithErr = await _repo.GetChecklistAndAssessment(candidateId, orderItemId, User.GetUsername());
             
+            if(assessmentWithErr.ChecklistHRDto != null) assessmentWithErr.ErrorString="";
             if(!string.IsNullOrEmpty(assessmentWithErr.ErrorString)) {
                 return BadRequest(new ApiException(400, "Bad Request", assessmentWithErr.ErrorString));
             }

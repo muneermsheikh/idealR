@@ -7,6 +7,7 @@ namespace api.DTOs.Admin
         }
 
         public int CandidateAssessmentId {get; set;}
+        public int CvRefId { get; set; }
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string City { get; set; }
@@ -19,7 +20,7 @@ namespace api.DTOs.Admin
         public string OfficialEmail { get; set; }
         public int OrderItemId {get; set;}
         public int OrderNo { get; set; }
-        public DateOnly OrderDated { get; set; }
+        public DateTime OrderDated { get; set; }
         public int ItemSrNo { get; set; }
         public string CategoryName { get; set; }
         public int ApplicationNo { get; set; }

@@ -1,5 +1,4 @@
-import { IDLForwardDate } from "src/app/_models/admin/dlForwardDate";
-
+import { IOrderForwardDate } from "src/app/_models/orders/orderForwardDate";
 
 export interface IOrderItemToFwdDto
 {
@@ -13,7 +12,7 @@ export interface IOrderItemToFwdDto
      categoryName: string;
      quantity: number;
      charges: number;
-     dlForwardDates: IDLForwardDate[];
+     dlForwardDates: IOrderForwardDate[];
 }
 
 export class OrderItemToFwdDto implements IOrderItemToFwdDto
@@ -28,5 +27,5 @@ export class OrderItemToFwdDto implements IOrderItemToFwdDto
      categoryName= '';
      quantity= 0;
      charges= 0;
-     dlForwardDates: IDLForwardDate[]=[];
+     dlForwardDates: IOrderForwardDate[]=[];
 }

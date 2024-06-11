@@ -1,0 +1,64 @@
+<div *ngIf="!selectionsPending">
+    No referrals pending for selection
+</div>
+
+<div *ngIf="selectionsPending && pagination" 
+    class="d-flex justify-contents-between align-items-center"
+    style="display: inline-block; margin-left: 15px; vertical-align: top;" >
+    
+    <pagination
+         [totalItems]="pagination!.totalItems"
+         [itemsPerPage]="pagination!.itemsPerPage"
+         (pageChanged)="onPageChanged($event)"
+         [maxSize]="10"
+         previousText="&lsaquo;"
+         nextText="&rsaquo;"
+         firstText="&laquo;"
+         lastText="&raquo;">
+    ></pagination>
+
+    <div class="form-inline" style="margin-left: 50px !important;" >
+        <input (keyup.enter)="onSearch()" type="text" 
+            class="stdd form-control w300" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
+        <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+
+        <div class="stdd w200 mx-2" title="Choose the rejection Status.  Press the UPDATE SELECTION button to save these changes">
+            <ng-select 
+                 style="border-style: double;"
+                 [items]="rejectionStatuses"
+                 bindLabel="name"
+                 bindValue="name"
+                 labelForId="selectionStatus"
+                 clearAllText="Clear"
+                 [(ngModel)]="selectionStatus"
+                 (change)="changeSelectionStatus($event)"
+            ></ng-select>
+        </div>
+    </div>
+    
+    <button class="btn btn-outline-success fa fa-save mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
+        title="update the selections/rejections" (click)="UpdateSelections()" >
+    </button>
+    <button class="btn btn-outline-close fa fa-undo mx-5" routerLink="/administration" title="return to Administration Menu" ></button>
+
+</div>
+
+<label class="stdd w50 mL80">Check</label>
+<label class="stdd w50 ">App No</label>
+<label class="stdd w150">Candidate Name</label>
+<label class="stdd w50">Order No</label>
+<label class="stdd w200">Customer Name</label>
+<label class="stdd w150">Category Ref</label>
+<label class="stdd w100">Referred On</label>
+<label class="stdd w100">Days since</label>
+
+<div class="row" *ngFor="let item of selectionsPending">
+    <app-selection-pending-line
+        [pending]="item"
+        (selectedEvent)="pendingSelected($event)"
+    ></app-selection-pending-line>
+</div>
+
+
+

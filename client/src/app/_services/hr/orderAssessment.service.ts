@@ -7,8 +7,9 @@ import { User } from 'src/app/_models/user';
 import { assessmentParams } from 'src/app/_models/params/Admin/assessmentParam';
 import { AccountService } from '../account.service';
 import { IOrderAssessment } from 'src/app/_models/admin/orderAssessment';
-import { IOrderItemAssessment } from 'src/app/_models/admin/orderItemAssessment';
-import { IOrderItemAssessmentQ } from 'src/app/_models/admin/orderItemAssessmentQ';
+import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem';
+import { IOrderAssessmentItemQ } from 'src/app/_models/admin/orderAssessmentItemQ';
+import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
 
 @Injectable({
   providedIn: 'root'
@@ -30,22 +31,15 @@ export class OrderAssessmentService {
         .subscribe(user => this.user = user!);
     }
 
-    getOrderItemAssessment(orderitemid: number) {
+    getOrderAssessmentItem(orderitemid: number) {
 
-      var item = this.http.get<IOrderItemAssessment>(this.apiUrl + 'OrderAssessment/orderitemassessment/' + orderitemid);
-      return item;
+      return this.http.get<IOrderAssessmentItem>(this.apiUrl + 'OrderAssessment/orderassessmentitem/' + orderitemid);
+
     }
     
     getOrderAssessment(orderid: number) {
-      return this.http.get<IOrderAssessment>(this.apiUrl + 'OrderAssessment/orderassessment/' + orderid);
+      return this.http.get<IOrderAssessment>(this.apiUrl + 'OrderAssessment/orderAssessment/' + orderid);
     }
-
-    /* getAssessmentQBankOfCategoryId(orderitemid: number, professionId: number) {
-      console.log('orderitemid', orderitemid);
-      return this.http.get<IAssessmentQ[]>(this.apiUrl + 'AssessmentQBank/catqsbycategoryid/' 
-        + orderitemid + '/' + professionId);
-    }
-    */
 
     updateOrderAssessment(assessment: IOrderAssessment) {
       return this.http.put<boolean>(this.apiUrl + 'OrderAssessment/assessment', assessment);
@@ -62,10 +56,38 @@ export class OrderAssessmentService {
     AddNewAssessment(assessment: IOrderAssessment) {
       return this.http.post<IOrderAssessment>(this.apiUrl + 'OrderAssessment/assessment', assessment);
     }
-
     
-    getOrderItemAssessmentQs(orderitemid: number) {
-      var item = this.http.get<IOrderItemAssessmentQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentQs/' + orderitemid);
+    getOrderAssessmentItemQs(orderitemid: number) {
+      var item = this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentQs/' + orderitemid);
       return item;
+    }
+
+    //orderAssessmentItems
+    
+    updateOrderAssessmentItem(assessment: IOrderAssessmentItem) {
+      return this.http.put<boolean>(this.apiUrl + 'OrderAssessment/assessmentitem', assessment);
+    }
+
+    deleteOrderAssessmentItem(assessmentItemId: number) {
+      return this.http.delete<boolean>(this.apiUrl + 'OrderAssessment/assessmentitemq/' + assessmentItemId);
+    }
+
+    InsertOrderAssessmentItem(assessment: IOrderAssessmentItem) {
+      return this.http.post<IOrderAssessmentItem>(this.apiUrl + 'OrderAssessment/assessmentitem', assessment);
+    }
+
+    //assessment questions
+    getAssessmentQBankOfCategoryId(professionId: number) {
+
+      return this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/questionsFromQBank/' 
+        + professionId);
+    }
+
+    getAssessmentQStandard() {
+      return this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/assessmentStddQs');
+    }
+    
+    getContractReviewItemDto(orderitemid: number) {
+      return this.http.get<IContractReviewItemDto>(this.apiUrl + 'ContractReview/')
     }
 }

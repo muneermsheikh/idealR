@@ -19,7 +19,8 @@ namespace api.Interfaces
         Task<bool> DeleteOrderAssessmentItemQ(int questionId);
  
         //orderitemassessmentQ
-        Task<ICollection<AssessmentQStdd>> GetAssessmentQStdds();
+        Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQStdds();
+        Task<ICollection<OrderAssessmentItemQ>> GetCustomAssessmentQsForAProfession(int professionid);
         Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid);
         
     }

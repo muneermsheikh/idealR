@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "CVRefPolicy")]
+    //[Authorize(Policy = "CVRefPolicy")]
     public class CVRefController : BaseApiController
     {
           private readonly ICVRefRepository _cvrefRepo;
@@ -91,14 +91,11 @@ namespace api.Controllers
 
           //[Authorize(Roles="Admin, DocumentControllerAdmin, HRManager, HRSupervisor, HRExecutive, HRTrainee")]
           [HttpGet("cvsreferred")]
-          public async Task<ActionResult<PagedList<CVRefDto>>> CustomerReferralsPending()
+          public async Task<ActionResult<PagedList<CVRefDto>>> CustomerReferralsPending([FromQuery]CVRefParams cvrefParams)
           {
-               var cvrefParams = new CVRefParams
-               {
-                    RefStatus = "Referred"
-               };
+               //cvrefParams.RefStatus = "Referred";
 
-               var pendings = await _cvrefRepo.GetCVReferrals(cvrefParams);
+               var pendings = await _cvrefRepo.GetCVReferralsPending(cvrefParams);
 
                if (pendings==null && pendings.Count == 0) return NotFound(new ApiException(402, "No CVs pending for forwarding to customers"));
                

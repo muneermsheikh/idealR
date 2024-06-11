@@ -87,9 +87,9 @@ namespace api.Controllers
         }
 
         [HttpPost("assignToHRExecs")]
-        public async Task<ActionResult<string>> AssignHRExecTasks(ICollection<OrderItemIdAndHRExecEmpNoDto> dto)
+        public async Task<ActionResult<string>> AssignHRExecTasks(ICollection<int> orderItemIds)
         {
-            var strErr = await _taskRepo.AssignTasksToHRExecs(dto, User.GetUsername());
+            var strErr = await _taskRepo.AssignTasksToHRExecs(orderItemIds, User.GetUsername());
             
             if(string.IsNullOrEmpty(strErr)) return BadRequest(new ApiException(404, "failed to create tasks", strErr));
 

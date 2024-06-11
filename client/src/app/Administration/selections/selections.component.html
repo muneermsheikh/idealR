@@ -1,0 +1,51 @@
+<div *ngIf="!selections">
+    No selection records found matching your criteria
+</div>
+
+<div *ngIf="selections && pagination" 
+    class="d-flex justify-contents-between align-items-center"
+    style="display: inline-block; margin-left: 15px; vertical-align: top;" >
+    
+    <pagination
+         [totalItems]="pagination!.totalItems"
+         [itemsPerPage]="pagination!.itemsPerPage"
+         (pageChanged)="onPageChanged($event)"
+         [maxSize]="10"
+         previousText="&lsaquo;"
+         nextText="&rsaquo;"
+         firstText="&laquo;"
+         lastText="&raquo;">
+    ></pagination>
+
+    <div class="form-inline" style="margin-left: 50px !important;" >
+        <input (keyup.enter)="onSearch()" type="text" 
+            class="stdd form-control w300" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
+        <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+    </div>
+    
+    <button class="btn btn-outline-success mx-5" routerLink="/administration" >Close</button>
+
+</div>
+
+
+<label class="stdd w50">App No</label>
+<label class="stdd w150">Candidate Name</label>
+<label class="stdd w200">Customer Name</label>
+<label class="stdd w150">Category Ref</label>
+<label class="stdd w100">Referred On</label>
+<label class="stdd w100">Selection<br>Status</label>
+<label class="stdd w150">Rejection<br>Reason</label>
+
+<div class="row" *ngFor="let item of selections">
+    <app-selection-line
+        [selection]="item"
+        (displayEmploymentEvent)="displayEmploymentModal($event)"
+        (deleteSelectionEvent)="deleteSelection($event)"
+        (editSelectionEvent)="editSelection($event)"
+        (remindCandidateForDecisionEvent)="remindCandidateForDecision($event)"
+    ></app-selection-line>
+</div>
+
+
+

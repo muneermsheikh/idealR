@@ -1,12 +1,16 @@
 export interface ISelDecisionDto
 {
-    id: number;
-    customerName: string;
-    orderNo: string;
-    professionName: string;
-    selectionStatus: string;
-    rejectioReason: string;
-    selectedOn: Date;
-    charges: number;
+    selDecisionId: number;
+    cVRefId: number;
+    orderItemId: number;
+    candidateName: string;
+    applicationNo: number;
 
+    customerName: string;
+    categoryRef: string;
+    referredOn: Date;
+    selectedOn: Date;
+    selectionStatus: string;
+    //rejectionReason: string;
+    
 }

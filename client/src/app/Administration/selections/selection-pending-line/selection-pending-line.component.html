@@ -1,0 +1,14 @@
+<div *ngIf="pending">
+    <input type="checkbox" style="border: aliceblue; border:inset"
+        class="form-check-input stdd mL85"
+        [checked]="pending.checked"
+        (change)="SelectedClicked()"
+        [(ngModel)]="pending.checked"
+    >
+    <div style="display: inline-block; vertical-align: top; margin-left: 30px !important; width: 50px;">{{pending.applicationNo}}</div>
+    <div class="stdd w150 mL10">{{pending.candidateName}}</div>
+    <div class="stdd w200">{{pending.customerName}}</div>
+    <div class="stdd w150">{{pending.categoryRefAndName}}</div>
+    <div class="stdd w100">{{pending.referredOn | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w100">{{pending.referredOn | timeago}}</div>
+</div>

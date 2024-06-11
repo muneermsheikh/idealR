@@ -9,7 +9,7 @@ export interface IOpenOrderItemCategoriesDto
      customerName: string;
      //professionId: number;
      categoryRefAndName: string;
-     requireInternalReview: boolean;
+     requireInternalReview: string;
      quantity: number;
 }
 
@@ -24,6 +24,6 @@ export class OpenOrderItemCategoriesDto implements IOpenOrderItemCategoriesDto
      orderItemId = 0;
      professionId: number = 0;
      categoryRefAndName = '';
-     requireInternalReview = false;
+     requireInternalReview = "N";
      quantity = 0;
 }

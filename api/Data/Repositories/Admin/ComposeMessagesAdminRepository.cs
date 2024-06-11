@@ -356,7 +356,7 @@ namespace api.Data.Repositories.Admin
                 recipientObj.Position + "<br>" +
                 "<br>HR Supervisor<br>Email: " + recipientObj.Email + "<br><br>";
             
-            if (order.ForwardedToHRDeptOn == null || ((DateOnly)order.ForwardedToHRDeptOn).Year < 200)
+            if (order.ForwardedToHRDeptOn == null )
             {
                 msg += "Following requirement is forwarded to you for execution within time periods shown:<br><br>";
             }
@@ -429,6 +429,7 @@ namespace api.Data.Repositories.Admin
                             RecipientUsername=recipientObj.Username,
                             RecipientEmail=recipientObj.Email, 
                             Subject="CVs Forwarded against your requirement",
+                            CvRefId = cvref.CvRefId,
                             Content=msg
                         };
                         

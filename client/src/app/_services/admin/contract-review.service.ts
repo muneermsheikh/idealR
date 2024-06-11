@@ -7,11 +7,11 @@ import { IReviewItemStatus } from 'src/app/_models/admin/reviewItemStatus';
 import { contractReviewParams } from 'src/app/_models/params/Admin/contractReviewParams';
 import { Pagination } from 'src/app/_models/pagination';
 import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
-import { IReviewItem } from 'src/app/_models/admin/reviewItem';
 import { IContractReviewItemReturnValueDto } from 'src/app/_dtos/admin/contractReviewItemReturnValueDto';
 import { getHttpParamsForContractReview, getPaginatedResult} from '../paginationHelper';
 import { IContractReviewItemStddQ } from 'src/app/_models/admin/contractReviewItemStddQ';
 import { IContractReviewDto } from 'src/app/_dtos/orders/contractReviewDto';
+import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +35,11 @@ export class ContractReviewService {
   }
 
   getContractReviewItem(orderitemid: number) {
-    return this.http.get<IContractReviewItem>(this.apiUrl + 'ContractReview/reviewitem/' + orderitemid);
+    return this.http.get<IContractReviewItemDto>(this.apiUrl + 'ContractReview/reviewitem/' + orderitemid);
   }
 
   getContractReviewItems(orderid: number) {
-    return this.http.get<IReviewItem[]>(this.apiUrl + 'contractreview/reviewitems/' + orderid);
+    return this.http.get<IContractReviewItem[]>(this.apiUrl + 'contractreview/reviewitems/' + orderid);
   }
 
   updateContractReviewItem(model: IContractReviewItem) 

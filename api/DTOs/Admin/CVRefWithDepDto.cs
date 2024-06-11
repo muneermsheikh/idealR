@@ -14,7 +14,7 @@ namespace api.DTOs.Admin
         public string CustomerName { get; set; }
         public int OrderId { get; set; }
         public int OrderNo { get; set; }
-        public DateOnly OrderDate {get; set;}
+        public DateTime OrderDate {get; set;}
         public int OrderItemId { get; set; }
         public int SrNo {get; set;}
         public string ProfessionName { get; set; }
@@ -22,7 +22,7 @@ namespace api.DTOs.Admin
        
         //public string PPNo {get; set;}
         public string AgentName {get; set;}
-        public DateOnly ReferredOn { get; set; }
+        public DateTime ReferredOn { get; set; }
         public string ReferralDecision { get; set; }
         public DateTime SelectedOn { get; set; }
         public ICollection<DeployDto> Deployments { get; set; }

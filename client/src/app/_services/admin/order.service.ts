@@ -16,7 +16,6 @@ import { IOrder } from 'src/app/_models/admin/order';
 import { IJDDto } from 'src/app/_dtos/admin/jdDto';
 import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
 import { OpenOrderItemsParams } from 'src/app/_models/params/Admin/openOrderItemsParams';
-import { IOrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
 import { IOrderToCreateDto } from 'src/app/_dtos/orders/orderToCreateDto';
 
 @Injectable({
@@ -54,7 +53,6 @@ export class OrderService {
             return response;
           })
         )
-        
     }
 
     getOpenOrderItemsBriefListDto() {
@@ -145,21 +143,6 @@ export class OrderService {
     UpdateOrder(model: IOrder) {
       return this.http.put<boolean>(this.apiUrl + 'orders/editorder', model)
     }
-    
-    //why is this required
-    /*getOrderCities() {
-      if (this.cities.length > 0) {
-        return of(this.cities);
-      }
-    
-      return this.http.get<IOrderCity[]>(this.apiUrl + 'orders/ordercities' ).pipe(
-        map(response => {
-          this.cities = response;
-          return response;
-        })
-      )
-    }
-    */
     
     deleteOrder(orderid: number) {
       return this.http.delete<boolean>(this.apiUrl + 'orders/deleteorder/' + orderid);

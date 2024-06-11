@@ -3,3 +3,15 @@
     padding: 0px;
     font-size: smaller;
 }
+
+.stdd {
+    display: inline-block;
+    font-size: medium;
+    word-wrap: break-word;
+}
+
+.w200 {width: 200px;}
+.w400 {width: 400px;}
+.w50 {width: 50px;}
+
+.b {font-weight: bold;}

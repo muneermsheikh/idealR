@@ -50,7 +50,7 @@ namespace api.Data.Repositories.Deployment
                 if(SequenceShdBe != item.Sequence) {
                     strErr += ", item with sequence " + item.Sequence + " - Sequence Expected is: " + SequenceShdBe;
                     itemsWithErr +=1;
-                } else if (lastDepItem.TransactionDate > item.TransactionDate) {
+                } else if (DateOnly.FromDateTime(lastDepItem.TransactionDate) >= DateOnly.FromDateTime(item.TransactionDate)) {
                     strErr += ", New Transaction item date " + item.TransactionDate 
                         + " cannot be dated earlier than last Transaction Date " + lastDepItem.TransactionDate;
                 } else {
@@ -261,7 +261,7 @@ namespace api.Data.Repositories.Deployment
 
             if(depParams.CVRefIds?.Count > 0) query = query.Where(x => depParams.CVRefIds.Contains(x.CVRefId));
 
-            if(depParams.SelectedOn.Year > 2000) query = query.Where(x => x.SelectedOn == depParams.SelectedOn);
+            if(depParams.SelectedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
             
             if(depParams.OrderItemIds != null && depParams.OrderItemIds.Count > 0) 
                 query = query.Where(x => depParams.OrderItemIds.Contains(x.OrderItemId));

@@ -226,8 +226,8 @@ namespace api.Data.Repositories.Finance
             } else {
                 if(vParams.VoucherDated.Year > 2000) query = query.Where(x => x.VoucherDated == vParams.VoucherDated);
                 if(vParams.DateFrom.Year > 2000 && vParams.DateUpto.Year > 2000) 
-                    query = query.Where(x => x.VoucherDated >= vParams.DateFrom &&
-                        x.VoucherDated <= vParams.DateUpto);
+                    query = query.Where(x => DateOnly.FromDateTime(x.VoucherDated) >= DateOnly.FromDateTime(vParams.DateFrom) &&
+                        DateOnly.FromDateTime(x.VoucherDated) <= DateOnly.FromDateTime(vParams.DateUpto));
                 if(vParams.CoaId !=0) query = query.Where(x => x.COAId == vParams.CoaId);
                 if(vParams.Amount != 0) query = query.Where(x => x.Amount == vParams.Amount);
                 if(!string.IsNullOrEmpty(vParams.Divn)) query = query.Where(x => x.Divn == vParams.Divn);

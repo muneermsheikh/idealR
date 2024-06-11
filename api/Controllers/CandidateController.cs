@@ -54,6 +54,20 @@ namespace api.Controllers
 
         }
 
+        [HttpGet("cvsAvailable")]
+        public async Task<ActionResult<PagedList<cvsAvailableDto>>> GetAvailableCandidates([FromQuery]CandidateParams candidateParams)
+        { 
+            var candidates = await _candidateRepo.GetAvailableCandidates(candidateParams);
+
+            if(candidates == null) return NotFound("No matching candidates found");
+
+            Response.AddPaginationHeader(new PaginationHeader(candidates.CurrentPage, candidates.PageSize, 
+                candidates.TotalCount, candidates.TotalPages));
+            
+            return Ok(candidates);
+
+        }
+
         [HttpGet("briefbyparams")]
         public async Task<ActionResult<CandidateBriefDto>> GetCandidateBriefFromParams([FromQuery]CandidateParams candParams)
         {
@@ -399,6 +413,8 @@ namespace api.Controllers
         {
             return await _candidateRepo.DeleteUserAttachment(attachmentid);
         }
+    
+        
     }
 
     

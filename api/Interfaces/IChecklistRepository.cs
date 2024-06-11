@@ -15,7 +15,7 @@ namespace api.Interfaces
         Task<ChecklistObj> SaveNewChecklist (ChecklistHR checklisthr, string Username);
 
         //checklistHR
-        Task<string> EditChecklistHR(ChecklistHR model, string Username);
+        Task<string> EditChecklistHR(ChecklistHRDto model, string Username);
         Task<bool> DeleteChecklistHR(int id);
         Task<ChecklistHRDto> GetChecklistHRFromCandidateIdAndOrderDetailId(int candidateid, int orderitemid, string username);
         Task<ICollection<ChecklistHR>> GetChecklistHROfCandidate(int candidateid);

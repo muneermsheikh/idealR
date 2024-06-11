@@ -1,0 +1,26 @@
+<div *ngIf="!fwd">
+    No order forward data available for selected Order
+</div>
+
+<div *ngIf="fwd">
+    <div style="display: inline-block; width: max-content;">
+        <div class="stdd w50 mx-2" >{{fwd.orderNo}}</div>
+        <div class="stdd w50 mx-2" >{{fwd.orderDate | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w100 mx-2">{{fwd.customerName}}</div>
+        <button class="btn btn-sm fa fa-trash red" (click)="deleteOrder(fwd.id)"></button>
+
+        <div *ngFor="let item of fwd.orderForwardCategories">
+            <div style="margin-left: 50px;">
+                <div class="stdd w100 mx-2">{{item.professionName}}</div>
+                <div class="stdd w75 mx-2">{{item.charges}}</div>
+                <button class="btn btn-sm fa fa-trash red" (click)="deleteCat(item.id)" ></button>
+                <div *ngFor="let off of item.orderForwardCategoryOfficials" style="margin-left: 100px;">
+                    <div class="stddS blue w100">{{off.dateTimeForwarded | date:'dd-MMM-yy'}}</div>
+                    <div class="stddS blue w100 mx-2">{{off.agentName}}</div>
+                    <div class="stddS blue w100 mx-2">{{off.emailIdForwardedTo}}</div>
+                    <button class="btn btn-sm fa fa-trash" (click)="deleteOff(off.id)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

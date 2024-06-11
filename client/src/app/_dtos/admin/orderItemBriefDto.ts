@@ -7,7 +7,7 @@ export interface IOrderItemBriefDto
      orderDate: Date;
      customerName: string;
      orderItemId: number;
-     requireInternalReview: boolean;
+     requireInternalReview: string;
      categoryId: number;
      categoryRef: string;
      categoryName: string;
@@ -25,7 +25,7 @@ export class OrderItemBriefDto implements IOrderItemBriefDto
      orderDate= new Date();
      customerName='';
      orderItemId=0;
-     requireInternalReview = false;
+     requireInternalReview = "N";
      categoryId = 0;
      categoryRef='';
      categoryName = '';

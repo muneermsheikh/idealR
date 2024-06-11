@@ -6,7 +6,7 @@ namespace api.Entities.HR
     {
         public int CVRefId { get; set; }    
         public int SelectionDecisionId { get; set; }
-        public DateOnly SelectedOn { get; set; }
+        public DateTime SelectedOn { get; set; }
         public int ChargesFixed {get; set;}
         public int Charges {get; set;}
         public string SalaryCurrency { get; set; }
@@ -27,7 +27,7 @@ namespace api.Entities.HR
         public int LeavePerYearInDays { get; set; }
         public int LeaveAirfareEntitlementAfterMonths {get; set;}
         public string OfferAccepted { get; set; }
-        public DateOnly OfferAcceptanceConcludedOn { get; set; }
+        public DateTime OfferAcceptanceConcludedOn { get; set; }
         public string OfferConclusionRegisteredByUsername { get; set; } 
         public string OfferAttachmentUrl { get; set; }
         public string OfferAcceptanceUrl { get; set; }

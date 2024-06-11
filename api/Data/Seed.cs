@@ -143,7 +143,7 @@ namespace api.Data
                         KnownAs = item.CustomerOfficials.FirstOrDefault().KnownAs,
                         Gender = item.CustomerOfficials.FirstOrDefault().Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
+                        Created = DateTime.UtcNow,
                         City = item.City
                     };
                     UserListOfficials.Add(user);
@@ -162,7 +162,7 @@ namespace api.Data
                         KnownAs = item.KnownAs,
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
+                        Created = DateTime.UtcNow,
                         DateOfBirth = item.DateOfBirth,
                         City = item.City,
                     };
@@ -235,8 +235,8 @@ namespace api.Data
                         KnownAs = item.KnownAs,
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
-                        Created = DateOnly.FromDateTime(DateTime.UtcNow),
-                        DateOfBirth = (DateOnly)item.DOB,
+                        Created = DateTime.UtcNow,
+                        DateOfBirth = (DateTime)item.DOB,
                         City = item.City,
                     };
                     UserListCandidates.Add(user);

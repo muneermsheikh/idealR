@@ -399,22 +399,16 @@ namespace api.Data.Repositories
             return qry;
         }
 
-        public async Task<ICollection<OrderItemBriefDto>> GetOrderByIdWithItemsAsyc(int orderid)
+        public async Task<Order> GetOrderByIdWithItemsAsyc(int orderid)
         {
-               var qry = await (from order in _context.Orders where order.Id == orderid
-                        join item in _context.OrderItems on order.Id equals item.OrderId
-                    select new OrderItemBriefDto {
-                        OrderId = orderid, OrderNo = order.OrderNo, OrderDate = order.OrderDate,
-                        AboutEmployer = order.Customer.Introduction,
-                        CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
-                        OrderItemId = item.Id, SrNo = item.SrNo, ProfessionId = item.ProfessionId,
-                        ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
-                        Ecnr = item.Ecnr, CompleteBefore = item.CompleteBefore,
-                        JobDescription = item.JobDescription, Remuneration = item.Remuneration,
-                        Status = item.Status
-                    }).ToListAsync();
-                
-            return qry;
+               var order = await _context.Orders
+                    .Include(x => x.OrderItems)
+                        .ThenInclude(x=> x.JobDescription)
+                    .Include(x => x.OrderItems)
+                        .ThenInclude(x => x.Remuneration)
+                    .Where(x => x.Id == orderid)
+                    .FirstOrDefaultAsync();
+                return order;
         }
 
         public async Task<OrderItemBriefDto> GetOrderItemBrief(int orderitemid)
@@ -467,7 +461,17 @@ namespace api.Data.Repositories
         }
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
-            var query = _context.Orders.AsQueryable();
+            
+            var query = (from order in _context.Orders 
+                join review in _context.ContractReviews on order.Id equals review.OrderId into contractRvw
+                from rvw in contractRvw.DefaultIfEmpty()
+                select new OrderBriefDto {
+                    CompleteBy = order.CompleteBy, CustomerName = order.Customer.CustomerName, 
+                    ContractReviewedOn = rvw.ReviewedOn, OrderDate=order.OrderDate, OrderNo=order.OrderNo,
+                    Status = order.Status, Id=order.Id, CityOfWorking = order.CityOfWorking,
+                    ContractReviewStatus = order.ContractReviewStatus, ForwardedToHRDeptOn = order.ForwardedToHRDeptOn
+                    
+                }).AsQueryable();
 
             if(orderParams.Id > 0) {
                 query = query.Where(x => x.Id==orderParams.Id);
@@ -478,9 +482,9 @@ namespace api.Data.Repositories
             }
 
             var paged = await PagedList<OrderBriefDto>.CreateAsync(query.AsNoTracking()
-                .ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider),
-                orderParams.PageNumber, orderParams.PageSize);
-            
+                //.ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)
+                , orderParams.PageNumber, orderParams.PageSize);
+         
             return paged;
         }
 
@@ -526,7 +530,7 @@ namespace api.Data.Repositories
                     OrderItemId = item.Id, OrderDate = order.OrderDate,
                     CustomerName = order.Customer.CustomerName,
                     OrderNo = order.OrderNo, Quantity = item.Quantity,
-                    RequireInternalReview = rvwitem.ContractReviewItemQs.Count > 0,
+                    RequireInternalReview = rvwitem.RequireAssess,
                     AssessmentQDesigned = assmtItem.OrderAssessmentItemQs.Count > 0,
                     CategoryRefAndName = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName
                 }).ToListAsync();

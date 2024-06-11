@@ -2,6 +2,12 @@ export interface IOrderForwardToHR
 {
     orderId: number;
     recipientUsername: string;
-    dateOnlyForwarded: Date;
-   
+    dateForwarded: Date;
+}
+
+export class OrderForwardToHR implements IOrderForwardToHR
+{
+    orderId=0;
+    recipientUsername = '';
+    dateForwarded= new Date();
 }

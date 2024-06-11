@@ -13,14 +13,14 @@ export interface IOrder
      salesmanId: number; 
      salesmanName: string; 
      projectManagerId: number;
-     medicalProcessInchargeEmpId: number; 
-     visaProcessInchargeEmpId: number; 
-     emigProcessInchargeId: number;
-     travelProcessInchargeId: number;
+     //medicalProcessInchargeEmpId: number; 
+     //visaProcessInchargeEmpId: number; 
+     //emigProcessInchargeId: number;
+     //travelProcessInchargeId: number;
      completeBy: Date; 
      country: string; 
      cityOfWorking: string; 
-     contractReviewStatusId: number;
+     contractReviewStatus: string;
      estimatedRevenue: number;
      status: string; 
      forwardedToHRDeptOn: Date; 
@@ -48,7 +48,7 @@ export class Order implements IOrder
      completeBy= new Date; 
      country= ''; 
      cityOfWorking= ''; 
-     contractReviewStatusId= 0;
+     contractReviewStatus = ''
      estimatedRevenue= 0;
      status= ''; 
      forwardedToHRDeptOn= new Date('1900-01-01'); 

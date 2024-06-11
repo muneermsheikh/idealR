@@ -2,20 +2,22 @@ export interface IOrderBriefDto
 {
      id: number;
      orderNo: number;
-     orderId: number;
+     //orderId: number;
      orderDate: Date;
-     completeBy: Date;
+     //completeBy: Date;
      customerId: number;
      customerName: string;
      cityOfWorking: string;
+     //cityOfWorking: string;
      status: string;
-     contractReviewStatusId: number;
-     contractReviewId: number;
-     reviewStatus: string;
-     reviewedBy: number;
-     reviewedOn: Date;
+     //contractReviewStatus: string;
+     contractReviewedOn?: Date;
+     //contractReviewId: number;
+     contractReviewStatus: string;
+     //reviewedBy: number;
+     //reviewedOn: Date;
      forwardedToHRDeptOn: Date;
-     orderItemsDto: IOrderItemDto[];
+     //orderItemsDto: IOrderItemDto[];
 }
 
 export interface IOrderItemDto{
@@ -30,13 +32,19 @@ export interface IOrderItemDto{
      status: string;
 }
 
-export class OrderBriefDto 
+export class OrderBriefDto implements IOrderBriefDto
 {
      id = 0;
      orderNo = 0;
-     orderDate = new Date('1900-01-01');
+     orderDate = new Date();
+     customerId = 0;
      customerName = '';
-     contractReviewStatusId = 0;
-     items: IOrderItemDto[]=[];
+     cityOfWorking = '';
+     status = '';
+     contractReviewStatus = '';
+     forwardedToHRDeptOn= new Date();
+     contractReviewedOn?: Date = undefined;
+     completeBy= new Date();
+     //items: IOrderItemDto[]=[];
 
 }

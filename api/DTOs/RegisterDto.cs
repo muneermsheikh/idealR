@@ -15,7 +15,7 @@ namespace api.DTOs
         [Required] public string Gender { get; set; }
         public string AadharNo { get; set; }
         public string PpNo { get; set; }
-        [Required] public DateOnly? DateOfBirth { get; set; } // Note this must be optional or the required validator will not work
+        [Required] public DateTime? DateOfBirth { get; set; } // Note this must be optional or the required validator will not work
         [Required] public string City { get; set; }
         public string Pin { get; set; }
         [Required] public string Country { get; set; }
@@ -29,7 +29,7 @@ namespace api.DTOs
         public bool NotificationDesired { get; set; }
         public string Nationality { get; set; }
         public int CompanyId { get; set; }
-        public DateOnly DOB { get; set; }
+        public DateTime DOB { get; set; }
         public string Role { get; set; }
     }
 

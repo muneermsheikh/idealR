@@ -15,6 +15,7 @@ using api.Interfaces.Messages;
 using api.Params;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -123,16 +124,17 @@ namespace api.Data.Repositories
                 if(!string.IsNullOrEmpty(returnDto.ErrorString)) return returnDto;
 
                 dataToComposeMsg.Add(new CVFwdMsgDto{
+                    CvRefId = cvRef.CVRefId,
                     CustomerId=orderitem.CustomerId,
                     CustomerName=orderitem.CustomerName,
-                    City=orderitem.City,
+                    City=orderitem.City ?? "",
                     OfficialId=officialToAssign.Id,
-                    OfficialTitle=officialToAssign.Title,
+                    OfficialTitle=officialToAssign.Title ?? "Mr.",
                     OfficialName=officialToAssign.OfficialName,
                     OfficialUserId=officialToAssign.Id,
                     OfficialAppUserId=officialToAssign.AppUserId,
-                    Designation=officialToAssign.Designation,
-                    OfficialEmail=officialToAssign.Email,
+                    Designation=officialToAssign.Designation ?? "",
+                    OfficialEmail=officialToAssign.Email ?? "",
                     OrderItemId=orderitem.OrderItemId,
                     OrderNo=orderitem.OrderNo,
                     OrderDated=orderitem.OrderDated,
@@ -140,7 +142,7 @@ namespace api.Data.Repositories
                     CategoryName=orderitem.CustomerName,
                     ApplicationNo=cvRef.ApplicationNo,
                     CandidateName=cvRef.CandidateName,
-                    PPNo=cvRef.PassportNo,
+                    PPNo=cvRef.PassportNo ?? "",
                     CumulativeSentSoFar=count
                 });
            }
@@ -174,10 +176,6 @@ namespace api.Data.Repositories
             return await _context.Messages.FindAsync(id);
         }
 
-        public Task<Group> GetMessageGroup(string groupName)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
         {

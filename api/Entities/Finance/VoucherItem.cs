@@ -9,7 +9,7 @@ namespace api.Entities.Finance
         }
 
         public int VoucherId { get; set; }
-        public DateOnly TransDate { get; set; }
+        public DateTime TransDate { get; set; }
         public int COAId { get; set; }
         public string AccountName { get; set; }
         public long Dr {get; set;}

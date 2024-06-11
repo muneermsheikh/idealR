@@ -1,0 +1,51 @@
+<h4 style="display: inline-block;">Listing of Orders Forwarded to Agents</h4>
+<div style="display: inline-block; margin-left: 15px;" *ngIf="pagination !== undefined">
+     <pagination
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+</div>
+
+
+    <input (keyup.enter)="onSearch()" type="text" 
+        class="stdd form-control w300" #search placeholder="Search">
+
+    <button (click)="onReset()" 
+        class="btn btn-outline-success mx-1">Reset</button>
+
+    <button class="btn btn-outline-success" routerLink="/administration/forwards/add" >Add</button>
+
+<button class="btn btn-outline-success mx-5" routerLink="/administration" >Close</button>
+
+
+<div class="form-inline b">
+    <label class="stdd w70 b">Order No</label>
+    <label class="stdd w100 b">Order Dated</label>
+    <label class="stdd w150 b">Customer Name</label>
+    <label class="stddC w100 b">Category Name</label>
+    <label class="stddC w70 b">Charges</label>
+    <label class="stddF w150 b">Agent Name</label>
+    <label class="stddF w150 b">Official Name</label>
+    <label class="stddF w150 b">Date Forwarded</label>
+    <label class="stddF w150 b">User Name</label>
+
+    <div *ngIf="fwdsToAgent===undefined || fwdsToAgent === null" >
+        No Order Forwarding data available
+    </div>
+
+    <div class=row *ngFor="let fwd of fwdsToAgent">
+        <app-orderfwd-line
+            [fwd]="fwd"
+            (editEvent)="OrderFwdEdit($event)"
+            (deleteEventMain)="orderFwdDelete($event)"
+            (deleteEventCat)="orderCategoryDelete($event)"
+            (deleteEventOff)="orderCatOfficialDelete($event)"
+        ></app-orderfwd-line>
+    </div>
+</div>

@@ -29,7 +29,8 @@ export class ProfileListComponent implements OnInit{
   cvs: ICandidateBriefDto[]=[];
   selectedCVs: ICandidateBriefDto[]=[];
 
-  cvParams: candidateParams | undefined;
+  cvParams: candidateParams = new candidateParams();
+
   totalCount: number=0;
   //candidateCities: ICandidateCity[]=[];
   professions: IProfession[]=[];
@@ -68,15 +69,12 @@ export class ProfileListComponent implements OnInit{
 
         //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
 
-        this.cvParams = service.getCVParams();
-    
+        this.cvParams = new candidateParams();
+        this.service.setCVParams(this.cvParams);
       }
 
   ngOnInit(): void {
 
-    this.toastr.info('profiles listing');
-    
-    //this.getCVs(this.cvParams);
     this.loadCandidates(false);
     
     this.activatedRoute.data.subscribe(data => {
@@ -109,7 +107,7 @@ export class ProfileListComponent implements OnInit{
     }
 
   }
-  
+
   getCVs() {
    
     if(this.cvParams)   {
@@ -126,13 +124,6 @@ export class ProfileListComponent implements OnInit{
     }
   }
 
-  /*
-  getCities() {
-    this.service.getCandidateCities().subscribe(response => {
-      this.candidateCities = [{city: 'All'}, ...response];
-    })
-  }
-*/
   onSearch() {
     const params = this.service.getCVParams() ?? new candidateParams();
     

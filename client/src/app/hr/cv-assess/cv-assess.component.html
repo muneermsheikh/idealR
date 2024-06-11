@@ -8,7 +8,9 @@
           <span class="b">Application No.: </span> <span class="blue ">{{cvBrief!.applicationNo}}</span>
           <br><span class="b">Name: </span> <span class="blue">{{cvBrief!.fullName}}</span> 
           <br><span class="b">Referred By:</span> <span class="blue">{{cvBrief!.referredByName}}</span>
-          <br><span class="b">Categories:</span> <div class="blue" *ngFor="let item of cvBrief.userProfessions">{{item.professionId}}</div>
+          <br><span class="b">Categories:</span> <div class="stdd blue fontSmaller" *ngFor="let item of cvBrief.userProfessions">
+               {{item.professionName}}, 
+          </div>
      </div>
 
      <br>
@@ -18,7 +20,9 @@
      </div>
      <div *ngIf="existingAssessmentsDto">
           <ul class="py-0 my-0" *ngFor="let item of existingAssessmentsDto">
-               <li class="stdd my-0 py-0 blue fontSmaller">{{item.categoryRef}} for {{item.customerName.substring(0,10)}} on {{item.assessedOn | date : 'ddMMM'}}</li>
+               <li class="stdd my-0 py-0 blue fontSmaller cursorpointer" (click)="displayAssessment(item.candidateAssessmentId)">
+                    {{item.categoryRef}} for {{item.customerName.substring(0,10)}} on {{item.assessedOn | date : 'ddMMM'}}
+               </li>
           </ul>
      </div>
           
@@ -57,7 +61,8 @@
                     <span class="stdd fontSmall blue mx-2">{{orderItemSelected.orderDate | date}}</span>
                <br><span class="stdd fontSmall">Customer: </span> 
                     <span class="stdd fontSmall blue mx-2">{{orderItemSelected.customerName}}</span>
-               <br><span class="stdd fontSmall">Require Internal Review: {{"requireInternalReview && orderItemSelected !== undefined" ? 'Yes' : 'No'}}</span> 
+               <br><span class="stdd fontSmall">Require Internal Review: 
+                    {{requireInternalReview!==undefined && requireInternalReview==='Y' ? 'Yes' : 'No'}}</span> 
           </div>
 
           <div *ngIf="orderItemSelected && !checklist" class="text-danger fontSmall">
@@ -81,7 +86,7 @@
           Assessment Questions for the Order Category selected not designed.  In the Assessment form, you can press the + button to the right to create custom assessment questions, or add standard questions to the order category"
      </div>
 
-     <button type="button" class="fontSmall b w150 btn btn-success" 
+     <!-- <button type="button" class="fontSmall b w150 btn btn-success" 
           style="text-align: center;"
           title="talk to the candidate for consent to requirements" 
           (click)="createNewChecklist()"
@@ -90,6 +95,7 @@
      >
           Create New Checklist
      </button>
+-->
 
      <!-- checklistModal -->
      <br>
@@ -102,94 +108,74 @@
           Show Checklist
      </button>
      
-     <!-- shortlisting -->
-     <br>
-     <button type="button" class="fontSmall b w150 btn btn-success" 
-          style="text-align: center;"
-          title="shortlist for forwarding to the requirement selected above" (click)="shortlistForForwarding()"
-          [disabled]="!(cvAssessment && checklist?.checklistedOk)"
-     >
-          Shortlist
-     </button>
 </div>
 
-<div class="stdd col-8" style="vertical-align: top; margin-left: 5px; border: brown; margin-top: 5px;">
-     <!--*ngIf="orderItemSelected && requireInternalReview && checklist !== null && !cvAssessment===undefined"-->
-     <div class="fontSmall b stdd my-5" style="vertical-align: top;" 
-          >
-
-          <button type="button" class="btn btn btn-success" 
-               [disabled]="!(requireInternalReview && !checklist?.checklistedOk)" 
-               title="Create new assessment object.  Enabled when all of following are true: Checklist created, 
-                    OrderItem selected, internal review required, checklist done, and no other Assessment in view " 
-               (click)="createNewAssessment()" >New Assessment
-          </button>
-
-          <button type="button" class="btn btn btn-success fa fa-save" style="margin-left: 300px;" 
-               [disabled]="!form.dirty" 
-               title="Save the assessment form" 
-               (click)="updateAssessment()" 
-          ></button>
-          <button 
-               type="button" class="btn btn-primary fa fa-trash pull-right" 
-               title="delete complete Assessment Object" 
-               (click)="deleteAssessment()" 
-               [disabled]="!cvAssessment"
-          > </button>
+<div class="stdd col-8" style="vertical-align: top; margin-left: 5px; border: brown; ">
+    <div class="fontSmall b stdd my-5" style="vertical-align: top;" >
 
           <div style="vertical-align: top;">
                <div class="stdd vAlignTop">
+
                     <div class="stdd col-6">
                          <span class="stdd w200">Application No</span>
-                         <span class="stdd mx-2 blue">{{cvBrief?.applicationNo}}</span>
+                         <span class="stdd blue">{{cvBrief?.applicationNo}}</span>
                     </div>
                     
                     <div class="stdd col-6">
                          <span class="stdd w200">Candidate Name</span>
-                         <span class="stdd mx-2 blue">{{cvBrief?.fullName}}</span>
+                         <span class="stdd blue">{{cvBrief?.fullName}}</span>
                     </div>
                          
-                    <div *ngIf="cvAssessment && orderItemSelected" >
+                    <div *ngIf="cvAssessment" >
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Customer: </span> <span class="stdd blue mx-2">{{orderItemSelected.customerName}}</span>
+                              <span class="stdd w200">Customer: </span> <span class="stdd blue">{{cvAssessment.customerName}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Category: </span> <span class="blue">{{orderItemSelected.categoryRefAndName}}</span>
+                              <span class="stdd w200">Category: </span> <span class="blue">{{cvAssessment.categoryRefAndName}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Order dated: </span> <span class="stdd blue mx-2">{{orderItemSelected!.orderDate | date}}</span>
+                              <span class="stdd w200">Order dated: </span> <span class="stdd blue">{{cvAssessment.orderDate | date}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Checklisted: </span> <span class="stdd blue mx-2">{{!checklist ? 'Yes': 'No'}}</span>
+                              <span class="stdd w200">Checklisted: </span> <span class="stdd blue">{{!checklist ? 'Yes': 'No'}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Requires Internal Review: </span> <span class="stdd blue mx-2">{{requireInternalReview ? 'Yes':'No'}}</span>
+                              <span class="stdd w200">Requires Internal Review: </span> <span class="stdd blue ">{{requireInternalReview === "Y" ? 'Yes':'No'}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd w200">Assessment Q designed: </span> <span class="stdd blue mx-2">{{qDesigned ? 'Yes':'No'}}</span>
+                              <span class="stdd w200">Assessment Q designed: </span> <span class="stdd blue">{{qDesigned ? 'Yes':'No'}}</span>
                               <!-- <span class="stdd">{{cvAssessment?.candidateAssessmentItems===null}}</span> -->
                          </div>
       
                          <div class="col-6 stdd">
                               <div *ngIf="requireInternalReview" class="stdd">Assessed by: 
-                                   <span class="stdd blue mx-2">{{cvAssessment['assessedByName']}}</span>
-                              </div>
-                              <div *ngIf="!requireInternalReview" class="stdd">Shortlisted by: 
-                                   <span class="stdd blue mx-2">{{cvAssessment ['assessedByName']}}</span>
+                                   <span class="stdd blue">{{cvAssessment['assessedByName']}}</span>
                               </div>
                          </div>
                          
                          <div class="col-6 stdd">
-                              <span class="stdd">On: </span> <span class="stdd blue mx-2">{{cvAssessment['assessedOn'] | date}}</span>
+                              <span class="stdd w200">On: </span> <span class="stdd blue">{{cvAssessment['assessedOn'] | date}}</span>
                          </div>
                          <div class="col-6 stdd">
-                              <span class="stdd">Assessment Result: </span> <span class="stdd blue mx-2">{{cvAssessment['assessResult']}}</span>
+                              <span class="stdd w200">Assessment Result: </span> <span class="stdd blue">{{cvAssessment['assessResult']}}</span>
                          </div>
-      
+                         <div class="stdd col-6 pull-right">
+                              <button type="button" class="btn btn btn-success fa fa-save" style="margin-left: 300px;" 
+                                   [disabled]="!form.dirty && cvAssessment.candidateAssessmentItems" 
+                                   title="Save the assessment form" 
+                                   (click)="updateAssessment()" 
+                              ></button>
+                              <button 
+                                   type="button" class="btn btn-primary fa fa-trash pull-right" 
+                                   title="delete complete Assessment Object" 
+                                   (click)="deleteAssessment()" 
+                              > </button>
+                         </div>
+                         
                     </div>
                </div>
      
-               <hr class="mt-0 mb-0 b"> 
+               <hr class="dblLine"> 
                <div *ngIf="!requireInternalReview" class="b blue">
                     No internal review required
                </div>
@@ -207,7 +193,7 @@
                                    (click)="addCandidateAssessmentItem()" ></button>
                               
                               <hr class="mt-0 mb-0">
-                              <div formArrayName="candidateAssessmentItems" class="my-1">
+                              <div formArrayName="candidateAssessmentItems" class="my-1" *ngIf="cvAssessment.candidateAssessmentItems">
                                    <div *ngFor="let item of candidateAssessmentItems.controls; let i=index">
                                         <div [formGroupName]="i" class="my-1">
                                              <input type="text" class="stddT ML20 w50" formControlName="questionNo" >
@@ -215,7 +201,8 @@
                                              <input type="checkbox" class="stddT ML5 w50" formControlName="isMandatory">  
                                              <input type="text" class="stddT w400" title="question" formControlName="question">
                                              <input type="text" class="stddT w50" title="maxPoints" formControlName="maxPoints" (click)="maxMarksTotal()"> 
-                                             <input type="number" class="stddT w50" style="text-align: right;" title="points" formControlName="points" (change)="pointsGainedTotal(i)">  
+                                             <input type="number" class="stddT w50" style="text-align: right;" 
+                                                  title="points" formControlName="points" (change)="pointsGainedTotal(i)">  
                                              <input type="text" class="stddT w200" title="remarks" formControlName="remarks">
                                         
                                              <button class="stdd red fa fa-trash mx-2" (click)="removeCandidateAssessmentItem(i)" ></button>
@@ -235,9 +222,10 @@
     
 </div>
 
-<div style="font-size: smaller">
-     {{this.form.value | json}}
+<div style="font-size: smaller;">
+     {{form.value | json}}
 </div>
+
  <div class="row" *ngIf="validationErrors.length > 0">
      <ul class="text-danger">
           <li *ngFor="let error of validationErrors">

@@ -14,7 +14,7 @@ namespace api.Entities.HR
         //public DateTime SelectionDate {get; set;}
         public string SelectionStatus { get; set; }
         public string RejectionReason { get; set; }
-        public DateOnly SelectedOn { get; set; }
+        public DateTime SelectedOn { get; set; }
         public int Charges {get; set;}
         public string Remarks {get; set;}
         

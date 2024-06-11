@@ -22,7 +22,7 @@ namespace api.Entities.HR
         public int? CustomerId { get; set; }
         public string Source {get; set;}
         //[Required]
-        public DateOnly? DOB { get; set; }
+        public DateTime? DOB { get; set; }
         public string PpNo { get; set; } 
         public string AadharNo {get; set;}
         public string Ecnr { get; set; }

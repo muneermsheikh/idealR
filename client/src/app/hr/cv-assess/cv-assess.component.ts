@@ -6,21 +6,17 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, catchError, of, switchMap, take, tap } from 'rxjs';
 import { ICandidateBriefDto } from 'src/app/_dtos/admin/candidateBriefDto';
 import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
-import { CandidateAssessedDto, ICandidateAssessedDto } from 'src/app/_dtos/hr/candidateAssessedDto';
+import { ICandidateAssessedShortDto } from 'src/app/_dtos/hr/candidateAssessedShortDto';
 import { ICandidateAssessmentAndChecklistDto } from 'src/app/_dtos/hr/candidateAssessmentAndChecklistDto';
-import { ICandidateAssessmentWithErrorStringDto } from 'src/app/_dtos/hr/candidateAssessmentWithErrorStringDto';
 import { IChecklistHRDto } from 'src/app/_dtos/hr/checklistHRDto';
 import { IHelp } from 'src/app/_models/admin/help';
-import { IOrderItemAssessmentQ } from 'src/app/_models/admin/orderItemAssessmentQ';
 import { CandidateAssessment, ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
-import { CandidateAssessmentItem, ICandidateAssessmentItem } from 'src/app/_models/hr/candidateAssessmentItem';
 import { IChecklistHRItem } from 'src/app/_models/hr/checklistHRItem';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
 import { ChecklistService } from 'src/app/_services/hr/checklist.service';
-import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
 import { HelpModalComponent } from 'src/app/modals/help-modal/help-modal.component';
 import { ChecklistModalComponent } from 'src/app/profiles/checklist-modal/checklist-modal.component';
 
@@ -42,7 +38,7 @@ export class CvAssessComponent implements OnInit {
 
   assessmentAndChecklist: ICandidateAssessmentAndChecklistDto | undefined;
 
-  existingAssessmentsDto: ICandidateAssessedDto[]=[];    //summary of existing assessments of the selected candidate
+  existingAssessmentsDto: ICandidateAssessedShortDto[]=[];    //summary of existing assessments of the selected candidate
 
 //checklist
   checklist: IChecklistHRDto | undefined;
@@ -56,7 +52,7 @@ export class CvAssessComponent implements OnInit {
   totalGained: number=0;
   percentage: number=0;
   qDesigned: boolean = false;
-  requireInternalReview: boolean=false;
+  requireInternalReview: string="N";
   lastOrderItemIdSelected: number=-1;
 
   routeId: string='';
@@ -80,7 +76,8 @@ export class CvAssessComponent implements OnInit {
 
   constructor(private fb: FormBuilder, 
     private service: CandidateAssessmentService,
-    private assessmentService: OrderAssessmentService,
+    //private assessmentService: OrderAssessmentService,
+    private candidateAssessmentService: CandidateAssessmentService,
     private bsModalService: BsModalService,
     private checklistService: ChecklistService,
     private toastr: ToastrService,
@@ -98,14 +95,11 @@ export class CvAssessComponent implements OnInit {
             
             if (nav?.extras && nav.extras.state) {
                 this.bolNavigationExtras=true;
-                if(nav.extras.state['.returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
+                if(nav.extras.state['returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
 
                 if( nav.extras.state['cvbrief']) this.cvBrief = nav.extras.state['cvbrief'] as ICandidateBriefDto;
-                //if(nav.extras.state.openorderitems) this.existingAssessmentsDto = nav.extras.state.openorderitems as IAssessmentsOfACandidateIdDto[]; 
-                //if(nav.extras.state.openorderitems) this.openOrderItems = nav.extras.state.openorderitems as IOrderItemBriefDto[];
-            }
-            //this.bcService.set('@CVAssess',' ');
-     }
+               }
+    }
 
   ngOnInit(): void {
   
@@ -117,13 +111,7 @@ export class CvAssessComponent implements OnInit {
     //console.log('openOrderItems', this.openOrderItems);
   }
 
- /* initializeTotals() {
-    this.totalGained =0;
-    this.totalPoints=0;
-    this.percentage=0;
 
-  }
-*/
 
   chooseSelectedOrderItem() {
     
@@ -139,149 +127,94 @@ export class CvAssessComponent implements OnInit {
           this.qDesigned = this.orderItemSelected!.assessmentQDesigned;
 
           if (!this.qDesigned) {
-            console.log('assessment Q not designed');
             this.toastr.error('assessment Questions not designed - from component');
             return;
           }
       }
-   
-        this.service.getCandidateAssessment(this.cvBrief!.id, this.orderItemSelectedId)
-        .subscribe((response: any): void => 
-        {
-          this.assessmentAndChecklist = response;
-          
-          this.checklist = response.checklistHRDto;
-          console.log('response :', response);
-
-          this.cvAssessment = this.assessmentAndChecklist!.assessed;
-          this.qDesigned = this.orderItemSelected!.assessmentQDesigned;
-
-          if (this.cvAssessment) {
-            //this.orderItemChangedEventSubject.next(this.cvAssessment);
+      
+      this.service.getCandidateAssessment(this.cvBrief!.id, this.orderItemSelectedId).subscribe({
+        next: (response: any) => {
+            this.assessmentAndChecklist = response;
             
-            if(this.cvAssessment)  this.initializeAndPopulateFormArray(this.cvAssessment);
-            this.calculatePercentage();
+            this.checklist = response.checklistHRDto;
+            console.log('response :', this.checklist);
 
-          } else {
-            this.toastr.warning('the candidate has not been assessed for the category selected.');
-          }
-        }, (error: string | undefined) => {
-          this.toastr.error('failed to retrieve candidate assessment', error);
-          //this.candidateAssessmentItems.clear();
-        })
-        
-        this.lastOrderItemIdSelected = this.orderItemSelectedId;
+            this.cvAssessment = this.assessmentAndChecklist!.assessed;
+            this.qDesigned = this.orderItemSelected!.assessmentQDesigned;
+
+            if (this.cvAssessment) {
+              //this.orderItemChangedEventSubject.next(this.cvAssessment);
+              this.cvAssessment.candidateAssessmentItems===null 
+                ? this.initializeWithoutArray(this.cvAssessment)
+                : this.initializeWithArray(this.cvAssessment);
+          
+              this.lastOrderItemIdSelected = this.orderItemSelectedId;
+
+            } else {
+              this.toastr.warning('the candidate has not been assessed for the category selected.');
+            }
+        }, error: (err: any) => this.toastr.error(err, 'failed to retrieve candidate assessment')
+      })
+
 
   }
 
   returnToCalling() {
+    
     this.router.navigateByUrl(this.returnUrl || '' );
   } 
 
-  createNewAssessment(){
-
-      if (this.cvAssessment !== null) return;
-      
-      var cvAssess: ICandidateAssessment;
-      var cvItems: ICandidateAssessmentItem[]=[];
-
-      if (!this.requireInternalReview) {    //create assessment header without assessment question items
-        cvAssess = new CandidateAssessment(
-            this.orderItemSelectedId, this.cvBrief!.id, this.user!.userName, new Date(),0, cvItems );
-      } else { 
-        var items: IOrderItemAssessmentQ[];
-        this.assessmentService.getOrderItemAssessmentQs(this.orderItemSelectedId)
-          .subscribe(response => {
-            items = response;
-            if (items.length === 0) {
-              this.toastr.warning('The Order Item selected requires internal assessment of candidates, for which ' + 
-                'assessment Questions for the Order Item must be designed.  The Selected order item has not been designed');
-              this.orderItemChangedEventSubject.next(undefined);        
-              return null;
-            }
-            
-            items.forEach(i => {
-              var cItem = new CandidateAssessmentItem(i.questionNo,i.isMandatory, i.question, i.maxPoints);
-              cvItems.push(cItem);
-            })
-            this.cvAssessment = new CandidateAssessment(
-                this.orderItemSelectedId, this.cvBrief!.id, this.user!.userName, new Date(), 
-                this.checklist!.id, cvItems );
-              this.orderItemChangedEventSubject.next(this.cvAssessment);   
-            
-            return;
-        }, error => {
-            this.toastr.error('failed to create Assessment item', error);
-            this.orderItemChangedEventSubject.next(this.cvAssessment!);
-            return null;
-        })
-      }
-  }
-
   updateAssessment() {
   
-    if(!this.cvAssessment) {
-      this.toastr.info('CV Assessment object null');
-      console.log('CV Assessment null');
+    var formdata = this.form.value;
+    console.log('formdata', formdata);
+
+    if(this.cvAssessment) {
+      this.toastr.info('cvassessmentid', this.cvAssessment.id.toString()) ;
+
+      if(this.cvAssessment && this.cvAssessment.candidateAssessmentItems === null) {
+        var newCVAssessment = new CandidateAssessment();
+        newCVAssessment.assessResult = this.form.get('assessResult')!.value; 
+        newCVAssessment.assessedByName=this.user!.userName;
+        newCVAssessment.assessedOn=new Date(); 
+        newCVAssessment.candidateId=this.cvAssessment.candidateId;
+        newCVAssessment.hrChecklistId=this.cvAssessment.hrChecklistId; 
+        newCVAssessment.id=this.cvAssessment.id;
+        newCVAssessment.orderItemId=this.cvAssessment.orderItemId; 
+        newCVAssessment.requireInternalReview=this.cvAssessment.requireInternalReview;
+
+        formdata = newCVAssessment;
+      };
+
+
+      if(this.cvAssessment.id === 0) 
+        {
+          return this.service.saveNewCandidateAssessment(formdata).subscribe({
+            next: (response: ICandidateAssessment) => {
+                if(response === null) {
+                  this.toastr.warning('Failed to insert the CV Assessment', 'Failure')
+                } else {
+                  this.toastr.success('Inserted the CV Assessment', 'Success')
+                }},
+              error: (err: any) => this.toastr.error(err, 'failed to save the Assessment')
+            })
+        } else {
+
+          this.service.updateCandidateAssessment(formdata).subscribe({
+            next: (response: boolean) => {
+              if(response) {
+                this.toastr.success('updated the Candidate Assessment');
+              } else {
+                this.toastr.warning('failed to update the candidate assessment');
+              }
+            },
+            error: (err: any) => this.toastr.error(err, 'failed to update the candidate assessment')
+          })
+          
+         }
     }
     
-   if(this.cvAssessment) {
-    return this.service.updateCandidateAssessment(this.form.value).subscribe((response: any) => {
-        if (response) {
-          this.toastr.success('updated the Candidate Assessment');
-        } else {
-          this.toastr.warning('failed to update the candidate assessment');
-        }
-      }, (error: string | undefined) => {
-        this.toastr.error('failed to update the candidate assessment', error);
-      })
-    } else {
-      this.toastr.error('No valid assessment form');
-      return false;
-    }
-  }
-
-  shortlistForForwarding() {
-      if(!this.checklist) {
-        this.toastr.warning('no checklisting done on the candidate');
-        return;
-      }
-      if (this.cvAssessment !==null) {
-        this.toastr.warning('this candidate is already assessed.');
-        return;
-      }
-
-      //create new CV Assessment
-        return this.service.insertNewCVAssessment(false,this.orderItemSelectedId, this.cvBrief!.id).subscribe(
-          (response: ICandidateAssessmentWithErrorStringDto) => {
-          
-          if ((response.errorString==='' || response.errorString ===undefined || response.errorString === null) ) {
-            
-            this.cvAssessment = response.candidateAssessment;
-            
-            //update existingAssessmentsDto to update new assessment on the screen
-            if (this.cvAssessment !==null) {
-              //this.patchForm(this.cvAssessment);    //this is done in child form
-                var dto = new CandidateAssessedDto(); // = new AssessmentOfACandidateDto();
-                dto.checklistedByName = this.user!.userName;
-                dto.checklistedOn = this.checklist!.checkedOn;
-                dto.customerName = this.orderItemSelected!.customerName;
-                dto.professionName = this.orderItemSelected!.categoryName;
-                dto.categoryRef = this.orderItemSelected!.categoryRefAndName;
-                dto.assessedOn = new Date();
-                dto.assessedByName = this.user!.knownAs;
-
-                this.existingAssessmentsDto.push(dto);
-                this.toastr.success('shortlisted for forwarding to client');
-            }
-          } else if (response.errorString !== '') {
-            this.toastr.error('failed to shortlist the candidate, ', response.errorString);
-            console.log(response.errorString);
-          }
-        }, error => {
-          this.toastr.error('error in creating the shortlisting', error);
-          this.validationErrors = error;
-        })
+    return;
   }
 
   openShortlistCandidateHelpModal() {
@@ -312,24 +245,10 @@ export class CvAssessComponent implements OnInit {
     return null;
   }
 
-  createNewChecklist(){
-    if(!this.checklist) 
-    {
-      this.checklistService.getChecklist(this.cvBrief!.id, this.orderItemSelectedId).subscribe({
-        next: (response: IChecklistHRDto) => {
-          this.checklist = response;
-        },
-        error: error => this.toastr.error('failed to retrieve checklist', error)
-      })
-    } else {
-      this.toastr.warning('Order Item should be selected');
-    }
-    
-  }
-
   openSwitchMapModalChecklist() {
-    
-    if(this.orderItemSelectedId && !this.checklist && this.cvBrief) {
+    console.log('switchmodal checklist:', this.checklist);
+
+    if(this.checklist && this.cvBrief) {
 
       const apiCallExternal = this.checklistService.getChecklist(this.cvBrief?.id, this.orderItemSelectedId);
       const apiCallInternal = this.bsModalRef?.content.updateObj;
@@ -341,7 +260,28 @@ export class CvAssessComponent implements OnInit {
             catchError(err => {
               return of();
             }),
-            tap(res => this.toastr.success('modal call subscribed')),
+            tap(res => {
+              this.toastr.success('modal call subscribed');
+              if(res==='') {
+                //checklist has changed, update the object
+                this.service.getCandidateAssessment(this.cvBrief!.id, this.orderItemSelectedId)
+                  .subscribe({
+                    next: (response: ICandidateAssessmentAndChecklistDto) => {
+                      this.assessmentAndChecklist = response;
+                      this.checklist = response.checklistHRDto;
+                      this.cvAssessment = this.assessmentAndChecklist!.assessed;
+                      this.qDesigned = this.orderItemSelected!.assessmentQDesigned;
+          
+                      if (this.cvAssessment) {
+                        this.cvAssessment.candidateAssessmentItems === null 
+                          ? this.initializeWithoutArray(this.cvAssessment)
+                          : this.initializeWithoutArray(this.cvAssessment);
+                     } 
+                    }
+                  })
+
+              }
+            }),
           )),
           catchError(err => {
             this.toastr.error('error in subscribing to bsModalRef contents', err);
@@ -360,7 +300,13 @@ export class CvAssessComponent implements OnInit {
 
   //checklist modal
   openChecklistModal() {
-     
+
+    if(this.checklist ===null) {
+      this.toastr.warning('An order item must be selected, to display related checklist', "Order Item not selected");
+      return;
+    }
+    console.log('in openchecklistmodal, checklist is:', this.checklist);
+
       const config = {
           class: 'modal-dialog-centered modal-lg',
           initialState: {
@@ -427,6 +373,10 @@ export class CvAssessComponent implements OnInit {
   }
 
   deleteAssessment() {
+    if(!this.cvAssessment!.id) {
+      this.toastr.warning('CV Assessment object is undefined.  It cannot be deleted unless it is saved first');
+      return;
+    }
     this.service.deleteAssessment(this.cvAssessment!.id).subscribe(response => {
         if (response) {
           this.toastr.success('Candidate Assessment object deleted');
@@ -439,30 +389,44 @@ export class CvAssessComponent implements OnInit {
     });
   }
   
-  initializeAndPopulateFormArray(assess: ICandidateAssessment) {
+  initializeWithArray(assess: ICandidateAssessment) {
 
       this.form = this.fb.group({
         id:assess.id, orderItemId: assess.orderItemId, candidateId: assess.candidateId, 
         assessedOn: assess.assessedOn, assessResult: assess.assessResult, remarks: assess.remarks,
+        requireInternalReview: assess.requireInternalReview,
         
         candidateAssessmentItems: this.fb.array(
           assess.candidateAssessmentItems.map(x => (
             this.fb.group({
-              id: x.id, 
-              assessed: [x.assessed],
-              isMandatory: [x.isMandatory],
-              candidateAssessmentId: [x.candidateAssessmentId, Validators.required],
-              questionNo: [x.questionNo, Validators.required], 
-              question: [x.question, Validators.required],
-              maxPoints: [x.maxPoints, Validators.required], 
-              points: x.points,
-              remarks: x.remarks
+              id: x!.id, 
+              assessed: [x!.assessed],
+              isMandatory: [x!.isMandatory],
+              candidateAssessmentId: [x!.candidateAssessmentId, Validators.required],
+              questionNo: [x!.questionNo, Validators.required], 
+              question: [x!.question, Validators.required],
+              maxPoints: [x!.maxPoints, Validators.required], 
+              points: x!.points,
+              remarks: x!.remarks
             })
           ))
         )
     })
+
+    this.calculatePercentage();
   }
- 
+
+  
+  initializeWithoutArray(assess: ICandidateAssessment) {
+
+    this.form = this.fb.group({
+      id:assess.id, orderItemId: assess.orderItemId, candidateId: assess.candidateId, 
+      assessedOn: assess.assessedOn, assessResult: assess.assessResult, remarks: assess.remarks,
+      requireInternalReview: assess.requireInternalReview
+    });
+     
+}
+
   get candidateAssessmentItems(): FormArray {
     return this.form.get('candidateAssessmentItems') as FormArray;
   }
@@ -475,25 +439,30 @@ export class CvAssessComponent implements OnInit {
   }
 
   pointsGainedTotal(i: number){
-    console.log('item:', this.candidateAssessmentItems.value[i]);
-    var pt = this.candidateAssessmentItems.value[i].points;
-    var mx = this.candidateAssessmentItems.value[i].maxPoints;
 
-    if( pt > mx ) {
-      this.toastr.warning("Max points for this parameter is:" + mx + ".  You cannot exceed this number");
-      this.candidateAssessmentItems.at(i).get('points')?.setValue(0);
-      this.candidateAssessmentItems.at(i).get('assessed')?.setValue(false);
+    if(this.candidateAssessmentItems !== null) {
+      var pt = this.candidateAssessmentItems.value[i].points;
+      var mx = this.candidateAssessmentItems.value[i].maxPoints;
+  
+      if( pt > mx ) {
+        this.toastr.warning("Max points for this parameter is:" + mx + ".  You cannot exceed this number");
+        this.candidateAssessmentItems.at(i).get('points')?.setValue(0);
+        this.candidateAssessmentItems.at(i).get('assessed')?.setValue(false);
+        this.calculatePercentage();
+        return;
+      }
+      
+      this.totalGained = this.candidateAssessmentItems.value.map((x: any) => x.points).reduce((a:number,b:number) => a+b,0);
       this.calculatePercentage();
-      return;
+      this.candidateAssessmentItems.at(i).get('assessed')?.setValue(true);
     }
     
-    this.totalGained = this.candidateAssessmentItems.value.map((x: any) => x.points).reduce((a:number,b:number) => a+b,0);
-    this.calculatePercentage();
-    this.candidateAssessmentItems.at(i).get('assessed')?.setValue(true);
+    
     //(<FormArray>this.form.controls['candidateAssessmentItems']).at(i).get("assessed").setValue(true);   //set value of the DOM assessed to true
   }
 
   calculatePercentage() {
+    
     this.totalPoints =  this.candidateAssessmentItems.value.map((x:any) => x.maxPoints).reduce((a:number, b: number) => a + b,0);
     this.totalGained = this.candidateAssessmentItems.value.map((x:any) => x.points).reduce((a:number,b:number) => a+b,0);
 
@@ -502,21 +471,51 @@ export class CvAssessComponent implements OnInit {
 
   
   calculateGrade() {
-    this.calculatePercentage();
-    var grade="";
-    if(this.percentage < 41) {
-      grade = "Poor";
-    } else if (this.percentage > 40 && this.percentage <= 60) {
-      grade = "Average";
-    } else if (this.percentage > 60 && this.percentage <= 70) {
-      grade = "Good";
-    } else if (this.percentage < 70 && this.percentage <= 80) {
-      grade = "Very Good";
+    
+    if(this.cvAssessment?.candidateAssessmentItems !== null) {
+      this.calculatePercentage();
+      var grade="";
+      if(this.percentage < 41) {
+        grade = "Poor";
+      } else if (this.percentage > 40 && this.percentage <= 60) {
+        grade = "Average";
+      } else if (this.percentage > 60 && this.percentage <= 70) {
+        grade = "Good";
+      } else if (this.percentage < 70 && this.percentage <= 80) {
+        grade = "Very Good";
+      } else {
+        grade = "Excellent";
+      }
+  
+      return grade;
     } else {
-      grade = "Excellent";
+      return "Not Assessed";
     }
-
-    return grade;
+  
+    
   }
 
+
+  displayAssessment(candidateAssessmentId: number) {
+
+
+    this.candidateAssessmentService.getCandidateAssessmentById(candidateAssessmentId).subscribe({
+      next: (response: any) => {
+        if(response) {
+          if(response.assessed !==null && response.assessed.candidateAssessmentItems === null) {
+            this.initializeWithoutArray(response.assessed)
+          } else if(response.assessed !== null && response.assessed.candidateAssessmentItems !== null) {
+            this.initializeWithArray(response.assessed)
+          }
+          this.cvAssessment = response.assessed;
+          this.checklist = response.checklistHRDto;
+          console.log('checklist:', this.checklist);
+        } else {
+          this.toastr.warning('Normally, this should not happen, but we failed to retrieve the Candidate Assessment', 'failed')
+        }
+      },
+      error: (err: any) => this.toastr.error(err, 'Error in retrieving the Candidate Assessment')
+    })
+
+  }
 }

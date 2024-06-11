@@ -1,0 +1,15 @@
+.stdd {
+    display: inline-block;
+    font-size: small;
+}   
+
+.stddS {
+    display: inline-block;
+    font-size: smaller;
+}
+.blue {color: darkblue;}
+.red {color: red;}
+
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}

@@ -18,17 +18,31 @@ namespace api.Controllers
             _repo = repo;
         }
 
+        //stdd questions
         [HttpGet("assessmentStddQs")]
-        public async Task<ActionResult<ICollection<AssessmentQStdd>>> GetAssessmentQStdds() 
+        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetAssessmentQStdds() 
         {
             var qs = await _repo.GetAssessmentQStdds();
-            if(qs==null || qs.Count == 0) return NotFound("No standrd assessment questions on record");
+            if(qs==null || qs.Count == 0) return NotFound(new ApiException(404,"No standrd assessment questions on record", "Not Found Error"));
 
             return Ok(qs);
 
         }
 
-        [HttpGet("orderitemassessment/{orderItemId}")]
+        [HttpGet("questionsFromQBank/{professionid}")]
+        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetAssessmentQsFromQBank(int professionid) 
+        {
+            var qs = await _repo.GetCustomAssessmentQsForAProfession(professionid);
+
+            if(qs==null || qs.Count == 0) return NotFound(new ApiException(404,"No assessment questions found in the Question Bank matching the given profession", "No Questions in Question Bank"));
+
+            return Ok(qs);
+
+        }
+
+        
+        //OrderAssessmentItem
+        [HttpGet("orderassessmentitem/{orderItemId}")]
         public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessment(int orderItemId)
         {
             var assessment = await _repo.GetOrderAssessmentItem(orderItemId);
@@ -36,11 +50,11 @@ namespace api.Controllers
             return Ok(assessment);
         }
 
-        [HttpGet("orderitemAssessmt/{orderId}")]
-        public async Task<ActionResult<ICollection<OrderItemAssessment>>> GetOrderAssessment(int orderId)
+        [HttpGet("orderAssessment/{orderId}")]
+        public async Task<ActionResult<OrderAssessment>> GetOrderAssessment(int orderId)
         {
             var assessment = await _repo.GetOrderAssessment(orderId);
-            if(assessment==null) return NotFound();
+            if(assessment==null) return NotFound(new ApiException(404, "The Order Assessment Record not found", "Not Found Error"));
             return Ok(assessment);
         }
 
@@ -73,7 +87,7 @@ namespace api.Controllers
             return Ok(posted);
         }
 
-        [HttpPut("itemassessment")]
+        [HttpPut("assessmentitem")]
         public async Task<ActionResult<bool>> UpdateOrderItemAssessment(OrderAssessmentItem orderAssessmentItem)
         {
             var updated = await _repo.EditOrderAssessmentItem(orderAssessmentItem);

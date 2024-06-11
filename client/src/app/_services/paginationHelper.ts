@@ -142,17 +142,17 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
   export function getPaginationHeadersSelectionParams(sParams: SelDecisionParams): HttpParams {
     
     let params = new HttpParams();
-
-    params = params.append('pageNumber', sParams.pageNumber);
     params = params.append('pageSize', sParams.pageSize)
 
+    params = params.append('pageNumber', sParams.pageNumber );
+   
     if (sParams.orderItemId !== 0) 
       params = params.append('orderItemId', sParams.orderItemId.toString());
     
-    if (sParams.categoryId !== 0) 
-      params = params.append('categoryId', sParams.categoryId.toString());
-    if (sParams.categoryName !== '') 
-      params = params.append('categoryName', sParams.categoryName);
+    if (sParams.professionId !== 0) 
+      params = params.append('categoryId', sParams.professionId.toString());
+    if (sParams.professionName !== '') 
+      params = params.append('categoryName', sParams.professionName);
     if (sParams.orderId !== 0) 
       params = params.append('orderId', sParams.orderId!.toString());
     if (sParams.orderNo !== 0) 
@@ -170,7 +170,6 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
    
     params = params.append('sort', sParams.sort);
    
-    
     return params;
   }
 
@@ -227,11 +226,10 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageSize', cvParams.pageSize.toString());
 
     if(cvParams.agentId !== 0) params = params.append('agendId', cvParams.agentId.toString());
-    if(cvParams.city !== '') params = params.append('city', cvParams.city);
     if(cvParams.professionId !== 0) params = params.append('professionId', cvParams.professionId.toString());
     if(cvParams.search !== '') params = params.append('search', cvParams.search);
     if(cvParams.sort !== '') params = params.append('sort', cvParams.sort);
-
+    if(cvParams.typeOfCandidate !== '') params = params.append('typeOfCandidate', cvParams.typeOfCandidate);
     return params;
   }
 

@@ -1,0 +1,98 @@
+
+<div *ngIf="remun !== null && remun !== undefined" >
+    
+     <div class="b w200 modal-header" style="font-size: medium;">
+     </div>
+     
+          <div *ngIf="remun !== undefined" class="modal-body" >
+
+               <div class="mx-2">
+                    <div>
+                         <strong class="stdd w150">Remuneration details for: </strong> {{remun.categoryName}}
+                    </div>
+                    <div>
+                         <strong class="stdd w75">Customer: </strong> {{remun.customerName}}
+                    </div>
+                    <div>
+                         <strong class="stdd w75">Order No.:</strong> {{remun.orderNo}} dt {{remun.orderDate | date}}
+                    </div>
+                    <div class="pull-right">
+                         <button type="button" class="btn btn-success mx-2 fa fa-save" (click)="confirm()"></button>
+                         <button type="button" class="btn btn-danger fa fa-window-close red" (click)="decline()"></button>
+                    </div>
+                    
+               </div>
+               <hr style="border:double; margin: 0px; padding: 0px;">
+               <form #remunForm="ngForm" id="remunForm">
+                    <label class="lbl w150">DETAILS</label>
+                    <hr>
+                    <label class="lbl w100">Salary</label>
+                    <input class="stdd w50 form-text-input" 
+                         [(ngModel)]="remun.salaryCurrency" type="text" id="salaryCurrency" name="salaryCurrency">
+                    <input class="stdd w50 ml5 form-text-input " 
+                         [(ngModel)]="remun.salaryMin" type="text" id="salaryMin" name="salaryMin">
+                    <label class="lbl w25 ml10" style="text-align:center;">to</label>
+                    <input class="stdd w50 form-text-input" 
+                         [(ngModel)]="remun.salaryMax" type="text" id="salaryMax" name="salaryMax">
+               
+                    <br>
+                    <label class="lbl w100">Daily Work hrs</label>
+                    <input class="stdd w25 tAlignR" [(ngModel)]="remun.workHours" type="text" id="workHours" name="workHours">
+                    
+                    <label class="lbl w150 tAlignR">Contract Period</label>
+                    <input class="stdd w25 tAlignR" [(ngModel)]="remun.contractPeriodInMonths" type="text" id="contractPeriodInMonths" name="contractPeriodInMonths">
+                    <label class="lbl w50 tAlignR">months</label>
+                    
+                    <br>
+                    <label class="lbl w100">Leave/Year</label>
+                    <input class="stdd w25 form-text-input tAlignR" [(ngModel)]="remun.leavePerYearInDays" type="text" 
+                         id="leavePerYearInDays" name="leavePerYearIDays">
+                    <label class="lbl w150 tAlignR" >days vacation, after</label>
+                    <input class="stdd w25 form-text-input tAlignR" [(ngModel)]="remun.leaveAirfareEntitlementAfterMonths" type="text" 
+                         id="leaveAirfareEntitlementAfterMonths" name="leaveAirfareEntitlementAfterMonths">
+                    <label class="lbl w25">months</label>
+                    <hr style="border:double; margin: 0px; padding: 0px;">
+                    <label class="lbl w150 vAlignM">Perks</label>
+                    <label class="lbl w100 vAlignM">Amount</label>
+                    <label class="lbl w75 vAlignM">Provided<br>free</label>
+                    <label class="lbl w100 vAlignM">Not<br>Provided</label>
+                    <hr style="border:double; margin: 0px; padding: 0px;">
+                    <label class="lbl w150">Accommodation</label>
+                    <input class="stdd w75 ml5 tAlignR"  
+                         [(ngModel)]="remun.housingAllowance" type="text" id="housingAllowance" name="housingAllowance">
+                    <input class="stdd w75 ml15" type="checkbox" 
+                         [(ngModel)]="remun.housingProvidedFree" id="housingProvidedFree" name="housingProvidedFree">
+                    <input class="stdd w75 ml5" style="padding-left: 10px; padding-right:10px; text-align: center;" type="checkbox" 
+                         [(ngModel)]="remun.housingNotProvided" id="housingNotProvided" name="housingNotProvided">
+
+                    <br>
+                    <label class="lbl w150">Food</label>
+                    <input class="stdd w75 ml5 tAlignR"  
+                         [(ngModel)]="remun.foodAllowance" type="text" id="foodAllowance" name="foodAllowance">
+                    <input class="stdd w75 ml15" type="checkbox" 
+                         [(ngModel)]="remun.foodProvidedFree" id="foodProvidedFree" name="foodProvidedFree">
+                    <input class="stdd w75 ml5" style="padding-left: 10px; padding-right:10px; text-align: center;" type="checkbox" 
+                         [(ngModel)]="remun.foodNotProvided" id="foodNotProvided" name="foodNotProvided">
+
+                    <br>
+                    <label class="lbl w150">Transport</label>
+                    <input class="stdd w75 ml5 tAlignR"  
+                         [(ngModel)]="remun.transportAllowance" type="text" id="transportAllowance" name="transportAllowance">
+                    <input class="stdd w75 ml15" type="checkbox" 
+                         [(ngModel)]="remun.transportProvidedFree" id="transportProvidedFree" name="transportProvidedFree">
+                    <input class="stdd w75 ml5" style="padding-left: 10px; padding-right:10px; text-align: center;" type="checkbox" 
+                         [(ngModel)]="remun.transportNotProvided" id="transportNotProvided" name="transportNotProvided">
+
+                    <br>
+                    <label class="lbl w150">Other Allowance</label>
+                    <input class="stdd w75 ml5 tAlignR"  
+                         [(ngModel)]="remun.otherAllowance" type="text" id="otherAllowance" name="otherAllowance">
+                    
+               </form>
+     
+          </div>     
+     </div>
+     <div class="modal-footer">
+
+     </div>
+

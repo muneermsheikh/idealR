@@ -9,6 +9,7 @@ import { User } from 'src/app/_models/user';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto';
 import { IOrderItemsAndAgentsToFwdDto } from 'src/app/_dtos/admin/orderItemsAndAgentsToFwdDto';
+import { IUserWithRolesDto } from 'src/app/_dtos/admin/usersWithRolesDto';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,12 @@ export class AdminService {
 
   }
 
+  getUsersWithRoles(){ 
+
+    return this.http.get<IUserWithRolesDto[]>(this.baseUrl + 'admin/users-with-roles');
+    
+  }
+
    
   setUserParams(params: UserParams) {
     this.userParams = params;
@@ -75,11 +82,10 @@ export class AdminService {
     
     //params = params.append('predicate', predicate);
 
-    return getPaginatedResult<User[]>(this.baseUrl + 'admin/"users-with-roles', params, this.http);
+    return getPaginatedResult<User[]>(this.baseUrl + 'admin/users-with-roles', params, this.http);
   }
 
   updateUserRoles(email: string, roles: string[]) {
-    //return this.http.post(this.baseUrl + 'admin/edit-roles/' + email + '?roles=' + roles, {});
     return this.http.post(this.baseUrl + 'admin/edit-roles/'+ email + '?roles=' + roles,{});
   }
 

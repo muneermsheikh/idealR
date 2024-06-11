@@ -1,0 +1,68 @@
+<div class="modal-header my-0" *ngIf="sel" >
+    <div class="stdd w75 b">Candidate:</div> 
+    <div class="stdd w200 blue mx-1">{{sel.applicationNo}} - {{sel.candidateName}}</div>
+
+    <button type="button" class="stdd btn btn-success fa fa-save" (click)="update()"></button>
+    <button type="button" class="stdd btn btn-close close mx-10" aria-label="Close" (click)="bsModalRef.hide()">X</button>
+    <button class="btn btn-danger pull-right fa fa-trash fa-sm" (click)="deleteSel()" title="Delete this Selection"></button>
+</div>    
+
+<div class="modal-body my-0">
+    <form [formGroup]="form">
+        <div class="mx-2 mt-2" *ngIf="sel" >
+            <label class="stdd w150">Application No</label>
+            <div class="stdd w150">
+                <app-text-input
+                    [label]="'Application No'" formControlName="applicationNo"
+                ></app-text-input>
+            </div>    
+            <label class="stdd w150">Candidate Name</label>
+            <div class="stdd w150">
+                <app-text-input
+                    [label]="'Candidate Name'" formControlName="candidateName"
+                ></app-text-input>
+            </div>    
+            
+            <br>
+            <label class="stdd w110">Customer</label>
+            <div class="stdd w150">
+                <app-text-input
+                    [label]="'Customer Name'" formControlName="customerName"
+                ></app-text-input>
+            </div>    
+            <label class="stdd w110">Category Name</label>
+            <div class="stdd w150">
+                <app-text-input
+                    [label]="'Category'" formControlName="categoryRef"
+                ></app-text-input>
+            </div>  
+            
+            <br>
+            <label class="stdd w110">Referred On</label>
+            <div class="stdd w110">
+                <app-date-picker
+                    [label]="'Referred On'" formControlName="referredOn"
+                ></app-date-picker>
+            </div>  
+            <label class="stdd w110">selected On</label>
+            <div class="stdd w110">
+                <app-date-picker
+                    [label]="'Selected On'" formControlName="selectedOn"
+                ></app-date-picker>
+            </div>  
+            <br>
+            <label class="stdd w110" >Selection Status</label>
+            <div class="stdd w110 mx-2">
+                <ng-select 
+                     style="border: color(from color srgb r g b);"
+                     [items]="statuses"
+                     bindLabel="status"
+                     bindValue="status"
+                     labelForId="status"
+                     clearAllText="Clear"
+                     formControlName="selectionStatus"
+                ></ng-select>
+            </div>
+        </div>
+    </form>
+</div>

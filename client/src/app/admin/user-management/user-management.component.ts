@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Pagination } from 'src/app/_models/pagination';
 import { User } from 'src/app/_models/user';
@@ -28,10 +29,14 @@ export class UserManagementComponent implements OnInit{
   selectedRoles: string[]=[];
 
 
-  constructor(private adminService: AdminService, private modalService: BsModalService) {};
+  constructor(private activatedRoute: ActivatedRoute, private adminService: AdminService, private modalService: BsModalService) {};
 
   ngOnInit(): void {
-    this.getUsersWithRoles();
+    //this.getUsersWithRoles();
+    this.activatedRoute.data.subscribe(data => {
+      this.users = data['userswithroles']
+    })
+   
   }
 
   getUsersWithRoles() {
@@ -42,6 +47,7 @@ export class UserManagementComponent implements OnInit{
           this.users = response.result;
           this.pagination = response.pagination;
         }
+        console.log('users with roles', this.users);
       }
     })
   }
@@ -60,16 +66,21 @@ export class UserManagementComponent implements OnInit{
     }
 
     this.bsModalRef = this.modalService.show(RolesModalComponent, config);
+
     this.bsModalRef.onHide?.subscribe({
       next: () => {
         const selectedRoles = this.bsModalRef.content?.selectedRoles;
+
         if (!this.arrayEqual(selectedRoles, user.roles)) {
           this.adminService.updateUserRoles(user.userName, selectedRoles!).subscribe({
-            next: () => console.log('succeeded updatng user roles')
+            //next: roles => user.roles = roles
+          
           })
         }
       }
     })
+
+    
 
   }
 

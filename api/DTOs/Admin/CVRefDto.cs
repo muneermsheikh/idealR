@@ -14,13 +14,13 @@ namespace api.DTOs.Admin
         public string CustomerName { get; set; }
         public int OrderId { get; set; }
         public int OrderNo { get; set; }
-        public DateOnly OrderDate {get; set;}
+        public DateTime OrderDate {get; set;}
         public int OrderItemId { get; set; }    
         public int SrNo {get; set;}
         public string ProfessionName { get; set; }
         public string CategoryRef { get; set; }
         //public string PPNo {get; set;}
-        public DateOnly ReferredOn { get; set; }
+        public DateTime ReferredOn { get; set; }
         public string RefStatus { get; set; }
         public string SelectionStatus { get; set; }
     }

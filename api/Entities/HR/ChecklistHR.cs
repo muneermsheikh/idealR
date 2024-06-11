@@ -11,7 +11,6 @@ namespace api.Entities.HR
         public string UserName { get; set; }
         public DateTime CheckedOn {get; set;}
         public String UserComments {get; set;}
-        [Required]
         public string HrExecUsername { get; set; }
         public int Charges {get; set;}
         public int ChargesAgreed {get; set;}

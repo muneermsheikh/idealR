@@ -1,9 +1,5 @@
-using api.DTOs;
 using api.DTOs.Admin;
-using api.DTOs.HR;
-using api.Entities.Admin.Client;
 using api.Entities.HR;
-using api.Entities.Messages;
 using api.Entities.Tasks;
 using api.Extensions;
 using api.Helpers;
@@ -65,6 +61,16 @@ namespace api.Data.Repositories.Admin
 
             try {await _context.SaveChangesAsync();} catch (Exception ex) { throw new Exception(ex.Message, ex);};
 
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateException ex) {
+                Console.Write("CVRefRepository EditReferral" + " - " + ex.InnerException.Message);
+                return false;
+            //} catch (SQLITE_CONSTRAINT_UNIQUE)
+            } catch (Exception ex) {
+                Console.Write(ex.InnerException.Message);
+                return false;
+            }
             return true;
         }
 
@@ -105,7 +111,35 @@ namespace api.Data.Repositories.Admin
             return paged;
         }
 
+         public async Task<PagedList<SelPendingDto>> GetCVReferralsPending(CVRefParams refParams)
+        {
+            var query = (from cvref in _context.CVRefs 
+                    where cvref.RefStatus=="Referred" && cvref.SelectionStatus != "Selected"
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join o in _context.Orders on item.OrderId equals o.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
         
+                select new SelPendingDto{
+                    Id = cvref.Id,
+                    Checked = false,
+                    CvRefId = cvref.Id,
+                    OrderItemId = item.Id,
+                    CustomerName = o.Customer.CustomerName,
+                    CategoryRefAndName = o.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateName = cv.FullName,
+                    ReferredOn = cvref.ReferredOn
+                }).AsQueryable();
+
+    
+            var paged = await PagedList<SelPendingDto>.CreateAsync(
+                query.AsNoTracking()
+                //.ProjectTo<SelPendingDto>(_mapper.ConfigurationProvider)
+                , refParams.PageNumber, refParams.PageSize);
+
+            return paged;
+        }
+
         public async Task<PagedList<CVRefDto>> GetCVReferrals(CVRefParams refParams)
         {
             var query =(from cvref in _context.CVRefs
@@ -161,7 +195,6 @@ namespace api.Data.Repositories.Admin
                 query.AsNoTracking()
                 .ProjectTo<CVRefDto>(_mapper.ConfigurationProvider)
                 , refParams.PageNumber, refParams.PageSize);
-    
 
             return paged;
         }
@@ -257,7 +290,13 @@ namespace api.Data.Repositories.Admin
                 .ToListAsync();
  
             //assessed and shortlisted CVs, but not referred to client
-            var shortlistedCVsNotReferred = await _context.CandidateAssessments.Where(x => CandidateAssessmentIds.Contains(x.Id) && x.CVRefId == 0 ).ToListAsync();
+            var shortlistedCVsNotReferred = await _context.CandidateAssessments
+                .Where(x => CandidateAssessmentIds.Contains(x.Id) && x.CVRefId == 0 ).ToListAsync();
+            if (shortlistedCVsNotReferred.Count == 0) {
+                dtoToReturn.ErrorString = "All candidates are already referred";;
+                return dtoToReturn;
+            }
+            
             var ids = await _context.CVRefs.Where(x => shortlistedCVsNotReferred.Select(m => m.CVRefId).ToList().Contains(x.Id)).Select(x => x.Id).ToListAsync();
             
             foreach(var id in ids) {
@@ -283,7 +322,7 @@ namespace api.Data.Repositories.Admin
                 var cvref =new CVRef{
                     CandidateAssessmentId = q.CandidateAssessment.Id,
                     OrderItemId=q.OrderItemId, CandidateId = q.CandidateId, 
-                    CustomerId =  q.CustomerId, ReferredOn = DateOnly.FromDateTime(dateTimeNow), 
+                    CustomerId =  q.CustomerId, ReferredOn = dateTimeNow, 
                     HRExecUsername = q.HRExecUsername, RefStatus = "Referred",
                     RefStatusDate = DateOnly.FromDateTime(DateTime.UtcNow)
                 };
@@ -303,6 +342,8 @@ namespace api.Data.Repositories.Admin
                     catch (DbUpdateException ex)
                     {
                         foreach (var entry in ex.Entries) {
+                            Console.Write("CVRefRepository.MakeReferrals Exception - " + ex.InnerException.Message);
+
                             entry.State = EntityState.Detached; // Remove from context so won't try saving again.
                             dtoToReturn.ErrorString += ex.Message;
                         }
@@ -349,23 +390,23 @@ namespace api.Data.Repositories.Admin
             var dateTimeNow = DateTime.UtcNow;
             string ErrorString ="";
 
-          
-                var query = await (from candAssess in _context.CandidateAssessments where 
-                        candidatesNotRefDto.Select(x => x.CandidateAssessment.Id).ToList()
-                        .Contains(candAssess.Id)
-                    join cvref in _context.CVRefs on 
-                        new {candId=candAssess.CandidateId, orderitemid=candAssess.OrderItemId}
-                        equals new {candId=cvref.CandidateId, orderitemid=cvref.OrderItemId}
-                    select new{candidateassessment=candAssess, cvrefid=cvref.Id}
-                ).ToListAsync();
-                
-                //1 - update candidateAssessment.CVRefId value
-                foreach(var item in query) {
-                    var candassess=item.candidateassessment;
-                    candassess.CVRefId = item.cvrefid;
-                    _context.Entry(candassess).State=EntityState.Modified;
+        
+            var query = await (from candAssess in _context.CandidateAssessments where 
+                    candidatesNotRefDto.Select(x => x.CandidateAssessment.Id).ToList()
+                    .Contains(candAssess.Id)
+                join cvref in _context.CVRefs on 
+                    new {candId=candAssess.CandidateId, orderitemid=candAssess.OrderItemId}
+                    equals new {candId=cvref.CandidateId, orderitemid=cvref.OrderItemId}
+                select new{candidateassessment=candAssess, cvrefid=cvref.Id}
+            ).ToListAsync();
+            
+            //1 - update candidateAssessment.CVRefId value
+            foreach(var item in query) {
+                var candassess=item.candidateassessment;
+                candassess.CVRefId = item.cvrefid;
+                _context.Entry(candassess).State=EntityState.Modified;
 
-                }
+            }
             
             //2 - mark DocControllerAdminTasks as completed
                 var docControllerAdmTaskIds = candidatesNotRefDto.Select(x => x.DocControllerAdminTaskId).ToList();
@@ -375,7 +416,7 @@ namespace api.Data.Repositories.Admin
                         if(task != null) {
                             task.TaskStatus = "Completed";
                             task.TaskItems.Add(new TaskItem{AppTaskId=id, 
-                                TransactionDate=DateOnly.FromDateTime(DateTime.UtcNow),
+                                TransactionDate=DateTime.UtcNow,
                                 TaskItemDescription="Task Completed", UserName=Username});
                             _context.Entry(task).State = EntityState.Modified;
                         }
@@ -391,11 +432,11 @@ namespace api.Data.Repositories.Admin
                 var cvrefid=query.Where(x => x.candidateassessment.Id == item.CandidateAssessment.Id).FirstOrDefault().cvrefid;
 
                 var cvfwdTask = new AppTask{
-                    TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
+                    TaskDate=DateTime.UtcNow, 
                     CVRefId = cvrefid,
                     AssignedToUsername=_docControllerAdminAppUsername, 
                     TaskOwnerUsername = Username, 
-                    CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
+                    CompleteBy=DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Forward CV to customer through the system - " + categoryDescription, 
                     TaskType="CVFwdTask", 
                     TaskStatus="Not Started", 
@@ -409,9 +450,9 @@ namespace api.Data.Repositories.Admin
                 _context.Entry(cvfwdTask).State = EntityState.Added;
 
                 //4 - 
-                var cvrefTask = new AppTask{TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
+                var cvrefTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername,
-                    TaskOwnerUsername = Username, CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
+                    TaskOwnerUsername = Username, CompleteBy=DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Send CVs to clients by email -" + categoryDescription, 
                     CandidateAssessmentId = item.CandidateAssessment.Id,CVRefId=cvrefid,
                     TaskType="CVRefByMail", TaskStatus="Not Started", ApplicationNo=item.ApplicationNo,
@@ -423,9 +464,9 @@ namespace api.Data.Repositories.Admin
                 _context.Entry(cvrefTask).State = EntityState.Added;
 
                  //5 - create selectionTasks
-                  var selTask = new AppTask{TaskDate=DateOnly.FromDateTime(DateTime.UtcNow), 
+                  var selTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername, CVRefId = cvrefid,
-                    TaskOwnerUsername = Username, CompleteBy=DateOnly.FromDateTime(DateTime.UtcNow).AddDays(5), 
+                    TaskOwnerUsername = Username, CompleteBy= DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Follow up with clients for selection-" + categoryDescription, 
                     CandidateAssessmentId = item.CandidateAssessment.Id, OrderId = item.OrderId,
                     TaskType="SelectionFollowupWithClient", TaskStatus="Not Started", 

@@ -40,12 +40,12 @@ namespace api.Data.Repositories
                 query = query.Where(x => x.Gender == userParams.Gender);
                 
                 if(userParams.MaxAge > 0) {
-                    var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
+                    var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
                     query = query.Where(u => u.DateOfBirth >= minDob);
                 }
 
                 if(userParams.MinAge > 0) {
-                    var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));                   
+                    var maxDob = DateTime.Today.AddYears(-userParams.MinAge);                   
                     query = query.Where(u => u.DateOfBirth <= maxDob);
                 }
 
@@ -60,6 +60,16 @@ namespace api.Data.Repositories
                     .ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
                     userParams.PageNumber, userParams.PageSize);
                 return paged;
+        }
+
+        public async Task<ICollection<MemberDto>> GetMembersWithRoles()
+        {
+                var query = await _context.Users
+                    .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                    .OrderBy(x => x.UserName)
+                    .ToListAsync();
+
+                return query;
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)

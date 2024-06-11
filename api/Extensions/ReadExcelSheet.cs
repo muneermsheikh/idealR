@@ -125,9 +125,9 @@ namespace api.Extensions
                     var ProfessionName = worksheet.Cells[row, 21].Value.ToString();
                     var DOB = worksheet.Cells[row, 22].Value.ToString();
 
-                    if (!DateOnly.TryParse(DOB, out DateOnly dob))
+                    if (!DateTime.TryParse(DOB, out DateTime dob))
                     {
-                        dob = new DateOnly(0001, 1, 1);
+                        dob = new DateTime();
                     }
 
                     var userPhones = new List<UserPhone>();
@@ -219,9 +219,9 @@ namespace api.Extensions
                     var ProfessionName = worksheet.Cells[row, 21].Value.ToString();
                     var DOB = worksheet.Cells[row, 22].Value.ToString();
 
-                    if (!DateOnly.TryParse(DOB, out DateOnly dob))
+                    if (!DateTime.TryParse(DOB, out DateTime dob))
                     {
-                        dob = new DateOnly(0001, 1, 1);
+                        dob = new DateTime();
                     }
 
                     var userPhones = new List<UserPhone>();

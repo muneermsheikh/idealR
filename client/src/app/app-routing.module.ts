@@ -7,16 +7,11 @@ import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
-import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
-import { CategoryListResolver } from './_resolvers/admin/categoryListResolver';
-import { AgentsResolver } from './_resolvers/admin/agents.resolver';
-import { ProfileListComponent } from './profiles/profile-list/profile-list.component';
-import { QualificationListResolver } from './_resolvers/qualificationListResolver';
-import { CandidateResolver } from './_resolvers/admin/candidateResolver';
-import { CandidateEditComponent } from './profiles/candidate-edit/candidate-edit.component';
 import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
 import { OpenOrderItemsResolver } from './_resolvers/openOrderItemsResolver';
 import { CandidateAssessedResolver } from './_resolvers/hr/candidate-assessed.resolver';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { UsersWithRolesResolver } from './_resolvers/usersWithRolesResolver';
 
 
 const routes: Routes = [
@@ -27,21 +22,8 @@ const routes: Routes = [
     canActivate: [authGuard,],
     children: [
       //{path: 'candidates', loadChildren:() => import('./candidates/candidate.module').then(mod => mod.CandidateModule), data: {breadcrumb: 'Candidates'}},
-       {path: 'candidates', component: ProfileListComponent,
-          resolve: {
-            professions: CategoryListResolver,
-            agents: AgentsResolver,
-          },
-      },
-      {path: 'candidates/register/edit/:id', component:CandidateEditComponent, 
-      resolve: {
-        categories: CategoryListResolver,
-        qualifications: QualificationListResolver,
-        agents: AgentsResolver,
-        candidateBriefDto: CandidateResolver
-      },
-      data: {breadcrumb: 'Edit Candidate'}},
-
+      {path: 'candidates', loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
+      
       {path: 'hr/cvassess/:id', component: CvAssessComponent, 
       resolve: {
         openOrderItemsBrief: OpenOrderItemsResolver,
@@ -50,6 +32,11 @@ const routes: Routes = [
       },
       data: {breadcrumb: 'Edit Candidate'}},
       
+      {path: 'administration', loadChildren:() => import('./Administration/administration.module').then(mod => mod.AdministrationModule), 
+        //canActivate: [AdminGuard], 
+        //data: {breadcrumb: 'Admin'}
+      },
+
       /* {path: 'members', component: MemberListComponent, canActivate: [authGuard]},
       {path: 'members/:username', component: MemberDetailsComponent,
           resolve: {member: memberDetailedResolver}},
@@ -57,7 +44,11 @@ const routes: Routes = [
       */
       {path: 'messages', component:MessagesComponent},
       {path: 'memberlikes', component: MemberLikedListComponent},
-      {path: 'admin', component: AdminPanelComponent
+      
+      {path: 'userroles', component: UserManagementComponent,
+        resolve: {
+          userswithroles: UsersWithRolesResolver
+        }
         //, canActivate: [adminGuard]
       }
     ]

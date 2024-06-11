@@ -12,8 +12,8 @@ namespace api.Entities.Admin.Order
         public int MinCVs { get; set; }
         public int MaxCVs { get; set; }
         public bool Ecnr { get; set; }=false;
-        public DateOnly CompleteBefore { get; set; }
-        public int Charges { get; set; }
+        public DateTime CompleteBefore { get; set; }
+        //public int Charges { get; set; }
         public string Status { get; set; }="Not Started";
         public bool Checked {get; set;}
         public string ReviewItemStatus { get; set; }="NotReviewed";

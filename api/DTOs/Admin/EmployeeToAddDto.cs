@@ -10,12 +10,12 @@ namespace api.DTOs.Admin
         public string FamilyName { get; set; }
         public string KnownAs { get; set; }
         public string Position { get; set; }
-        public DateOnly DOB {get; set;}
+        public DateTime DOB {get; set;}
         public string PlaceOfBirth { get; set; }
         public string AadharNo { get; set; }
         public string Nationality {get; set;}
         public string Email {get; set;}
-        public DateOnly DOJ {get; set;}
+        public DateTime DOJ {get; set;}
         public string Department { get; set; }
         public string OfficialPhoneNo { get; set; }
         public string OfficialMobileNo { get; set; }
