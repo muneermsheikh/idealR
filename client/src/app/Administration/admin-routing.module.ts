@@ -1,7 +1,6 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './menu/menu.component';
-import { CvrefComponent } from './cvref/cvref.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
 import { AgentsResolver } from '../_resolvers/admin/agents.resolver';
 import { RouterModule } from '@angular/router';
@@ -70,16 +69,6 @@ const routes = [
     resolve: {
       orderAssessment: OrderAssessmentResolver
     }
-  },
-  
-  {path: 'cvforward', component: CvrefComponent,
-    resolve: 
-      {
-        //assessedcvs: AssessedAndApprovedCVsResolver,
-        professions: CategoryListResolver,
-        agents: AgentsResolver
-      },
-    data: {breadcrumb: {breadcrumb: 'CV Forward to clients'}}
   },
   
   {path: 'selections', component: SelectionsComponent},

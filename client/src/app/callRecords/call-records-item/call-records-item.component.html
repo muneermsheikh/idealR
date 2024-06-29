@@ -1,0 +1,13 @@
+<div *ngIf="hist !== null && hist !== undefined">
+    <div class="stdd mx-1 w150">{{hist.candidateName}}</div>
+    <div class="stdd mx-1 w75">{{hist.categoryRef}}</div>
+    <div class="stdd mx-1 w50">{{hist.source}}</div>
+    <div class="stdd mx-1 w150">{{hist.emailId}}</div>
+    <div class="stdd mx-1 w75">{{hist.mobileNo}}</div>
+    <div class="stdd mx-1 w75">{{hist.status}}</div>
+
+    <button class="btn btn fa fa-pencil" title="click to add/edit transations" (click)="editClicked()" ></button>
+    <button class="btn btn fa fa-phone" title="register conversation by phone" (click)="callByPhone()" ></button>
+    <button class="btn btn fa fa-email" title="register email sent" (click)="sendEmail()" ></button>
+    <button class="btn btn fa fa-trash red" title="click to delete this record along with all its related child records" (click)="deleteClicked()" ></button>
+</div>

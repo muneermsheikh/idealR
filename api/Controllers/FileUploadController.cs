@@ -67,8 +67,8 @@ namespace api.Controllers
             return File(bytes, contentType, Path.GetFileName(FileName));
         }
 
-        [HttpPost("prospectiveorapplications"), DisableRequestSizeLimit]
-        public  ActionResult ConvertProspectiveData()
+        [HttpPost("prospectiveXLS"), DisableRequestSizeLimit]
+        public  async Task<ActionResult<string>> ConvertProspectiveData()
         {
             //check for uploaded files
             var files = Request.Form.Files;
@@ -86,29 +86,28 @@ namespace api.Controllers
 
                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                         var FileExtn = Path.GetExtension(file.FileName);
-                        if(FileExtn != ".xlsx") continue;
+                        if(FileExtn != ".xlsx") return "Only '.xlsx' files are accepted";
+                        
 
-                        var filename=file.FileName.Substring(0,9).ToLower();
-
-                        if(filename != "prospecti" && filename !="applicati") continue;
+                        var filename=file.FileName[..9].ToLower();
 
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
 
-                        if (System.IO.File.Exists(fullPath)) continue;
+                        if (System.IO.File.Exists(fullPath)) {
+                            ErrorString="The file [" + file.FileName + "] already exists at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
+                            return ErrorString;
+                        }
 
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-                        
-                        /*if(filename=="prospecti") {
-                            ErrorString = await _excelService.ReadAndSaveProspectiveXLToDb(fullPath, loggedInUser.loggedInEmployeeId, loggedInUser.DisplayName);
-                        } else {
-                            ErrorString = await _excelService.ReadAndSaveApplicationsXLToDb(fullPath, loggedInUser.loggedInEmployeeId, loggedInUser.DisplayName);
-                        }
-                        */
-                    }
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        file.CopyTo(stream);
+
+                        var errString = await _candRepo.WriteProspectiveExcelToDB(fullPath, User.GetUsername());
+
+                        if(string.IsNullOrEmpty(errString)) return Ok("");
+
+                        return BadRequest(new ApiException(400, errString, "Failed to copy the file to database" ) );
+                     }
                 
                 } catch (Exception ex) {
                     throw new Exception(ex.Message);
@@ -117,7 +116,7 @@ namespace api.Controllers
             
             if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
 
-            return Ok();
+            return Ok("");
         }
         
        

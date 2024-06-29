@@ -5,7 +5,7 @@
 <div *ngIf="selections && pagination" 
     class="d-flex justify-contents-between align-items-center"
     style="display: inline-block; margin-left: 15px; vertical-align: top;" >
-    
+    <h6 class="mx-5">Selections based on parameters</h6>
     <pagination
          [totalItems]="pagination!.totalItems"
          [itemsPerPage]="pagination!.itemsPerPage"
@@ -25,24 +25,24 @@
     </div>
     
     <button class="btn btn-outline-success mx-5" routerLink="/administration" >Close</button>
-
+    
 </div>
 
 
 <label class="stdd w50">App No</label>
 <label class="stdd w150">Candidate Name</label>
 <label class="stdd w200">Customer Name</label>
-<label class="stdd w150">Category Ref</label>
+<label class="stdd w200">Category Ref</label>
 <label class="stdd w100">Referred On</label>
-<label class="stdd w100">Selection<br>Status</label>
-<label class="stdd w150">Rejection<br>Reason</label>
+<label class="stdd w150">Selection Status</label>
+<label class="stdd w100">Sel/Rej<br>Date</label>
 
 <div class="row" *ngFor="let item of selections">
     <app-selection-line
         [selection]="item"
-        (displayEmploymentEvent)="displayEmploymentModal($event)"
+        (editEmploymentEvent)="displayEmploymentModal($event, item)"
         (deleteSelectionEvent)="deleteSelection($event)"
-        (editSelectionEvent)="editSelection($event)"
+        (editSelectionEvent)="displaySelectionModal($event, item)"
         (remindCandidateForDecisionEvent)="remindCandidateForDecision($event)"
     ></app-selection-line>
 </div>

@@ -71,13 +71,17 @@ namespace api.Extensions
             services.AddScoped<IDeploymentRepository, DeploymentRepository>();
             services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
             services.AddScoped<IOrderForwardRepository, OrderForwardRepository>();
-            services.AddScoped<IUserHistoryRepository, UserHistoryRepository>();
+            services.AddScoped<ICallRecordRepository, CallRecordRepository>();
             services.AddScoped<IAssessmentQBankRepository, AssessmentQBankRepository>();
             services.AddScoped<IFileUploadRepository, FileUploadRepository>();
             services.AddScoped<IIndustryRepository, IndustryRepository>();
             services.AddScoped<IProfessionRepository, ProfessionRepository>();
             services.AddScoped<IQualificationRepository, QualificationRepository>();
             services.AddScoped<IHelpRepository, HelpRepository>();
+            services.AddScoped<IComposeMsgsForCandidates, ComposeMsgsForCandidates>();
+            
+            services.AddScoped<IProspectiveCandidatesRepository, ProspectiveCandidatesRepository>();
+            //services.AddScoped<ICallRecordRepository, CallRecordRepository>();
             
             return services;
         }

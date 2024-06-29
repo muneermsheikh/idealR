@@ -11,17 +11,18 @@ namespace api.Interfaces.Admin
     {
          Task<MessageWithError> RegisterSelections(ICollection<CreateSelDecisionDto> selDtos, string Username);
          Task<SelectionDecision> GetSelectionDecisionFromCVRefId(int cvrefid);
-         Task<SelectionDecision> GetSelectionDecisionFromId(int selDecisionId);
+         Task<SelDecisionDto> GetSelDecisionDtoFromId(int selDecisionId);
          Task<PagedList<EmploymentDto>> GetEmploymentsPaged (EmploymentParams empParams);
          Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams);
          Task<Employment> GetEmployment(int employmentId);
+         Task<Employment> GetEmploymentFromSelDecId(int selDecisionId);
          Task<bool> EditSelection(SelectionDecision selDecision);
-         Task<bool> EditEmployment (Employment employment, string Username);
-         Task<string> RegisterOfferAcceptance (ICollection<OfferConclusionDto> conclusionDto, string Username);
+         //Task<bool> EditEmployment (Employment employment, string Username);
+
          Task<string> DeleteSelection(int selectionId);
          Task<PagedList<SelDecisionDto>> GetSelectionDecisions (SelDecisionParams selParams);
          Task<ICollection<Message>> ComposeSelMessagesToCandidates(List<int> cvrefids, string Username);
-         Task<ICollection<Message>> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username);
+         Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username);
          
     }
 }

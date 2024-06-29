@@ -3,7 +3,26 @@
     <button class="stdd" (click)="OpenAvailableCandidatesComponent()" title="Candidates reviewed and approved for sending to clients">Candidates available to refer</button>
 
     <button class="stdd" (click)="OpenCandidatesListingComponent()" title="List of Candidates">List of Candidates</button>
-    <button class="stdd" routerLink="/candidates/candidatehistory" title="Candidate history">Candidate History</button>
-    <button class="stdd" routerLink="/candidates/candidatehistory" title="Candidate history">Candidate History</button>
+    <button class="stdd" (click)="OpenCallRecordMenu()" title="Candidate history">Candidate History</button>
+    <button class="stdd" (click)="OpenActiveProspectiveList()" title="displays active prospective candidates">Active Prospective Candidates List</button>
+    <button class="stdd" (click)="importProspectiveExcel()" title="Candidate history">import Prospective Candidates From Excel</button>
 
+</div>
+
+<div *ngIf="uploadExcel" class="my-10" >
+    
+    <div style="word-wrap: normal; width: 800px;">
+        <li>This option will upload your Excel File, read the data and insert into the database.</li>
+        <li>This option needs following requirements to be met:</li>
+        <li>The Worksheet name must be 'Sheet1'</li>
+        <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 5</li>
+        <li>Data should begin from row 6.\nIn addition.</li>
+        <li>Row 2 or 3 should contain the title 'OrderItemId' and its value in next column</li>
+    </div>
+    
+    <br><br>
+    <input class="stdd d-flex align-items-center" type="file" id="file" 
+        (change)="onFileInputChange($event)" >
+
+    <button class="stdd btn fa fa-window-close" style="margin-left: 100px;" (click)="importProspectiveExcel()" ></button>
 </div>

@@ -528,5 +528,10 @@ namespace api.Data.Repositories
             return obj;
         }
 
+        public async Task<string> WriteProspectiveExcelToDB(string fileNameWithPath, string Username)
+        {
+            var count = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
+            return count;
+        }
     }
 }

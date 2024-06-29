@@ -11,6 +11,7 @@ import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { RouterModule } from '@angular/router';
 import { CvAssessModalComponent } from '../hr/cv-assess-modal/cv-assess-modal.component';
 import { CandidateAssessmentDtoResolver } from '../_resolvers/hr/candidate-assessmentDtoResolver';
+import { ProspectiveListComponent } from '../Administration/Prospectives/prospective-list/prospective-list.component';
 
 const routes = [
     {path: '', component: ProfileMenuComponent},
@@ -42,6 +43,7 @@ const routes = [
           candidateAssessmentDto: CandidateAssessmentDtoResolver
         }
     },
+    {path: 'prospective', component: ProspectiveListComponent}
 
 ]
 

@@ -1,0 +1,60 @@
+<div class="modal-header">
+    <h6>Add a deployment transaction</h6>
+    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
+    title="edit emp data" (click)="saveDepItem()" ></button>
+    <button class="btn fa fa-close pull-right" title="Close" (click)="close()" ></button>
+</div>
+
+<div class="modal-body">
+    <label for="applicationNo" class="stdd w150 b">Application No:</label> 
+    <div class="stdd w200" >{{candidateName}}</div>
+    <br>
+    <label for="customerName" class="stdd w150 b">Customer Name</label> 
+        <div class="stdd w200">{{companyName}}</div>
+    <br><label for="customerName" class="stdd w150 b">Category Ref</label> 
+        <div class="stdd w200">{{categoryRef}}</div>
+    <br><label class="stdd w150">Emig Clearance Required</label>
+    <div class="stdd w50">{{ecnr ? 'YES' : 'NO'}}</div>
+
+    <h6>Deployment Transaction to add:</h6>
+    <form #editForm="ngForm" id="editForm" >
+        <div style="display:inline-block; width: 110px;">
+            <input class="stdd w110" type="text" placeholder="Offer accepted On" 
+                [(ngModel)]="depItem.transactionDate" bsDatepicker 
+                [bsValue]="bsValueDate" 
+                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        </div>
+    
+        <div class="stdd w125">
+            <ng-select 
+                    style="border: color(from color srgb r g b); font-size: smaller;"
+                    [items]="depStatuses"
+                    bindLabel="status"
+                    bindValue="depItem.sequence"
+                    labelForId="depItem.status"
+                    clearAllText="Clear"
+                    [(ngModel)]="depItem.sequence"
+            ></ng-select>
+        </div>
+    
+        <div class="stdd w125">
+            <ng-select 
+                    style="border: color(from color srgb r g b); font-size: smaller;"
+                    [items]="depStatuses"
+                    bindLabel="status"
+                    bindValue="depItem.nextSequence"
+                    labelForId="depItem.status"
+                    clearAllText="Clear"
+                    [(ngModel)]="depItem.nextSequence"
+            ></ng-select>
+        </div>
+        <div style="display:inline-block; width: 110px;">
+            <input class="stdd w110" type="text" placeholder="Offer accepted On" 
+                [(ngModel)]="depItem.nextSequenceDate" bsDatepicker 
+                [bsValue]="bsValueDate" 
+                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        </div>
+    </form>
+
+    
+</div>

@@ -3,7 +3,7 @@ namespace api.DTOs.Process
     public class DeploymentPendingTempDto
     {
         
-        public int CVRefId { get; set; }
+        public int CvRefId { get; set; }
         public int ApplicationNo {get; set;}
         public string CandidateName { get; set; }
         public int CustomerId { get; set; }

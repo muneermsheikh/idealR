@@ -1,14 +1,14 @@
 export class deployParams
 {
-	cvrefid = 0;
-	cVRefIdsCSV = ''; //csv
-	orderItemIdsCSV = '';
-	candidateIdsCSV = '';
-	selectedOn: Date = new Date();
+	cvRefId = 0;
+	orderItemId = 0;
+	candidateId = 0;
+	selectedOn=new Date();
 	orderNo = 0;
 	customerId = 0;
 	currentStatus = '';
 	
+	search = '';
 	pageNumber = 1;
 	pageSize = 10;
 }

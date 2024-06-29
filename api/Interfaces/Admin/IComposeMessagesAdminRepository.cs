@@ -15,7 +15,7 @@ namespace api.Interfaces.Admin
         Task<Message> ComposeSelDecisionRemindersToClient(int CustomerId, string Username);
         Task<ICollection<Message>> ComposeSelectionStatusMessagesForCandidate(ICollection<SelectionMessageDto> selDto, 
            string Username);
-        Task<ICollection<Message>> AdviseRejectionStatusToCandidateByEmail(ICollection<SelectionMessageDto> rejectionsDto, string loggedInUserName);
+        Task<MessageWithError> AdviseRejectionStatusToCandidateByEmail(ICollection<SelectionMessageDto> rejectionsDto, string loggedInUserName);
        
     }
 

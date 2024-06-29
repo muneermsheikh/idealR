@@ -10,7 +10,7 @@ namespace api.Interfaces.Finance
     {
         Task<PagedList<COA>> GetCOAPagedList(COAParams coaParams);
         Task<ICollection<COA>> GetCOAList(COAParams coaParams);
-        Task<COA> CreateCoaForCandidateWithNoSave(int applicationno, bool create);
+        Task<COA> GetOrCreateCoaForCandidateWithNoSave(int applicationno, bool create);
         Task<COA> GetSalesRecruitmentCOA();
         Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams paginationParams);
         Task<bool>UpdateCashAndBankDebitApprovals(ICollection<UpdatePaymentConfirmationDto> updateDto);

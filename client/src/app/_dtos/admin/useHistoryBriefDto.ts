@@ -6,9 +6,9 @@ export interface IUserHistoryBriefDto
     source: string;
     categoryRef: string;
     categoryName: string;
+    personType: string;
     candidateName: string;
-    applicationNo?: number;
-    resumeId: string;
+    personId: string;
     emailId: string;
     mobileNo:string;
     createdOn: Date;

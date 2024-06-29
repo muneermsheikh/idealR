@@ -158,7 +158,7 @@ namespace api.Data.Repositories.Admin
 
             if(!string.IsNullOrEmpty(msgs.ErrorString)) return msgs.ErrorString;
 
-            _context.Entry(msgs.Messages[0]).State = EntityState.Added;
+            _context.Entry(msgs).State = EntityState.Added;
 
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the email message";
 

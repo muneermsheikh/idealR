@@ -1,0 +1,10 @@
+
+<div class="container d-flex justify-contents-between align-items-center mt-5">
+   
+    <button routerLink="/callRecords/callRecordList" [disabled]="!hasAdminRole"
+        title="List of Pending Call Records - for admin role">Active Call Records<br>of All users</button>
+    <button routerLink="/callRecords/callRecordListLoggedinUsername" title="Display active Call Records for logged in User">Active Call Records<br>Of {{user!.knownAs}}</button>
+    <button routerLink="/candidates/candidatehistory" title="Candidate history">Candidate History</button>
+    <button routerLink="/candidates/candidatehistory" title="Candidate history">Candidate History</button>
+
+</div>

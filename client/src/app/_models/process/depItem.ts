@@ -7,3 +7,13 @@ export interface IDepItem
     nextSequence: number;
     nextSequenceDate: Date;
 }
+
+export class DepItem implements IDepItem
+{
+    id=0;
+    depId=0;
+    transactionDate = new Date();
+    sequence = 0;
+    nextSequence = 0;
+    nextSequenceDate = new Date();
+}

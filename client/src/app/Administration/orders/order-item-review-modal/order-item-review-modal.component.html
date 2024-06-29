@@ -1,11 +1,27 @@
 <form [formGroup]="form" style="margin-left: 20px;">
      <div *ngIf="reviewItem !== undefined" class="mx-2">
-          <div style="font-size:medium;font-weight: bold; vertical-align: top;"> <strong>Edit Contract review of a category</strong>
-               <h5 style="margin-left: 5px; display: inline-block; vertical-align: top;">{{reviewItem.professionName}}</h5>
-               <div><strong>Customer:</strong> {{reviewItem.customerName}}</div>
+          <div style="font-size:medium;font-weight: bold; vertical-align: top;"> <h6>Edit Contract review of a category</h6>
+               <h5 style="margin-left: 2px; display: inline-block; vertical-align: top;">{{reviewItem.professionName}}</h5>
+               <br><div class="stdd"><strong>Customer:</strong> {{reviewItem.customerName}}</div>
 
                <div class="stdd"><strong>Order No:</strong> {{reviewItem.orderNo}} <strong>dtd</strong>:{{reviewItem.orderDate | date}}</div>
                
+               <br><strong class="stdd w150">Assigned to HR Exec</strong>
+               <ng-select *ngIf="empIdAndNames" 
+                    class="stdd w150"
+                    [items]="empIdAndNames"
+                    bindLabel="knownAs"
+                    bindValue="username"
+                    labelForId="username"
+                    clearAllText="Clear"
+                    formControlName="hrExecUsername"
+                    (change)="employeeChanged($event)"
+                    >
+               </ng-select>
+               
+               <div *ngIf="!skills.length" class="stdd">No HR Skills defined for the employee</div>
+               <div *ngIf="skills.length" class="stdd" style="width: 450px; font-size: smaller">{{skills.flat()}}</div>
+               <br>
                <strong class="stdd w150">reviewItem status</strong>
                <ng-select *ngIf="reviewStatus" 
                     class="stdd w150"
@@ -18,9 +34,9 @@
                     >
                </ng-select>
                <br>
-               <label class="lbl w150 b">Assessment Reqd</label>
-               <input type="radio" class="inputcheck form-check-input mx-2 " value= 1 formControlName="requireAssess" >Yes
-               <input type="radio" class="inputcheck form-check-input mx-2" value= 0 formControlName="requireAssess" >No
+               <label class="lbl w150 b my-2">Assessment Reqd</label>
+               <input type="radio" class="stdd inputcheck form-check-input mx-2 " value= 1 formControlName="requireAssess" >Yes
+               <input type="radio" class="stdd inputcheck form-check-input mx-2" value= 0 formControlName="requireAssess" >No
 
                <button type="button" class="mL15 btn btn-success fa fa-save" (click)="confirm()"></button>
                <button type="button" class="btn pull-right fa fa-window-close fa-2x" (click)="decline()"></button>

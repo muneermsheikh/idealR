@@ -95,7 +95,7 @@ namespace api.Data.Repositories.Admin
         private async Task<string> GetEmailMessageBodyContents(string messageType, string candidatename, int applicationno, 
             string customername, string categoryname, Employment employment)
         {
-            //MessageComposeSources contains collection of static text lines for each type of message.
+            //MessageComposeSources contains collection of text lines for each type of message.
             var msgLines = await _context.MessageComposeSources
                 .Where(x => x.MessageType.ToLower() == messageType.ToLower()  && x.Mode == "mail")
                 .OrderBy(x => x.SrNo).ToListAsync();
@@ -125,7 +125,7 @@ namespace api.Data.Repositories.Admin
         public async Task<SMSMessage> AdviseSelectionStatusToCandidateBySMS(SelectionDecision selection)
           {
                var candidate = await (from cvref in _context.CVRefs
-                        where cvref.Id == selection.CVRefId
+                        where cvref.Id == selection.CvRefId
                         join cand in _context.Candidates on cvref.CandidateId equals cand.Id
                         select cand).FirstOrDefaultAsync();
 
@@ -157,51 +157,40 @@ namespace api.Data.Repositories.Admin
                return smsMessage;
           }
 
-        public async Task<ICollection<Message>> AdviseRejectionStatusToCandidateByEmail(ICollection<SelectionMessageDto> rejectionsDto, string senderUsername)
+        public async Task<MessageWithError> AdviseRejectionStatusToCandidateByEmail(ICollection<SelectionMessageDto> rejectionsDto, string senderUsername)
         {
-            
-            var senderObj = await _userManager.FindByNameAsync(senderUsername);
-            if(senderObj == null) return null;
-            var subject = "";
-            var subjectInBody = "";
-            var msgBody = "";
-            var msgs = new List<Message>();
-            AppUser HRSupObj, recipientObj;
+            var returnDto = new MessageWithError();
 
+            var senderObj = await _userManager.FindByNameAsync(senderUsername);
+            if(senderObj == null) {
+                returnDto.ErrorString = "Unable to retrieve HR Exec User Object";
+                return returnDto;
+            }
+
+            AppUser recipientObj;
+
+            string subject, subjectInBody, msgBody;
+            
+            var msgs = new List<Message>();
+           
             foreach(var rej in rejectionsDto)
             {
-                    if(rej.CandidateAppUserId == 0) {
-                        recipientObj = await _userManager.FindByEmailAsync(rej.CandidateEmail);
-                    } else {
-                        recipientObj = await _userManager.FindByIdAsync(rej.CandidateAppUserId.ToString());
+                    recipientObj = await _userManager.FindByIdAsync(rej.CandidateAppUserId.ToString());
+                    
+                    if(recipientObj == null) {
+                        returnDto.ErrorString="Unable to retrieve Candidate User Object";
+                        return returnDto;
                     }
-
-                    if(recipientObj == null) continue;
-
-                    if(rej.HRSupAppUserId == 0) {
-                        HRSupObj = await _userManager.FindByEmailAsync(rej.HRExecEmail);
-                    } else {
-                        HRSupObj = await _userManager.FindByIdAsync(rej.HRSupAppUserId.ToString());
-                    }
-
-
-                    if(rej.CandidateAppUserId == 0) {
-                        recipientObj = await _userManager.FindByEmailAsync(rej.CandidateEmail);
-                    } else {
-                        recipientObj = await _userManager.FindByIdAsync(rej.CandidateAppUserId.ToString());
-                    }
-
-                    if(recipientObj == null) continue;
-
-                    subject = "Your cadidature as " + rej.ProfessionName + " for " + rej.CustomerCity + " is NOT approved";
+                    
+                    subject = "Your candidature as " + rej.ProfessionName + " for " + rej.CustomerCity + " is NOT approved";
                     subjectInBody = "<b><u>Subject: </b>Your candidature for " + rej.ProfessionName + " for " + rej.CustomerName + "</u>";
                     msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + 
                             rej.CandidateTitle + " " + rej.CandidateName + "email: " + rej.CandidateEmail + "<br><br>" + 
-                        "copy: " + HRSupObj.UserName + ", email: " + HRSupObj.Email + "<br><br>Dear " + rej.CandidateTitle + " " + rej.CandidateName + ":" +
+                        "copy: " + "" + ", email: " + "" + "<br><br>Dear " + rej.CandidateTitle + " " + rej.CandidateName + ":" +
                         "<br><br>" + subject + "<br><br>";
 
                     msgBody += "We regret to inform you that M/S " + rej.CustomerName + " have not approved of your candidature for the position " +
-                            "of " + rej.ProfessionName + " giving following reason:<br><ul><li>" + rej.RejectionReason + "</li></ul><br>";
+                            "of " + rej.ProfessionName + " giving following reason:<br><ul><li>" + rej.SelectionStatus + "</li></ul><br>";
                     msgBody += "The rejection by the Customer is indicative of only their specific needs and does not reflect your suitabiity for the position in general. " +
                             "We will therefore be continuing to look for " +
                             "alternate opportunities for you and hope to revert to you as soon as possible.<br><br>" + 
@@ -216,7 +205,7 @@ namespace api.Data.Repositories.Admin
                         SenderUsername=senderUsername,
                         SenderEmail=senderObj.Email,
                         RecipientUsername = recipientObj.UserName,
-                        RecipientEmail = recipientObj.Email + "; " + HRSupObj.Email ,       //TODO - HRExecEmail included in Recipient, as CC and BCC not working
+                        RecipientEmail = rej.HRExecEmail ,       //TODO - HRExecEmail included in Recipient, as CC and BCC not working
                         MessageComposedOn = _today,
                         Subject = subject,
                         Content = msgBody,
@@ -226,13 +215,14 @@ namespace api.Data.Repositories.Admin
                 msgs.Add(emailMessage);
             }
 
-            if (msgs.Count > 0) return msgs;
-            return null;
+            returnDto.Messages = msgs;
+            
+            return returnDto;
         }
         public async Task<SMSMessage> AdviseRejectionStatusToCandidateBySMS(SelectionDecision selection)
         {
             var candidate = await (from cvref in _context.CVRefs
-                    where cvref.Id == selection.CVRefId
+                    where cvref.Id == selection.CvRefId
                     join cand in _context.Candidates on cvref.CandidateId equals cand.Id
                     select cand).FirstOrDefaultAsync();
 
@@ -244,14 +234,14 @@ namespace api.Data.Repositories.Admin
             var mobileNo = candidate.UserPhones.Where(x => x.IsMain && x.IsValid).Select(x => x.MobileNo).FirstOrDefault();
             if (string.IsNullOrEmpty(mobileNo)) return null;
 
-            msg = "Yr candidature for the position of " + selection.ProfessionName + _smsNewLine;
+            msg = "Yr candidature for the position of " + selection.SelectedAs + _smsNewLine;
             var msgssms = await _context.MessageComposeSources.Where(x => x.MessageType.ToLower() == "rejectionadvisetocandidate" && x.Mode == "sms")
                 .OrderBy(x => x.SrNo).ToListAsync();
             foreach (var m in msgssms)
             {
                 msg += m.LineText;
             }
-            msg = msg + "<br><br>HR Supervisor";
+            msg += "<br><br>HR Supervisor";
 
             var smsMessage = new SMSMessage
             {
@@ -459,7 +449,8 @@ namespace api.Data.Repositories.Admin
                 MessageType="cv forward", SenderUsername = Username, SenderEmail=senderObj.Email,
                 RecipientAppUserId = recipientappuserid, RecipientUsername=recipientObj.Username,
                 RecipientEmail=recipientObj.Email, Subject="CVs Forwarded against your requirement",
-                Content=msg, SenderAppUserId = senderObj.AppUserId, MessageComposedOn = _today
+                Content=msg, SenderAppUserId = senderObj.AppUserId, MessageComposedOn = _today, 
+                CvRefId = lastCVRef.CvRefId
             };
 
             emails.Add(email);

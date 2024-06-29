@@ -1,41 +1,47 @@
 
 export interface IDeploymentPendingDto {
-    id: number;
+    depId: number;
     checked: boolean;
-    deployCVRefId: number;
+    cvRefId: number;
     referredOn: Date;
     selectedOn: Date;
     applicationNo: number;
+    orderItemId: number;
     candidateName: string;
-
     customerName: string;
+    cityOfWorking: string;
     orderNo: number;
     orderDate: Date;
     categoryName: string;
-    selDecisionDate: Date;
+
+    ecnr: boolean;
     deploySequence: number;
-    deployStageDate: Date;
     nextSequence: number;
+    currentSeqDate: Date;
     nextStageDate: Date;
+
 }
 
 export class DeploymentPendingDto implements IDeploymentPendingDto {
-    id: number=0;
+    depId: number=0;
     checked: boolean=false;
-    deployCVRefId: number=0;
-    referredOn = new Date('1900-01-01');
-    selectedOn = new Date('1900-01-01');
+    cvRefId: number=0;
+    referredOn = new Date();
+    selectedOn = new Date();
+    orderItemId=0;
     applicationNo: number=0;
     candidateName: string='';
+    ecnr=false;
     
     customerName: string='';
+    cityOfWorking: string='';
     orderNo: number=0;
     orderDate: Date=new Date();
     categoryName: string='';
     
     selDecisionDate: Date=new Date();
     deploySequence: number=0;
-    deployStageDate = new Date('1900-01-01');
+    currentSeqDate = new Date('1900-01-01');
     nextSequence: number=0;
     nextStageDate: Date=new Date();
 

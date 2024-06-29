@@ -14,6 +14,7 @@ import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
+import { IEmploymentDto } from 'src/app/_dtos/admin/employmentDto';
 
 @Injectable({
   providedIn: 'root'
@@ -100,13 +101,16 @@ export class SelectionService {
     
   }
 
-  getEmploymentFromSelectionId(id: number) {
+  getEmploymentDtoFromSelectionId(id: number) {
     return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
-    
+  }
+
+   getEmploymentFromSelectionId(id: number) {
+    return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
   }
 
   updateEmployment(emp: IEmployment) {
-    return this.http.put<boolean>(this.apiUrl + 'selection/employment', emp);
+    return this.http.put<boolean>(this.apiUrl + 'employment/employment', emp);
   }
 
   getSelectionDtoByOrderNo(orderno: number) {

@@ -4,19 +4,20 @@ export interface ISelectionDecision
 {
      checked: boolean;
      id: number;
-     cVRefId: number;
+     cvRefId: number;
      orderItemId: number;
-     categoryId: number;
-     categoryRef: string;
-     orderNo: number;
+     professionId: number;
+     professionName: string;
+     //orderNo: number;
      customerName: string;
+     cityOfWorking: string;
+     charges: number;
      applicationNo: number;
      candidateId: number;
      candidateName: string;
-     decisionDate: Date;
-     selectionStatusId: number;
-     selectedOn: number;
-     employment: IEmployment;
+     selectedOn: Date;
+     selectionStatus: string;
+     //employment: IEmployment;
      remarks: string;
 }
 

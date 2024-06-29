@@ -1,6 +1,6 @@
 namespace api.DTOs.Admin
 {
-    public class UserHistoryBriefDto
+    public class CallRecordBriefDto
     {
         public int Id {get; set;}
         public string Source {get; set;}
@@ -10,11 +10,11 @@ namespace api.DTOs.Admin
         public int CandidateId { get; set; }
         public string CandidateName {get; set;}
         
-        public int? ApplicationNo {get; set;}
+        public string UserType { get; set; }
         public string ResumeId { get; set; }  
         public string EmailId {get; set;}
         public string MobileNo { get; set; }
-        public DateOnly CreatedOn {get; set;}
+        public DateTime CreatedOn {get; set;}
         public string Status { get; set; }
     }
 }

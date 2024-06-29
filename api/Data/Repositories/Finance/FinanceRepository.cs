@@ -3,7 +3,6 @@ using api.DTOs.Finance;
 using api.Entities.Finance;
 using api.Helpers;
 using api.Interfaces.Finance;
-using api.Params;
 using api.Params.Finance;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -35,7 +34,7 @@ namespace api.Data.Repositories.Finance
             return coa;
 
         }
-        public async Task<COA> CreateCoaForCandidateWithNoSave(int applicationno, bool create)
+        public async Task<COA> GetOrCreateCoaForCandidateWithNoSave(int applicationno, bool create)
         {
             var candidate = await _context.Candidates.Where(x => x.ApplicationNo==applicationno).FirstOrDefaultAsync();
 			if(candidate==null) return null;
@@ -194,9 +193,13 @@ namespace api.Data.Repositories.Finance
         //vouchers
         public async Task<int> GetNextVoucherNo()
         {
-            int no = await _context.Vouchers.Select(x => x.VoucherNo).MaxAsync();
+            var vno = await _context.Vouchers
+                .OrderByDescending(x => x.VoucherNo)
+                .Select(x => x.VoucherNo)
+                .Take(1).FirstOrDefaultAsync();
 
-            return no == 0 ? 1000 : no + 1;
+
+            return vno == 0 ? 1000 : vno + 1;
         }
  
  

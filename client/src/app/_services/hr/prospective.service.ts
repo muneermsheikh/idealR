@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
 import { prospectiveSummaryParams } from 'src/app/_models/params/hr/prospectiveSummaryParams';
 import { IProspectiveSummaryDto } from 'src/app/_dtos/hr/propectiveSummaryDto';
 import { Pagination } from 'src/app/_models/pagination';
-import { getPaginatedResult, getPaginationHeadersProspectiveCandidates, getPaginationHeadersProspectiveCandidatesSummary } from '../paginationHelper';
+import { GetHttpParamsForCallItemCreate, GetHttpParamsForCallRecord, getHttpParamsForProspectiveCandidates, getHttpParamsForProspectiveSummary, getPaginatedResult } from '../paginationHelper';
 import { IProspectiveCandidate } from 'src/app/_models/hr/prospectiveCandidate';
 import { IProspectiveRegisterToAddDto } from 'src/app/_dtos/hr/prospectiveRegisterToAddDto';
 import { IProspectiveUpdateDto } from 'src/app/_dtos/hr/prospectiveUpdateDto';
+import { ICallRecord } from 'src/app/_models/admin/callRecord';
+import { ICallRecordParams } from 'src/app/_models/params/callRecordParams';
+import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
+import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCreateDto';
 
 
 @Injectable({
@@ -22,6 +26,7 @@ export class ProspectiveService {
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
   oParams = new prospectiveCandidateParams();
+  //callRecordParams = new CallRecordParams();
   sParams = new prospectiveSummaryParams();
   //paginationSummary = new PaginationProspectiveSummary();
   summaries: IProspectiveSummaryDto[]=[];
@@ -36,7 +41,7 @@ export class ProspectiveService {
       const response = this.cache.get(Object.values(oParams).join('-'));
       if(response) return of(response);
   
-      let params = getPaginationHeadersProspectiveCandidates(oParams);
+      let params = getHttpParamsForProspectiveCandidates(oParams);
     
       return getPaginatedResult<IProspectiveCandidate[]>(this.apiUrl + 'prospectivecandidates', params, this.http).pipe(
         map(response => {
@@ -45,7 +50,33 @@ export class ProspectiveService {
         }))
 
     }
+  
     
+  getOrAddCallRecord(callRecord: CallRecordItemToCreateDto) {
+    
+    var params = GetHttpParamsForCallItemCreate(callRecord);
+
+    return this.http.get<ICallRecord>(this.apiUrl + 'CallRecord/getOrAddHistoryWithItems', {params});
+  }
+  
+  
+    getProspectivesPaged(dParams: prospectiveCandidateParams) {
+
+      const response = this.cache.get(Object.values(dParams).join('-'));
+      if(response) return of(response);
+  
+      //let params = GetHttpParamsForCallRecord(dParams);
+      let params = getHttpParamsForProspectiveCandidates(dParams);
+  
+      return getPaginatedResult<IProspectiveBriefDto[]>(this.apiUrl + 
+          'Prospectives/pagedlist', params, this.http).pipe(
+        map(response => {
+          this.cache.set(Object.values(dParams).join('-'), response);
+          return response;
+        })
+      )
+    }
+  
   
   getProspectiveSummary(useCache: boolean)
   {
@@ -58,7 +89,7 @@ export class ProspectiveService {
       }
     }
 
-    let params = getPaginationHeadersProspectiveCandidatesSummary(this.sParams);
+    let params = getHttpParamsForProspectiveSummary(this.sParams);
     
     return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'ProspectiveCandidates/summary', {params})
       .pipe(
@@ -106,5 +137,9 @@ export class ProspectiveService {
 
   updateProspectives(model: IProspectiveUpdateDto[]) {
     return this.http.put(this.apiUrl + 'prospectivecandidates/prospectivelistedit', model);
+  }
+
+  updateCallRecord(model: any) {
+    return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord', model);
   }
 }

@@ -1,6 +1,6 @@
 export interface IContactResult
 {
-     id:number;
-     name: string;
-     resultId: string;
+     //id:number;
+     status: string;
+     //resultId: string;
 }

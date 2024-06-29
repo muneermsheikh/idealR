@@ -1,9 +1,11 @@
+using api.DTOs.Admin;
 using api.Entities.HR;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -41,14 +43,14 @@ namespace api.Controllers
         }
 
         [HttpPut("employment")]
-        public async Task<ActionResult<bool>> UpdateEmployment(Employment employment)
+        public async Task<ActionResult<bool>> UpdateEmployment(Employment dto)
         {
-            var strErr = await _employmentRepo.EditEmployment(employment);
+            var strErr = await _employmentRepo.EditEmployment(dto, User.GetUsername());
 
             if(!string.IsNullOrEmpty(strErr)) 
                 return BadRequest(new ApiException(400, "Failed to update the employment", strErr));
             
-            return Ok("Employment Objected was updated");
+            return Ok(true);
         }
 
         [HttpDelete("{employmentid}")]
@@ -59,6 +61,22 @@ namespace api.Controllers
             if(!string.IsNullOrEmpty(strErr)) return BadRequest(new ApiException(400,"Error in deleting the employment object", strErr));
 
             return Ok("Employment objected deleted successfully");
+        }
+
+    
+    
+        [HttpPut("offeraccepted")]
+        public async Task<ActionResult<bool>> RegisterOfferAcceptance(ICollection<OfferConclusionDto> dto)
+        {
+            dto = dto.Where(x => !"acceptedrejected".Contains(x.acceptedString.ToLower())).ToList();
+
+            if(dto.Count == 0) return BadRequest(new ApiException(400, "invalid accepted String", "accepted value are 'Accepted' or 'Rejected"));
+            
+            var errorString= await _employmentRepo.RegisterOfferAcceptance(dto, User.GetUsername());
+
+            if(!string.IsNullOrEmpty(errorString)) return BadRequest(errorString);
+
+            return Ok("offer acceptance registered");
         }
 
     }

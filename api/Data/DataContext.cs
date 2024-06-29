@@ -57,6 +57,10 @@ namespace api.Data
         public DbSet<OrderAssessmentItem> OrderAssessmentItems {get; set;}
         public DbSet<OrderAssessmentItemQ> OrderAssessmentItemQs {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
+        public DbSet<FlightDetail> FlightDetails {get; set;}
+        public DbSet<CandidateFlight> CandidateFlights {get; set;}
+       // public DbSet<FlightData> FlightDatas {get; set;}
+        //public DbSet<CandidateFlightDetail> CandidateFlightDetails {get; set;}
        
         //fINANCE
         public DbSet<COA> COAs {get; set;}
@@ -71,6 +75,7 @@ namespace api.Data
         public DbSet<AssessmentStddQ> AssessmentStddQs {get; set;}
         public DbSet<AssessmentQStdd> AssessmentQStdds {get; set;}
         public DbSet<Candidate> Candidates{get; set;}
+        public DbSet<ProspectiveCandidate> ProspectiveCandidates{get; set;}
         public DbSet<UserAttachment> UserAttachments{get; set;}
         public DbSet<CandidateAssessment> CandidateAssessments{get; set;}
         //public DbSet<CandidateAssessmentItem> CandidatesItemAssessments{get;}
@@ -110,8 +115,10 @@ namespace api.Data
         public DbSet<TaskItem> TaskItems {get; set;}
         
         //UserHistory
-        public DbSet<UserHistory> UserHistories {get; set;}
-        public DbSet<UserHistoryItem> UserHistoryItems {get; set;}
+        //public DbSet<UserHistory> UserHistories {get; set;}
+        //public DbSet<UserHistoryItem> UserHistoryItems {get; set;}
+        public DbSet<CallRecord> CallRecords {get; set;}
+        public DbSet<CallRecordItem> CallRecordItems {get; set;}
 
         public DbSet<Entities.Messages.MessageComposeSource> MessageComposeSources {get; set;}
 
@@ -128,6 +135,7 @@ namespace api.Data
                 .HasForeignKey(ur => ur.Id)
                 .IsRequired();
             */
+            builder.Entity<ProspectiveCandidate>().HasIndex(x => x.PersonId).IsUnique();
             builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CustomerReview>().HasIndex(x => x.CustomerId).IsUnique();
             builder.Entity<AssessmentQBank>().HasMany(x => x.AssessmentStddQs).WithOne().OnDelete(DeleteBehavior.Cascade);
@@ -197,26 +205,35 @@ namespace api.Data
                 //.HasFilter("CVRefId is NOT ")     //provided by default
                 //.IsUnique();
 
-            builder.Entity<SelectionDecision>().HasIndex(x => x.CVRefId).IsUnique();
+            builder.Entity<FlightDetail>().HasIndex(x => x.FlightNo).IsUnique();
+            builder.Entity<CandidateFlight>().HasIndex(x => x.CvRefId).IsUnique();
+            //builder.Entity<CandidateFlight>().HasOne(x => x.CandidateFlightDetail).WithOne().IsRequired();
+
+            builder.Entity<SelectionDecision>().HasIndex(x => x.CvRefId).IsUnique();
             //builder.Entity<SelectionDecision>().HasOne(x => x.Employment).WithOne().OnDelete(DeleteBehavior.Cascade);
             //builder.Entity<SelectionDecision>().HasOne(x => x.Dep).WithOne().OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Employment>().HasIndex(x => x.CVRefId).IsUnique();
+            builder.Entity<Employment>().HasIndex(x => x.CvRefId).IsUnique();
             builder.Entity<Employment>().HasIndex(x => x.SelectionDecisionId).HasFilter("SelectionDecisionId is NOT NULL");
 
-            builder.Entity<FinanceVoucher>().HasMany(x => x.VoucherEntries).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Process>().HasMany(x => x.ProcessItems).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Dep>().HasIndex(x => x.CVRefId).IsUnique();
+            //builder.Entity<FinanceVoucher>().HasMany(x => x.VoucherEntries).WithOne().OnDelete(DeleteBehavior.Cascade);
+           // builder.Entity<Process>().HasMany(x => x.ProcessItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Dep>().HasIndex(x => x.CvRefId).IsUnique();
             builder.Entity<Dep>().HasMany(x => x.DepItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            //builder.Entity<Dep>().HasMany(i => i.DepItems).WithOne(d => d.Dep).HasForeignKey(x => x.DepId).IsRequired();
+            
+
             builder.Entity<DepItem>().HasIndex(x => new {x.DepId, x.Sequence}).IsUnique();
             
             builder.Entity<Voucher>().HasMany(x => x.VoucherItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<VoucherAttachment>().HasIndex(x => new {x.FileName, x.VoucherId}).IsUnique();
             builder.Entity<COA>().HasIndex(i => i.AccountName).IsUnique();
 
-            builder.Entity<UserHistory>().HasMany(x => x.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<UserHistory>().HasIndex(x => x.CandidateId).HasFilter("CandidateId Is Null").IsUnique();
-            
+           // builder.Entity<UserHistory>().HasMany(x => x.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<UserHistory>().HasIndex(x => x.CandidateId).IsUnique();
+            builder.Entity<CallRecord>().HasMany(x => x.CallRecordItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<CallRecord>().HasIndex(x => x.PersonId).IsUnique();
             
         //Identity
            builder.Entity<AppUser>()

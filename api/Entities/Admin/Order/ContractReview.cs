@@ -9,6 +9,7 @@ namespace api.Entities.Admin.Order
         public string CustomerName {get; set;}
         public string ReviewedByName { get; set; }
         public DateTime ReviewedOn { get; set; } = DateTime.Now;
+        public string HrExecAssignedToUsername { get; set; }
         public string MedicalProcessInchargeUsername { get; set; }
         public string VisaProcessInchargeUsername { get; set; }
         public string EmigProcessInchargeUsername { get; set; }

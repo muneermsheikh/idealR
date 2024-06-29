@@ -9,7 +9,7 @@ namespace api.DTOs.Admin
 		public int OrderNo { get; set; }
 		public string ProfessionName { get; set; }
         public string SelectionStatus { get; set; }
-		public string RejectionReason {get; set;}
+		//public string RejectionReason {get; set;}
 	    public SelectionDecision selectionDecision {get; set;}
 		public int ApplicationNo { get; set; }
 		public int CandidateId { get; set; }
@@ -20,8 +20,9 @@ namespace api.DTOs.Admin
 		public string CandidateKnownAs {get; set;}
 		public int HRSupAppUserId {get; set;}
 		public int CandidateAppUserId { get; set; }
+		public string HrExecUsername {get; set;}
 		public string HRExecEmail {get; set;}
-		public int HRupId {get; set;}
+		public int HRSupId {get; set;}
 		public Employment Employment {get; set;}
     }
 }

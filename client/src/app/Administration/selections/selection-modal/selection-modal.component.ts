@@ -4,6 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
+import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { SelectionService } from 'src/app/_services/hr/selection.service';
 
@@ -16,9 +17,19 @@ export class SelectionModalComponent {
 
   @Input() updateObj = new EventEmitter();
 
-  sel: ISelDecisionDto | undefined;
-  
+  sel: ISelectionDecision | undefined;
+  candidateName: string='';
+  customerName: string='';
+  categoryRefAndName = '';
+
   form: FormGroup = new FormGroup({});
+
+  bsValueDate = new Date();
+  
+  bsValue = new Date();
+  bsRangeValue = new Date();
+  maxDate = new Date();
+  minDate = new Date();
 
   statuses = [{status: 'selected'}, 
     {status: 'Rejected - Profile does not match'},
@@ -31,36 +42,49 @@ export class SelectionModalComponent {
   ]
 
   constructor(public bsModalRef: BsModalRef, private confirmService: ConfirmService,
-    private toastr: ToastrService, private fb: FormBuilder, private service: SelectionService) {}
+    private toastr: ToastrService, private fb: FormBuilder, private service: SelectionService ) {}
 
   ngOnInit(): void {
-    if(this.sel) this.Initialize(this.sel);
+    if(this.sel) {
+      //this.sel.selectedOn = new Date(this.sel.selectedOn.getFullYear(), this.sel.selectedOn.getMonth(), this.sel.selectedOn.getDate());
+      this.Initialize(this.sel);
+    }
+    console.log('recd in in modal ngOnINit:', this.sel);
   }
 
-  Initialize(sel: ISelDecisionDto) {
+  Initialize(sel: ISelectionDecision) {    
     
     this.form = this.fb.group({
-      selDecisionId:[sel.selDecisionId],
+      id:[sel.id],
+      candidateId: sel.candidateId ?? 0,
       candidateName:[sel.candidateName],
-      applicationNo: [sel.applicationNo],
+      applicationNo: [sel.applicationNo ?? 0],
       customerName: [sel.customerName],
-      categoryRef: [sel.categoryRef],
-      referredOn: [sel.referredOn],
+      professionName: [sel.professionName],
+      cvRefId: [sel.cvRefId],
+      orderItemId: sel.orderItemId ?? 0,
+      //orderNo: sel.orderNo,
+      professionId: sel.professionId ?? 0,
       selectedOn: [sel.selectedOn],
-      selectionStatus: [sel.selectionStatus]
-      //, rejectionReason: [sel.rejectionReason]
+      selectionStatus: [sel.selectionStatus],
+      remarks: sel.remarks
     })
   }
 
+
+
   update() {
-      this.updateObj.emit(this.sel);
-      this.bsModalRef.hide();
+      
+    var formdata = this.form.value;
+
+    this.updateObj.emit(formdata);
+    this.bsModalRef.hide();
   }
 
   deleteSel() {
     if(this.sel) 
     {
-        const observableInner = this.service.deleteSelectionDecision(this.sel.selDecisionId);
+        const observableInner = this.service.deleteSelectionDecision(this.sel.id);
         
         var messagePrompt = 'This will delete this selection record, along with all related records like ' +
           'Employments and all deployment records.  Or, depending upon settings, the deletion might fail ' +
@@ -92,4 +116,12 @@ export class SelectionModalComponent {
     }
   }
     
+}
+
+function formatDate( dt: Date) : string {
+  const day = dt.getDate().toString();
+  const month = dt.getMonth().toString();
+  const year = dt.getFullYear().toString();
+
+  return `${year}-${month}-${day}`;
 }

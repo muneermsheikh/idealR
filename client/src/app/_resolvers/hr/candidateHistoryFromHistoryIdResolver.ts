@@ -1,7 +1,7 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
 import { of } from "rxjs";
-import { IUserHistory } from "src/app/_models/admin/userHistory";
+import { IUserHistory } from "src/app/_models/admin/callRecord";
 import { CandidateHistoryService } from "src/app/_services/user-history.service";
 
 export const CandidateHistoryFromHistoryIdResolver: ResolveFn<IUserHistory|null> = (

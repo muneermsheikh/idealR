@@ -76,9 +76,22 @@ namespace api.Data
             
             //recruitment entities
             
+
             var UserListCandidates = new List<AppUser>();
             var UserListEmployees = new List<AppUser>();
             var UserListOfficials = new List<AppUser>();
+
+            if(!await context.MessageComposeSources.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/FlightSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<FlightDetail>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.FlightDetails.Add(item);
+                }
+             }
+
 
             if(!await context.MessageComposeSources.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/MessageComposeSourceSeedData.json");

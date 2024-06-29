@@ -464,7 +464,7 @@ export class CandidateEditComponent implements OnInit {
     if(nowDate < this.lastTimeCalled+ microsecondsDiff) return;
     
     this.lastTimeCalled=Date.now();
-     const formData = new FormData();
+    const formData = new FormData();
     const formValue = this.registerForm.value;
     
     if(this.userFiles.length > 0) {
@@ -496,7 +496,7 @@ export class CandidateEditComponent implements OnInit {
         this.toastrService.info('udating ...');
         this.candidateService.UpdateCandidateWithFiles(formData).subscribe({
           next: (response: ICandidateAndErrorStringDto) => {
-            console.log('returned from api:', response);
+            //console.log('returned from api:', response);
             if(response?.errorString !== '') {
               this.toastrService.error('failed to update the candidate', response.errorString);
             } else {

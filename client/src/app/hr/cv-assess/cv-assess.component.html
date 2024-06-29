@@ -53,7 +53,7 @@
      <div style="border:inset">
           <div *ngIf="orderItemSelected" class="fontSmall b mt-2">Order Item selected</div>
           <div style="padding-left: 5px; border-color: initial ;" 
-               *ngIf="orderItemSelected && (qDesigned || !requireInternalReview)" >
+               *ngIf="orderItemSelected" >
                <span class="fontSmall stdd">Category: </span> <span class="fontSmall blue">
                     {{orderItemSelected.categoryRefAndName}}
                </span>

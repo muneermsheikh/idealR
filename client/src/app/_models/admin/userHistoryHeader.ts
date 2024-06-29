@@ -1,5 +1,5 @@
 
-import { IUserHistory } from "./userHistory";
+import { IUserHistory } from "./callRecord";
 
 export interface IUserHistoryHeader
 {

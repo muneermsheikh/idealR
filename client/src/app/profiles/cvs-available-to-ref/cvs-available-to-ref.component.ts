@@ -87,9 +87,12 @@ export class CvsAvailableToRefComponent implements OnInit {
           if(response.result && response.pagination) {
             this.cvs = response.result;
             this.pagination = response.pagination;
+            console.log('cvs', this.cvs);
           }
         }
       })
+
+      
     }
 
   }
@@ -192,7 +195,7 @@ export class CvsAvailableToRefComponent implements OnInit {
   displayAssessmentModal(cvbrief: any)
   {
         var orderitemid = cvbrief.orderItemId;
-        var candidateid = cvbrief.id;
+        var candidateid = cvbrief.candidateId;
 
         this.candAssessService.getCandidateAssessmentDto(candidateid, orderitemid)
           .subscribe(response => {
@@ -217,7 +220,7 @@ export class CvsAvailableToRefComponent implements OnInit {
   displayAssessmentModalBySwitchMap(cvbrief: any) {
 
     var orderitemid = cvbrief.orderItemId;
-    var candidateid = cvbrief.id;
+    var candidateid = cvbrief.candidateId;
 
     const observableOuter = this.candAssessService.getCandidateAssessmentDto(candidateid, orderitemid);
     
@@ -231,8 +234,7 @@ export class CvsAvailableToRefComponent implements OnInit {
             username: this.user?.userName
           }
         }
-        console.log('displayModalCall config:', config);
-
+        
         this.bsModalRef = this.modalService.show(CvAssessModalComponent, config);
         const observableInner = this.bsModalRef.content.candAssessEvent;
         return observableInner
@@ -283,11 +285,12 @@ export class CvsAvailableToRefComponent implements OnInit {
 
     //cvref needs cvAssessmentIds[]
     var ids = this.selectedCVs.map(x => x.candAssessmentId);
-    console.log('ids', ids);
 
     this.referService.referCVs(ids).subscribe({
       next: (response: any) => {
-        if(response !== null) {
+        console.log('returned from api, cv ref:', response);
+
+        if(response === '') {
           this.toastr.success('selected CVs referred, and CV Referral message available in Messages section for edits', 'success');
           this.cvs.forEach(x => {
             if(x.checked) x.checked=false;

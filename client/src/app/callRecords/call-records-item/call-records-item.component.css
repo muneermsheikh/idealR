@@ -1,0 +1,14 @@
+.stdd {
+    display:inline-block;
+    vertical-align: top;
+    font-size: smaller;
+    margin-left: 1px;
+    margin-right: 1px;
+    word-wrap: normal;
+}
+
+.w50 {width: 50px;}
+.w75{width: 75px;}
+.w150 {width: 150px;}
+
+.red {color: red;}

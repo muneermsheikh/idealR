@@ -25,7 +25,7 @@ namespace api.Entities.Admin.Client
         [EmailAddress]
         public string Email { get; set; }
         public string Status { get; set; }="Active";
-        public ICollection<CustomerIndustry> CustomerIndustries { get; set; } 
+        //public ICollection<CustomerIndustry> CustomerIndustries { get; set; } 
         //CustomerIndustry: AppUserRole
     }
 }

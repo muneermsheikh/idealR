@@ -1,15 +1,19 @@
 <div *ngIf="selection">
     <div class="stdd w50">{{selection.applicationNo}}</div>
-    <div class="stdd w150 cursorpointer" title="email reminder to the candidate for his selection decision"
+    <div class="stdd w150 cursorPointer" title="email reminder to the candidate for his selection decision"
         (click)="remindCandidateForDecision()">{{selection.candidateName}}</div>
     <div class="stdd w200">{{selection.customerName}}</div>
-    <div class="stdd w150">{{selection.categoryRef}}</div>
+    <div class="stdd w200">{{selection.categoryRef}}</div>
     <div class="stdd w100">{{selection.referredOn | date: 'dd-MMM-yy'}}</div>
-    <div class="stdd w100">{{selection.selectedOn | date: 'dd-MMM-yy'}}</div>
-    <div class="stdd w100 cursorpointer" title="display employment details of this candidate"
+    <div class="stdd w150 cursorPointer" title="register candidate interest in the offer"
         (click)="displayEmployment()">{{selection.selectionStatus}}</div>
 
-    <button class="btn fa fa-pencil" title="edit this selection/rejection data"
+    <div class="stdd w100 cursorPointer" 
+        title="display selection data"
+        >{{selection.selectedOn | date: 'dd-MMM-yy'}}
+    </div>
+    
+    <button class="btn fa fa-pencil" title="edit selection detais of this candidate"
         (click)="editSelection()"></button>
     <button class="btn fa fa-trash fa-sm red" title="delete this selection data"
         (click)="deleteSelection()"></button>

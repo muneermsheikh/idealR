@@ -3,8 +3,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Navigation, Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
+import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { User } from 'src/app/_models/user';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
+import { EmployeeService } from 'src/app/_services/admin/employee.service';
 
 @Component({
   selector: 'app-order-item-review-modal',
@@ -22,9 +24,11 @@ export class OrderItemReviewModalComponent {
   isAddMode: boolean = false;
   reviewStatus = [{name: 'Not Reviewed'}, {name: 'Accepted'}, {name: 'Rejected'}];
   user?: User;
-  
+  empIdAndNames: IEmployeeIdAndKnownAs[]=[];
 
-  constructor(public bsModalRef: BsModalRef, 
+  skills: string[]=[];
+
+  constructor(public bsModalRef: BsModalRef, private empService: EmployeeService,
     private fb: FormBuilder, private router: Router,
     private service: ContractReviewService ) { 
       let nav: Navigation|null = this.router.getCurrentNavigation() ;
@@ -33,6 +37,8 @@ export class OrderItemReviewModalComponent {
           if( nav.extras.state['user']) 
                 this.user = nav.extras.state['user'] as User;
       }
+
+      empService.getEmployeeIdAndKnownAs().subscribe({next: response => this.empIdAndNames=response});
   }
 
   ngOnInit(): void {
@@ -112,5 +118,10 @@ export class OrderItemReviewModalComponent {
     this.bsModalRef.hide();
   }
 
+  employeeChanged(event: any) {
+    console.log('clicked',event);
+    this.skills = event.hrSkills.map((x: any) => x.professionName);
+    
+  }
 
 }

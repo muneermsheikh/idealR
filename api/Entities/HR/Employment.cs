@@ -4,7 +4,7 @@ namespace api.Entities.HR
 {
     public class Employment: BaseEntity
     {
-        public int CVRefId { get; set; }    
+        public int CvRefId { get; set; }    
         public int SelectionDecisionId { get; set; }
         public DateTime SelectedOn { get; set; }
         public int ChargesFixed {get; set;}
@@ -31,6 +31,8 @@ namespace api.Entities.HR
         public string OfferConclusionRegisteredByUsername { get; set; } 
         public string OfferAttachmentUrl { get; set; }
         public string OfferAcceptanceUrl { get; set; }
+        //[Timestamp]
+        //public byte[] Version { get; set; }
        
     }
 }

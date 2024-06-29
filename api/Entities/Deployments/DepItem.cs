@@ -12,5 +12,6 @@ namespace api.Entities.Deployments
         public int Sequence { get; set; }
         public int NextSequence { get; set; }
         public DateTime NextSequenceDate { get; set; }
+        //public Dep Dep { get; set; }
     }
 }

@@ -80,8 +80,4 @@ export class ContractReviewService {
     return this.http.put<IContractReview>(this.apiUrl + 'ContractReview/contractreview', model)
   }
 
-  /* updateReviews(model: any[]) {
-    return this.http.put(this.apiUrl + 'orders/reviews', model)
-  }
-  */
 }

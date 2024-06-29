@@ -5,23 +5,27 @@ export interface IEmploymentDto
      companyName: string;
      categoryRef: string;
 
-     id: number;
-     cVRefId: number;
      selectionDecisionId: number;
+     cvRefId: number;
      selectedOn: Date;
      charges: number;
+     weeklyHours: number;
      salaryCurrency: string;
      salary: number;
      contractPeriodInMonths: number;
      housingProvidedFree: boolean;
      housingAllowance: number;
+     housingNotProvided: boolean;
      foodProvidedFree: boolean;
-     foodAlowance: number;
+     foodNotProvided: boolean;
+     foodAllowance: number;
      transportProvidedFree: boolean;
      transportAllowance: number;
+     transportNotProvided: boolean;
      otherAllowance: number;
      leavePerYearInDays: number;
      leaveAirfareEntitlementAfterMonths: number;
+     offerAccepted: string;
      offerAcceptedOn: Date;
      remarks: string;
 }

@@ -1,7 +1,7 @@
 export interface IEmployment
 {
 	id: number;
-	cVRefId: number;
+	cvRefId: number;
 	selectionDecisionId: number;
 
 	selectedOn: Date;
@@ -22,7 +22,7 @@ export interface IEmployment
 	otherAllowance: number;
 	leavePerYearInDays: number;
 	leaveAirfareEntitlementAfterMonths: number;
-	offerAcceptedOn: Date;
+	offerAccepted: string;
 
 	categoryId: number;
 	categoryName: string;
@@ -37,6 +37,47 @@ export interface IEmployment
 	agentName: string;
 	approved: boolean;
 	approvedByEmpId:number;
-	approvedOn: Date;
+	offerAcceptanceConcludedOn: Date;
+
+}
+
+export class Employment {
+	id= 0;
+	cvRefId= 0;
+	selectionDecisionId= 0;
+	selectedOn= new Date();
+	charges= 0;
+	salaryCurrency= '';
+	salary= 0;
+	contractPeriodInMonths= 0;
+	weeklyHours= 0;
+	housingProvidedFree= false;
+	housingNotProvided= false;
+	housingAllowance= 0;
+	foodProvidedFree= false;
+	foodNotProvided= false;
+	foodAllowance= 0;
+	transportProvidedFree= false;
+	transportNotProvided= false;
+	transportAllowance= 0;
+	otherAllowance= 0;
+	leavePerYearInDays= 0;
+	leaveAirfareEntitlementAfterMonths= 0;
+	offerAccepted= '';
+	offerAcceptedOn= new Date();
+	categoryId= 0;
+	categoryName= '';
+	orderItemId= 0;
+	orderId= 0;
+	orderNo= 0;
+	customerId= 0;
+	customerName= '';
+	candidateId= 0;
+	applicationNo= 0;
+	candidateName= '';
+	agentName= '';
+	approved= false;
+	approvedByEmpId = 0;
+	offerAcceptanceConcludedOn= new Date();
 
 }

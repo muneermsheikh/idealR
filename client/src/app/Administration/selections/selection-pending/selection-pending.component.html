@@ -37,7 +37,7 @@
         </div>
     </div>
     
-    <button class="btn btn-outline-success fa fa-save mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
+    <button class="btn btn-outline-success fa fa-check mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
         title="update the selections/rejections" (click)="UpdateSelections()" >
     </button>
     <button class="btn btn-outline-close fa fa-undo mx-5" routerLink="/administration" title="return to Administration Menu" ></button>
@@ -47,7 +47,6 @@
 <label class="stdd w50 mL80">Check</label>
 <label class="stdd w50 ">App No</label>
 <label class="stdd w150">Candidate Name</label>
-<label class="stdd w50">Order No</label>
 <label class="stdd w200">Customer Name</label>
 <label class="stdd w150">Category Ref</label>
 <label class="stdd w100">Referred On</label>

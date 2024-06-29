@@ -159,27 +159,6 @@ export class CandidateService {
     )
   }
   
-  /*submitCVsForReview(itemIds: number[], cvids: number[]) {
-      
-      if (itemIds.length === 0 || cvids.length ===0) {
-        this.toastr.warning("candidate Ids or item Ids data not provided");
-        return;
-      }
-
-      var cvrvws: ICVReviewDto[]=[];
-      cvids.forEach(c => {
-        itemIds.forEach(i => {
-          var cvrvw = new cvReviewDto();  
-          cvrvw.candidateId=c;
-          cvrvw.orderItemId=i;
-          cvrvw.execRemarks='';
-          cvrvws.push(cvrvw);
-        })
-      })
-
-      return this.http.post(this.apiUrl + 'cvreviews', cvrvws);
-  } 
-  */
   downloadAttachmentFile(attachmentid: number) {
     // get a document from the Web API endpoint 'LoadDocument'
     return this.http.get<any>(this.apiUrl + 'fileupload/downloadattachmentfile/' + attachmentid);

@@ -1,110 +1,102 @@
 <div class="modal-header my-0" *ngIf="emp" >
-    Employment details of:
-    <label for="applicationNo" class="stdd w100 b">App No:</label> 
-        <div class="stdd w75" >{{emp.applicationNo}}</div>
-    <label for="candidateName" class="stdd w100 ml-5 b">Candidate: </label> 
-        <div class="stdd w150" >{{emp.candidateName}}</div>
+    <h6>Employment details</h6>
+    
+    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
+        title="edit emp data" (click)="updateEmployment()" ></button>
+    <button class="btn fa fa-close pull-right" title="Close" (click)="close()" ></button>
 </div>
-<div class="modal-body my-0">
+
+<div class="modal-body my-0" *ngIf="emp">
     <form [formGroup]="form">
-        <div *ngIf="emp !== undefined">
+        <label for="applicationNo" class="stdd w150 b">Application No:</label> 
+            <div class="stdd w200" >{{candidateName}}</div>
+        <br>
+        <label for="customerName" class="stdd w150 b">Customer Name</label> 
+            <div class="stdd w200">{{companyName}}</div>
+        <br><label for="customerName" class="stdd w150 b">Category Ref</label> 
+            <div class="stdd w200">{{categoryRef}}</div>
+                
 
-            <input type="checkbox" style="margin-left: 25px;"
-                class="stdd form-check-input w20 hAlignCenter"
-                formControlName="offerAccepted"
-            >
-
-            <div class="stdd w110">
-                <app-date-picker [maxDate]="maxDate" formControlName="offerAcceptedOn" 
-                [label]="'Accepted On'"></app-date-picker>
-           </div>
-            <label for="orderNo" class="stdd b w100"></label> 
-                <div class="stdd w75" >{{emp.orderNo}}</div>
-            <label for="customerName" class="stdd w100 b"></label> 
-                <div class="stdd w150">{{emp.customerName}}</div>
-            <div class="stdd pull-right">
-                <button class="btn fa fa-checkmark" (click)="offerAccepted()" ></button>
-                <button class="btn fa fa-crossmark" (click)="offerRejected()"></button>
-            </div>
-            <br>
-            
-            <label for="categoryName" class="stdd w100 b"></label> 
-            <div class="stdd w150" >{{emp.categoryName}}</div>
-            <br> <label for="selectedOn" class="stdd w100 b">Selected On:</label> 
-            <input class="stdd w150"
-                type="text"
-                placeholder="Date"
-                formControlName="selectedOn"
-                bsDatepicker
-                [bsValue]="bsValueDate"
-                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
-            >
-        
-            <button class="btn pull-right bordernone fa fa-close" title="Close" (click)="close()" ></button>
-            <hr style="border: double; margin-top:2px; margin-bottom: 2px;">
-        
-            <label  class="stdd w150 b">Remuneration</label> 
-            <br>
-            <label class="stdd w150 b">Salary Currency</label> 
-                <input type="text" class="stdd w100 ml-10" title="salary currency" 
-                    formControlName="salaryCurrency">
-            <label class="stdd w150 b">Salary</label> 
-                <input type="text" class="stdd 100" title="salary currency" 
-                    formControlName="salary">
-            
-            <hr style="border: double;">
-            <label class="stdd w150 b">Perks</label> 
-            <label class="stdd w150 b">Allowance</label> 
-            <label class="stdd w100 b">Provided<br>Free</label> 
-            <label class="stdd w100 b">Not<br>Provided</label> 
-            
-            
-            <label for="housingAllowance" class="stdd w150" >Housing</label>
-            <input type="text" class="stdd w150"  
-                title="housing allowance" formControlName="housingAllowance">
-            <input type="checkbox" style="margin-left: 25px;"
-                class="form-check-input w20 hAlignCenter"
-                formControlName="housingProvidedFree"
-            >
-            <input type="checkbox" class="form-check-input w20 hAlignCenter"
-                formControlName="housingNotProvided"
-            >
-        
-            <label for="housingAllowance" class="stdd w150" >Food</label>
-            <input type="text" class="stdd w150"  
-                title="Food Allowance" formControlName="foodllowance">
-            <input type="checkbox" style="margin-left: 25px;"
-                class="form-check-input w20 hAlignCenter"
-                formControlName="foodProvidedFree"
-            >
-            <input type="checkbox" class="form-check-input w20 hAlignCenter"
-                formControlName="foodNotProvided"
-            >
-        
-            <br><label for="Transportation" class="stdd w150" >Transportation</label>
-            <input type="text" class="stdd 100"  
-                title="Transportation allowance" formControlName="transportAllowance">
-            
-            <input type="checkbox" class="form-check-input stdd hAlignCenter"
-                formControlName="transportProvidedFree"
-            >
-            
-            <input type="checkbox" class="form-check-input stdd hAlignCenter"
-                formControlName="transportNotProvided"
-            >
-            
-            <br><label for="otherAllowance" class="stdd w150" >Other Allowance</label>
-            <input type="text" class="stdd 100" style="margin-left: 300px;" 
-                title="Other allowance" formControlName="otherAllowance">
-        
-            <div class="mx-1" style="display: inline-block; width: 200px;">
-                 <button class="w35 bordernone fa fa-pencil" style="margin-left: 50x;"
-                    title="edit emp data"    (click)="updateEmployment()" ></button>
-            </div>
+        <br><label class="stdd w150 b" >Offer Acceptance</label>
+        <div class="stdd w175">
+            <ng-select 
+                    style="border: color(from color srgb r g b); font-size: smaller;"
+                    [items]="statuses"
+                    bindLabel="status"
+                    bindValue="status"
+                    labelForId="status"
+                    clearAllText="Clear"
+                    formControlName="offerAccepted"
+            ></ng-select>
         </div>
+
+        <br><label class="stdd b w150">Accept/Decline `On</label>
+        <div style="display:inline-block; width: 110px;">
+            <input class="stdd w110" type="text" placeholder="Offer accepted On" 
+                formControlName="offerAcceptanceConcludedOn" bsDatepicker 
+                [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        </div>
+
+
+        <hr style="border: double; margin-top:2px; margin-bottom: 2px;">
+        <label class="stdd w150 b">Currency & Salary</label> 
+            <input type="text" class="stdd w50 ml-10" title="salary currency" 
+                formControlName="salaryCurrency">
+            <input type="number" class="stdd w75" title="salary" 
+                formControlName="salary">
+        <hr>
+        <label class="stdd w150 b">Perks</label> 
+        <label class="stdd w100 b">Allowance</label> 
+        <label class="stdd w100 b">Provided Free</label> 
+        <label class="stdd w100 b">Not Provided</label> 
+        
+        <br>
+        <label for="housingAllowance" class="stdd w150" >Housing</label>
+        <input type="number" class="stdd w75"  
+            title="housing allowance" formControlName="housingAllowance">
+        <input type="checkbox" style="margin-left: 50px;"
+            class="form-check-input w20 hAlignCenter"
+            formControlName="housingProvidedFree"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="housingNotProvided" style="margin-left: 75px;"
+        >
+        
+        <br>
+        <label class="stdd w150" >Food</label>
+        <input type="number" class="stdd w75" 
+            title="Food Allowance" formControlName="foodAllowance">
+        <input type="checkbox" style="margin-left: 50px;"
+            class="form-check-input w20 hAlignCenter"
+            formControlName="foodProvidedFree"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="foodNotProvided" style="margin-left: 75px;"
+        >
+    
+        <br><label for="Transportation" class="stdd w150" >Transportation</label>
+        <input type="number" class="stdd w75"  
+            title="Transportation allowance" formControlName="transportAllowance">
+        <input type="checkbox" class="form-check-input w20 hAlignCenter" 
+            formControlName="transportProvidedFree" style="margin-left: 50px;"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="transportNotProvided" style="margin-left: 75px;"
+        >
+        
+        <br><label for="otherAllowance" class="stdd w150" >Other Allowance</label>
+        <input type="number" class="stdd w75" 
+            title="Other allowance" formControlName="otherAllowance">
+    
+        
     </form>
 </div>
 
 <div class="modal-footer my-0">
 
 </div>
+<!--
+<div style="font-size: smaller;">
+    {{form.value | json}}
+</div>
+-->

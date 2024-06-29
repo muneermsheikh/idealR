@@ -114,10 +114,10 @@ export class CvAssessComponent implements OnInit {
 
 
   chooseSelectedOrderItem() {
-    
       //the combobox selected is updated by ngModel to orderItemSelectedId
-      if (this.lastOrderItemIdSelected === this.orderItemSelectedId && this.lastOrderItemIdSelected !== 0) return;
-   
+
+      if (this.lastOrderItemIdSelected >=0 && this.orderItemSelectedId == this.lastOrderItemIdSelected ) return;
+
       this.orderItemSelected = this.openOrderItems.find(x => x.orderItemId===this.orderItemSelectedId);
       if(this.orderItemSelected === undefined) return;
       this.requireInternalReview = this.orderItemSelected.requireInternalReview;
@@ -137,7 +137,6 @@ export class CvAssessComponent implements OnInit {
             this.assessmentAndChecklist = response;
             
             this.checklist = response.checklistHRDto;
-            console.log('response :', this.checklist);
 
             this.cvAssessment = this.assessmentAndChecklist!.assessed;
             this.qDesigned = this.orderItemSelected!.assessmentQDesigned;
@@ -148,14 +147,13 @@ export class CvAssessComponent implements OnInit {
                 ? this.initializeWithoutArray(this.cvAssessment)
                 : this.initializeWithArray(this.cvAssessment);
           
-              this.lastOrderItemIdSelected = this.orderItemSelectedId;
-
             } else {
               this.toastr.warning('the candidate has not been assessed for the category selected.');
             }
         }, error: (err: any) => this.toastr.error(err, 'failed to retrieve candidate assessment')
       })
 
+      this.lastOrderItemIdSelected = this.orderItemSelectedId;
 
   }
 
@@ -284,7 +282,7 @@ export class CvAssessComponent implements OnInit {
             }),
           )),
           catchError(err => {
-            this.toastr.error('error in subscribing to bsModalRef contents', err);
+            this.toastr.error(err, 'error in subscribing to bsModalRef contents');
             return of();
           })
       ).subscribe(
@@ -305,7 +303,6 @@ export class CvAssessComponent implements OnInit {
       this.toastr.warning('An order item must be selected, to display related checklist', "Order Item not selected");
       return;
     }
-    console.log('in openchecklistmodal, checklist is:', this.checklist);
 
       const config = {
           class: 'modal-dialog-centered modal-lg',

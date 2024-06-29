@@ -8,11 +8,9 @@ namespace api.Entities.HR
     {
         [Required]
         public int OrderItemId { get; set; }
-
         public string CustomerName { get; set; }
         public string CategoryRefAndName { get; set; }
         public DateTime OrderDate { get; set; }
-        
         public int CandidateId {get; set;}
         public DateTime AssessedOn { get; set; }
         public string AssessedByEmployeeName {get; set;}

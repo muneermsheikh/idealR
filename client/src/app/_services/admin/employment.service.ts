@@ -7,6 +7,7 @@ import { employmentParams } from 'src/app/_models/params/Admin/employmentParam';
 import { Pagination } from 'src/app/_models/pagination';
 import { getHttpParamsForEmployment, getPaginatedResult } from '../paginationHelper';
 import { IEmployment } from 'src/app/_models/admin/employment';
+import { IEmploymentDto } from 'src/app/_dtos/admin/employmentDto';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ export class EmploymentService {
       return this.http.get(this.apiUrl + 'employment/generate/' + selDecisionId);
     }
   
-  updateEmployment(model: IEmployment) {
+  updateEmployment(model: IEmploymentDto) {
     return this.http.put(this.apiUrl + 'employment/employment', model);
   }
 

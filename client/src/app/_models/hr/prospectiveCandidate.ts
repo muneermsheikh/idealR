@@ -3,7 +3,8 @@ export interface IProspectiveCandidate
      id: number;
      checked: boolean;
      source: string;
-     resumeId: string;
+     personType: string;
+     personId: string;
      nationality: string;
      address: string;
      city: string;
@@ -23,7 +24,6 @@ export interface IProspectiveCandidate
      status: string;
      newStatus: string;
      statusDate: Date;
-     statusByUserId: number;
      userName: string;
      closed: boolean;
      remarks: string;

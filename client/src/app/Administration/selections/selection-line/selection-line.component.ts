@@ -1,7 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
-import { Pagination } from 'src/app/_models/pagination';
-import { User } from 'src/app/_models/user';
+import { IEmployment } from 'src/app/_models/admin/employment';
+import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
+import { SelectionService } from 'src/app/_services/hr/selection.service';
 
 @Component({
   selector: 'app-selection-line',
@@ -11,27 +13,45 @@ import { User } from 'src/app/_models/user';
 export class SelectionLineComponent {
 
   @Input() selection: ISelDecisionDto | undefined;
-  @Output() displayEmploymentEvent = new EventEmitter<number>();
+  @Output() editEmploymentEvent = new EventEmitter<IEmployment | null>();
   @Output() deleteSelectionEvent = new EventEmitter<number>();
-  @Output() editSelectionEvent = new EventEmitter<ISelDecisionDto>();
+  @Output() editSelectionEvent = new EventEmitter<ISelectionDecision>();
   @Output() remindCandidateForDecisionEvent = new EventEmitter<number>();
 
+  constructor(private service: SelectionService){}
+
   displayEmployment() {
-    if(this.selection) this.displayEmploymentEvent.emit(this.selection.selDecisionId);
+    this.service.getEmploymentFromSelectionId(this.selection!.id).subscribe({
+        next: (response) => {
+          if(response !==null) {
+            this.editEmploymentEvent.emit(response);
+          } else {
+            this.editEmploymentEvent.emit(null);
+          }
+          
+        }
+    })
   }
 
   editSelection() {
-    this.editSelectionEvent.emit(this.selection);
+    this.service.getSelectionBySelDecisionId(this.selection?.id).subscribe({
+      next: (response) => {
+        console.log('response from selection-line', response);
+        this.editSelectionEvent.emit(response);
+      }
+    })
+    
   }
 
   deleteSelection() {
-    if(this.selection) this.deleteSelectionEvent.emit(this.selection.selDecisionId);
+    if(this.selection) this.deleteSelectionEvent.emit(this.selection.id);
   }
 
   remindCandidateForDecision() {
-    if(this.selection) this.remindCandidateForDecisionEvent.emit(this.selection.selDecisionId);
+    if(this.selection) this.remindCandidateForDecisionEvent.emit(this.selection.id);
   }
 
+  
 
 
 

@@ -2,9 +2,9 @@ namespace api.Params.Deployments
 {
     public class DeployParams: PaginationParams
     {
-        public ICollection<int> CVRefIds { get; set; }
-        public ICollection<int> OrderItemIds { get; set; }
-        public ICollection<int> CandidateIds {get; set;}
+        public int CvRefId { get; set; }
+        public int OrderItemId { get; set; }
+        public int CandidateId {get; set;}
         public DateTime SelectedOn {get; set;}
         public int OrderNo {get; set;}
         public int CustomerId { get; set; }

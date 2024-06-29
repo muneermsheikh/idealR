@@ -1,3 +1,4 @@
+using api.Data.Migrations;
 using api.DTOs.Admin.Orders;
 using api.DTOs.HR;
 using api.Entities.HR;
@@ -93,6 +94,8 @@ namespace api.Data.Repositories.HR
                 ChecklistHRId = checklistId,
                 RequireInternalReview = requireAssess,
                 AssessResult = "Not Assessed",
+                CategoryRefAndName = orderAssessmentItem.OrderNo + "-" + orderAssessmentItem.ProfessionName,
+                CustomerName = orderAssessmentItem.CustomerName,
                 CandidateAssessmentItems = requireAssess == "Y" 
                     ? _mapper.Map<ICollection<CandidateAssessmentItem>>(orderAssessmentItem.OrderAssessmentItemQs) 
                     : null

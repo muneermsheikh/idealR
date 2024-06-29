@@ -1,8 +1,10 @@
 export interface ISelDecisionDto
 {
-    selDecisionId: number;
-    cVRefId: number;
+    id: number;
+    cvRefId: number;
     orderItemId: number;
+    professionId: number;
+    candidateId: number;
     candidateName: string;
     applicationNo: number;
 

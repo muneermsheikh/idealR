@@ -1,4 +1,4 @@
-<h3 style="display: inline-block;">Orders Listing</h3>
+<h6 style="display: inline-block;">Orders Listing</h6>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;" *ngIf="pagination !== undefined">
      <pagination
           [totalItems]="pagination!.totalItems"
@@ -13,45 +13,43 @@
 
 </div>
 <div class="row" style="margin-left: 5px;" >
-    <div style="margin-left: 5px;">
-         <div class="d-flex justify-contents-between align-items-center">
-               
-               <div class="form-inline" style="margin-left: 50px;" *ngIf="orders">
-                    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
-                    <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
-                    <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
-                    <button class="btn btn-outline-success" routerLink="/orders/add" >Add</button>
-               </div>
-               
-               <button class="btn btn-outline-success mx-5" routerLink="/admin" >Close</button>
-               <button class="btn btn-outline-success pull-right" routerLink="/admin" >Back</button>
-         </div>
-         <div class="form-inline" style="font-weight: bold;">
-              <div class="stdd w70 b" >Order No</div>
-              <div class="stdd w100 b" >Order Date</div>
-              <div class="stdd w200 b">Customer Name</div>
-              <div class="stdd w100 b" >City</div>
-              <div class="stdd w150 b">Review status</div>
-              <div class="stdd w100 b">Reviewed On</div>
-              <div class="stdd w100 b">Forwarded To HR On</div>
-         </div>
-         <div *ngIf="!orders">No orders on record</div>
-         <div *ngIf="orders">
-              <div class="row" *ngFor="let order of orders" >
-                   <app-order-item 
-                        [order]="order" 
-                        (editEvent)="editOrder($event)"
-                        (contractReviewEvent)="contractReviewOrder($event)"
-                        (orderFwdToAssociatesEvent)="orderForwardToAssociates($event)"
-                        (orderForwardedToAssociatesEvent)="orderForwardedToAssociates($event)"
-                        (deleteEvent)="deleteOrder($event)"
-                        (acknowledgeToClientEvent)="acknowledgeToClient($event)"
-                        (cvreferredEvent)="cvsReferred($event)"
-                        (orderAssessmentItemEvent)="orderAssessmentItem($event)"
-                    ></app-order-item>
-              </div>
+     <div class="d-flex justify-contents-between align-items-center">
+          
+          <div class="form-inline" style="margin-left: 50px;" *ngIf="orders">
+               <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
+               <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
+               <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+               <button class="btn btn-outline-success" routerLink="/orders/add" >Add</button>
+          </div>
+          
+          <button class="btn btn-outline-success mx-5" routerLink="/admin" >Close</button>
+          <button class="btn btn-outline-success pull-right" routerLink="/admin" >Back</button>
+     </div>
+     <div class="form-inline b" >
+          <div class="stdd w70 b" >Order No</div>
+          <div class="stdd w100 b" >Order Date</div>
+          <div class="stdd w200 b">Customer Name</div>
+          <div class="stdd w100 b" >City</div>
+          <div class="stdd w150 b">Review status</div>
+          <div class="stdd w100 b">Reviewed On</div>
+          <div class="stdd w100 b">Forwarded To HR On</div>
+     </div>
+     <div *ngIf="!orders">No orders on record</div>
+     <div *ngIf="orders">
+          <div class="row" *ngFor="let order of orders" >
+               <app-order-item 
+                    [order]="order" 
+                    (editEvent)="editOrder($event)"
+                    (contractReviewEvent)="contractReviewOrder($event)"
+                    (orderFwdToAssociatesEvent)="orderForwardToAssociates($event)"
+                    (orderForwardedToAssociatesEvent)="orderForwardedToAssociates($event)"
+                    (deleteEvent)="deleteOrder($event)"
+                    (acknowledgeToClientEvent)="acknowledgeToClient($event)"
+                    (cvreferredEvent)="cvsReferred($event)"
+                    (orderAssessmentItemEvent)="orderAssessmentItem($event)"
+               ></app-order-item>
+          </div>
    
          </div>
         
-    </div>
 </div>

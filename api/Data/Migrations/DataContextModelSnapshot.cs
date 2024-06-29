@@ -101,6 +101,169 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.CallRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryRef")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ConcludedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PersonId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PersonName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PersonType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("StatusDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique();
+
+                    b.ToTable("CallRecords");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CallRecordItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AdvisoryBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CallRecordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContactResult")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateOfContact")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GistOfDiscussions")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IncomingOutgoing")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NextAction")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("NextActionOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CallRecordId");
+
+                    b.ToTable("CallRecordItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CandidateFlight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AirportOfBoarding")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AirportOfDestination")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AirportVia")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CandidateName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerCity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateOfFlight")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DepId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DepItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ETA_Destination")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ETA_Via")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ETD_Boarding")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ETD_Via")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FightNoVia")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FlightNo")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CvRefId")
+                        .IsUnique();
+
+                    b.ToTable("CandidateFlights");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.AgencySpecialty", b =>
                 {
                     b.Property<int>("Id")
@@ -110,7 +273,7 @@ namespace api.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("IndustryId")
+                    b.Property<int?>("IndustryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProfessionId")
@@ -211,17 +374,12 @@ namespace api.Data.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CustomerOfficialId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("IndustryId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("CustomerOfficialId");
 
                     b.HasIndex("IndustryId");
 
@@ -561,6 +719,47 @@ namespace api.Data.Migrations
                     b.ToTable("feedbackStddQs");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.FlightDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AirportOfBoarding")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AirportOfDestination")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AirportVia")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeOnly>("ETA_Destination")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeOnly>("ETA_Via")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeOnly>("ETD_Boarding")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeOnly>("ETD_Via")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FightNoVia")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FlightNo")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlightNo")
+                        .IsUnique();
+
+                    b.ToTable("FlightDetails");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
                 {
                     b.Property<int>("Id")
@@ -574,6 +773,9 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmigProcessInchargeUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HrExecAssignedToUsername")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MedicalProcessInchargeUsername")
@@ -1147,145 +1349,42 @@ namespace api.Data.Migrations
                     b.ToTable("Remunerations");
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.UserHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Age")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AlternateEmailId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AlternatePhoneNo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ApplicationNo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CandidateId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CandidateName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CategoryRef")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("City")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("Concluded")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ConcludedByUsername")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly?>("ConcludedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("CreatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Education")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EmailId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Gender")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MobileNo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ResumeId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("StatusDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("WorkExperience")
-                        .HasMaxLength(25)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CandidateId")
-                        .IsUnique()
-                        .HasFilter("CandidateId Is Null");
-
-                    b.ToTable("UserHistories");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.UserHistoryItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ContactResult")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("DateOfContact")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GistOfDiscussions")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IncomingOutgoing")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneNo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UserHistoryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserHistoryId");
-
-                    b.ToTable("UserHistoryItems");
-                });
-
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CityOfWorking")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CurrentStatus")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CurrentStatusDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Ecnr")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("SelectedOn")
+                    b.Property<DateTime>("SelectedOn")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CVRefId")
+                    b.HasIndex("CvRefId")
                         .IsUnique();
 
                     b.ToTable("Deps");
@@ -1303,13 +1402,13 @@ namespace api.Data.Migrations
                     b.Property<int>("NextSequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("NextSequenceDate")
+                    b.Property<DateTime>("NextSequenceDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("TransactionDate")
+                    b.Property<DateTime>("TransactionDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -1518,7 +1617,7 @@ namespace api.Data.Migrations
                     b.Property<string>("Narration")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("VoucherDated")
+                    b.Property<DateTime>("VoucherDated")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VoucherNo")
@@ -1644,7 +1743,7 @@ namespace api.Data.Migrations
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("TransDate")
+                    b.Property<DateTime>("TransDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VoucherId")
@@ -1776,7 +1875,7 @@ namespace api.Data.Migrations
                     b.Property<string>("SelectionStatus")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("SelectionStatusDate")
+                    b.Property<DateTime>("SelectionStatusDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -2072,9 +2171,6 @@ namespace api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Charges")
                         .HasColumnType("INTEGER");
 
@@ -2082,6 +2178,9 @@ namespace api.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ContractPeriodInMonths")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CvRefId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("FoodAllowance")
@@ -2108,7 +2207,7 @@ namespace api.Data.Migrations
                     b.Property<int>("LeavePerYearInDays")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("OfferAcceptanceConcludedOn")
+                    b.Property<DateTime>("OfferAcceptanceConcludedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OfferAcceptanceUrl")
@@ -2132,7 +2231,7 @@ namespace api.Data.Migrations
                     b.Property<string>("SalaryCurrency")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("SelectedOn")
+                    b.Property<DateTime>("SelectedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SelectionDecisionId")
@@ -2152,7 +2251,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CVRefId")
+                    b.HasIndex("CvRefId")
                         .IsUnique();
 
                     b.HasIndex("SelectionDecisionId")
@@ -2178,6 +2277,9 @@ namespace api.Data.Migrations
 
                     b.Property<int>("ProfessionId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProfessionName")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SkillLevel")
                         .HasColumnType("INTEGER");
@@ -2321,20 +2423,75 @@ namespace api.Data.Migrations
                     b.ToTable("OtherSkills");
                 });
 
-            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
+            modelBuilder.Entity("api.Entities.HR.ProspectiveCandidate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("Charges")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Age")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AlternateEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AlternateNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CandidateName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CategoryRef")
+                        .HasMaxLength(9)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ctc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CurrentLocation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DateRegistered")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Education")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nationality")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("PersonId")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PersonType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNo")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProfessionId")
                         .HasColumnType("INTEGER");
@@ -2342,13 +2499,80 @@ namespace api.Data.Migrations
                     b.Property<string>("ProfessionName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RejectionReason")
+                    b.Property<string>("ResumeTitle")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Source")
+                        .HasMaxLength(12)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("StatusDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkExperience")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique();
+
+                    b.ToTable("ProspectiveCandidates");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CandidateName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Charges")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CityOfWorking")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("SelectedOn")
+                    b.Property<string>("SelectedAs")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SelectedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SelectionStatus")
@@ -2356,7 +2580,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CVRefId")
+                    b.HasIndex("CvRefId")
                         .IsUnique();
 
                     b.ToTable("SelectionDecisions");
@@ -3103,6 +3327,15 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.CallRecordItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.CallRecord", null)
+                        .WithMany("CallRecordItems")
+                        .HasForeignKey("CallRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.AgencySpecialty", b =>
                 {
                     b.HasOne("api.Entities.Admin.Client.Customer", null)
@@ -3117,10 +3350,6 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Admin.Client.Customer", "Customer")
                         .WithMany("CustomerIndustries")
                         .HasForeignKey("CustomerId");
-
-                    b.HasOne("api.Entities.Admin.Client.CustomerOfficial", null)
-                        .WithMany("CustomerIndustries")
-                        .HasForeignKey("CustomerOfficialId");
 
                     b.HasOne("api.Entities.Master.Industry", "Industry")
                         .WithMany()
@@ -3288,20 +3517,11 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.UserHistoryItem", b =>
-                {
-                    b.HasOne("api.Entities.Admin.UserHistory", null)
-                        .WithMany("UserHistoryItems")
-                        .HasForeignKey("UserHistoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
                 {
                     b.HasOne("api.Entities.HR.CVRef", "CVRef")
                         .WithMany()
-                        .HasForeignKey("CVRefId")
+                        .HasForeignKey("CvRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3465,7 +3685,7 @@ namespace api.Data.Migrations
                 {
                     b.HasOne("api.Entities.HR.CVRef", "CVRef")
                         .WithMany()
-                        .HasForeignKey("CVRefId")
+                        .HasForeignKey("CvRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3606,6 +3826,11 @@ namespace api.Data.Migrations
                     b.Navigation("TargetUser");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.CallRecord", b =>
+                {
+                    b.Navigation("CallRecordItems");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.Customer", b =>
                 {
                     b.Navigation("AgencySpecialties");
@@ -3613,11 +3838,6 @@ namespace api.Data.Migrations
                     b.Navigation("CustomerIndustries");
 
                     b.Navigation("CustomerOfficials");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.Client.CustomerOfficial", b =>
-                {
-                    b.Navigation("CustomerIndustries");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerReview", b =>
@@ -3675,11 +3895,6 @@ namespace api.Data.Migrations
                     b.Navigation("OrderItemAssessmentQs");
 
                     b.Navigation("Remuneration");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.UserHistory", b =>
-                {
-                    b.Navigation("UserHistoryItems");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>

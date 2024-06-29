@@ -1,4 +1,5 @@
 using api.Data;
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +82,14 @@ namespace api.Extensions
             return username ?? "";
         }
 
+        public async static Task<string> GetHRUsernameFromOrderItemId(this DataContext context, int orderItemId)
+        {
+            var username = await context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
+                .Select(x => x.HrExecUsername).FirstOrDefaultAsync();
+            
+            return username;
+        }
+
 
         public async static Task<int> GetServiceChargesFromOrderItemId(this DataContext context, int orderItemId)
         {
@@ -104,7 +113,7 @@ namespace api.Extensions
         public async static Task<List<int>> GetOrderItemIdAndCustomerId(this DataContext context, int cvrefid)
         {
             var obj = await (from cvref in context.CVRefs where cvref.Id == cvrefid
-                join item in context.OrderItems on cvref.OrderItemId equals item.OrderId
+                join item in context.OrderItems on cvref.OrderItemId equals item.Id
                 join order in context.Orders on item.OrderId equals order.Id
                 select new {item.Id, order.CustomerId}
             ).FirstOrDefaultAsync();
@@ -159,7 +168,17 @@ namespace api.Extensions
 
         }
 
-
+        public async static Task<OrderDetailIdCVRefIdCandidateIdDto> GetOrderDetailIdCVRefIdCandIdFromDepId(this DataContext context, int DepId)
+        {
+            var query = await (from dep in context.Deps  where dep.Id == DepId 
+                join cvref in context.CVRefs on dep.CvRefId equals cvref.Id
+                select new OrderDetailIdCVRefIdCandidateIdDto {
+                    CandidateId = cvref.CandidateId, OrderItemId = cvref.OrderItemId,
+                    CvRefId = cvref.Id
+                }).FirstOrDefaultAsync();
+    
+            return query;
+        }
     }
     
 }

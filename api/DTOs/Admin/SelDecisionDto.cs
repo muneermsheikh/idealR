@@ -2,9 +2,14 @@ namespace api.DTOs.Admin
 {
     public class SelDecisionDto
     {
-        public int SelDecisionId { get; set; }
-        public int CVRefId { get; set; }
+        public int Id { get; set; }  //
+        public int CvRefId { get; set; }
         public int OrderItemId { get; set; }
+        public int CandidateId { get; set; }
+        public int ProfessionId { get; set; }
+        public string Gender { get; set; }
+        public string SelectedAs { get; set; }  //
+        public int Charges { get; set; }            //
         public string CandidateName { get; set; }
         public int ApplicationNo { get; set; }
         public string CustomerName { get; set; }

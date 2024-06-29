@@ -40,7 +40,9 @@
           <div class="lbl w50 mx-1">Grade</div>
           <div class="lbl w200 mx-1">Professions</div>
      </div>
-     
+     <div *ngIf="!cvs">
+          No candidates available to refer
+     </div>
        <!--(msgEvent)="showDocumentViewerEvent($event)" -->    
      <div *ngIf="cvs.length">
           <div class="row" *ngFor="let cv of cvs" >

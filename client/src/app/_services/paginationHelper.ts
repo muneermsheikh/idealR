@@ -7,7 +7,6 @@ import { interviewParams } from "../_models/params/Admin/interviewParams";
 import { prospectiveCandidateParams } from "../_models/params/hr/prospectiveCandidateParams";
 import { prospectiveSummaryParams } from "../_models/params/hr/prospectiveSummaryParams";
 import { SelDecisionParams } from "../_models/params/Admin/selDecisionParams";
-import { UserHistoryParams } from "../_models/params/userHistoryParams";
 import { UserParams } from "../_models/params/userParams";
 import { candidateParams } from "../_models/params/hr/candidateParams";
 import { professionParams } from "../_models/params/masters/ProfessionParams";
@@ -21,6 +20,8 @@ import { contractReviewParams } from "../_models/params/Admin/contractReviewPara
 import { TaskParams } from "../_models/params/Admin/taskParams";
 import { CVBriefParam } from "../_models/params/hr/cvBriefParam";
 import { deployParams } from "../_models/params/process/deployParams";
+import { ICallRecordParams } from "../_models/params/callRecordParams";
+import { CallRecordItemToCreateDto } from "../_dtos/hr/callRecordItemToCreateDto";
 
 export function getPaginatedResult<T>(url: string, params: HttpParams, http: HttpClient) {
   
@@ -98,7 +99,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 
   }
 
-  export function getPaginationHeadersProspectiveCandidates(oParams: prospectiveCandidateParams) {
+  export function getHttpParamsForProspectiveCandidates(oParams: prospectiveCandidateParams) {
 
     let params = new HttpParams();
 
@@ -119,7 +120,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
-  export function getPaginationHeadersProspectiveCandidatesSummary(oParams: prospectiveSummaryParams) {
+  export function getHttpParamsForProspectiveSummary(oParams: prospectiveSummaryParams) {
 
     let params = new HttpParams();
 
@@ -128,8 +129,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 
     if (oParams.status !== ''  && oParams.status !== undefined)  params = params.append('status', oParams.status);
     if (oParams.categoryRef !== ''  && oParams.categoryRef !== undefined)  params = params.append('categoryRef', oParams.categoryRef);
-    if (oParams.dated !=='' && oParams.dated !== undefined ){
-      params = params.append('dateAdded', oParams.dated);
+    if (oParams.dateRegistered.getFullYear() < 2000 && oParams.dateRegistered !== undefined ){
+      params = params.append('dateAdded', oParams.dateRegistered.toDateString());
     }
     
     if (oParams.search) params = params.append('search', oParams.search);
@@ -186,24 +187,6 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
-  export function getHttpParamsForUserHistoryParams(hParams: UserHistoryParams)
-  {
-    let params = new HttpParams();
-
-    params = params.append('pageNumber', hParams.pageNumber);
-    params = params.append('pageSize', hParams.pageSize)
-
-    if(hParams.userName !== '') params = params.append('userName', hParams.userName);
-    if(hParams.applicationNo !== 0) params = params.append('applicationNo', hParams.applicationNo.toString());
-    if(hParams.emailId !== '') params = params.append('emailId', hParams.emailId);
-    if(hParams.applicationNo !== undefined) params = params.append('applicationNo', hParams.applicationNo?.toString());
-    if(hParams.mobileNo !== '') params = params.append('mobileNo', hParams.mobileNo);
-    if(hParams.personName !== '') params = params.append('personName', hParams.personName);
-    if(hParams.status !== '') params = params.append('status', hParams.status);
-    
-    return params;
-    
-  }
 
   export function getHttpParamsForUserParams(userParams: UserParams)
   {
@@ -427,23 +410,57 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageNumber', dParams.pageNumber);
     params = params.append('pageSize', dParams.pageSize)
     
-    if(dParams.cVRefIdsCSV.length > 0)
-      params = params.append('cVRefIdsCSV', dParams.cVRefIdsCSV)
+    if(dParams.cvRefId !== 0)
+      params = params.append('cvRefId', dParams.cvRefId)
 
-    if(dParams.orderItemIdsCSV !== '')
-      params = params.append('orderItemIdsCSV', dParams.orderItemIdsCSV);
+    if(dParams.orderItemId !== 0 )
+      params = params.append('orderItemId', dParams.orderItemId);
 
-    if(dParams.candidateIdsCSV !== '')
-        params = params.append('candidateIdsCSV', dParams.candidateIdsCSV);
+    if(dParams.candidateId !== 0)
+        params = params.append('candidateId', dParams.candidateId);
     
     if(dParams.customerId !== 0) params = params.append("customerId", dParams.customerId.toString());
 
     if(dParams.orderNo !== 0) params = params.append("orderNo", dParams.orderNo.toString());
 
-    if(dParams.selectedOn.getFullYear() > 2000) 
-        params = params.append('selectedOn', dParams.selectedOn.toString());
+    //if(dParams.selectedOn.getFullYear() > 2000) 
+        //params = params.append('selectedOn', dParams.selectedOn.toString());
 
     return params;
   }
 
+
+  export function GetHttpParamsForCallRecord(hParams:ICallRecordParams) {
   
+    let params = new HttpParams();
+
+    if(hParams.personId !== '') params = params.append('personId', hParams.personId);
+    params = params.append('personType', hParams.personType);
+    if(hParams.emailId !== '') params = params.append('emailId', hParams.emailId);
+    if(hParams.mobileNo !== '') params = params.append('mobileNo', hParams.mobileNo);
+    if(hParams.categoryRef !== '') params = params.append('categoryRef', hParams.categoryRef);
+    if(hParams.status !== '') params = params.append('status', hParams.status);
+   
+    params = params.append('pageIndex', hParams.pageNumber.toString());
+    params = params.append('pageSize', hParams.pageSize.toString());
+
+    return params;
+  }  
+
+  export function GetHttpParamsForCallItemCreate(hParams: CallRecordItemToCreateDto) {
+    
+      let params = new HttpParams();
+  
+      params = params.append('personId', hParams.personId);
+      params = params.append('personName', hParams.personName);
+      params = params.append('personType', hParams.personType);
+      
+      if(hParams.callRecordId !== 0) params = params.append('callRecordId', hParams.callRecordId);
+      if(hParams.email !== '') params = params.append('email', hParams.email);
+      if(hParams.phoneNo !== '') params = params.append('phoneNo', hParams.phoneNo);
+      if(hParams.categoryRef !== '') params = params.append('categoryRef', hParams.categoryRef);
+      if(hParams.status !== '') params = params.append('status', hParams.status);
+     
+      return params;
+    
+  }

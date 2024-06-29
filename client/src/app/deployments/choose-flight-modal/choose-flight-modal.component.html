@@ -1,0 +1,62 @@
+<div class="modal-header my-0" *ngIf="flightdata">
+    <h6>Choose a flight</h6>
+    <button class="w35 btn btn-success fa fa-check" (click)="registerDate()" style="margin-left: 200px;"
+    title="edit emp data" ></button>
+    <button class="btn fa fa-close pull-right" title="Close" (click)="close()" ></button>
+</div>
+
+<div *ngIf="flightdata" class="modal-body my-0">
+    
+    <label class="lbl w125">Date of the flight</label>
+    <input class="stdd w100" type="text" placeholder="Flight Date" 
+        [(ngModel)]="flightDate" bsDatepicker 
+        [bsValue]="bsValueDate" 
+        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+
+    <label class="lbl w100">Destination</label>
+    <input type="text" class="stdd w125" [(ngModel)]="destinationAirport" >
+    <input type="radio" [(ngModel)]="filterDestination" value="Y" class="stdd w50" title="filter flight details by the destination">Yes
+    <input type="radio" [(ngModel)]="filterDestination" value="N" class="stdd w50" title="show all flight details"> No
+
+    <button class="btn fa fa-filter" title="filter the flight details" (click)="filter()" ></button>
+    <hr>
+    <label class="lbl w20" style="margin-left: 10px !important;">Sel</label>
+    <label class="lbl w100">Airport<br>of Destn</label>
+    <label class="lbl w100">Airport<br>of Boardg</label>
+    <label class="lbl w60">Flight No</label>
+    <label class="lbl w90">ETD<br>Boarding</label>
+    <label class="lbl w90">ETA<br>Destin</label> 
+    
+    <label class="lbl blue w60">Via Airport</label>
+    <label class="lbl blue w60">Flight<br>No Via</label>
+    <label class="lbl blue w60">ETA<br>at Via</label>
+    <label class="lbl blue w60">ETD<br>at Via</label>
+
+    <div *ngFor="let flt of flightdata">
+        <input type="checkbox" style="margin-left: 10px;border-color: black;"
+            class="form-check-input w20 hAlignCenter"
+            [(ngModel)]="flt.checked"
+            (click)="selectedClicked(flt)"
+        >
+        <input type="text" class="stdd w100" [(ngModel)]="flt.airportOfDestination" >
+        <input type="text" class="stdd w100" [(ngModel)]="flt.airportOfBoarding" >
+        <input type="text" class="stdd w60" [(ngModel)]="flt.flightNo" >
+        <input type="time" class="stdd w90" [(ngModel)]="flt.eTD_Boarding" >
+        <input type="time" class="stdd w90" [(ngModel)]="flt.eTA_Destination" >
+        
+        <input type="text" class="stdd blue w60" [(ngModel)]="flt.airportVia" >
+        <input type="text" class="stdd blue w60" [(ngModel)]="flt.flightNoVia" >
+        <input type="time" class="stdd blue w60" [(ngModel)]="flt.eTA_Via" >
+        <input type="time" class="stdd blue w60" [(ngModel)]="flt.eTD_Via" >
+    </div>
+    
+</div>
+
+<div class="modal-footer my-0">
+
+</div>
+
+<div style="font-size: x-small;" >
+    
+</div>
+

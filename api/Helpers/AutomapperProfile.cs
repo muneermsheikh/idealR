@@ -46,6 +46,8 @@ namespace api.Helpers
             CreateMap<Candidate, CandidateBriefDto>();
 
             CreateMap<CreateCandidateDto, Candidate>();
+            CreateMap<ProspectiveCandidate, ProspectiveBriefDto>();
+
             CreateMap<FeedbackStddQ, FeedbackItem>();
 
             CreateMap<Order, OrderBriefDto>();
@@ -79,8 +81,14 @@ namespace api.Helpers
             CreateMap<EmployeeToAddDto, Employee>();
 
             CreateMap<SelectionDecision, SelDecisionDto>();
-                //.ForMember(d => d.Accepted, o => o.MapFrom())
+                
+                
+            CreateMap<SelDecisionDto, SelectionDecision>();
+            
             CreateMap<Employment, EmploymentDto>();
+            CreateMap<EmploymentDto, Employment>()
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.SelectionDecisionId));
+                
             CreateMap<Employment, EmploymentsNotConcludedDto>();
 
             CreateMap<PendingDebitApprovalDto, PendingDebitApprovalDto>();
@@ -103,8 +111,8 @@ namespace api.Helpers
 
             CreateMap<AppTask, TaskInBriefDto>();
 
-            CreateMap<UserHistory, UserHistoryDto>();
-            CreateMap<UserHistory,UserHistoryBriefDto>();
+            CreateMap<CallRecord, CallRecordDto>();
+            CreateMap<CallRecord,CallRecordBriefDto>();
 
             //finance
             CreateMap<COA, COA>();

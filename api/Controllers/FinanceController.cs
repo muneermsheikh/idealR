@@ -73,7 +73,7 @@ namespace api.Controllers
         [HttpPost("candidateCOA/{applicationno}/{create}")]
         public async Task<ActionResult<COA>> GetOrCreateCandidateCOA(int applicationno, bool create)
         {
-            var coa = await _finRepo.CreateCoaForCandidateWithNoSave(applicationno, create);
+            var coa = await _finRepo.GetOrCreateCoaForCandidateWithNoSave(applicationno, create);
             if(coa==null) return BadRequest(new ApiException(400,"Bad Request", "Failed to create Chart of account for the candidate"));
 
             return Ok(coa);

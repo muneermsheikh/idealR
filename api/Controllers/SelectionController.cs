@@ -31,7 +31,7 @@ namespace api.Controllers
             return Ok(sel);
         }
         [HttpGet]
-        public async Task<ActionResult<PagedList<SelDecisionDto>>> GetSelectionDecisionsAsync(SelDecisionParams selParams)
+        public async Task<ActionResult<PagedList<SelDecisionDto>>> GetSelectionDecisionsAsync([FromQuery]SelDecisionParams selParams)
         {
              
             var pagedList = await _selRepo.GetSelectionDecisions(selParams);
@@ -44,9 +44,9 @@ namespace api.Controllers
         }
 
         [HttpGet("selectionBySelDecisionId/{selDecisionId}")]
-        public async Task<ActionResult<SelectionDecision>> GetSelectionById(int selDecisionId)
+        public async Task<ActionResult<SelDecisionDto>> GetSelectionById(int selDecisionId)
         {
-            var sel = await _selRepo.GetSelectionDecisionFromId(selDecisionId);
+            var sel = await _selRepo.GetSelDecisionDtoFromId(selDecisionId);
 
             if(sel == null) return NotFound(new ApiException(404, "Not Found", "Failed to find the selection object"));
 
@@ -71,7 +71,7 @@ namespace api.Controllers
             return await _selRepo.EditSelection(selDecision);
         }
 
-        [HttpPut("employment")]
+        /*[HttpPut("employment")]
         public async Task<ActionResult<bool>> EditEmployment(Employment employment)
         {
             var edited = await _selRepo.EditEmployment(employment, User.GetUsername());
@@ -80,20 +80,7 @@ namespace api.Controllers
 
             return Ok(edited);
         }
-
-        [HttpPut("offeraccepted")]
-        public async Task<ActionResult<bool>> RegisterOfferAcceptance(ICollection<OfferConclusionDto> dto)
-        {
-            dto = dto.Where(x => !"acceptedrejected".Contains(x.acceptedString.ToLower())).ToList();
-
-            if(dto.Count == 0) return BadRequest(new ApiException(400, "invalid accepted String", "accepted value are 'Accepted' or 'Rejected"));
-            
-            var errorString= await _selRepo.RegisterOfferAcceptance(dto, User.GetUsername());
-
-            if(!string.IsNullOrEmpty(errorString)) return BadRequest(errorString);
-
-            return Ok("offer acceptance registered");
-        }
+        */
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> DeleteSelectionDecision(int id)
@@ -123,6 +110,17 @@ namespace api.Controllers
         public async Task<ActionResult<Employment>> GetEmployment (int employmentid)
         {
             var emp = await _selRepo.GetEmployment(employmentid);
+
+            if(emp == null) return BadRequest("Failed to get the employment data");
+
+            return Ok(emp);
+        }
+
+
+        [HttpGet("employmentfromSelId/{selDecId}")]
+        public async Task<ActionResult<Employment>> GetEmploymentFromSelId (int selDecId)
+        {
+            var emp = await _selRepo.GetEmploymentFromSelDecId(selDecId);
 
             if(emp == null) return BadRequest("Failed to get the employment data");
 

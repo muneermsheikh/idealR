@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CvrefComponent } from './cvref/cvref.component';
 import { SharedModule } from '../_modules/shared.module';
 import { MenuComponent } from './menu/menu.component';
 import { OrderIndexComponent } from './orders/order-index/order-index.component';
@@ -30,11 +29,11 @@ import { SelectionLineComponent } from './selections/selection-line/selection-li
 import { SelectionPendingLineComponent } from './selections/selection-pending-line/selection-pending-line.component';
 import { EmploymentModalComponent } from './selections/employment-modal/employment-modal.component';
 import { SelectionModalComponent } from './selections/selection-modal/selection-modal.component';
+import { ProspectiveLineComponent } from './Prospectives/prospective-line/prospective-line.component';
 
 
 @NgModule({
   declarations: [
-    CvrefComponent,
     MenuComponent,
     OrderIndexComponent,
     SelectionsComponent,
@@ -63,6 +62,7 @@ import { SelectionModalComponent } from './selections/selection-modal/selection-
     SelectionPendingLineComponent,
     EmploymentModalComponent,
     SelectionModalComponent,
+    ProspectiveLineComponent,
        
   ],
   imports: [

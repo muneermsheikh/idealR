@@ -2,12 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
-import { CreateSelDecision } from 'src/app/_models/admin/createSelDecision';
 import { Pagination } from 'src/app/_models/pagination';
 import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
 import { User } from 'src/app/_models/user';
 import { SelectionService } from 'src/app/_services/hr/selection.service';
-import { CvrefComponent } from '../../cvref/cvref.component';
+
 
 @Component({
   selector: 'app-selection-pending',
@@ -102,18 +101,7 @@ export class SelectionPendingComponent implements OnInit{
 
       //convert selDecision to dto
       var dtos =  this.convertSelDecisionToDto(this.pendingSelectionsSelected);
-      /*var createSelDtos: createSelDecisionDto[]=[];
-  
-        this.pendingSelectionsSelected.forEach(x => {
-
-            var createSelDto: createSelDecisionDto = {cVRefId: x.cvRefId, decisionDate: new Date(), 
-            selectionStatus: this.selectionStatus, remarks: x.remarks};
-          
-            createSelDtos.push(createSelDto);
-        })
-      */
-        console.log('register selection, sent to api:', dtos);
-        
+       
         return this.service.registerSelectionDecisions(dtos).subscribe({
           next: (response: any) => {
             this.toastr.success('selection decisions registered');

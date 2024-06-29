@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
-import { UserHistoryParams } from '../_models/params/userHistoryParams';
 import { Pagination } from '../_models/pagination';
-import { getHttpParamsForUserHistoryParams, getPaginatedResult } from './paginationHelper';
-import { IUserHistoryDto } from '../_dtos/admin/userHistoryDto';
+import { GetHttpParamsForCallRecord, getPaginatedResult } from './paginationHelper';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IUserHistory } from '../_models/admin/userHistory';
-import { IUserHistoryItem } from '../_models/admin/userHistoryItem';
+import { CallRecordParams } from '../_models/params/callRecordParams';
+import { ICallRecordItem } from '../_models/admin/callRecordItem';
+import { ICallRecordDto } from '../_dtos/admin/callRecordDto';
+import { ICallRecord } from '../_models/admin/callRecord';
 
 @Injectable({
   providedIn: 'root'
@@ -19,56 +19,42 @@ export class CallRecordsService {
   apiUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
-  hParams: UserHistoryParams | undefined; // = new userHistoryParams();
+  hParams: CallRecordParams | undefined; // = new userHistoryParams();
   pagination: Pagination | undefined; //<IUserHistoryDto[]>;
   cache = new Map();
   
+
   constructor(private http: HttpClient) { }
 
-  getHistories(hParams: UserHistoryParams) {      //: Observable<IPagination<IUserHistoryDto[]>>
 
-    const response = this.cache.get(Object.values(hParams).join('-'));
-    if(response) return of(response);
 
-    let params = getHttpParamsForUserHistoryParams(hParams);
-    
-    return getPaginatedResult<IUserHistoryDto[]>(this.apiUrl + 'userHistory/pagedlist', params, this.http).pipe(
-        map(response => {
-          this.cache.set(Object.values(hParams).join('-'), response);
-          return response;
-        })
-      )
+  getHistories(hParams: CallRecordParams) {      //: Observable<IPagination<IUserHistoryDto[]>>
+
+        const response = this.cache.get(Object.values(hParams).join('-'));
+        if(response) return of(response);
+
+        let params = GetHttpParamsForCallRecord(hParams);
+        
+        return getPaginatedResult<ICallRecordDto[]>
+          (this.apiUrl + 'userHistory/pagedlist', params, this.http).pipe(
+            map(response => {
+              this.cache.set(Object.values(hParams).join('-'), response);
+              return response;
+            })
+          )
     }
 
-  getHistoryWithItems(historyId: number) {
-    return this.http.get<IUserHistory>(this.apiUrl + 'userHistory/historywithitems/' + historyId);
+  getCallRecordWithItems(personid: string, callRecordId: number) {
+    
+    return this.http.get<ICallRecord>(this.apiUrl + 'CallRecord/callRecordWithItems/' + callRecordId + '/' + personid);
   }
 
-  updateHistoryItem(item: IUserHistoryItem) {
-    return this.http.post<IUserHistoryItem>(this.apiUrl + 'userHistory/userhistoryitem', item);
+  updateHistoryItem(item: ICallRecordItem) {
+    return this.http.post<ICallRecordItem>(this.apiUrl + 'userHistory/userhistoryitem', item);
   }
   
-  getHttpParams(){
-
-    if(this.hParams == undefined) return null;
-
-    let params = new HttpParams();
-
-    if(this.hParams.userName !== '') params = params.append('userName', this.hParams.userName);
-    if(this.hParams.applicationNo !== 0) params = params.append('applicationNo', this.hParams.applicationNo.toString());
-    if(this.hParams.emailId !== '') params = params.append('emailId', this.hParams.emailId);
-    if(this.hParams.applicationNo !== undefined) params = params.append('applicationNo', this.hParams.applicationNo?.toString());
-    if(this.hParams.mobileNo !== '') params = params.append('mobileNo', this.hParams.mobileNo);
-    if(this.hParams.personName !== '') params = params.append('personName', this.hParams.personName);
-    if(this.hParams.status !== '') params = params.append('status', this.hParams.status);
-   
-    params = params.append('pageIndex', this.hParams.pageNumber.toString());
-    params = params.append('pageSize', this.hParams.pageSize.toString());
-
-    return params;
-  }
-
-  setParams(params: UserHistoryParams) {
+ 
+  setParams(params: CallRecordParams) {
     this.hParams = params;
   }
   
@@ -76,8 +62,12 @@ export class CallRecordsService {
     return this.hParams;
   }
 
-  updateHistory(model: any) {
-    return this.http.put(this.apiUrl + 'userHistory', model);
+  updateCallRecord(model: any) {
+    return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord', model);
+  }
+
+  updateCallRecordObject(model: any) {
+    return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord/UpdateNewItem', model);
   }
 
   deleteHistory(historyid: number) {
@@ -89,10 +79,5 @@ export class CallRecordsService {
   }
 
   
-  /* getOrcreateNewHistory(): Observable<any> {
-    var hparams = this.getHttpParams();
-    return this.http.get<IUserHistoryDto>(this.apiUrl + 'userHistory/dto', {hparams});
-  }
-  */
-
+  
 }

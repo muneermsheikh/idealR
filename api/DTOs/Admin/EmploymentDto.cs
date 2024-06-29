@@ -2,12 +2,14 @@ namespace api.DTOs.Admin
 {
     public class EmploymentDto
     {
-        public int Id { get; set; }    
+        public int SelectionDecisionId { get; set; }    
+        public int CvRefId { get; set; }
+        public int ApplicationNo { get; set; }
         public string CandidateName {get; set;}
         public string ProfessionName {get; set;}
         public string CompanyName { get; set; }
         public string SelectionStatus { get; set; }
-        public DateOnly SelectedOn { get; set; }
+        public DateTime SelectedOn { get; set; }
         public int ChargesFixed {get; set;}
         public int Charges {get; set;}
         public string SalaryCurrency { get; set; }
@@ -21,12 +23,13 @@ namespace api.DTOs.Admin
         public int FoodAllowance { get; set; }
         public bool FoodNotProvided { get; set; }
         public bool TransportProvidedFree { get; set; }
+        public bool TransportNotProvided { get; set; }
         public int TransportAllowance { get; set; }
         public int OtherAllowance { get; set; }
         public int LeavePerYearInDays { get; set; }
         public int LeaveAirfareEntitlementAfterMonths {get; set;}
-        public bool OfferAccepted { get; set; }=false;
-        public DateOnly OfferAcceptedOn { get; set; }
+        public string OfferAccepted { get; set; }
+        public DateTime OfferAcceptedOn { get; set; }
        
     }
 }

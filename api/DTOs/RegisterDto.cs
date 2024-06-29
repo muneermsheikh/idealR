@@ -11,6 +11,7 @@ namespace api.DTOs
         public string SecondName { get; set; }
         public string FamilyName { get; set; }
         [Required] public string KnownAs { get; set; }
+        public string ReferredByName { get; set; }
         public string Email { get; set; }
         [Required] public string Gender { get; set; }
         public string AadharNo { get; set; }

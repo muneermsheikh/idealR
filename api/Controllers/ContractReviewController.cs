@@ -35,7 +35,8 @@ namespace api.Controllers
         [HttpPut("reviewitem")]
         public async Task<ActionResult<bool>> UpdateReviewItem(ContractReviewItem reviewitem)
         {
-            return await _repo.EditContractReviewItem(reviewitem);
+            var item = await _repo.EditContractReviewItem(reviewitem);
+            return item;
         }
 
         [HttpPost("contractreview")]

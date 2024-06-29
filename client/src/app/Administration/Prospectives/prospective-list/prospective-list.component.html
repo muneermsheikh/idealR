@@ -1,1 +1,60 @@
-<p>prospective-list works!</p>
+<h6 style="display: inline-block;">Active Prospective Candidates</h6>
+<div style="display: inline-block; margin-left: 15px; vertical-align: top;" *ngIf="pagination !== undefined">
+     <pagination class="stdd"
+          [totalItems]="pagination!.totalItems"
+          [itemsPerPage]="pagination!.itemsPerPage"
+          (pageChanged)="onPageChanged($event)"
+          [maxSize]="10"
+          previousText="&lsaquo;"
+          nextText="&rsaquo;"
+          firstText="&laquo;"
+          lastText="&raquo;">
+     ></pagination>
+
+     
+    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
+    <button (click)="onSearch()" class="stdd btn btn-outline-primary mx-1">Search</button>
+
+    <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+    <ng-select class="stdd"
+        style="border-style: double; width: 250px; font-size: small;"
+        [items]="callRecordStatus"
+        bindLabel="status"
+        bindValue="status"
+        labelForId="status"
+        clearAllText="Clear"
+        (selected)="selected($event)"
+        [(ngModel)]="statusSelected"
+    ></ng-select>
+    <button class="btn fa fa-check mx-5" 
+        title="create new transaction based upon the status selected" (click)="applyTransactions()" ></button>
+    <button class="btn btn-outline-primary fa fa-window-close pull-right" title="go back" routerLink="/profiles" ></button>
+</div>
+
+<div class="form-inline">
+    <label class="lbl w35">Sel</label>
+    <label class="lbl w125" style="margin-left: 15px;">Candidate Name</label>
+    <label class="lbl w150">Category Ref</label>
+    <label class="lbl w100">Phone No</label>
+    <label class="lbl w150">Email</label>
+    <label class="lbl w100">Source</label>
+    <label class="lbl w75">Person<br>Type</label>
+    <label class="lbl w75">Person Id</label>
+    <label class="lbl w75">Nationality</label>
+    <label class="lbl w75">Date<br>Registered</label>
+    <label class="lbl w100">Status</label>
+    <label class="lbl w100">Duration</label>
+
+</div>
+
+<div *ngIf="prospectives">
+    <div *ngFor="let pros of prospectives">
+        <app-prospective-line
+            [prospective]="pros"
+            (deleteEvent)="deleteProspectiveClicked($event)"
+            (editEvent)="editProspectiveClicked($event, pros)"
+            (selectedEvent)="selectedClicked($event)"
+            (addNewTransaction)="addNewClicked($event)"
+        ></app-prospective-line>
+    </div>
+</div>

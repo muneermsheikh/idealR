@@ -52,8 +52,6 @@ export class RegisterComponent implements OnInit{
   
   register(){
 
-    this.toastr.info('entered register');
-
     const dob = this.GetDateOnly(this.registerForm.controls['dateOfBirth'].value);
     const values = {...this.registerForm.value, dateOfBirth: this.GetDateOnly(dob)};
 

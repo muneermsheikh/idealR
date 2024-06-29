@@ -16,7 +16,7 @@ import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { IProfession } from 'src/app/_models/masters/profession';
 import { User } from 'src/app/_models/user';
 import { OrderService } from 'src/app/_services/admin/order.service';
-import { ConfirmService } from 'src/app/_services/confirm.service';
+//import { ConfirmService } from 'src/app/_services/confirm.service';
 import { ChooseAgentsModalComponent } from '../../choose-agents-modal/choose-agents-modal.component';
 import { OrderForwardService } from 'src/app/_services/admin/order-forward.service';
 import { IOfficialIdsAndOrderItemIdsDto } from 'src/app/_dtos/admin/officialIdsAndOrderItemIdsDto';
@@ -109,7 +109,7 @@ export class OrderEditComponent implements OnInit {
       private activatedRoute: ActivatedRoute, 
       private router: Router, 
       //private rvwService: ContractReviewService,
-      private confirmService: ConfirmService,
+      //private confirmService: ConfirmService,
       private toastr: ToastrService, 
       private taskService: TaskService,
       private contractRvwService: ContractReviewService,
@@ -476,8 +476,7 @@ export class OrderEditComponent implements OnInit {
     {
         var orderitembrief = this.getControls()[index].value;
         var orderitemid = orderitembrief.id;
-        console.log('order item id:', orderitemid);
-
+       
         this.contractRvwService.getContractReviewItem(orderitemid).subscribe(
           response => {
             if(response) 

@@ -2,9 +2,9 @@ using api.Entities.Admin;
 
 namespace api.DTOs.Admin
 {
-    public class UserHistoryReturnDto
+    public class CallRecordReturnDto
     {
-        public UserHistory UserHistory { get; set; }
+        public CallRecord CallRecord { get; set; }
         public string ErrorString { get; set; }
     }
 }

@@ -1,0 +1,38 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+    margin-right:1px;
+    font-size: smaller;
+    vertical-align: top;
+}
+
+.lbl {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+    margin-right:1px;
+    font-size: smaller;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.red {color: red;}
+
+.w25 {width: 25px;}
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w250 {width: 250px;}
+
+.cursorPointer{cursor:pointer; color: darkblue;}
+
+::ng-deep .ng-select .ng-select-container , ::ng-deep .ng-select.ng-select-single .ng-select-container{
+	min-height: 25px;
+	font-size: 0.8em;
+	font-weight: normal;
+  }
+
+

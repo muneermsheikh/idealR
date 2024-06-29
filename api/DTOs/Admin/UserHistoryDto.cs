@@ -1,6 +1,6 @@
 namespace api.DTOs.Admin
 {
-    public class UserHistoryDto
+    public class CallRecddddordDto
     {
         public int Id {get; set;}
         public int CandidateId { get; set; }
@@ -12,15 +12,13 @@ namespace api.DTOs.Admin
         public string CategoryName { get; set; }
         public string CandidateName {get; set;}
         public string EmailId {get; set;}
-        public string AlternateEmailId { get; set; }
         public string MobileNo { get; set; }
         public string AlternatePhoneNo { get; set; }
         
-        public DateOnly CreatedOn {get; set;}
-        public bool Concluded { get; set; }
-        public string ConcludedByName {get; set;}
+        public DateTime CreatedOn {get; set;}
+        public DateTime ConcludedOn { get; set; }
         public string Status { get; set; }
         public string UserName { get; set; }
-        public ICollection<UserHistoryItemDto> UserHistoryItems { get; set; }
+        public ICollection<CallRecordItemDto> CallRecordItems { get; set; }
     }
 }

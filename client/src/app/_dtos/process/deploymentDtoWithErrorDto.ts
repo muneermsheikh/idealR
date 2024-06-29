@@ -1,4 +1,5 @@
-import { IDeploymentDto } from "../../models/process/deploymentdto";
+import { IDeploymentDto } from "src/app/_models/process/deploymentdto";
+
 
 export interface IDeploymentDtoWithErrorDto
 {

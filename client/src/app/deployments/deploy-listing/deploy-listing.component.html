@@ -1,0 +1,73 @@
+<div *ngIf="deploys && pagination" 
+    class="d-flex justify-contents-between align-items-center"
+    style="display: inline-block; margin-left: 15px; vertical-align: top;" >
+    <h6 class="mx-5">Pending deployments</h6>
+    <pagination
+         [totalItems]="pagination!.totalItems"
+         [itemsPerPage]="pagination!.itemsPerPage"
+         (pageChanged)="onPageChanged($event)"
+         [maxSize]="10"
+         previousText="&lsaquo;"
+         nextText="&rsaquo;"
+         firstText="&laquo;"
+         lastText="&raquo;">
+    ></pagination>
+
+    <div class="form-inline" style="margin-left: 50px !important;" >
+        <input (keyup.enter)="onSearch()" type="text" 
+            class="stdd form-control w250" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn btn-outline-primary mx-1 fa fa-search"></button>
+        <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+
+        <div class="stdd">
+            <ng-select 
+                style="border-style: double; width: 250px; font-size: small;"
+                [items]="statusNameAndSeq"
+                bindLabel="name"
+                bindValue="id"
+                labelForId="id"
+                clearAllText="Clear"
+                (selected)="selected($event)"
+                [(ngModel)]="sequenceSelected"
+            ></ng-select>
+        </div>   
+
+        <button class="btn btn-outline-success fa fa-check mx-1" (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
+    </div>
+    
+    <button class="btn btn-outline-success mx-1 fa fa-window-close" routerLink="/administration" ></button>
+    
+</div>
+
+
+<div class="my-2" style="margin-left: 50px;">
+    <label class="stdd w50">Sel</label>
+    <label class="stdd w50">App#</label>
+    <label class="stdd w150">Candidate Name</label>
+    <label class="stdd w150">Customer Name</label>
+    <label class="stdd w50">Order#</label>
+    <label class="stdd w150">Category</label>
+    <label class="stdd w110">Referred On</label>
+    <label class="stdd w110">Selected On</label>
+    <label class="stdd w150">Current Dep Status</label>
+    <label class="stdd w150">Next Dep Status</label>
+    <label class="stdd w75">Estimated Date</label>
+</div>
+
+<div *ngIf="!deploys">
+    No pending deployment transactions on record
+</div>
+    
+<div *ngFor="let dep of deploys">
+    <app-deploy-line
+        [dep]="dep"
+        (editDepEvent)="editDeploymentModal($event, dep)"
+        (deleteDepEvent)="deleteDeployment($event)"
+        (selectedEvent)="selectionChanged($event)"
+        (showTicket)="displayCandidateTicket($event)"
+        (candidateFlightDeleteEvent)="candidateFlightDelete($event)"
+        (candidteFlightEditEvent)="candidateFlightEdit($event)"
+        >   
+    </app-deploy-line>
+
+</div>

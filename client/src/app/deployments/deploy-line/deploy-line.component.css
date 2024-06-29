@@ -1,0 +1,32 @@
+.stdd {
+	display: inline-block;
+	margin-top: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	vertical-align: top;
+	font-size: small;
+	word-break: normal;
+ }
+
+ .w20 {width: 20px;}
+ .w50 {width: 50px;}
+ .w75{width: 75px;}
+ .w100 {width: 100px;}
+ .w110 {width: 110px;}
+ .w150 {width: 150px; word-wrap: normal;}
+ .w175{width: 175px;}
+.w200 {width: 200px;}
+
+
+input[type="checkbox"] {
+    outline: 1px solid #1e5180;
+}
+
+.red {color: red;}
+
+::ng-deep .ng-select-container {
+	height: 5px !important;
+	font-size: 0.8em!important;
+    }
+
+.cursorPointer{cursor:pointer; color: darkblue;}

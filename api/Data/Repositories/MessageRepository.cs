@@ -1,21 +1,13 @@
-
-using System.Text.RegularExpressions;
-using api.Controllers;
 using api.DTOs;
 using api.DTOs.Admin;
-using api.Entities;
-using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Messages;
-using api.Entities.Tasks;
 using api.Helpers;
-using api.Interfaces;
 using api.Interfaces.Admin;
 using api.Interfaces.Messages;
 using api.Params;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -52,31 +44,12 @@ namespace api.Data.Repositories
             //find customerOfficialIds - which are recipients for the mail messages
             var candidateAndOrderItemIds = candidatesNotRefDto.Select(x => new {x.CandidateId, x.OrderItemId}).ToList();
             
-            var cvrefwithCandidates = await (from ttask in _context.Tasks where
-                    candidateAndOrderItemIds.Select(x => x.CandidateId).ToList().Contains((int)ttask.CandidateId) &&
-                    candidateAndOrderItemIds.Select(x => x.OrderItemId).ToList().Contains((int)ttask.OrderItemId) &&
-                    ttask.TaskType=="CVFwdTask"
-                join cv in _context.Candidates on ttask.CandidateId equals cv.Id
-                join cvref in _context.CVRefs on new 
-                { o1=ttask.OrderItemId, o2=ttask.CandidateId } equals new
-                    {o1=cvref.OrderItemId, o2=cvref.CandidateId} 
-                select new CVRefWithCandidateDetailDto {
-                    CVRefId=cvref.Id, CandidateName=cv.FullName, ApplicationNo=cv.ApplicationNo, 
-                    OrderItemId=(int)ttask.OrderItemId, PassportNo= cv.PpNo, CandidateId = cv.Id}
-            ).ToListAsync();
-                
-            var distinctOrderItemIds = cvrefwithCandidates.Select(x => x.OrderItemId).Distinct().ToList();
+            foreach(var candDtl in candidateAndOrderItemIds) {
 
-            var distinctOrderItems = await (from items in _context.OrderItems where distinctOrderItemIds.Contains(items.Id) 
-                    join o in _context.Orders on items.OrderId equals o.Id 
-                select new {OrderItemId=items.Id, CustomerId=o.CustomerId, 
-                    CustomerName = o.Customer.CustomerName, City = o.Customer.City,
-                    OrderNo = o.OrderNo, OrderDated = o.OrderDate,
-                    CategoryRef = o.OrderNo + "-" + items.SrNo + "-" + items.Profession.ProfessionName,
-                    ItemSrNo = items.SrNo
-            }).ToListAsync();
+            }
+            var distinctOrderItemIds = candidatesNotRefDto.Select(x => x.OrderItemId).Distinct().ToList();
 
-            var customerids = distinctOrderItems.Select(x => x.CustomerId).Distinct().ToList();
+            var customerids = candidatesNotRefDto.Select(x => x.CustomerId).Distinct().ToList();
 
             var SelectedCustomerOfficials = await _context.CustomerOfficials
                     .Where(x => customerids.Contains(x.CustomerId)).ToListAsync();
@@ -89,19 +62,14 @@ namespace api.Data.Repositories
                 
             var dataToComposeMsg = new List<CVFwdMsgDto>();
        
-            foreach(var cvRef in cvrefwithCandidates) 
+            foreach(var item in candidatesNotRefDto) 
             {
-                var orderitem = distinctOrderItems.Where(x => x.OrderItemId==cvRef.OrderItemId).FirstOrDefault();
-                var count = await _context.CVRefs.Where(x => x.OrderItemId == (int)orderitem.OrderItemId).CountAsync();
-                var Officials=SelectedCustomerOfficials.Where(x => x.CustomerId==orderitem.CustomerId).ToList();
+                //var orderitem = distinctOrderItems.Where(x => x.OrderItemId==item.OrderItemId).FirstOrDefault();
+                var count = await _context.CVRefs.Where(x => x.OrderItemId == item.OrderItemId).CountAsync();
+                var Officials=SelectedCustomerOfficials.Where(x => x.CustomerId==item.CustomerId).ToList();
 
                 var customerOfficial = new CustomerOfficial();
                 var officialToAssign = new CustomerOfficial();
-
-                /* var CVsReferredCount = await _context.CVRefs.Where(a => a.OrderItemId == orderitem.OrderItemId)
-                    .ToList().GroupBy(a => a.OrderItemId)
-                        .Select(g => new { orderitemid = g.Key, refcount = g.Count() }).ToListAsync();
-                */
                 
                 if(Officials == null || Officials.Count == 0) {
                     returnDto.ErrorString += "Customer Officials not defined";
@@ -124,10 +92,13 @@ namespace api.Data.Repositories
                 if(!string.IsNullOrEmpty(returnDto.ErrorString)) return returnDto;
 
                 dataToComposeMsg.Add(new CVFwdMsgDto{
-                    CvRefId = cvRef.CVRefId,
-                    CustomerId=orderitem.CustomerId,
-                    CustomerName=orderitem.CustomerName,
-                    City=orderitem.City ?? "",
+                    CvRefId = item.CvRefId,
+                    City=item.CustomerCity ?? "",
+                    OrderDated=item.OrderDate,
+                    ItemSrNo=item.SrNo,
+                    PPNo=item.PPNo ?? "",
+                    CustomerId=item.CustomerId,
+                    CustomerName=item.CustomerName,
                     OfficialId=officialToAssign.Id,
                     OfficialTitle=officialToAssign.Title ?? "Mr.",
                     OfficialName=officialToAssign.OfficialName,
@@ -135,26 +106,17 @@ namespace api.Data.Repositories
                     OfficialAppUserId=officialToAssign.AppUserId,
                     Designation=officialToAssign.Designation ?? "",
                     OfficialEmail=officialToAssign.Email ?? "",
-                    OrderItemId=orderitem.OrderItemId,
-                    OrderNo=orderitem.OrderNo,
-                    OrderDated=orderitem.OrderDated,
-                    ItemSrNo=orderitem.ItemSrNo,
-                    CategoryName=orderitem.CustomerName,
-                    ApplicationNo=cvRef.ApplicationNo,
-                    CandidateName=cvRef.CandidateName,
-                    PPNo=cvRef.PassportNo ?? "",
+                    OrderItemId=item.OrderItemId,
+                    OrderNo=item.OrderNo,
+                    CategoryName=item.CustomerName,
+                    ApplicationNo=item.ApplicationNo,
+                    CandidateName=item.CandidateName,
                     CumulativeSentSoFar=count
                 });
            }
            
-            var msgs = (List<Message>)await _msgAdminRepo.ComposeCVFwdMessagesToClient(dataToComposeMsg, Username);
+            var msgs = await _msgAdminRepo.ComposeCVFwdMessagesToClient(dataToComposeMsg, Username);
             
-            foreach(var msg in msgs) {
-                _context.Entry(msg).State = EntityState.Added;
-            }
-
-            if(await _context.SaveChangesAsync() ==0) return null;
-
             returnDto.Messages = msgs;
             returnDto.ErrorString="";
 

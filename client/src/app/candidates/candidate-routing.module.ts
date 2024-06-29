@@ -10,6 +10,7 @@ import { AgentsResolver } from '../_resolvers/admin/agents.resolver';
 import { CandidateEditComponent } from '../profiles/candidate-edit/candidate-edit.component';
 import { CvsAvailableToRefComponent } from '../profiles/cvs-available-to-ref/cvs-available-to-ref.component';
 import { CandidateBriefResolver } from '../_resolvers/hr/candidateBriefResolver';
+import { ProspectiveListComponent } from '../Administration/Prospectives/prospective-list/prospective-list.component';
 
 
 const routes: Routes = [

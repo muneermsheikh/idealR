@@ -5,5 +5,5 @@ import { DeployService } from "src/app/_services/deploy.service";
 
 export const DeploymentStatusResolver: ResolveFn<IDeployStage[]|null> = (
   ) => {
-    return inject(DeployService).getDeployStatus();
+    return inject(DeployService).getDeployStatuses();
   };

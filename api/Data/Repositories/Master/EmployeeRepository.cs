@@ -170,10 +170,13 @@ namespace api.Data.Repositories.Master
 
         public async Task<ICollection<EmployeeIdAndKnownAsDto>> GetEmployeeIdAndKnownAs()
         {
-            return await _context.Employees.Where(x => x.Status.ToLower() == "employed")
+            var obj = await _context.Employees.Include(x => x.HRSkills).OrderBy(x => x.KnownAs)
                 .Select(x => new EmployeeIdAndKnownAsDto {
-                    Id = x.Id, KnownAs = x.KnownAs
-                }).OrderBy(x => x.KnownAs).ToListAsync();
+                     Id = x.Id, KnownAs = x.KnownAs, Username=x.UserName, HrSkills=x.HRSkills
+                })
+                .ToListAsync();
+   
+            return obj;
         }
 
 

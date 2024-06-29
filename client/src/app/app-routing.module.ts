@@ -19,29 +19,26 @@ const routes: Routes = [
   {
     path:'',
     runGuardsAndResolvers: 'always',
-    canActivate: [authGuard,],
+    canActivate: [authGuard],
     children: [
-      //{path: 'candidates', loadChildren:() => import('./candidates/candidate.module').then(mod => mod.CandidateModule), data: {breadcrumb: 'Candidates'}},
+      
       {path: 'candidates', loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
       
       {path: 'hr/cvassess/:id', component: CvAssessComponent, 
       resolve: {
         openOrderItemsBrief: OpenOrderItemsResolver,
         assessmentsDto: CandidateAssessedResolver,
-        //candidate: CandidateResolver
       },
       data: {breadcrumb: 'Edit Candidate'}},
       
-      {path: 'administration', loadChildren:() => import('./Administration/administration.module').then(mod => mod.AdministrationModule), 
-        //canActivate: [AdminGuard], 
-        //data: {breadcrumb: 'Admin'}
+      {path: 'administration', loadChildren:() => import('./Administration/administration.module')
+        .then(mod => mod.AdministrationModule), 
       },
 
-      /* {path: 'members', component: MemberListComponent, canActivate: [authGuard]},
-      {path: 'members/:username', component: MemberDetailsComponent,
-          resolve: {member: memberDetailedResolver}},
-      {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedMemberEditGuard]},
-      */
+      {path: 'callRecords', loadChildren: () => import('./callRecords/call-record.module').then(mod => mod.CallRecordModule)},
+
+      {path: 'deployment', loadChildren:() => import('./deployments/deployment.module').then(mod=>mod.DeploymentModule)},
+      
       {path: 'messages', component:MessagesComponent},
       {path: 'memberlikes', component: MemberLikedListComponent},
       

@@ -5,6 +5,7 @@ namespace api.DTOs.Admin
     public class ContractReviewItemDto
     {
         public int Id { get; set; }
+        public string HrExecUsername { get; set; }
         public int SrNo { get; set; }
         public int ContractReviewId {get; set;}
         public int OrderId { get; set; }

@@ -77,7 +77,8 @@ namespace api.Data.Repositories.Admin
         public async Task<PagedList<CVRefDto>> GetPendingReferrals(CVRefParams refParams)
         {
             var query = (from cvref in _context.CVRefs 
-                    where cvref.RefStatus.ToLower() == "referred" && cvref.SelectionStatus ==""
+                    where cvref.RefStatus.ToLower() == "referred" && 
+                        (cvref.SelectionStatus =="" || cvref.SelectionStatus == null)
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
                 join o in _context.Orders on item.OrderId equals o.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
@@ -114,7 +115,7 @@ namespace api.Data.Repositories.Admin
          public async Task<PagedList<SelPendingDto>> GetCVReferralsPending(CVRefParams refParams)
         {
             var query = (from cvref in _context.CVRefs 
-                    where cvref.RefStatus=="Referred" && cvref.SelectionStatus != "Selected"
+                    where cvref.SelectionStatus == "" || cvref.SelectionStatus==null
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
                 join o in _context.Orders on item.OrderId equals o.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
@@ -235,87 +236,76 @@ namespace api.Data.Repositories.Admin
             return await _context.CVRefs.FindAsync(cvrefid);
         }
 
-        private async Task<ICollection<CandidatesAssessedButNotRefDto>> CandidatesAssessedButNotReferred(ICollection<CandidateAssessment> shortlistedCVsNotReferred)
-        {
-            var itemdetails = await (from r in _context.CandidateAssessments where shortlistedCVsNotReferred
-                    .Select(x => x.Id).ToList().Contains(r.Id) 
-                join i in _context.OrderItems on r.OrderItemId equals i.Id 
-                join ordr in _context.Orders on i.OrderId equals ordr.Id 
-                join cand in _context.Candidates on r.CandidateId equals cand.Id
-                join lst in _context.ChecklistHRs on new {a=cand.Id, b=i.Id} 
-                    equals new {a=lst.CandidateId, b=lst.OrderItemId} into chklst
-                from checklist in chklst.DefaultIfEmpty()
-                select new CandidatesAssessedButNotRefDto {
-                        CandidateAssessment = r,
-                        OrderItemId=i.Id,
-                        OrderItemSrNo = i.SrNo,
-                        ProfessionId = i.ProfessionId,
-                        OrderId = ordr.Id,
-                        OrderNo = ordr.OrderNo,
-                        CustomerName = ordr.Customer.CustomerName,
-                        CustomerId = ordr.Customer.Id,
-                        ProfessionName = i.Profession.ProfessionName,
-                        CandidateId = cand.Id,
-                        Ecnr = cand.Ecnr,
-                        ApplicationNo = cand.ApplicationNo,
-                        PassportNo = cand.PpNo,
-                        CandidateName = cand.FullName,
-                        DocControllerAdminTaskId = r.TaskIdDocControllerAdmin,
-                        ChargesAgreed = checklist==null ? 0 : checklist.ChargesAgreed,
-                        HRExecUsername = checklist.HrExecUsername,
-                        TaskDescription= "CV approved to send to client: Application No.:" + 
-                            cand.ApplicationNo + ", Candidate: " + cand.FullName +
-                            "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 
-                            ordr.OrderNo + "-" + i.SrNo + "-" + i.Profession.ProfessionName +
-                            ", Cleared to send by: " + r.AssessedByEmployeeName + " on " + r.AssessedOn,
-                        Candidatedescription = "Application " + cand.ApplicationNo + " - " + cand.FullName + " referred to " +
-                            ordr.Customer.CustomerName + " for " + ordr.OrderNo + "-" + i.SrNo + "-" + 
-                            i.Profession.ProfessionName + " on " + DateTime.UtcNow
-                    }
-            ).ToListAsync();
-            
-            return itemdetails;
-        }
-
         public async Task<MessageWithError> MakeReferrals(ICollection<int> CandidateAssessmentIds, string Username)
         {
             //todo - implement CVRefRestriction checking
             var dtoToReturn = new MessageWithError();
 
-            DateTime dateTimeNow = DateTime.Now;
-            
-            var cvrefs = new List<CVRef>();         //collection to compose messages in stage 6
-            
-            var assessments = await _context.CandidateAssessments.Where(x => CandidateAssessmentIds.Contains(x.Id))
-                .ToListAsync();
- 
-            //assessed and shortlisted CVs, but not referred to client
-            var shortlistedCVsNotReferred = await _context.CandidateAssessments
-                .Where(x => CandidateAssessmentIds.Contains(x.Id) && x.CVRefId == 0 ).ToListAsync();
-            if (shortlistedCVsNotReferred.Count == 0) {
-                dtoToReturn.ErrorString = "All candidates are already referred";;
-                return dtoToReturn;
+            var cvrefsAlreadyReferred = await _context.CVRefs.Where(x => CandidateAssessmentIds.Contains(x.CandidateAssessmentId)).ToListAsync();
+
+            if(cvrefsAlreadyReferred.Count > 0) {       //remove the entry from CandidateAsessmentIds and also update
+                foreach(var id in cvrefsAlreadyReferred) {      //candidateAssessment with CVRefId
+                    CandidateAssessmentIds.Remove(id.CandidateAssessmentId);
+                    var assessment = await _context.CandidateAssessments.FindAsync(id.CandidateAssessmentId);
+                    if(assessment != null) {
+                        assessment.CVRefId = id.Id;
+                        _context.Entry(assessment).State = EntityState.Modified;
+                    }
+                }
+                await _context.SaveChangesAsync();
             }
-            
-            var ids = await _context.CVRefs.Where(x => shortlistedCVsNotReferred.Select(m => m.CVRefId).ToList().Contains(x.Id)).Select(x => x.Id).ToListAsync();
-            
-            foreach(var id in ids) {
-                var itemToRemove = shortlistedCVsNotReferred.Where(x => x.CVRefId == id).FirstOrDefault();
-                shortlistedCVsNotReferred.Remove(itemToRemove);
-            }
-            
-            if (shortlistedCVsNotReferred == null || shortlistedCVsNotReferred.Count == 0)  {
-                dtoToReturn.ErrorString ="no data available to create CV Referrals";
+       
+            if(CandidateAssessmentIds.Count == 0) {
+                dtoToReturn.ErrorString = "All the CVs have been already referred to clients";
                 return dtoToReturn;
             }
 
-            //extract data for writing to CVRef tables
-            var itemdetails = await CandidatesAssessedButNotReferred(shortlistedCVsNotReferred);
-            if (itemdetails.Count==0) {
-                dtoToReturn.ErrorString= "Failed to retrieve relevant data to create CV Referras";
-                return dtoToReturn;
-            }
+            var itemdetails = await (from candAssess in _context.CandidateAssessments 
+                    where CandidateAssessmentIds.Contains(candAssess.Id)
+                join cand in _context.Candidates on candAssess.CandidateId equals cand.Id
+                join i in _context.OrderItems on candAssess.OrderItemId equals i.Id
+                join ordr in _context.Orders on i.OrderId equals ordr.Id
+                join chklst in _context.ChecklistHRs on 
+                    new {candAssess.CandidateId, candAssess.OrderItemId} equals 
+                    new {chklst.CandidateId, chklst.OrderItemId}
+                select new CandidatesAssessedButNotRefDto {
+                    CvRefId = 0,
+                    OrderDate = ordr.OrderDate,
+                    SrNo = i.SrNo,
+                    PPNo = cand.PpNo,
+                    CustomerCity = ordr.CityOfWorking,
+                    CandidateAssessment = candAssess,
+                    OrderItemId=i.Id,
+                    OrderItemSrNo = i.SrNo,
+                    ProfessionId = i.ProfessionId,
+                    OrderId = ordr.Id,
+                    OrderNo = ordr.OrderNo,
+                    CustomerName = ordr.Customer.CustomerName,
+                    CustomerId = ordr.Customer.Id,
+                    ProfessionName = i.Profession.ProfessionName,
+                    CandidateId = cand.Id,
+                    Ecnr = cand.Ecnr,
+                    ApplicationNo = cand.ApplicationNo,
+                    PassportNo = cand.PpNo,
+                    CandidateName = cand.FullName,
+                    DocControllerAdminTaskId = candAssess.TaskIdDocControllerAdmin,
+                    ChargesAgreed = chklst==null ? 0 : chklst.ChargesAgreed,
+                    HRExecUsername = chklst.HrExecUsername,
+                    TaskDescription= "CV approved to send to client: Application No.:" + 
+                        cand.ApplicationNo + ", Candidate: " + cand.FullName +
+                        "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 
+                        ordr.OrderNo + "-" + i.SrNo + "-" + i.Profession.ProfessionName +
+                        ", Cleared to send by: " + candAssess.AssessedByEmployeeName + " on " + candAssess.AssessedOn,
+                    Candidatedescription = "Application " + cand.ApplicationNo + " - " + cand.FullName + " referred to " +
+                        ordr.Customer.CustomerName + " for " + ordr.OrderNo + "-" + i.SrNo + "-" + 
+                        i.Profession.ProfessionName + " on " + DateTime.UtcNow
+                }).ToListAsync();
             
+
+            DateTime dateTimeNow = DateTime.Now;
+            
+            var cvrefs = new List<CVRef>();         //collection to compose messages in stage 6
+          
             foreach(var q in itemdetails)
             {
                 //add the record for cVRef 
@@ -347,7 +337,6 @@ namespace api.Data.Repositories.Admin
                             entry.State = EntityState.Detached; // Remove from context so won't try saving again.
                             dtoToReturn.ErrorString += ex.Message;
                         }
-                            
                     }
                 }
             while (!isSaved);
@@ -358,13 +347,6 @@ namespace api.Data.Repositories.Admin
             return dtoToReturn;
         }
         
-        //1 - When the candidate wa shortlisted in CandidateAssessment, a task was created in the name of
-        //    DocControllerAdmin to refer it to the client - CVRef.  Mark this task as completed, no
-        //    that the CV Referral has been done
-
-        //2 - create task in the name of DocControllerAdmin to email the CVs 
-        //3 - Create task in the name of DocControllerAdmin to follow up with customers for selection
-        //4 - Update CandidateAssessment.CVRefId
         public async Task<int> UpdateCandidateAssessmentWithCVRefId()
         {
             var candAssessments = await (from assessment in _context.CandidateAssessments where assessment.CVRefId == 0
@@ -387,10 +369,18 @@ namespace api.Data.Repositories.Admin
         }
         private async Task<string> TasksPostCVRef(string Username, ICollection<CandidatesAssessedButNotRefDto> candidatesNotRefDto)
         {
-            var dateTimeNow = DateTime.UtcNow;
-            string ErrorString ="";
+            
+            //1 - update candidateAssessment.CVRefId value
+            //2 - mark DocControllerAdminTasks as completed
+            //3 - create cvfwdtask - DocController to register CVRef in the system
+            //4 - create task to Doc Controller to send the email to the client
+            //5 - create selectionTasks
+            //6 - compose cv forward message
 
-        
+            var dateTimeNow = DateTime.UtcNow;
+            string ErrorString ="";     //candidateAssessments are already present in MakeReferrals, consider using that 
+                    //data, instead of retrieving from the dB as done below
+
             var query = await (from candAssess in _context.CandidateAssessments where 
                     candidatesNotRefDto.Select(x => x.CandidateAssessment.Id).ToList()
                     .Contains(candAssess.Id)
@@ -449,7 +439,7 @@ namespace api.Data.Repositories.Admin
                 };
                 _context.Entry(cvfwdTask).State = EntityState.Added;
 
-                //4 - 
+                //4 - create task to Doc Controller to send the email to the client
                 var cvrefTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername,
                     TaskOwnerUsername = Username, CompleteBy=DateTime.UtcNow.AddDays(5), 
@@ -493,6 +483,9 @@ namespace api.Data.Repositories.Admin
             //above function also saves the msg object to database.
             if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) {
                 ErrorString += msgWithErr.ErrorString;
+            } else {
+                foreach(var msg in msgWithErr.Messages) {_context.Entry(msg).State = EntityState.Added;}
+                var ct = await _context.SaveChangesAsync();
             }
             
             return ErrorString;

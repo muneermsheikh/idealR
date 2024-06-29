@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [Authorize(Policy="AdminPolicy")]
+    //[Authorize(Policy="AdminPolicy")]
     public class CustomersController : BaseApiController
     {
         private readonly ICustomerRepository _customerRepo;

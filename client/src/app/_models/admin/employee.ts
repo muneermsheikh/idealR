@@ -1,5 +1,5 @@
 import { IEmployeeAddress } from "./employeeAddress";
-import { IEmployeeHRSkill } from "./employeeHRSkill";
+import { IHRSkill } from "./hrSkill";
 import { IEmployeeOtherSkill } from "./employeeOtherSkill";
 import { IEmployeePhone } from "./employeePhone";
 import { IEmployeeQualification } from "./employeeQualification";
@@ -36,7 +36,7 @@ export interface IEmployee {
      employeeAddresses: IEmployeeAddress[];
      employeeQualifications: IEmployeeQualification[];
      employeePhones: IEmployeePhone[];
-     hrSkills: IEmployeeHRSkill[];
+     hrSkills: IHRSkill[];
      otherSkills: IEmployeeOtherSkill[];
 }    
 
@@ -72,6 +72,6 @@ export class Employee implements IEmployee {
      employeeAddresses: IEmployeeAddress[]=[];
      employeeQualifications: IEmployeeQualification[]=[];
      employeePhones: IEmployeePhone[]=[];
-     hrSkills: IEmployeeHRSkill[]=[];
+     hrSkills: IHRSkill[]=[];
      otherSkills: IEmployeeOtherSkill[]=[];
 }    
