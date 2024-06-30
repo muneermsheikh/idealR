@@ -96,10 +96,11 @@ namespace api.Controllers
             return item;
         }
         
-        [HttpGet("callRecordWithItems/{id}/{personid}")]
-        public async Task<ActionResult<CallRecord>> GetCallRecordWithItems(int id, string personid)
+        [HttpGet("callRecordWithItems/{callRecordId}/{personType}/{personId}/{categoryRef}")]
+        public async Task<ActionResult<CallRecord>> GetCallRecordWithItems(int callRecordId, string personType, string personId,
+            string categoryRef )
         {
-            var obj = await _histRepo.GetCallRecordWithItems(id, personid);
+            var obj = await _histRepo.GetCallRecordWithItems(callRecordId, personType, personId, categoryRef, User.GetUsername());
 
             if(obj == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to get the Call Record"));
             

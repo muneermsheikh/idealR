@@ -44,9 +44,10 @@ export class CallRecordsService {
           )
     }
 
-  getCallRecordWithItems(personid: string, callRecordId: number) {
+  getCallRecordWithItems(callRecordId: number, personType: string, personid: string, categoryRef: string) {
     
-    return this.http.get<ICallRecord>(this.apiUrl + 'CallRecord/callRecordWithItems/' + callRecordId + '/' + personid);
+    return this.http.get<ICallRecord>(this.apiUrl + 
+        'CallRecord/callRecordWithItems/' + callRecordId + '/' + personType + '/' + personid + '/' + categoryRef);
   }
 
   updateHistoryItem(item: ICallRecordItem) {

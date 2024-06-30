@@ -26,6 +26,8 @@ export class CallRecordsEditModalComponent implements OnInit {
   form: FormGroup = new FormGroup({});
 
   contactResults: ICallRecordResult[] = [];
+  advisoriesBy: ICallRecordResult[]=[{status: "Mail"}, {status: "SMS"}, {status: "Both"}];
+  inOutList: ICallRecordResult[]=[{status: "In"}, {status: "Out"}];
 
   constructor(private bsModalRef: BsModalRef, private toastr: ToastrService,
     private fb: FormBuilder, private confirm: ConfirmService){}
@@ -37,8 +39,8 @@ export class CallRecordsEditModalComponent implements OnInit {
   InitializeForm(call: ICallRecord) {
 
     this.form = this.fb.group({
-      id: call.id,  categoryRef: call.categoryRef, resumeId: call.personId,
-      status: call.status, statusDate: call.statusDate, 
+      id: call.id,  categoryRef: call.categoryRef, personId: call.personId, personName: call.personName,
+      personType: call.personType, username: call.username, status: call.status, statusDate: call.statusDate, email: call.Email, phoneNo: call.phoneNo,
       subject: call.subject, concludedOn: call.concludedOn,
       
       callRecordItems: this.fb.array(
@@ -47,7 +49,7 @@ export class CallRecordsEditModalComponent implements OnInit {
             id: x.id, callRecordId: x.callRecordId, incomingOutgoing: x.incomingOutgoing, 
             dateOfContact: x.dateOfContact, username: x.username, phoneNo: x.phoneNo,
             contactResult: x.contactResult, gistOfDiscussions: x.gistOfDiscussions,
-            nextAction: x.nextAction, nextActionOn: x.nextActionOn,
+            nextAction: x.nextAction, nextActionOn: x.nextActionOn, email: x.email,
             advisoryBy: x.advisoryBy, composeSMS: x.advisoryBy
           })
         ))
@@ -60,15 +62,17 @@ export class CallRecordsEditModalComponent implements OnInit {
   }
 
   newCallRecordItem(): FormGroup {
+    var lastItem = this.callRecordItems.at(this.callRecordItems.length-1);
     return this.fb.group({
-      id: 0, callRecordId: this.callRecord?.id, incomingOutgoing: "",
-      dateOfContact: new Date(), username: this.user?.userName, 
-      contactResult: "", gistOfDiscussions: "", composeEmailMessage: false,
-      composeSMS: false, nextAction: "", nextActionOn: ""
+      id: 0, callRecordId: this.callRecord?.id, incomingOutgoing: "out",
+      dateOfContact: new Date(), username: this.user?.userName ?? "", 
+      contactResult: "", gistOfDiscussions: "", advoryBy: "mail",
+      nextAction: "", nextActionOn: new Date(), phoneNo: lastItem.get("phoneNo")?.value,
+      email: lastItem.get("email")?.value, 
     })
   }
 
-  addHistoryItem() {
+  addCallRecordItem() {
     this.callRecordItems.push(this.newCallRecordItem());
   }
 
@@ -83,7 +87,7 @@ export class CallRecordsEditModalComponent implements OnInit {
 
   updateCallRecord() {
     var formdata = this.form.value;
-    this.updateCallRecordEvent.emit(this.callRecord);
+    this.updateCallRecordEvent.emit(formdata);
     this.bsModalRef.hide();
   }
 

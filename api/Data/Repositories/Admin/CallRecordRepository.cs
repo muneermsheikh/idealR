@@ -148,60 +148,86 @@ namespace api.Data.Repositories.Admin
             
             if (existing == null) { //the whole object is to be inserted
                 model.CallRecordItems.FirstOrDefault().Username=Username;
-                _context.CallRecords.Add(model);
-                try {
-                    var ct = await _context.SaveChangesAsync();
-                    dtoToRetun.CallRecord=model;
-                } catch (DbException ex) {
-                    dtoToRetun.ErrorString = ex.Message;
-                } catch (Exception ex) {
-                    dtoToRetun.ErrorString = ex.Message;
-                }
+                model.Status=model.CallRecordItems.FirstOrDefault().ContactResult;
+                model.StatusDate = model.CallRecordItems.FirstOrDefault().DateOfContact;
 
-                return dtoToRetun;
+                _context.CallRecords.Add(model);
+
+            } else {
+                _context.Entry(existing).CurrentValues.SetValues(model);
+
+                foreach (var existingItem in existing.CallRecordItems.ToList())
+                {
+                    if(!model.CallRecordItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                    {
+                        _context.CallRecordItems.Remove(existingItem);
+                        _context.Entry(existingItem).State = EntityState.Deleted; 
+                    }
+                }
+            
+                foreach(var newItem in model.CallRecordItems)
+                {
+                    var existingItem = existing.CallRecordItems
+                        .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                    if(existingItem != null)    //update navigation record
+                    {
+                        _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                        _context.Entry(existingItem).State = EntityState.Modified;
+                    } else {    //insert new navigation record
+                            
+                        var itemToInsert = new CallRecordItem
+                        {
+                            CallRecordId = model.Id,
+                            DateOfContact = newItem.DateOfContact,
+                            PhoneNo = newItem.PhoneNo,
+                            IncomingOutgoing = newItem.IncomingOutgoing,
+                            GistOfDiscussions = newItem.GistOfDiscussions,
+                            ContactResult = newItem.ContactResult,
+                            NextAction = newItem.NextAction,
+                            NextActionOn = new DateTime(),                        
+                            Username = Username
+                        };
+
+                        existing.CallRecordItems.Add(itemToInsert);
+                        _context.Entry(itemToInsert).State = EntityState.Added;
+                    }
+                }
             }
 
-            _context.Entry(existing).CurrentValues.SetValues(model);
+            try {
+                await _context.SaveChangesAsync();
+                dtoToRetun.CallRecord = existing;
+            } catch (DbException ex) {
+                dtoToRetun.ErrorString = ex.Message;
+                return dtoToRetun;
+            } catch (Exception ex) {
+                dtoToRetun.ErrorString = ex.Message;
+            }
 
-            foreach (var existingItem in existing.CallRecordItems.ToList())
-            {
-                if(!model.CallRecordItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
-                {
-                    _context.CallRecordItems.Remove(existingItem);
-                    _context.Entry(existingItem).State = EntityState.Deleted; 
-                }
+            if(!string.IsNullOrEmpty(dtoToRetun.ErrorString)) return dtoToRetun;
+
+            //modify callREcords.Status and Date
+            var item = await _context.CallRecordItems.OrderByDescending(x => x.DateOfContact).Take(1).FirstOrDefaultAsync();
+            string personid;
+            if(existing == null) {
+                model.Status=item.ContactResult;
+                model.StatusDate = item.DateOfContact;
+                _context.Entry(model).State = EntityState.Modified;
+                personid=model.PersonId;
+            } else {
+                existing.Status=item.ContactResult;
+                existing.StatusDate = item.DateOfContact;
+                _context.Entry(existing).State = EntityState.Modified;
+                personid = existing.PersonId;
+            }
+
+            var prospective = await _context.ProspectiveCandidates.Where(x => x.PersonId==personid).FirstOrDefaultAsync();
+            if (prospective!=null) {
+                prospective.Status = item.ContactResult;
+                prospective.StatusDate = item.DateOfContact;
+                _context.Entry(prospective).State = EntityState.Modified;
             }
             
-            foreach(var newItem in model.CallRecordItems)
-            {
-                var existingItem = existing.CallRecordItems
-                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
-                if(existingItem != null)    //update navigation record
-                {
-                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
-                    _context.Entry(existingItem).State = EntityState.Modified;
-                } else {    //insert new navigation record
-                        
-                    var itemToInsert = new CallRecordItem
-                    {
-                        CallRecordId = model.Id,
-                        DateOfContact = newItem.DateOfContact,
-                        PhoneNo = newItem.PhoneNo,
-                        IncomingOutgoing = newItem.IncomingOutgoing,
-                        GistOfDiscussions = newItem.GistOfDiscussions,
-                        ContactResult = newItem.ContactResult,
-                        NextAction = "",
-                        NextActionOn = new DateTime(),                        
-                        Username = Username
-                    };
-
-                    existing.CallRecordItems.Add(itemToInsert);
-                    _context.Entry(itemToInsert).State = EntityState.Added;
-                }
-            }
-
-            _context.Entry(existing).State = EntityState.Modified;
-
             try {
                 await _context.SaveChangesAsync();
                 dtoToRetun.CallRecord = existing;
@@ -274,7 +300,10 @@ namespace api.Data.Repositories.Admin
                 };
                 obj.CallRecordItems.Add(callRecordItem);
             } else {
-                var callRecordItem = new CallRecordItem{
+
+                obj = await GenerateCallRecord(dto.CallRecordId, dto.PersonType, dto.PersonId, dto.CategoryRef, username);
+
+                /* var callRecordItem = new CallRecordItem{
                     Id=0, CallRecordId=obj.Id, AdvisoryBy="", ContactResult=dto.Status, DateOfContact= DateTime.Now, GistOfDiscussions="", 
                     NextAction="", NextActionOn=DateTime.Now, IncomingOutgoing="out", PhoneNo="", Username = username
                 };
@@ -332,13 +361,83 @@ namespace api.Data.Repositories.Admin
                     default:
                         break;
                 }                
+                */
             }
-
-
+            
             return obj;
             
         }
 
+        private async Task<CallRecord> GenerateCallRecord(int callRecordId, string personType, string personId, 
+            string categoryRef, string username) {
+
+            var obj = new CallRecord();
+
+            var callRecordItem = new CallRecordItem{
+                    Id=0, CallRecordId=callRecordId, AdvisoryBy="", ContactResult="Not Started", 
+                    DateOfContact= DateTime.Now, GistOfDiscussions="", NextAction="", 
+                    NextActionOn=DateTime.Now, IncomingOutgoing="out", PhoneNo="", Username = username
+                };
+            var recordItems = new List<CallRecordItem>();
+
+            switch (personType.ToLower()) {
+                case "candidate" : 
+                    obj = await (from cand in _context.Candidates where cand.Id == Convert.ToInt32(personId)
+                        select new CallRecord {
+                            Id=0, CategoryRef=categoryRef, PersonType = "Candidate",
+                            PersonId = personId, PersonName = cand.FullName,
+                            Subject = "followup acceptance", PhoneNo = cand.UserPhones.Where(x => x.IsMain && x.IsValid)
+                                .Select(x => x.MobileNo).FirstOrDefault(),
+                            Email = cand.Email, Status = "Not Started", StatusDate = _today, CreatedOn = _today,
+                            Username = cand.UserName, ConcludedOn = null
+                    }).FirstOrDefaultAsync();
+                    
+                    callRecordItem.PhoneNo=obj.PhoneNo;
+                    callRecordItem.Email=obj.Email;
+                    recordItems.Add(callRecordItem);
+                    obj.CallRecordItems=recordItems;
+
+                    break;
+                    
+                case "official": 
+                    obj = await _context.CustomerOfficials.Where(x => x.Id == Convert.ToInt32(personId))
+                        .Select(x => new CallRecord {
+                                PersonId = personId, CreatedOn = _today, PersonType = "Official", Email = x.Email, 
+                                PhoneNo = x.PhoneNo, Status = "Not Startedd", Username = x.UserName, 
+                                Subject = "followup with Client", CategoryRef=categoryRef, 
+                                StatusDate = _today, PersonName = x.OfficialName
+                        })
+                        .FirstOrDefaultAsync();
+
+                    callRecordItem.PhoneNo=obj.PhoneNo;
+                    callRecordItem.Email=obj.Email;
+                    recordItems.Add(callRecordItem);
+                    obj.CallRecordItems=recordItems;
+                    
+                    break;
+                case "prospective":
+                    obj = await _context.ProspectiveCandidates.Where(x => x.PersonId == personId)
+                        .Select(x => new CallRecord {
+                            PersonId = personId, CreatedOn = _today, PersonType = "Prospective", Email = x.Email,
+                            PhoneNo = x.PhoneNo, Status = "Not Started", Username = "", Subject = "acceptance followup", 
+                            CategoryRef=categoryRef, StatusDate = _today, PersonName = x.CandidateName
+                        }).FirstOrDefaultAsync();
+                        
+                    callRecordItem.PhoneNo=obj.PhoneNo;
+                    callRecordItem.Email=obj.Email;
+                    recordItems.Add(callRecordItem);
+                    obj.CallRecordItems=recordItems;
+                    
+                    break;
+                case "employee":
+                default:
+
+                    break;
+            }
+
+            return obj;
+            
+        }
         public async Task<CallRecordDto> GetCallRecordDtoByParams(CallRecordParams hParams) {
 
             var query = _context.CallRecords.Include(x => x.CallRecordItems.OrderByDescending(x => x.DateOfContact)) .AsQueryable();
@@ -367,15 +466,15 @@ namespace api.Data.Repositories.Admin
             return await _context.SaveChangesAsync() > 0 ? existing : null;
         }
 
-        public async Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personId)
+        public async Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personType, string personId,
+            string categoryRef, string Username)
         {
-            var query = _context.CallRecords.Include(x => x.CallRecordItems.OrderByDescending(x => x.DateOfContact))
-                .AsNoTracking().AsQueryable();
+            var query = await _context.CallRecords.Include(x => x.CallRecordItems.OrderByDescending(x => x.DateOfContact))
+                .Where(x => x.PersonId == personId).FirstOrDefaultAsync();
 
-            if(callRecordId > 0) query = query.Where(x => x.Id == callRecordId);
-            if(!string.IsNullOrEmpty(personId)) query = query.Where(x => x.PersonId == personId);
-
-            return await query.FirstOrDefaultAsync();
+            query ??= await GenerateCallRecord(callRecordId, personType, personId, categoryRef, Username);
+            
+            return query;
         }
     }
 }

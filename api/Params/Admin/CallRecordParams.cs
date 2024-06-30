@@ -11,6 +11,7 @@ namespace api.Params.Admin
         public string PersonId { get; set; }
         public string Subject { get; set; }
         public string Status { get; set; }
+        public string StatusClass { get; set; }
         public string Username { get; set; }
         public string CategoryRef { get; set; }
         public DateTime DateRegistered { get; set; }

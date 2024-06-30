@@ -19,6 +19,7 @@ namespace api.Interfaces.Admin
         Task<CallRecordItem> UpdateHistoryItem(CallRecordItem CallRecorditem, string UserDisplayName);
         Task<CallRecord> GetOrAddCallRecordWithItemsByParams(CallRecordItemToCreateDto dto, string Username);
         Task<CallRecordDto> GetCallRecordDtoByParams(CallRecordParams histParams);
-        Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personId);
+        Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personType, string personId,
+            string categoryRef, string Username);
     }
 }

@@ -3,6 +3,7 @@ export class prospectiveCandidateParams {
      categoryRef?='';
      dateAdded?: string;
      status= '';
+     statusClass='Active';
      closed=false;
      
      sort = "date";

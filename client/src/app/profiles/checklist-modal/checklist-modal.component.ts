@@ -209,7 +209,7 @@ export class ChecklistModalComponent implements OnInit {
 
     observableOuter.pipe(
         filter((confirmed) => confirmed),
-        switchMap((confirmed) => {
+        switchMap(() => {
           return observableInner
         })
     ).subscribe(response => {

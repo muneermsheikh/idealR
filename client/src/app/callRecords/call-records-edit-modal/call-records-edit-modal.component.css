@@ -3,7 +3,16 @@
     vertical-align: top;
     margin-left: 2px;
     margin-right:1px;
-    font-size: smaller;
+    vertical-align: top;
+}
+
+.stddY0 {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 2px;
+    margin-right:1px;
     vertical-align: top;
 }
 
@@ -12,18 +21,28 @@
     vertical-align: top;
     margin-left: 2px;
     margin-right:1px;
-    font-size: smaller;
     font-weight: bold;
-    vertical-align: middle;
+    vertical-align: top;
 }
+
+.mL15 {margin-left: 15px !important;}
+.mL40 {margin-left: 40px !important;}
+.mL110 {margin-left:110px !important;}
+.mL460 {margin-left: 460px !important;}
+
+.fSmallest {font-size: xx-small; font-weight: bold;}
+.fSmaller {font-size: smaller;}
 
 .red {color: red;}
 
 .w25 {width: 25px;}
 .w35 {width: 35px;}
 .w50 {width: 50px;}
+.w75 {width: 75px;}
+.w80 {width: 80px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
+.w140 {width: 140px;}
 .w150 {width: 150px;}
 .w250 {width: 250px;}
 
@@ -33,6 +52,7 @@
 	min-height: 25px;
 	font-size: 0.8em;
 	font-weight: normal;
+    width: auto !important;
   }
 
 

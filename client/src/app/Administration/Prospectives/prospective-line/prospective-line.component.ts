@@ -15,8 +15,8 @@ export class ProspectiveLineComponent implements OnInit{
   
   @Output() editEvent = new EventEmitter<ICallRecord>();
   @Output() deleteEvent = new EventEmitter<number>();
-  @Output() addNewTransaction = new EventEmitter<number>();
   @Output() selectedEvent = new EventEmitter<IProspectiveBriefDto>();
+  @Output() convertToCandidateEvent = new EventEmitter<number>();
 
   StatusSelected="";
 
@@ -33,7 +33,7 @@ export class ProspectiveLineComponent implements OnInit{
   editEventClicked() {
 
     if(this.prospective) {
-        this.callRecService.getCallRecordWithItems(this.prospective.personId, this.prospective.id)
+        this.callRecService.getCallRecordWithItems(0, this.prospective.personType, this.prospective.personId, this.prospective.categoryRef)
           .subscribe({
             next: (response: ICallRecord) => {
               if(response) {
@@ -48,10 +48,11 @@ export class ProspectiveLineComponent implements OnInit{
     this.selectedEvent.emit(this.prospective);
   }
   deleteEventClicked() {
+    
     this.deleteEvent.emit(this.prospective?.id);
   }
 
-  addNewClicked() {
-    this.addNewTransaction.emit(this.prospective?.id);
+  convertToCandidateClicked() {
+    this.convertToCandidateEvent.emit(this.prospective?.id);
   }
 }

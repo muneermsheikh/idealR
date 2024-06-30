@@ -9,6 +9,7 @@ export interface ICallRecordParams
     emailId: string;
     categoryRef:string;
     status: string;
+    statusClass: string;
     subject: string;
     username: string;
     gistOfDiscussions: string;
@@ -34,6 +35,7 @@ export class CallRecordParams implements ICallRecordParams
     emailId = '';
     categoryRef = '';
     status = '';
+    statusClass='Active';
     username =  '';
     gistOfDiscussions='';
     advisoryBy='';

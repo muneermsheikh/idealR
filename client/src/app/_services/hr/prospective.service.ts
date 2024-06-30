@@ -91,7 +91,7 @@ export class ProspectiveService {
 
     let params = getHttpParamsForProspectiveSummary(this.sParams);
     
-    return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'ProspectiveCandidates/summary', {params})
+    return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'Prospectives/summary', {params})
       .pipe(
         map(response => {
           this.cache.set(Object.values(this.sParams).join('-'), response);
@@ -131,15 +131,24 @@ export class ProspectiveService {
   convertProspectiveXLStoDb(filename: string) {
     return this.http.post<string>(this.apiUrl + 'excel/convertToDb/' + filename, {});
   }
+
+  convertProspectiveToCandidate(prospectiveId: number) {
+    return this.http.put<number>(this.apiUrl + 'Prospectives/convertProspective/' + prospectiveId, {});
+  }
+
   createCandidateFromprospective(model: IProspectiveRegisterToAddDto) {
-    return this.http.post(this.apiUrl + 'prospectivecandidates', model )
+    return this.http.post(this.apiUrl + 'Prospectives', model )
   }
 
   updateProspectives(model: IProspectiveUpdateDto[]) {
-    return this.http.put(this.apiUrl + 'prospectivecandidates/prospectivelistedit', model);
+    return this.http.put(this.apiUrl + 'Prospectives/prospectivelistedit', model);
   }
 
   updateCallRecord(model: any) {
     return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord', model);
+  }
+
+  deleteProspectiveRecord(prospectiveId: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'Prospectives/delete/' + prospectiveId);
   }
 }

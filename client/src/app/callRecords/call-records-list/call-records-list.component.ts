@@ -128,7 +128,7 @@ export class CallRecordsListComponent implements OnInit{
             mobileNo:response.phoneNo, emailId:item.emailId, dateOfContact:response.dateOfContact,
             username:this.user?.userName!, gistOfDiscussions:response.gistOfDiscussions,
             advisoryBy:response.advisoryBy, categoryRef: item.categoryRef, search:'',
-            sort: '', status: response.contactResult, pageNumber:1, pageSize:10,
+            sort: '', status: response.contactResult, pageNumber:1, pageSize:10, statusClass: "",
             nextAction:'', nextActionOn: new Date()};
 
             return this.service.getOrAddCallRecord(params).pipe(

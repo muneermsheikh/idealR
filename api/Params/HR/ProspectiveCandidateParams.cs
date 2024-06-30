@@ -11,5 +11,6 @@ namespace api.Params.HR
         public string CategoryRef { get; set; }
         public int OrderItemId { get; set; }
         public string Status { get; set; }
+        public string StatusClass { get; set; }
     }
 }

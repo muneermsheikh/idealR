@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using api.Data.Migrations;
 using api.DTOs;
 using api.DTOs.HR;
 using api.Entities.HR;
@@ -10,6 +11,7 @@ using api.Params.Admin;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,22 +35,28 @@ namespace api.Data.Repositories.HR
         }
 
 
-        public async Task<UserDto> ConvertProspectiveToCandidate(ProspectiveCandidateAddDto dto)
+        public async Task<int> ConvertProspectiveToCandidate(int prospectiveId)
         {
+            var prospective = await _context.ProspectiveCandidates.FindAsync(prospectiveId);
+
             //check unique values of PP and Aadhar
-               var user = await _userManager.FindByEmailAsync(dto.Email);
+               var user = await _userManager.FindByEmailAsync(prospective.Email);
+               var charPosition= !prospective.CandidateName.Contains(' ') ? prospective.CandidateName.IndexOf("-", StringComparison.Ordinal):0;
+
+               var prospectiveKnownAs = charPosition <=0 ? prospective.CandidateName : prospective.CandidateName[..charPosition];
+               
                if(user == null) {    
                     user = new AppUser
                     {
                          //UserType = "Candidate",
-                         KnownAs = dto.KnownAs,
-                         Gender = dto.Gender,
-                         PhoneNumber = dto.PhoneNo,
-                         Email = dto.Email,
-                         UserName = dto.Email
+                         KnownAs = prospectiveKnownAs,
+                         Gender = prospective.Gender,
+                         PhoneNumber = prospective.PhoneNo,
+                         Email = prospective.Email,
+                         UserName = prospective.Email
                     };
-                    var result = await _userManager.CreateAsync(user, dto.Password);
-                    if (!result.Succeeded) return null;
+                    var result = await _userManager.CreateAsync(user, "newPassword0#");
+                    if (!result.Succeeded) return 0;
                }
 
                //create roles
@@ -59,66 +67,44 @@ namespace api.Data.Repositories.HR
                //var userAdded = await _userManager.FindByEmailAsync(registerDto.Email);
                //no need to retreive obj from DB - the object 'user' can be used for the same
                
-               var cvDto = new RegisterDto{
-                    Gender="M", FirstName = dto.CandidateName, KnownAs = dto.KnownAs, 
-                    Username = dto.Email, Email = dto.Email, AppUserId = user.Id
+                var userphones = new List<UserPhone>{new() {MobileNo=prospective.PhoneNo, IsMain=true, IsValid=true}};
+                if(!string.IsNullOrEmpty(prospective.AlternateNumber)) {
+                    var userph=new UserPhone{MobileNo=prospective.AlternateNumber, IsMain=false, IsValid=true};
+                    userphones.Add(userph);
+                }
+
+                var userprofessions = new List<UserProfession>{new() {ProfessionId=prospective.ProfessionId}};
+                var cvDto = new RegisterDto{
+                    Gender="M", FirstName = prospective.CandidateName, KnownAs = prospectiveKnownAs, 
+                    Username = prospective.Email, Email = prospective.Email, AppUserId = user.Id,
+                    ReferredByName = prospective.Source, UserProfessions=userprofessions, UserPhones=userphones,
+                    City = prospective.CurrentLocation, Nationality = prospective.Nationality
                 };
 
 
-               if (!string.IsNullOrEmpty(dto.Age)) {
-                    var age = dto.Age.Substring(0,2);
+               if (!string.IsNullOrEmpty(prospective.Age)) {
+                    var age = prospective.Age[..2];
                     cvDto.DOB = DateTime.Today.AddYears(-Convert.ToInt32(age));
                }
           
-               //ReferredBy
-               cvDto.ReferredByName="TimesJobs";
-               
                // finally, create the object candidate
                var cand = await _candidateRepository.CreateCandidateAsync(cvDto, "username");
 
-               if (cand == null) return null;
+               if (cand == null) return 0;
                
                //once succeeded, delete the record from prospective list.
-               var prospect = await _context.ProspectiveCandidates.FindAsync(dto.ProspectiveId);
-               if(prospect == null) return null;
-
-               _context.ProspectiveCandidates.Remove(prospect);
-               _context.Entry(prospect).State=EntityState.Deleted;
-
-               var recordsAffected = await _context.SaveChangesAsync();         //should be 2 - one added, and one deleted
-
-               //UserProfessions
-               var prf = await GetUserProfessionFromCategoryRef(dto.CategoryRef);
-               if (prf != null) {
-                    var prof = new UserProfession{ProfessionId=prf.ProfessionId, CandidateId=cand.Id, ProfessionName=prf.ProfessionName};
-                    _context.Entry(prof).State = EntityState.Added;
-               }
-
-               //UserPhones
-               var ph = new UserPhone{MobileNo=dto.PhoneNo,IsMain=true, CandidateId=cand.Id};
-               _context.Entry(ph).State=EntityState.Added;
-
-               if(!string.IsNullOrEmpty(dto.AlternatePhoneNo)) {
-                    ph =new UserPhone{MobileNo=dto.AlternatePhoneNo, CandidateId=cand.Id};
-                    _context.Entry(ph).State=EntityState.Added;
-               }
+               _context.ProspectiveCandidates.Remove(prospective);
+               _context.Entry(prospective).State=EntityState.Deleted;
 
                await _context.SaveChangesAsync();
 
-               //return UserDto object
-               var userDtoToReturn = new UserDto
-               {
-                    KnownAs = user.KnownAs,
-                    Token = await _tokenService.CreateToken(user),
-                    UserName = user.UserName
-               };
-
-               return userDtoToReturn;
+               return cand.ApplicationNo;
         }
 
-        public async Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(CallRecordParams pParams)
+        public async Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(ProspectiveCandidateParams pParams)
         {
             var qry = _context.ProspectiveCandidates.AsQueryable();
+            var contactresults = new List<string>();
                
             if(pParams.Id != 0) {
                 qry = qry.Where(x => x.Id == pParams.Id);
@@ -127,14 +113,24 @@ namespace api.Data.Repositories.HR
                 
                 if(!string.IsNullOrEmpty(pParams.Search)) qry = qry.Where(x => x.CategoryRef == pParams.Search);
                 
-                if(!string.IsNullOrEmpty(pParams.Status)) {
-                    if(pParams.Status=="Others") {
-                            string[] strOthers = {"notinterested","notresponding","pending", "concluded", "ppissues",
-                                "phonenumberwrong", "phonenotreachable", "scnotacceptable", "phonenotreachable","salaryofferedislow"};
-                            qry = qry.Where(x => !strOthers.Contains(x.Status));
-                    } else if(pParams.Status !="all") {
-                            qry = qry.Where(x => x.Status==pParams.Status);
-                    }
+                if(!string.IsNullOrEmpty(pParams.StatusClass)) {
+                    if(pParams.StatusClass=="Active") {
+                        contactresults.Add("wrong Number");
+                        contactresults.Add("not responding");
+                        contactresults.Add("will revert later");
+                        contactresults.Add(null);
+                    } else if(pParams.StatusClass == "Declined") {
+                        contactresults.Add("declined for overseas");
+                        contactresults.Add("declined-family issues");
+                        contactresults.Add("declined-low remuneration");
+                        contactresults.Add("declined-sc not accepted");
+                    } else if(pParams.StatusClass=="Interested") {
+                        contactresults.Add("interested, but negotiate salary");
+                        contactresults.Add("interested, but doubtful");
+                        contactresults.Add("interested, and keen");
+                    } 
+
+                    if(pParams.Status != "all") qry = qry.Where(x => contactresults.Contains(x.Status.ToLower()));
                 }
                
                 if(pParams.DateRegistered.Year > 2000) qry = qry.Where(x => x.DateRegistered == pParams.DateRegistered);
@@ -286,5 +282,17 @@ namespace api.Data.Repositories.HR
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> DeleteProspectiveCandidate(int ProspectiveId)
+        {
+            var obj = await _context.ProspectiveCandidates.FindAsync(ProspectiveId);
+
+            if (obj == null) return false;
+
+            _context.ProspectiveCandidates.Remove(obj);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

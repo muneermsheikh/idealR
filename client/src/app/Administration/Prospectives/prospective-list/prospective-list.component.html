@@ -1,6 +1,6 @@
-<h6 style="display: inline-block;">Active Prospective Candidates</h6>
-<div style="display: inline-block; margin-left: 15px; vertical-align: top;" *ngIf="pagination !== undefined">
-     <pagination class="stdd"
+<h6 style="display: inline-block;">Prospective Candidates</h6>
+<div style="display: inline-block; margin-left: 15px; vertical-align: top;">
+     <pagination class="stdd" *ngIf="pagination !== undefined"
           [totalItems]="pagination!.totalItems"
           [itemsPerPage]="pagination!.itemsPerPage"
           (pageChanged)="onPageChanged($event)"
@@ -12,10 +12,11 @@
      ></pagination>
 
      
-    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
-    <button (click)="onSearch()" class="stdd btn btn-outline-primary mx-1">Search</button>
+    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
+    <button (click)="onSearch()" title="search the text entered" 
+        class="stdd btn fa-solid fa-magnifying-glass mx-1">Search</button>
 
-    <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+    <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
     <ng-select class="stdd"
         style="border-style: double; width: 250px; font-size: small;"
         [items]="callRecordStatus"
@@ -26,8 +27,18 @@
         (selected)="selected($event)"
         [(ngModel)]="statusSelected"
     ></ng-select>
-    <button class="btn fa fa-check mx-5" 
-        title="create new transaction based upon the status selected" (click)="applyTransactions()" ></button>
+    <button class="btn fa fa-check mx-2" title="create new transaction based upon the status selected" ></button>
+    <label class="lbl w100" title="The paged list that will retreive records based upon the status you select" >Choose Status</label>
+        <ng-select class="stdd"
+            style="border-style: double; width: 100px; font-size: small;"
+            [items]="paramsStatus"
+            bindLabel="status"
+            bindValue="status"
+            labelForId="status"
+            clearAllText="Clear"
+            [(ngModel)]="pParams.statusClass"
+    ></ng-select>
+    <button class="btn btn-outline-primary" title="filters the records based upon the status selected" (click)="setParameters()" >apply</button>
     <button class="btn btn-outline-primary fa fa-window-close pull-right" title="go back" routerLink="/profiles" ></button>
 </div>
 
@@ -46,7 +57,11 @@
     <label class="lbl w100">Duration</label>
 
 </div>
+<hr>
 
+<div *ngIf="!prospectives" class="my-2">
+    No prospective candidates found matching your criteria
+</div>
 <div *ngIf="prospectives">
     <div *ngFor="let pros of prospectives">
         <app-prospective-line
@@ -54,7 +69,7 @@
             (deleteEvent)="deleteProspectiveClicked($event)"
             (editEvent)="editProspectiveClicked($event, pros)"
             (selectedEvent)="selectedClicked($event)"
-            (addNewTransaction)="addNewClicked($event)"
+            (convertToCandidateEvent)="convertProspectiveToCandidate($event)"
         ></app-prospective-line>
     </div>
 </div>

@@ -107,6 +107,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageSize', oParams.pageSize);
 
     if (oParams.status !== ''  && oParams.status !== undefined)  params = params.append('status', oParams.status);
+    params = params.append('statusClass', oParams.statusClass);
     if (oParams.categoryRef !== ''  && oParams.categoryRef !== undefined)  params = params.append('categoryRef', oParams.categoryRef);
 
     if (oParams.dateAdded !=='' && oParams.dateAdded !== undefined ){

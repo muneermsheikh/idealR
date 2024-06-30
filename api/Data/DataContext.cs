@@ -29,6 +29,7 @@ namespace api.Data
         public DbSet<FeedbackItem> FeedbackItems {get; set;}
         public DbSet<Message> Messages {get; set;}
         public DbSet<UserLike> UserLikes {get; set;}
+        public DbSet<ContactResult> contactResults {get; set;}  
 
         //client
         public DbSet<AgencySpecialty> AgencySpecialties{get; set;}
@@ -159,6 +160,7 @@ namespace api.Data
             builder.Entity<Profession>().HasIndex(x => x.ProfessionName).IsUnique();
             builder.Entity<Industry>().HasIndex(x => x.IndustryName).IsUnique();
             builder.Entity<Qualification>().HasIndex(x => x.QualificationName).IsUnique();
+            builder.Entity<ContactResult>().HasIndex(x => x.Status).IsUnique();
             
             builder.Entity<CVRef>().HasOne(o => o.Process);
             builder.Entity<CVRef>().HasIndex(i => new {i.OrderItemId, i.CandidateId}).IsUnique();

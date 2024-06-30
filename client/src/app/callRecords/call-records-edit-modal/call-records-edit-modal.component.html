@@ -1,8 +1,8 @@
-<div class="modal-header my-9">
+<div class="modal-header my-0">
     <h6>Edit Call Record</h6>
     <button class="btn btn-success w35 fa fa-save" 
-        style="margin-left: 200px;" (click)="updateCallRecord()" ></button>
-    <button class="btn fa fa-window-close pull-right" (click)="close()" ></button>
+        style="margin-left: 400px;" (click)="updateCallRecord()" ></button>
+    <button class="btn fa fa-window-close fa-2x pull-right" (click)="close()" ></button>
 </div>
 
 <div class="modal-body my-0">
@@ -12,46 +12,46 @@
 
     <div *ngIf="callRecord">
         <form [formGroup]="form" >
-            <label class="lbl w125">Name of the Person:</label> 
-            <div class="stdd w150" >{{candidatName}}</div>
+            <label class="lbl w150 fSmaller">Name of the Person:</label> 
+            <div class="stdd w150 fSmaller" >{{callRecord.personName}}</div>
         
-            <label class="lbl w125">CategoryRef:</label> 
-                <div class="stdd w150">{{callRecord.categoryRef}}</div>
-            <br><label class="lbl w125">Subject</label> 
-                <div class="stdd w250">{{callRecord.subject}}</div>
-            <label class="lbl w50">Status</label> 
-            <div class="stdd w100">{{callRecord.status}}</div>
+            <label class="lbl w125 fSmaller mL15">CategoryRef:</label> 
+                <div class="stdd fSmaller w150">{{callRecord.categoryRef}}</div>
+            <br><label class="lbl fSmaller w150">Subject:</label> 
+                <div class="stdd fSmaller w150">{{callRecord.subject}}</div>
+            <label class="lbl w125 fSmaller mL15">Status:</label> 
+            <div class="stdd fSmaller w100">{{callRecord.status}}</div>
 
+            <hr class="my-1">
+            
+            <label class="lbl fSmaller w80">Date</label>
+            <label class="lbl fSmaller w50">In/Out</label>
+            <label class="lbl fSmaller w80">Phone</label>
+            <label class="lbl fSmaller w150">Gist of discussions</label>
+            <label class="lbl fSmaller w125">Result</label>
+            <label class="lbl fSmaller w125">Next action</label>
+            <label class="lbl fSmaller w100">On</label>
+            <button class="btn w25 fa fa-plus" (click)="addCallRecordItem()" ></button>
             <hr class="my-0">
-            
-            <label class="lbl w110">Date</label>
-            <label class="lbl w50">In/Out</label>
-            <label class="lbl w35">Phone</label>
-            <label class="lbl w250">Gist of discussions</label>
-            <label class="lbl w75">Result</label>
-            <label class="lbl w150">Next action</label>
-            <label class="lbl w110">Next Action On</label>
-            <label class="lbl w35">Send<br>Mail</label>
-            <label class="lbl w35">Send<br>SMS</label>
-            
-            <div formArrayName="userHistoryItems" >
+
+            <div formArrayName="callRecordItems" >
                 <div *ngFor="let item of callRecordItems.controls; let i=index">
                     <div [formGroupName]="i">
                         
-                        <input class="stdd w100" type="text" placeholder="Date" 
+                        <input class="stdd  fSmaller w80" type="text" placeholder="Date" 
                             formControlName="dateOfContact" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-            
-                        <input type="radio" formControlName="incomingOutgoing" value="In" class="stdd w35">In
-                        <input type="radio" formControlName="incomingOutgoing" value="Out" class="stdd w35" >Out
-                        <input type="text" formControlName="phoneNo" class="stdd w35" >
+                        <input type="text" class="stdd fSmaller w50" formControlName="incomingOutgoing" >
+                      
+                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
                         
-                        <textarea formControlName="gistOfDiscussions" cols="8" rows="3" class="stdd"></textarea>
+                        <textarea formControlName="gistOfDiscussions" cols="20" rows="2" 
+                            class="stdd  fSmaller"></textarea>
                         
                         <ng-select
-                            class="stdd w150"
-                            style="height: fit-content; border-color: black;"
+                            class="stdd w125  fSmaller"
+                            style="border-color: black;"
                             [items]="contactResults"
                             bindLabel="status"
                             bindValue="status"
@@ -60,8 +60,8 @@
                         ></ng-select>
 
                         <ng-select
-                            class="stdd w150"
-                            style="height: fit-content; border-color: black;"
+                            class="stdd w125 fSmaller"
+                            style="border-color: black;"
                             [items]="contactResults"
                             bindLabel="status"
                             bindValue="status"
@@ -69,13 +69,11 @@
                             formControlName="nextAction"
                         ></ng-select>
 
-                        <input class="stdd w110" type="text" placeholder="Date" 
+                        <input class="stdd w75 fSmaller" type="text" placeholder="Date" 
                             formControlName="nextActionOn" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-                    
-                        <input type="checkbox" class="inputcheck" formControlName="sendByEmail" >
-                        <input type="checkbox" class="inputcheck" formControlName="sendByEmail" >
+                        
                         <button class="btn w25 fa fa-trash fa-sm red" (click)="removeDepItem(i)" ></button>
                     </div>
                 </div>
