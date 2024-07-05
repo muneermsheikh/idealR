@@ -86,8 +86,9 @@ export class OrdersListingComponent implements OnInit {
           this.totalCount = response.count;
         }
       },
-      error: error => console.log(error)
+      error: error => console.log(this.orders)
     });
+
   }
 
 
@@ -116,7 +117,7 @@ export class OrdersListingComponent implements OnInit {
   onPageChanged(event: any){
     const params = this.service.getOParams() ?? new orderParams();
     
-    if (params.pageNumber !== event) {
+    if (params.pageNumber !== event.page) {
       params.pageNumber = event.page;
       this.service.setOParams(params);
       this.getOrders(params);
@@ -148,40 +149,17 @@ export class OrdersListingComponent implements OnInit {
   }
 
   editOrder(id: any) {
-   console.log('edit order event:', id);
     this.navigateByRoute(id, '/administration/orders/edit', true);
   }
 
    contractReviewOrder(id: number) {
-    this.navigateByRoute(id, 'orders/review', true);
+    this.navigateByRoute(id, '/administration/orderitemreview', true);
   }
   
-  /*async orderForwardedToHRDept(event: any) {
-    var orderid = event?.target.value;
-    this.taskService.getTaskByOrderIdAndTaskType(orderid, "OrderFwdToHR").subscribe((response: any) => {
-      this.task = response;
-      let route = 'userTask/edittaskwithorderidandtasktype/' + orderid + '/' + 14;
-      this.router.navigate(
-          [route], 
-          { state: 
-            { 
-              tasktoedit: this.task,
-              user: this.user, 
-              toedit: true, 
-              returnUrl: '/orders' 
-            } }
-        );
-  
-    })
-    
-    //this.navigateByRoute(14, 'userTask/edittaskwithorderidandtasktype/' + orderid); //usertask/orderid/tasktypeid(14)
-  }
-*/
-
 
   orderAssessmentItem(event: any) {
     var id = event;
-    this.navigateByRoute(id, 'administration/orderassessmentitem', true);
+    this.navigateByRoute(id, 'administration/orderitemreview', true);
   }
 
   orderForwardToAssociates(event: any) {

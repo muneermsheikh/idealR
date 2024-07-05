@@ -79,7 +79,7 @@ namespace api.Controllers
         [HttpGet("generate/{orderId}")]
         public async Task<ActionResult<ContractReview>> GenerateContractReview (int orderId)
         {
-            var review = await _repo.GetOrGenerateContractReview(orderId, User.GetUsername());
+            var review = await _repo.GetOrGenerateContractReviewNOSAVE(orderId, User.GetUsername());
 
             if(review == null) return BadRequest();
             return Ok(review);

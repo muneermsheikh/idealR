@@ -18,11 +18,13 @@ namespace api.Interfaces
          Task<ICollection<ClientIdAndNameDto>> GetCustomerIdAndNames(string customerType);
          Task<bool> UpdateCustomer(Customer customer);
          Task<bool> DeleteCustomer(int CustomerId);
+         Task<bool> DeleteCustomerOfficial(int officialId);
          Task<bool> InsertCustomer(Customer customer);
          
          Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official);
          Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official);
-
+        Task<int> WriteCustomerExcelToDB(string fileNameWithPath, string username);
+         
          Task<ICollection<OfficialAndCustomerNameDto>> GetOfficialsAndCustomerNames(string customerType);
 
     }

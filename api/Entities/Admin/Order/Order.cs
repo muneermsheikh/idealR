@@ -17,7 +17,7 @@ namespace api.Entities.Admin.Order
         public string Country { get; set; }
         public string CityOfWorking { get; set; }
         public int ContractReviewId { get; set; }
-        public string ContractReviewStatus {get; set;}
+        public string ContractReviewStatus {get; set;}="Not Reviewed";
         public string Status { get; set; } = "Awaiting Review";
         public DateTime? ForwardedToHRDeptOn { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }

@@ -1,5 +1,12 @@
+using api.DTOs.HR;
 using api.Entities.Admin;
+using api.Entities.Admin.Client;
+using api.Errors;
+using api.Extensions;
+using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.HR;
+using api.Params;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -23,10 +30,22 @@ namespace api.Controllers
             _repo = repo;
         }
 
-        [HttpGet("FeedbackFrommId/{id}")]        
-        public async Task<Feedback> GetFeedbackAsync(int id)
+        [HttpGet("pagedlist")]
+        public async Task<ActionResult<PagedList<FeedbackDto>>> GetPagedList([FromQuery]FeedbackParams fParams)
         {
-            var feedback = await _repo.GetFeedbackFromId(id);
+            var feedbacks = await _repo.GetFeedbackList(fParams);
+
+            if(feedbacks == null) return NotFound("No matching Feedbacks found");
+            Response.AddPaginationHeader(new PaginationHeader(feedbacks.CurrentPage, feedbacks.PageSize, 
+                feedbacks.TotalCount, feedbacks.TotalPages));
+            
+            return Ok(feedbacks);
+        }
+        
+        [HttpGet("FeedbackFromId/{id}")]        
+        public async Task<CustomerFeedback> GetFeedbackAsync(int id)
+        {
+            var feedback = await _repo.GetFeedbackWithItems(id);
             return feedback;
         }
 
@@ -34,40 +53,37 @@ namespace api.Controllers
         public async Task<bool> DeleteFeedbackAsync(int id)
         {
             return await _repo.DeleteFeedback(id);
-
         }
 
         [HttpPut]
-        public async Task<bool> EditFeedbackAsync(Feedback feedback)
+        public async Task<ActionResult<string>> EditFeedbackAsync(CustomerFeedback feedback)
         {
-            return await _repo.EditFeedback(feedback);
+            var sError = await _repo.EditFeedback(feedback);
+            if(!string.IsNullOrEmpty(sError)) return BadRequest(new ApiException(400, sError, "Not Found"));
+
+            return Ok("");
         }
 
-        [HttpPost("newfeedback/{customerId}")]
-        public async Task<Feedback> CreateNewFeedbackForm(int customerId)
+        [HttpGet("newfeedback/{customerId}")]
+        public async Task<CustomerFeedback> GenerateNewNewFeedbackObject(int customerId)
         {
-            var form = await _repo.GenerateNewFeedback(customerId);
-            return form;
+            var obj = await _repo.GenerateOrGetFeedbackFromSameMonth(customerId);
+            return obj;
         }
 
 
-        [HttpPost("registerfeedback")]
-        public async Task<Feedback> RegisterFeedback(Feedback feedback)
+        [HttpPost("saveFeedback")]
+        public async Task<CustomerFeedback> SaveFeedback(FeedbackInput feedbkInput)
         {
-            return await _repo.InsertFeedback(feedback);
-        }
-
-        [HttpPost("stddq")]
-        public async Task<ICollection<FeedbackStddQ>> InsertFeedbackStddQ(ICollection<FeedbackStddQ> feedbackQs)
-        {
-            return await _repo.InsertFeedbackStddQs(feedbackQs);
+            return await _repo.SaveNewFeedback(feedbkInput);
         }
 
         [HttpGet("stddqs")]
-        public async Task<ICollection<FeedbackStddQ>> GetStandardFeedbackQs()
+        public async Task<ICollection<FeedbackQ>> GetStandardFeedbackQs()
         {
             return await _repo.GetFeedbackStddQs();
         }
 
+        
     }
 }

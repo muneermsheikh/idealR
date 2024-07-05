@@ -61,7 +61,7 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     CandidateAssessmentComponent,
    
     CandidateAssessComponent,
-         CvAssessModalComponent,
+    CvAssessModalComponent,
     
   ],
   imports: [

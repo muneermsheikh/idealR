@@ -1,7 +1,6 @@
 import { IAgencySpecialty } from "./agencySpecialty";
 import { ICustomerIndustry } from "./customerIndustry";
 import { ICustomerOfficial } from "./customerOfficial";
-import { ICustomerOfficialDto } from "./customerOfficialDto";
 import { IVendorSpecialty } from "./vendorSpecialty";
 
 

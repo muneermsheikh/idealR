@@ -10,7 +10,28 @@
     <button class="stdd" title="Categories" routerLink="/administration/categories">Categories</button>
     <button class="stdd" title="Qualifications" routerLink="/administration/qualifications">Qualifications</button>
     <button class="stdd" title="Industry Types" routerLink="/administration/industries">Industry Types</button>
-    <button class="stdd" title="Customers, Associates and Vendors" routerLink="/administration/customers">Clients, Associates, Vendors</button>
+    <button class="stdd" title="Customers, Associates and Vendors" routerLink="/administration/customers">Clients<br>Associates, Vendors</button>
+    <button class="stdd" title="Customer Feedbacks" routerLink="/feedback">Feedbacks</button>
+    <button class="stdd" title="Customer Feedbacks" (click)="importCustomerExcel()">import customer Excel Sheet</button>
     <button class="stdd fa fa-undo" title="go back to home" (click)="close()"></button>
 
+</div>
+
+
+<div *ngIf="uploadExcel" class="my-10" >
+    
+    <div style="word-wrap: normal; width: 800px;">
+        <li>This option will upload your Customer Excel File, read the data and insert into the database.</li>
+        <li>This option needs following requirements to be met:</li>
+        <li>The Worksheet name must be named 'Sheet1'</li>
+        <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+        <li>Data should begin from row 3rd row.</li>
+        
+    </div>
+    
+    <br><br>
+    <input class="stdd d-flex align-items-center" type="file" id="file" 
+        (change)="onFileInputChange($event)" >
+
+    <button class="stdd btn fa fa-window-close" style="margin-left: 100px;" (click)="importCustomerExcel()" ></button>
 </div>

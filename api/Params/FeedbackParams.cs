@@ -1,11 +1,13 @@
 namespace api.Params
 {
-    public class FeedbackParams
+    public class FeedbackParams:PaginationParams
     {
-        public string Customername { get; set; }
         public int  Id { get; set; }
-        public string IssuedOn {get; set;}
-        
+        public int CustomerId { get; set; }
+        public string Email { get; set; }
+        public string PhoneNo { get; set; }
+        public DateTime DateIssued { get; set; }
+        public DateTime DateReceived { get; set; }
     }
 
 }

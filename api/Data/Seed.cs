@@ -290,24 +290,24 @@ namespace api.Data
             }
             */
 
-            if(!await context.feedbackStddQs.AnyAsync()) {
+            if(!await context.FeedbackQs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/FeedbackStddQSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<FeedbackStddQ>>(data);
+                var dbData = JsonSerializer.Deserialize<List<FeedbackQ>>(data);
                 foreach(var item in dbData) 
                 {
-                    context.feedbackStddQs.Add(item);
+                    context.FeedbackQs.Add(item);
                 }
             }
 
 
-            if(!await context.Feedbacks.AnyAsync()) {
+            if(!await context.CustomerFeedbacks.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/FeedbackSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<Feedback>>(data);
+                var dbData = JsonSerializer.Deserialize<List<CustomerFeedback>>(data);
                 foreach(var item in dbData) 
                 {
-                    context.Feedbacks.Add(item);
+                    context.CustomerFeedbacks.Add(item);
                 }
             }
 

@@ -2,6 +2,7 @@ namespace api.DTOs.Admin
 {
     public class CustomerDto
     {
+        public int Id { get; set; }
         public string CustomerType { get; set; }
         public string CustomerName { get; set; }
         public string KnownAs { get; set; }

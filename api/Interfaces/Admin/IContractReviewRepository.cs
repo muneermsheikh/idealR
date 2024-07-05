@@ -13,7 +13,8 @@ namespace api.Interfaces.Admin
         Task<ContractReview> AddContractReview(ContractReview contractReview);
         Task<ContractReviewItem> AddContractReviewItem(int orderitemid);
         Task<ContractReview> EditContractReview(ContractReview contractReview);
-        Task<ContractReview> GetOrGenerateContractReview(int orderId, string Username);
+        Task<ContractReview> GetOrGenerateContractReviewNOSAVE(int orderId, string Username);
+        Task<ICollection<ContractReviewItem>> GetContractReviewItemsFromOrderId(int orderId);
         Task<ContractReview> GetContractReviewFromOrderId(int orderId);
         Task<ContractReviewItemDto> GetContractReviewItem(int orderItemId, string username);
         Task<ICollection<ContractReviewItem>> GetContractReviewItems (int orderid);

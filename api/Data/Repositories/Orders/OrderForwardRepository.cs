@@ -115,9 +115,21 @@ namespace api.Data.Repositories.Orders
             return obj;
         }
 
-        public async Task<string> UpdateForwardOrderToHR(OrderForwardToHR obj, string Username)
+        public async Task<string> UpdateForwardOrderToHR(int orderid, string Username)
         {
-            _context.Entry(obj).State = EntityState.Added;
+            var fwdToHR = await _context.OrderForwardToHRs.Where(x => x.OrderId == orderid).FirstOrDefaultAsync();
+
+            if(fwdToHR != null) return "Order forwarded to HR Dept on " + fwdToHR.DateOnlyForwarded;
+            
+            var recipientUsername = _config["HRSupUsername"];
+
+            var fwd = await _context.Orders.Where(x => x.Id == orderid)
+                .Select(x => new OrderForwardToHR {
+                    OrderId = x.Id, DateOnlyForwarded=DateTime.Now,RecipientUsername = recipientUsername})
+                .FirstOrDefaultAsync();
+            if(fwd == null) return "Order Id submitted is invalid";
+
+            _context.Entry(fwd).State = EntityState.Added;
 
             try {
                 await _context.SaveChangesAsync();
@@ -127,9 +139,9 @@ namespace api.Data.Repositories.Orders
                 return ex.Message;
             }
             
-            var recipientUsername = _config["HRSupUsername"];
+            
             //ICollection<OrderItemBriefDto> OrderItems, int senderAppUserId, int recipientAppUserId
-            var dataToComposeMsg = await (from order in _context.Orders where order.Id == obj.OrderId
+            var dataToComposeMsg = await (from order in _context.Orders where order.Id == orderid
                     join item in _context.OrderItems on order.Id equals item.OrderId
                 select new OrderItemBriefDto {
                     OrderId = order.Id, CustomerId = order.CustomerId, CustomerName=order.Customer.CustomerName,

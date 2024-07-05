@@ -13,7 +13,7 @@ namespace api.Interfaces.Admin
         Task<OrderForwardToHR> GenerateObjToForwardOrderToHR(int orderid);
         Task<string> InsertOrderForwardedToAgents(OrderForwardToAgent orderForward, string username);
         Task<string> UpdateOrderForwardedToAgents(OrderForwardToAgent orderForward, string username);
-        Task<string> UpdateForwardOrderToHR (OrderForwardToHR orderForwardToHR, string Username);
+        Task<string> UpdateForwardOrderToHR (int orderid, string Username);
         Task<OrderForwardToAgent> OrderFowardsOfAnOrder(int orderid);
         Task<OrderForwardToAgentDto> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username);
         Task<PagedList<OrderForwardToAgentDto>> GetPagedListOfOrderFwds(OrderFwdParams fParams);

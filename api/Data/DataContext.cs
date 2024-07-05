@@ -25,12 +25,14 @@ namespace api.Data
 
         //Admin
         public DbSet<Employee> Employees {get; set;}
-        public DbSet<Feedback> Feedbacks{get; set;}
-        public DbSet<FeedbackItem> FeedbackItems {get; set;}
         public DbSet<Message> Messages {get; set;}
         public DbSet<UserLike> UserLikes {get; set;}
         public DbSet<ContactResult> contactResults {get; set;}  
 
+        public DbSet<CustomerFeedback> CustomerFeedbacks {get; set;}
+        public DbSet<FeedbackItem> FeedbackItems {get; set;}
+        public DbSet<FeedbackQ> FeedbackQs{get; set;}
+        
         //client
         public DbSet<AgencySpecialty> AgencySpecialties{get; set;}
         public DbSet<Customer> Customers {get; set;}
@@ -57,6 +59,7 @@ namespace api.Data
 
         public DbSet<OrderAssessmentItem> OrderAssessmentItems {get; set;}
         public DbSet<OrderAssessmentItemQ> OrderAssessmentItemQs {get; set;}
+        public DbSet<AcknowledgeToClient> AckanowledgeToClients {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
         public DbSet<FlightDetail> FlightDetails {get; set;}
         public DbSet<CandidateFlight> CandidateFlights {get; set;}
@@ -101,7 +104,7 @@ namespace api.Data
         public DbSet<Profession> Professions {get; set;}
         public DbSet<Qualification> Qualifications {get; set;}  
         public DbSet<SkillData> SkillDatas {get; set;}
-        public DbSet<FeedbackStddQ> feedbackStddQs{get; set;}
+        
 
         //Process
         public DbSet<Deployment> Deployments {get; set;}        //unable to delete this, as it throws Index error
@@ -129,13 +132,7 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
-            /*builder.Entity<Customer>()
-                .HasMany(ur => ur.CustomerIndustries)
-                .WithOne(u => u.Customer)
-                .HasForeignKey(ur => ur.Id)
-                .IsRequired();
-            */
+           
             builder.Entity<ProspectiveCandidate>().HasIndex(x => x.PersonId).IsUnique();
             builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CustomerReview>().HasIndex(x => x.CustomerId).IsUnique();
@@ -147,16 +144,13 @@ namespace api.Data
             builder.Entity<OrderAssessmentItem>().HasIndex(x => x.OrderItemId).IsUnique();
             builder.Entity<OrderAssessmentItemQ>().HasIndex(x => new {x.OrderAssessmentItemId, x.Question}).IsUnique();
 
+            builder.Entity<AcknowledgeToClient>().HasIndex(x => x.OrderId).IsUnique();
+
             builder.Entity<Customer>().HasIndex(x => new {x.CustomerName, x.City}).IsUnique();
             builder.Entity<CustomerOfficial>().HasIndex(x => new{x.CustomerId, x.OfficialName}).IsUnique();
             
-            /*builder.Entity<Industry>()
-                .HasMany(c => c.customerIndustries)
-                .WithOne(u => u.Industry)
-                //.HasForeignKey(ur => ur. .Id)
-                .IsRequired();
-            */
-
+            builder.Entity<CustomerFeedback>().HasMany(x => x.FeedbackItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+           
             builder.Entity<Profession>().HasIndex(x => x.ProfessionName).IsUnique();
             builder.Entity<Industry>().HasIndex(x => x.IndustryName).IsUnique();
             builder.Entity<Qualification>().HasIndex(x => x.QualificationName).IsUnique();
@@ -263,7 +257,7 @@ namespace api.Data
                 .HasOne(s => s.TargetUser)
                 .WithMany(l => l.LikedByUsers)
                 .HasForeignKey(s => s.TargetUserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             
             builder.Entity<OrderForwardToAgent>().HasIndex(x => x.OrderId).IsUnique();
             builder.Entity<OrderForwardToAgent>().HasMany(x => x.OrderForwardCategories).WithOne().OnDelete(DeleteBehavior.Cascade);

@@ -28,6 +28,7 @@ export class ContractReviewService {
   oParams = new contractReviewParams();
   pagination: Pagination | undefined;
 
+  
   constructor(private http: HttpClient) { }
 
   getContractReview(orderid: number) {

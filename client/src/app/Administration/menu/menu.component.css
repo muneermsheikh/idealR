@@ -1,5 +1,6 @@
 .stdd {
-    margin-left:2px;
-    margin-right: 2px;
+    margin: 0px 2px 0px 2px;
     font-size: medium;
+    height: 6em;
+    width: 150px;
 }

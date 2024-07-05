@@ -194,51 +194,26 @@ namespace api.Data.Repositories.Admin
           }
 
           //returns the object, without inserting in DB
-          public async Task<ContractReview> GetOrGenerateContractReview(int orderId, string Username)
+          public async Task<ContractReview> GetOrGenerateContractReviewNOSAVE(int orderId, string Username)
           {
-               //check if Remuneration for all the order items exist
-               var itemIds = await _context.OrderItems.Where(x => x.OrderId == orderId).Select(x => x.Id).ToListAsync();
+               var contractreview = await _context.ContractReviews
+                    .Include(x => x.ContractReviewItems)
+                    .ThenInclude(x => x.ContractReviewItemQs)
+                    .Where(x => x.OrderId == orderId)
+                    .FirstOrDefaultAsync();
                
-               if (itemIds.Count == 0) return null;    //throw new Exception("Order Items not created");
+               if(contractreview != null) return contractreview;
 
-               var orderitems = await _context.OrderItems.Where(x => itemIds.Contains(x.Id))
-                    .Include(x => x.Remuneration)
-                    .ToListAsync();
-               if (orderitems == null || orderitems.Count == 0) return null;    // throw new Exception("Remunerations need to be defined for all the items before the contract review");
-
-               //check if the object exists
-               var contractReview = await _context.ContractReviews.Where(x => x.OrderId == orderId).Include(x => x.ContractReviewItems).FirstOrDefaultAsync();
-               if (contractReview != null) return contractReview;     //throw new System.Exception("Contract Review Object already exists");
-
+               //now, generate a new contract review 
                var order = await _context.Orders.Where(x => x.Id == orderId)
-                    .Include(x => x.OrderItems).FirstOrDefaultAsync();
+                    .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
+                    .FirstOrDefaultAsync();
+               
                var contractReviewItems = new List<ContractReviewItem>();
                var reviewQs = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
+               var itemQs = (ICollection<ContractReviewItemQ>)_mapper.Map<ContractReviewItemQ>(reviewQs);
 
-               foreach (var item in order.OrderItems)
-               {
-                    var requireAssess = contractReview.ContractReviewItems.Where(x => x.OrderItemId == item.Id).Select(x => x.RequireAssess).FirstOrDefault();
-                    var itemQs = new List<ContractReviewItemQ>();
-                    foreach (var data in reviewQs)
-                    {
-                         itemQs.Add(new ContractReviewItemQ
-                         {
-                              SrNo = data.SrNo, OrderItemId = item.Id, ReviewParameter = data.ReviewParameter, IsMandatoryTrue = data.IsMandatoryTrue
-                         });
-                    }
-                    contractReviewItems.Add(new ContractReviewItem
-                    {
-                         OrderItemId = item.Id,
-                         Quantity = item.Quantity,
-                         ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId),
-                         Ecnr = item.Ecnr,
-                         SourceFrom = item.SourceFrom,
-                         ContractReviewItemQs = itemQs,
-                         RequireAssess = requireAssess
-                    });
-               }
-
-               contractReview = new ContractReview
+               var contractReview = new ContractReview
                {
                     OrderNo = order.OrderNo,
                     OrderId = orderId,
@@ -246,13 +221,25 @@ namespace api.Data.Repositories.Admin
                     CustomerId = order.CustomerId,
                     CustomerName = await _context.CustomerNameFromId(order.CustomerId),
                     ReviewedByName = Username,
-                    ReviewedOn = System.DateTime.Now,
-                    ContractReviewItems = contractReviewItems
+                    ReviewedOn = System.DateTime.Now                   
                };
 
-               _context.Entry(contractReview).State = EntityState.Added;
+               foreach (var item in order.OrderItems)
+               {
+                    var newContractReviewItem = new ContractReviewItem
+                    {
+                         OrderItemId = item.Id,
+                         Quantity = item.Quantity,
+                         ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId),
+                         Ecnr = item.Ecnr,
+                         SourceFrom = item.SourceFrom,
+                         ContractReviewItemQs = itemQs,
+                         RequireAssess = "false"
+                    };
+                    contractReview.ContractReviewItems.Add(newContractReviewItem);
+               }
 
-               return await _context.SaveChangesAsync() > 0 ? contractReview : null;
+               return contractReview;
           }
 
           public  ICollection<int> ConvertCSVToAray(string csv) {
@@ -342,22 +329,35 @@ namespace api.Data.Repositories.Admin
 
           public async Task<ContractReviewItemDto> GetContractReviewItem(int orderItemId, string username)
           {
-           
+               var dto = new ContractReviewItemDto();
+
+               var existing = await _context.ContractReviewItems
+                    .Include(x => x.ContractReviewItemQs)
+                    .Where(x => x.OrderItemId == orderItemId).FirstOrDefaultAsync();
+               
                var query = await (from item in _context.OrderItems where item.Id == orderItemId 
                     join order in _context.Orders on item.OrderId equals order.Id
                     join cat in _context.Professions on item.ProfessionId equals cat.Id
-                    join rvwitem in _context.ContractReviewItems on item.Id equals rvwitem.OrderItemId
-                    select new ContractReviewItemDto {
+                    join reviewitem in _context.ContractReviewItems on item.Id equals reviewitem.OrderItemId 
+                         into grpReviewitem from rvwitem in grpReviewitem.DefaultIfEmpty()
+                    select new  ContractReviewItemDto {
                          ProfessionName = cat.ProfessionName, Charges=rvwitem.Charges,
                          ContractReviewId=rvwitem.ContractReviewId, ContractReviewItemQs = rvwitem.ContractReviewItemQs,
                          CustomerName=order.Customer.CustomerName, Ecnr = rvwitem.Ecnr, Id=rvwitem.Id, OrderDate=order.OrderDate,
                          OrderId = order.Id, OrderNo = order.OrderNo, Quantity=rvwitem.Quantity,
                          OrderItemId=orderItemId, RequireAssess=rvwitem.RequireAssess, ReviewItemStatus=rvwitem.ReviewItemStatus,
                          SourceFrom=rvwitem.SourceFrom, SrNo=item.SrNo, HrExecUsername=rvwitem.HrExecUsername
-                    }).FirstOrDefaultAsync();
+               }).FirstOrDefaultAsync();
                
-              
-              return query;
+              var qs = await _context.ContractReviewItemQs.Where(x => x.OrderItemId == orderItemId)
+                    .OrderBy(x => x.SrNo).ToListAsync();
+
+              if(existing != null) {
+                    dto.OrderId = query.OrderId; dto.OrderNo = query.OrderNo; dto.OrderDate=query.OrderDate;
+                    dto.OrderItemId = query.OrderItemId; dto.CustomerName=query.CustomerName;
+                    dto.CompleteBefore=query.CompleteBefore; dto.ContractReviewItemQs=qs;
+              }
+              return dto;
           }
 
           public async Task<ICollection<ContractReviewItem>> GetContractReviewItems(int orderid)
@@ -457,5 +457,20 @@ namespace api.Data.Repositories.Admin
                
         }
 
+          public async Task<ICollection<ContractReviewItem>> GetContractReviewItemsFromOrderId(int orderId)
+          {
+               var qs = await _context.ContractReviewItemQs.OrderBy(x => x.SrNo).ToListAsync();
+
+               var reviewitems = await (from orderitem in _context.OrderItems where orderitem.OrderId == orderId
+                    join cat in _context.Professions on orderitem.ProfessionId equals cat.Id
+                    select new ContractReviewItem {
+                         Charges=0, ContractReviewId=0, Ecnr = orderitem.Ecnr, HrExecUsername="",
+                         OrderItemId=orderitem.Id, ProfessionName=cat.ProfessionName, Quantity=orderitem.Quantity,
+                         RequireAssess="false", ReviewItemStatus="Not Reviewed", SourceFrom="", Id=0,
+                          ContractReviewItemQs=qs
+                    }).ToListAsync();
+               
+               return reviewitems;
+          }
     }
 }

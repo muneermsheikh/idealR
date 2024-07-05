@@ -263,6 +263,47 @@ namespace api.Data.Migrations
                     b.ToTable("CandidateFlights");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.Client.AcknowledgeToClient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateAcknowledged")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MessageType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RecipientEmailId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RecipientUsername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenderEmailId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenderUsername")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("AckanowledgeToClients");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.AgencySpecialty", b =>
                 {
                     b.Property<int>("Id")
@@ -364,6 +405,53 @@ namespace api.Data.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerSuggestion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateIssued")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DateReceived")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Designation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GradeAssessedByClient")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HowReceived")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OfficialName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CustomerFeedbacks");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerIndustry", b =>
                 {
                     b.Property<int>("Id")
@@ -408,7 +496,7 @@ namespace api.Data.Migrations
 
                     b.Property<string>("Gender")
                         .IsRequired()
-                        .HasMaxLength(6)
+                        .HasMaxLength(4)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("KnownAs")
@@ -417,8 +505,6 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OfficialName")
@@ -429,6 +515,15 @@ namespace api.Data.Migrations
                     b.Property<string>("PhoneNo")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PriorityAccount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PriorityAdmin")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PriorityHR")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Status")
                         .HasColumnType("TEXT");
 
@@ -438,8 +533,6 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -485,22 +578,22 @@ namespace api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ApprovedBySupUsername")
+                    b.Property<string>("ApprovedByUsername")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("ApprovedOn")
+                    b.Property<DateTime>("ApprovedOn")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("CustomerReviewDataId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerReviewId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CustomerReviewStatus")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("ReviewTransactionDate")
+                    b.Property<DateTime>("TransactionDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
@@ -511,6 +604,85 @@ namespace api.Data.Migrations
                     b.HasIndex("CustomerReviewId");
 
                     b.ToTable("CustomerReviewItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.FeedbackItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CustomerFeedbackId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackGroup")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt4")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Response")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerFeedbackId");
+
+                    b.ToTable("FeedbackItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Client.FeedbackQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FeedbackGroup")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt3")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Prompt4")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedbackQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Employee", b =>
@@ -609,113 +781,6 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.Feedback", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CustomerName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HowReceived")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("IssuedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly?>("ReceivedOn")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Feedbacks");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.FeedbackItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FeedbackGroup")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("FeedbackId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("FeedbackQNo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FeedbackQuestion")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsMandatory")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Response")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel1")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel2")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel3")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel4")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FeedbackId");
-
-                    b.ToTable("FeedbackItems");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.FeedbackStddQ", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FeedbackGroup")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("FeedbackQNo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FeedbackQuestion")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsMandatory")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TextForLevel1")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel2")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel3")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TextForLevel4")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("feedbackStddQs");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.FlightDetail", b =>
@@ -3393,11 +3458,11 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.FeedbackItem", b =>
+            modelBuilder.Entity("api.Entities.Admin.Client.FeedbackItem", b =>
                 {
-                    b.HasOne("api.Entities.Admin.Feedback", null)
+                    b.HasOne("api.Entities.Admin.Client.CustomerFeedback", null)
                         .WithMany("FeedbackItems")
-                        .HasForeignKey("FeedbackId")
+                        .HasForeignKey("CustomerFeedbackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -3833,7 +3898,7 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Identity.AppUser", "TargetUser")
                         .WithMany("LikedByUsers")
                         .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("SourceUser");
@@ -3855,6 +3920,11 @@ namespace api.Data.Migrations
                     b.Navigation("CustomerOfficials");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.Client.CustomerFeedback", b =>
+                {
+                    b.Navigation("FeedbackItems");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.Client.CustomerReview", b =>
                 {
                     b.Navigation("CustomerReviewItems");
@@ -3865,11 +3935,6 @@ namespace api.Data.Migrations
                     b.Navigation("HRSkills");
 
                     b.Navigation("OtherSkills");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.Feedback", b =>
-                {
-                    b.Navigation("FeedbackItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>

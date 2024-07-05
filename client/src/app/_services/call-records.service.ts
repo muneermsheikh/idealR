@@ -23,10 +23,7 @@ export class CallRecordsService {
   pagination: Pagination | undefined; //<IUserHistoryDto[]>;
   cache = new Map();
   
-
   constructor(private http: HttpClient) { }
-
-
 
   getHistories(hParams: CallRecordParams) {      //: Observable<IPagination<IUserHistoryDto[]>>
 

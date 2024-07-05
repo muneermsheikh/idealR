@@ -1,6 +1,8 @@
 using api.Entities.Admin.Client;
+using api.Extensions;
 using api.Interfaces.Customers;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace api.Data.Repositories.Customer
 {
@@ -12,6 +14,25 @@ namespace api.Data.Repositories.Customer
             _context = context;
         }
 
+        public async Task<CustomerReview> GetOrCreateCustomerReviewObject(int customerId, string username)
+        {
+            var obj = await _context.CustomerReviews.Include(x => x.CustomerReviewItems).Where(x => x.CustomerId == customerId).FirstOrDefaultAsync();
+
+            if(obj != null) return obj;
+
+            var items = new List<CustomerReviewItem>
+                {new() {TransactionDate=DateTime.Now, Username=username}};
+
+            obj = await (from cust in _context.Customers where cust.Id == customerId
+                select new CustomerReview {
+                    CustomerId = customerId, CurrentStatus = cust.CustomerStatus, CustomerName=cust.CustomerName,
+                    CustomerReviewItems = items
+                }).FirstOrDefaultAsync();
+            
+            return obj;
+        }
+
+        
 
         public async Task<bool> DeleteCustomerReview(int customerId)
         {
@@ -24,6 +45,16 @@ namespace api.Data.Repositories.Customer
             return await _context.SaveChangesAsync() > 0;
 
         }
+
+        public async Task<bool> DeleteCustomerReviewItem(int reviewItemDataId)
+        {
+            var obj = await _context.CustomerReviewItems.FindAsync(reviewItemDataId);
+            if(obj == null) return false;
+            _context.CustomerReviewItems.Remove(obj);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
 
         public async Task<CustomerReview> GetCustomerReview(int customerId)
         {
@@ -43,6 +74,16 @@ namespace api.Data.Repositories.Customer
             return str;
         }
 
+        public async Task<bool> InsertNewCustomerReview(CustomerReview rvw)
+        {
+            var review = await _context.CustomerReviews.Where(x => x.CustomerId == rvw.CustomerId).FirstOrDefaultAsync();
+
+            if (review != null) return false;
+    
+            _context.CustomerReviews.Add(rvw);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
 
         public async Task<bool> UpdateCustomerReview(CustomerReview model, string Username)
         {
@@ -79,12 +120,12 @@ namespace api.Data.Repositories.Customer
                         
                     var itemToInsert = new CustomerReviewItem
                     {
-                        ApprovedBySupUsername = newItem.ApprovedBySupUsername,
+                        ApprovedByUsername = newItem.ApprovedByUsername,
                         ApprovedOn = newItem.ApprovedOn, 
-                        CustomerReviewDataId = newItem.CustomerReviewDataId,
+                        CustomerReviewStatus = newItem.CustomerReviewStatus,
                         CustomerReviewId = model.Id,
                         Remarks = newItem.Remarks,
-                        ReviewTransactionDate = newItem.ReviewTransactionDate,
+                        TransactionDate = newItem.TransactionDate,
                         Username = Username
                     };
 
@@ -97,5 +138,19 @@ namespace api.Data.Repositories.Customer
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> ApproveReviewItem(int customerReviewItemId, string username)
+        {
+            var obj = await _context.CustomerReviewItems.FindAsync(customerReviewItemId);
+            if(obj == null) return false;
+
+            obj.ApprovedOn=DateTime.Now;
+            obj.ApprovedByUsername=username;
+
+            _context.CustomerReviewItems.Update(obj);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

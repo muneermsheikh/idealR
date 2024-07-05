@@ -194,18 +194,6 @@ export class CandidateListComponent implements OnInit{
     return aitems;
   }
 
-  //output value from child
- /* showDocumentViewerEvent(id: number){
-    this.idFromChild = id;
-    return this.service.viewDocument(id).subscribe(result => {
-      this.loadInitialDocument(result);
-    }, error => {
-      this.toastr.error(error);
-    })
-    
-  }
-  */
-
   downloadFileEvent(candidateid: any) {
     return this.downloadservice.downloadFile(candidateid).subscribe(() => {
       this.toastr.success('document downloaded');

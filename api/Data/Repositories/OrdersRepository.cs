@@ -45,7 +45,7 @@ namespace api.Data.Repositories
         public async Task<MessageWithError> ComposeMsg_AckToClient(int orderid)
         {
             var order = await _context.Orders.FindAsync(orderid);
-            var msgs = await _msgAdmRepo.AckEnquiryToCustomer(order);
+            var msgs = await _msgAdmRepo.AckEnquiryToCustomerWithoutSave(order);
             if(!string.IsNullOrEmpty(msgs.ErrorString) && msgs.Messages != null) {
                 foreach(var msg in msgs.Messages) {
                     _context.Entry(msg).State = EntityState.Added;
@@ -358,7 +358,9 @@ namespace api.Data.Repositories
                     JobDescription = item.JobDescription, OrderDate = order.OrderDate,
                     OrderNo = order.OrderNo, Ecnr = item.Ecnr, ProfessionId = item.ProfessionId,
                     ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
-                    Remuneration = item.Remuneration, SrNo = item.SrNo, Status = item.Status 
+                    Remuneration = item.Remuneration, SrNo = item.SrNo, Status = item.Status,
+
+                
                 }).AsQueryable();
             
             if(orderParams.OrderId != 0) query = query.Where(x => x.OrderId == orderParams.OrderId);
@@ -463,13 +465,19 @@ namespace api.Data.Repositories
         {
             
             var query = (from order in _context.Orders 
+                join hrforwd in _context.OrderForwardToHRs on order.Id equals hrforwd.OrderId into hrforward 
+                    from hrfwd in hrforward.DefaultIfEmpty()
+                join acknlj in _context.AckanowledgeToClients on order.Id equals acknlj.OrderId into Acknowledge
+                    from ackn in Acknowledge.DefaultIfEmpty()
                 join review in _context.ContractReviews on order.Id equals review.OrderId into contractRvw
-                from rvw in contractRvw.DefaultIfEmpty()
+                    from rvw in contractRvw.DefaultIfEmpty()
                 select new OrderBriefDto {
                     CompleteBy = order.CompleteBy, CustomerName = order.Customer.CustomerName, 
                     ContractReviewedOn = rvw.ReviewedOn, OrderDate=order.OrderDate, OrderNo=order.OrderNo,
                     Status = order.Status, Id=order.Id, CityOfWorking = order.CityOfWorking,
-                    ContractReviewStatus = order.ContractReviewStatus, ForwardedToHRDeptOn = order.ForwardedToHRDeptOn
+                    ContractReviewStatus = order.ContractReviewStatus ?? "Not Reviewed", 
+                    ForwardedToHRDeptOn = hrfwd.DateOnlyForwarded, ContractReviewId=rvw.Id, CustomerId=order.CustomerId,
+                    AcknowledgedToClientOn = ackn.DateAcknowledged
                     
                 }).AsQueryable();
 

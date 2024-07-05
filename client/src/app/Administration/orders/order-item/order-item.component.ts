@@ -52,12 +52,8 @@ export class OrderItemComponent implements OnInit{
   forwardOrderToHRDept() {
 
     if(this.order) {
-
-        var fwdDto = new OrderForwardToHR();
-        fwdDto.dateForwarded = new Date();
-        fwdDto.orderId = this.order?.id;
     
-        this.orderFwdService.forwarOrderToHR(fwdDto).subscribe({
+        this.orderFwdService.forwarOrderToHR(this.order.id).subscribe({
           next: (response: boolean) => {
             if(response) {
               this.toastr.success('task created for HR Dept', 'success')

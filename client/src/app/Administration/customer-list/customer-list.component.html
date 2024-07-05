@@ -1,0 +1,56 @@
+<h6>Customer Listing</h6>
+
+<pagination class="stdd" *ngIf="pagination !== undefined"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+
+    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
+    <button (click)="onSearch()" title="search the text entered" 
+        class="stdd btn fa-solid fa-magnifying-glass">Search</button>
+
+    <label class="lbl w100">Type</label>
+    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="customer" class="w35 stdd">Customer
+    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="associate" class="w35 stdd">associate
+    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="vendor" class="w35 stdd">Vendor
+
+    <button class="btn fa fa-check" (click)="applyCustomerType()"
+        title="retrieves records from database based upon customerType selected"></button>
+
+    <button (click)="onReset()" title="resets search parameters" 
+        class="btn btn-outline-success fa fa-refresh mx-1"></button>
+
+    <button (click)="close()" title="resets search parameters" 
+        class="btn btn-outline-success fa fa-refresh mx-1"></button>
+
+    <hr class="my-0">
+    <label class="lbl w35">Sel</label>
+    <label class="lbl w75" style="margin-left: 20px;">Type</label>
+    <label class="lbl w200">Customer Name</label>
+    <label class="lbl w75">Known As</label>
+    <label class="lbl w100">City</label>
+    <label class="lbl w125">Country</label>
+    <hr>
+    
+    <div *ngIf="!customerDtos">
+        No matching customers on record
+    </div>
+    <div *ngIf="customerDtos">
+        <div *ngFor="let dto of customerDtos">
+            <app-customer-line
+                [dto]="dto"
+                (editEvent)="editClicked($event)"
+                (deleteClicked)="deleteClicked($event)"
+                (feedbackEvent)="feedbackClicked($event)"
+                (EvaluationEvent)="evaluationClicked($event)"    
+            ></app-customer-line>
+        </div>
+    </div>
+
+    <!--evaluationEvent emits ICustomerReview-->

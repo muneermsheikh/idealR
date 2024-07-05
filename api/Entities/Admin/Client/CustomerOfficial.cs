@@ -7,7 +7,7 @@ namespace api.Entities.Admin.Client
     {
         public int AppUserId { get; set; }
         public int CustomerId { get; set; }
-        [Required, MinLength(4), MaxLength(6)]
+        [Required, MinLength(1), MaxLength(4)]
         public string Gender { get; set; }="Male";
         [Required, MaxLength(4), MinLength(3)]
         public string Title { get; set; }="Mr.";
@@ -15,17 +15,18 @@ namespace api.Entities.Admin.Client
         public string OfficialName { get; set; }
         [Required, MinLength(4), MaxLength(25)]
         public string KnownAs {get; set;}
-        [Required, MinLength(4), MaxLength(25)]
+        //[Required, MinLength(4), MaxLength(25)]
         public string UserName { get; set; } 
         public string Designation { get; set; }
         public string Divn {get; set;}  
         public string PhoneNo { get; set; }
-        [Required, MinLength(10), MaxLength(15)]
+        //[Required, MinLength(10), MaxLength(15)]
         public string Mobile { get; set; }
         [EmailAddress]
         public string Email { get; set; }
         public string Status { get; set; }="Active";
-        //public ICollection<CustomerIndustry> CustomerIndustries { get; set; } 
-        //CustomerIndustry: AppUserRole
+        public int PriorityHR {get; set;}
+        public int PriorityAdmin {get; set;}
+        public int PriorityAccount {get; set;}
     }
 }

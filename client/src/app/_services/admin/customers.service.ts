@@ -3,7 +3,6 @@ import { ReplaySubject, map, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
-import { paramsCustomer } from 'src/app/_models/params/Admin/paramsCustomer';
 import { Pagination } from 'src/app/_models/pagination';
 import { ICustomerBriefDto } from 'src/app/_dtos/admin/customerBriefDto';
 import { getHttpParamsForCustomers, getPaginatedResult} from '../paginationHelper';
@@ -14,6 +13,9 @@ import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto'
 import { IClientIdAndNameDto } from 'src/app/_dtos/admin/clientIdAndNameDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
+import { customerParams } from 'src/app/_models/params/Admin/customerParams';
+import { getDateOffset } from 'ngx-bootstrap/chronos/units/offset';
+import { ICustomerReview } from 'src/app/_models/admin/customerReview';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,7 @@ export class CustomersService {
   apiUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
-  custParams = new paramsCustomer();
+  custParams = new customerParams();
   pagination: Pagination | undefined;
   customerType='';
   customersBrief: ICustomerBriefDto[]=[];
@@ -40,7 +42,7 @@ export class CustomersService {
     return this.http.get<string>(this.apiUrl + 'customers/customernamefromId/' + id);
   }
 
-  getCustomers(oParams: paramsCustomer) { 
+  getCustomers(oParams: customerParams) { 
 
       const response = this.cache.get(Object.values(oParams).join('-'));
       if(response) return of(response);
@@ -58,7 +60,6 @@ export class CustomersService {
 
   }
 
-  
   getClientIdAndNames() {
     
     return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames/customer');
@@ -76,12 +77,20 @@ export class CustomersService {
   getCustomerCities(customerType: string) {
     return this.http.get<ICustomerCity[]>(this.apiUrl + 'customers/customercities/' + customerType);
   }
+
+  deleteCustomer(customerId: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'Customers/customer/' + customerId);
+  }
+
+  deleteCustomerOfficial(officialId: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'Customers/official/' + officialId);
+  }
     
-  setCustParams(params: paramsCustomer) {
+  setParams(params: customerParams) {
     this.custParams = params;
   }
   
-  getCustParams() {
+  getParams() {
     return this.custParams;
   }
 
@@ -116,4 +125,8 @@ export class CustomersService {
     return this.http.get<boolean>(this.apiUrl + 'CVRef/selDecisionReminder/' + customerId);
   }
 
+  
+  getOrCreateCustomerReview(customerid: number) {
+    return this.http.get<ICustomerReview>(this.apiUrl + 'CustomerReview/getOrCreateObject/' + customerid);
+  }
 }

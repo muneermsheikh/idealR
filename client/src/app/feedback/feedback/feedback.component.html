@@ -1,0 +1,80 @@
+<h6 class="stdd">Customer Feedback Form</h6>
+<button class="stdd btn fa fa-check mL600" [disabled]="!form.dirty" (click)="updateFeedback()" ></button>
+<button class="stdd btn fa fa-window-close fa-2x mx-2" (click)="close()" ></button>
+
+<div *ngIf="feedback" class="container stdd">
+
+    
+    <form [formGroup]="form">
+        <label class="lbl w150 fSmall b">Customer Name</label>
+        <div class="stdd w250 fSmall"> {{feedback.customerName}}, {{feedback.city}}</div>    
+        
+        <label class="lbl w150 fSmall b">Official Name</label>
+        <div class="stdd w250">
+            <app-text-input [label]="'Official Name'" formControlName="officialName"></app-text-input>
+        </div>
+        
+        <br><label class="lbl w150 fSmall b">Designation</label>
+        <div class="stdd w250 mx-2">
+            <app-text-input [label]="'Designation'"  formControlName="designation" ></app-text-input>
+        </div>
+        
+        <label class="lbl w150 fSmall  mx-2b">Email</label>
+        <div class="stdd w250">
+            <app-text-input [label]="'Email'"  formControlName="email" ></app-text-input>
+        </div>
+        
+        <br><label class="lbl w150 fSmall b" style="margin-left: 15px;" >Phone</label>
+        <div class="stdd w100 mx-5">
+            <app-text-input [label]="'Phone'"  formControlName="phoneNo" ></app-text-input>
+        </div>
+        
+        <label class="lbl w100 fSmall b">Issued On</label>
+        <input class="stdd  fSmaller w100" type="text" placeholder="Issued On" 
+            formControlName="dateIssued" bsDatepicker 
+            [bsValue]="bsValueDate" 
+            [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+    
+        <label class="lbl w100 fSmall b" style="margin-left: 15px;">Grade</label>
+        <div class="stdd w100">
+            <app-text-input [label]="'Grade'"  formControlName="gradeAssessedByClient" style="font-size: smaller;"></app-text-input>
+        </div>
+        
+        <hr class="my-0" style="border-width: 2px; border-color: black;">
+
+        <label class="lbl fSmaller b w50">Sr#</label>
+        <label class="lbl fSmaller b w370">Parameter</label>
+         <label class="lbl fSmaller b w250" style="margin-left: 325px !important;">Remarks</label>
+         <hr class="my-0" style="border-width: 2px; border-color: black;">
+
+        <div formArrayName="feedbackItems">
+            <div *ngFor="let item of feedbackItems.controls; let i=index" [formGroupName]="i">
+                    <input type="text" formControlName="questionNo" class="stdd w25 fSmaller" >
+                    <div class="stdd w370">
+                        <app-text-input [label]="'Question'" formControlName="question" ></app-text-input>
+                    </div>
+                    <input type="text" formControlName="prompt1" class="prompt w75">
+                    <input type="radio" class="radio" id="i" value="20" (change)="gradeChanged(i)" formControlName="response">
+                    
+                    <input type="text" formControlName="prompt2" class="prompt w50">
+                    <input type="radio" class="radio" id="i" value="15" (change)="gradeChanged(i)" formControlName="response">
+                    
+                    <div *ngIf="i < 8" class="stdd">
+                        <input type="text" formControlName="prompt3" class="prompt w75">
+                        <input type="radio" class="radio" id="i" value="10" (change)="gradeChanged(i)" formControlName="response">
+                        
+                        <input type="text" formControlName="prompt4" class="prompt w35">
+                        <input type="radio" class="radio" id="i" value="5" (change)="gradeChanged(i)" formControlName="response">
+                    </div>
+                    <div class="stdd w200" [ngClass]="i<8 ? '' : 'mL185'">
+                        <app-text-input [label]="'Remarks'" formControlName="remarks"></app-text-input>
+                    </div>
+                    <button class="btn fa fa-trash red" (click)="removeFeedbackInput(i)" ></button>
+                </div>
+        </div>
+    </form>
+</div>
+
+<div style="font-size: smaller;">
+    {{form.value | json}}
+</div>

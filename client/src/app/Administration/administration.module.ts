@@ -9,7 +9,6 @@ import { EmploymentsComponent } from './employments/employments.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from './industries/industries.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
-import { CustomersComponent } from './customers/customers.component';
 import { OrdersListingComponent } from './orders/orders-listing/orders-listing.component';
 import { OrderItemComponent } from './orders/order-item/order-item.component';
 import { ReviewStatusNamePipe } from './review-status-name.pipe';
@@ -20,7 +19,7 @@ import { RemunerationModalComponent } from './orders/remuneration-modal/remunera
 import { OrderAssessmentComponent } from './orders/order-assessment/order-assessment.component';
 import { OrderAssessmentItemComponent } from './orders/order-assessment-item/order-assessment-item.component';
 import { ProspectiveListComponent } from './Prospectives/prospective-list/prospective-list.component';
-import { OrderItemReviewModalComponent } from './orders/order-item-review-modal/order-item-review-modal.component';
+import { OrderItemReviewComponent } from './orders/order-item-review/order-item-review.component';
 import { OrderForwardComponent } from './orders/order-forward/order-forward.component';
 import { OrderfwdLineComponent } from './orders/orderfwd-line/orderfwd-line.component';
 import { OrderFwdsComponent } from './orders/order-fwds/order-fwds.component';
@@ -30,6 +29,14 @@ import { SelectionPendingLineComponent } from './selections/selection-pending-li
 import { EmploymentModalComponent } from './selections/employment-modal/employment-modal.component';
 import { SelectionModalComponent } from './selections/selection-modal/selection-modal.component';
 import { ProspectiveLineComponent } from './Prospectives/prospective-line/prospective-line.component';
+import { CustomerLineComponent } from './customer-line/customer-line.component';
+import { CustomerListComponent } from './customer-list/customer-list.component';
+import { CustomerEditModalComponent } from './customer-edit-modal/customer-edit-modal.component';
+import { CustomerEditComponent } from './customer-edit/customer-edit.component';
+import { CustomerReviewComponent } from './customer-review/customer-review.component';
+import { CustomerReviewModalComponent } from './customer-review-modal/customer-review-modal.component';
+import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
+import { ContractReviewComponent } from './orders/contract-review/contract-review.component';
 
 
 @NgModule({
@@ -41,7 +48,6 @@ import { ProspectiveLineComponent } from './Prospectives/prospective-line/prospe
     CategoriesComponent,
     IndustriesComponent,
     QualificationsComponent,
-    CustomersComponent,
     OrdersListingComponent,
     OrderItemComponent,
     ReviewStatusNamePipe,
@@ -53,7 +59,7 @@ import { ProspectiveLineComponent } from './Prospectives/prospective-line/prospe
     OrderAssessmentComponent,
     OrderAssessmentItemComponent,
     ProspectiveListComponent,
-    OrderItemReviewModalComponent,
+    OrderItemReviewComponent,
     OrderForwardComponent,
     OrderfwdLineComponent,
     OrderFwdsComponent,
@@ -63,7 +69,14 @@ import { ProspectiveLineComponent } from './Prospectives/prospective-line/prospe
     EmploymentModalComponent,
     SelectionModalComponent,
     ProspectiveLineComponent,
-       
+    CustomerLineComponent,
+    CustomerListComponent,
+    CustomerEditModalComponent,
+    CustomerEditComponent,
+    CustomerReviewComponent,
+    CustomerReviewModalComponent,
+    CustRvwEditModalComponent,
+    ContractReviewComponent
   ],
   imports: [
     CommonModule,

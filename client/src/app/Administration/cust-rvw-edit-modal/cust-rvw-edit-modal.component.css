@@ -1,0 +1,26 @@
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin: 0px 2px 0px 2px;
+    padding: 0px;
+    vertical-align: top;
+    word-wrap: normal !important;
+}
+
+.vMiddle {vertical-align: middle;}
+
+.b {font-weight: bold;}
+
+.red {color: red;}
+.green {color: green;}
+
+
+.w25 {width: 25px;}
+.w80 {width: 80px;}
+.w100 {width: 100px;}
+.w110 {width: 110px;}
+.w150 {width: 150px; word-wrap: normal;}
+.w125 {width: 125px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+

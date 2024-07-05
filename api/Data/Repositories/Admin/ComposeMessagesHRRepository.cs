@@ -9,7 +9,6 @@ using api.Interfaces;
 using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,7 +66,8 @@ namespace api.Data.Repositories.Admin
                 RecipientEmail = recipientObject.Email, SenderUsername = senderObject.UserName, 
                 RecipientUsername = recipientObject.UserName, Subject = Subject, Content = msgBody};
             
-            _context.Entry(msg).State = EntityState.Added;
+            _context.Messages.Add(msg);
+            //_context.Entry(msg).State = EntityState.Added;
 
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the email message to database";
             

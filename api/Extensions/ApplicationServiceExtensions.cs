@@ -81,7 +81,8 @@ namespace api.Extensions
             services.AddScoped<IComposeMsgsForCandidates, ComposeMsgsForCandidates>();
             
             services.AddScoped<IProspectiveCandidatesRepository, ProspectiveCandidatesRepository>();
-            //services.AddScoped<ICallRecordRepository, CallRecordRepository>();
+            services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             
             return services;
         }

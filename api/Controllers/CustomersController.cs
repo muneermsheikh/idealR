@@ -59,7 +59,7 @@ namespace api.Controllers
             return Ok(cities);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("customer/{id}")]
         public async Task<ActionResult> DeleteCustomer(int id)
         {
             if(await _customerRepo.DeleteCustomer(id)) return Ok();
@@ -67,11 +67,19 @@ namespace api.Controllers
             return BadRequest("Failed to delete the customer");
         }
 
+        [HttpDelete("official/{id}")]
+        public async Task<ActionResult> DeleteCustomerOfficial(int id)
+        {
+            if(await _customerRepo.DeleteCustomerOfficial(id)) return Ok();
+            
+            return BadRequest("Failed to delete the customer official");
+        }
+
         [HttpPut("edit")]
-        public async Task<ActionResult> EditCustomer(Customer customer)
+        public async Task<ActionResult<string>> EditCustomer(Customer customer)
         {
             var edited = await _customerRepo.UpdateCustomer(customer);
-            if(edited) return Ok();
+            if(edited) return Ok("");
             return BadRequest("Failed to edit the customer");
         }
 

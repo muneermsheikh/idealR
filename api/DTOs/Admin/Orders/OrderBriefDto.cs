@@ -10,8 +10,10 @@ namespace api.DTOs.Admin.Orders
         public string CityOfWorking { get; set; }
         public string Status { get; set; }
         public string ContractReviewStatus { get; set; }
+        public int ContractReviewId { get; set; }
         public DateTime ContractReviewedOn { get; set; }
         public DateTime? ForwardedToHRDeptOn { get; set; }
+        public DateTime? AcknowledgedToClientOn { get; set; }
         public DateTime CompleteBy { get; set; }
     }
 

@@ -48,7 +48,9 @@ namespace api.Helpers
             CreateMap<CreateCandidateDto, Candidate>();
             CreateMap<ProspectiveCandidate, ProspectiveBriefDto>();
 
-            CreateMap<FeedbackStddQ, FeedbackItem>();
+            CreateMap<CustomerFeedback, FeedbackDto>();
+            CreateMap<FeedbackInputItem, FeedbackItem>();
+            CreateMap<FeedbackItem, FeedbackInputItem>();
 
             CreateMap<Order, OrderBriefDto>();
             CreateMap<Order, OrderDisplayDto>();
@@ -81,7 +83,6 @@ namespace api.Helpers
             CreateMap<EmployeeToAddDto, Employee>();
 
             CreateMap<SelectionDecision, SelDecisionDto>();
-                
                 
             CreateMap<SelDecisionDto, SelectionDecision>();
             

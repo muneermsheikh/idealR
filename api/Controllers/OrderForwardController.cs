@@ -1,5 +1,3 @@
-using System.Data.Odbc;
-using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Errors;
@@ -56,10 +54,10 @@ namespace api.Controllers
             return BadRequest(new ApiException(404, "Failed to generate the Order Forward object for HR Dept"));
         }
 
-        [HttpPost("insertOrderFwdToHR")]
-        public async Task<ActionResult<string>> UpdateOrderForwardedToHR(OrderForwardToHR orderFwdHR)
+        [HttpPost("updateOrderFwdToHR/{orderid}")]
+        public async Task<ActionResult<string>> UpdateOrderForwardedToHR(int orderid)
         {
-            var errorString = await _orderFwdRepo.UpdateForwardOrderToHR(orderFwdHR, User.GetUsername());
+            var errorString = await _orderFwdRepo.UpdateForwardOrderToHR(orderid, User.GetUsername());
             if(string.IsNullOrEmpty(errorString)) return Ok();
             
             return BadRequest(new ApiException(404, "Failed to forward Order to HR Dept", errorString));

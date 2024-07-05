@@ -69,13 +69,13 @@ export class OrderForwardService {
     return this.http.put<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToAgent', model);
   }
 
-  forwarOrderToHR(model: IOrderForwardToHR) {
-    return this.http.post<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToHR', {model});
+  forwarOrderToHR(orderid: number) {
+    return this.http.post<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToHR/' + orderid, {});
   }
 
 
   generateObjToForwardDLtoHR(orderid: number) {
-    return this.http.get<IOrderForwardToHR>(this.apiUrl + 'OrderForward/generateOrderFwdToHR/' + orderid, {});
+    return this.http.get<IOrderForwardToHR>(this.apiUrl + 'OrderForward/' + orderid, {});
   }
 
   setFwdParams(pParams: OrderFwdParams) {

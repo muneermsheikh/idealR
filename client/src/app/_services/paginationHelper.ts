@@ -10,7 +10,6 @@ import { SelDecisionParams } from "../_models/params/Admin/selDecisionParams";
 import { UserParams } from "../_models/params/userParams";
 import { candidateParams } from "../_models/params/hr/candidateParams";
 import { professionParams } from "../_models/params/masters/ProfessionParams";
-import { paramsCustomer } from "../_models/params/Admin/paramsCustomer";
 import { employmentParams } from "../_models/params/Admin/employmentParam";
 import { employeeParams } from "../_models/params/Admin/employeeParams";
 import { IndustryParams } from "../_models/params/masters/industryParams";
@@ -22,6 +21,8 @@ import { CVBriefParam } from "../_models/params/hr/cvBriefParam";
 import { deployParams } from "../_models/params/process/deployParams";
 import { ICallRecordParams } from "../_models/params/callRecordParams";
 import { CallRecordItemToCreateDto } from "../_dtos/hr/callRecordItemToCreateDto";
+import { FeedbackParams } from "../_models/params/hr/feedbackParams";
+import { customerParams } from "../_models/params/Admin/customerParams";
 
 export function getPaginatedResult<T>(url: string, params: HttpParams, http: HttpClient) {
   
@@ -217,7 +218,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
-  export function getHttpParamsForCustomers(custParams: paramsCustomer)
+  export function getHttpParamsForCustomers(custParams: customerParams)
   {
       let params = new HttpParams();
 
@@ -465,3 +466,17 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
       return params;
     
   }
+
+  
+  export function GetHttpParamsForFeedback(fParams:FeedbackParams) {
+  
+    let params = new HttpParams();
+
+    if(fParams.email !== '') params = params.append('email', fParams.email);
+    if(fParams.phoneNo !== '') params = params.append('phoneNo', fParams.phoneNo);
+    
+    params = params.append('pageNumber', fParams.pageNumber.toString());
+    params = params.append('pageSize', fParams.pageSize.toString());
+
+    return params;
+  }  

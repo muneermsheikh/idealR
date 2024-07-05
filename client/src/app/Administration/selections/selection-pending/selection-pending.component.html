@@ -52,6 +52,9 @@
 <label class="stdd w100">Referred On</label>
 <label class="stdd w100">Days since</label>
 
+<div *ngIf="!selectionsPending || selectionsPending.length === 0" class="my-5">
+    <h6>No selections pending as per your parameters</h6>
+</div>
 <div class="row" *ngFor="let item of selectionsPending">
     <app-selection-pending-line
         [pending]="item"

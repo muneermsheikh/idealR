@@ -9,7 +9,6 @@ using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -53,11 +52,10 @@ namespace api.Data.Repositories
 
         public async Task<Entities.Admin.Client.Customer> GetCustomerById(int Id)
         {
-            var cust = await _context.Customers
+            return await _context.Customers
                 .Include(x => x.CustomerOfficials)
-                .FirstOrDefaultAsync(x => x.Id == Id);
-            
-            return cust;
+                .Include(x => x.AgencySpecialties)
+                .Where(x => x.Id == Id).FirstOrDefaultAsync();
         }
 
         public async Task<Entities.Admin.Client.Customer> GetCustomer(CustomerParams customerParams)
@@ -147,8 +145,10 @@ namespace api.Data.Repositories
                 if(existingItem != null)    //update navigation record
                 {
                     var newAppUser = await CreateAppUserForCustomerOfficial(newItem);
-                    if(newAppUser != null) newItem.AppUserId=newAppUser.Id;
+                    if(newAppUser != null && newItem.AppUserId == 0) newItem.AppUserId=newAppUser.Id;
+                    existingItem.UserName = newItem.UserName ?? newItem.Email;
                     _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+
                     _context.Entry(existingItem).State = EntityState.Modified;
                 } else {    //insert new navigation record
                         
@@ -156,7 +156,7 @@ namespace api.Data.Repositories
                     if(newAppUser == null) continue;
                     var itemToInsert = new CustomerOfficial
                     {
-                        AppUserId = newAppUser.Id,
+                        AppUserId = newAppUser.Id, UserName = newAppUser.UserName,
                         CustomerId = existingObject.Id,
                         OfficialName = newItem.OfficialName,
                         Designation = newItem.Designation,
@@ -167,7 +167,6 @@ namespace api.Data.Repositories
                         Gender = newItem.Gender,
                         Title = newItem.Title,
                         KnownAs = newItem.KnownAs,
-                        UserName = newItem.UserName,
                         Status = newItem.Status
                     };
 
@@ -217,8 +216,12 @@ namespace api.Data.Repositories
         }
 
         public async Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official) {
+
+            var userExists = await _userManager.FindByNameAsync(official.UserName);
+            if(userExists != null) return userExists;
+
             var appUserData = new AppUser{
-                UserName = official.UserName, Gender=official.Gender, Email=official.Email,
+                UserName = official.UserName ?? official.Email, Gender=official.Gender ?? "Male", Email=official.Email,
                 KnownAs=official.KnownAs, PhoneNumber=official.Mobile, Position=official.Designation
             };
             var userAdded =await _userManager.CreateAsync(appUserData, "Pa$$w0rd");
@@ -243,11 +246,6 @@ namespace api.Data.Repositories
         }
 
         Task<Entities.Admin.Client.Customer> ICustomerRepository.GetCustomer(CustomerParams customerParams)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Entities.Admin.Client.Customer> ICustomerRepository.GetCustomerById(int Id)
         {
             throw new NotImplementedException();
         }
@@ -307,6 +305,22 @@ namespace api.Data.Repositories
                 
         }
 
-        
+        public async Task<bool> DeleteCustomerOfficial(int officialId)
+        {
+            var obj = await _context.CustomerOfficials.FindAsync(officialId);
+            if(obj == null) return false;
+
+            _context.CustomerOfficials.Remove(obj);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<int> WriteCustomerExcelToDB(string fileNameWithPath, string Username)
+        {
+            var count = await _context.ReadCustomerDataExcelFile(fileNameWithPath, Username);
+            return count;
+        }
+
+       
     }
 }

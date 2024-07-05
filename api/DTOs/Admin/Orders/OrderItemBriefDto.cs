@@ -12,6 +12,7 @@ namespace api.DTOs.Admin.Orders
         public int OrderNo { get; set; }
         public DateTime OrderDate { get; set; }
         
+        
         public int OrderItemId { get; set; }
         public string RequireInternalReview { get; set; }
         public int SrNo { get; set; }

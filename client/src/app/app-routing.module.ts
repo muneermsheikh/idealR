@@ -23,6 +23,8 @@ const routes: Routes = [
     children: [
       
       {path: 'candidates', loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
+
+      {path: 'feedback', loadChildren:() => import('./feedback/feedback.module').then(mod => mod.FeedbackModule)},
       
       {path: 'hr/cvassess/:id', component: CvAssessComponent, 
       resolve: {

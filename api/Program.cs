@@ -30,7 +30,12 @@ app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("ht
 app.UseAuthentication();
 app.UseAuthorization();
 
+//app.UseDefaultFiles();      //publication
+//app.UseStaticFiles();       //publication
+
 app.MapControllers();
+
+//app.MapFallbackToController("Index", "Fallback");   //publication
 
 using var scope = app.Services.CreateScope();
 

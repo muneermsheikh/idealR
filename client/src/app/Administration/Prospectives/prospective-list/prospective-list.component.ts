@@ -8,7 +8,6 @@ import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCrea
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { Pagination } from 'src/app/_models/pagination';
-import { CallRecordParams, ICallRecordParams } from 'src/app/_models/params/callRecordParams';
 import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
 import { User } from 'src/app/_models/user';
 import { ConfirmService } from 'src/app/_services/confirm.service';
@@ -76,13 +75,13 @@ export class ProspectiveListComponent implements OnInit {
   setParameters() {
     var params = new prospectiveCandidateParams();
     params.statusClass=this.pParams.statusClass;
-    this.service.setParams(this.pParams);
+    this.service.setParams(params);
     this.loadProspectives();
   }
+  
 
   loadProspectives() {
     var params = this.service.getParams();
-    console.log('params in loadProspectives', params);
     this.service.getProspectivesPaged(params)?.subscribe({
     next: response => {
       if(response !== undefined && response !== null) {

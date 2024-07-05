@@ -1,0 +1,63 @@
+<div class="modal-header my-0">
+    <h5 style="display: inline-block;">Customer Review</h5>
+    <h6 style="display: inline-block;"> - {{reviewNewOrExisting}}</h6>
+    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
+    title="edit customer Review data" (click)="updateClicked()" ></button>
+    <button class="btn fa fa-close pull-right" title="Close" (click)="bsModalRef.hide()" ></button>
+</div>
+
+<div class="modal-body my-1" *ngIf="review">
+        <form [formGroup]="form">
+            <label for="customerName" class="stdd w125 b">Customer:</label> 
+                <div class="stdd w250">{{review.customerName}}, {{review.city}}</div>
+            <br><label for="currentStatus" class="stdd w125 b">Current Status</label> 
+                <div class="stdd w150">{{review.currentStatus}}</div>
+            
+            <hr class="my-1">
+            <label class="stdd w80 b vMiddle">Date</label> 
+            <label class="stdd w200 b vMiddle">Status</label> 
+            <label class="stdd w200 b vMiddle">Remarks</label> 
+            <label class="stdd w80 b vMiddle">Approved<br>By</label>
+            <label class="stdd w80 b vMiddle">On</label>
+            <button class="btn fa fa-plus pull-right" (click)="addCustomerReviewItem()" ></button>
+            
+            <div formArrayName="customerReviewItems">
+                <div *ngFor="let item of customerReviewItems.controls; let i=index;">
+                    <div [formGroupName]="i">
+                        <input class="stdd w80" type="text" placeholder="date" 
+                            formControlName="transactionDate" bsDatepicker 
+                            [bsValue]="bsValueDate" 
+                            [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+                        
+                        <ng-select
+                            class="stdd w200"
+                            style="height: fit-content; border-color: black;"
+                            [items]="reviewStatus"
+                            bindLabel="status"
+                            bindValue="status"
+                            labelForId="status"
+                            formControlName="customerReviewStatus"
+                        ></ng-select>
+                    
+                        <div class="stdd w200">
+                            <app-text-input [label]="'Remarks'" formControlName="remarks" ></app-text-input>
+                        </div>
+                        <div class="stdd w80">
+                            <app-text-input [label]="'approved by'" formControlName="approvedByUsername"></app-text-input>
+                        </div>
+                        <div class="stdd w80">
+                            <app-text-input [label]="'approved on'" formControlName="approvedOn"></app-text-input>
+                        </div>
+                        <button class="btn w25 fa fa-trash fa-sm red" (click)="removeReviewItem(i)" ></button>
+                    </div>
+                </div>
+    
+            </div>
+        </form>
+</div>
+
+<div class="modal-footer"></div>
+
+<div style="font-size: smaller;">
+    {{form.value | json}}
+</div>

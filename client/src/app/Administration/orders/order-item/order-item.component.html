@@ -1,33 +1,32 @@
-<div *ngIf="order===null">
-    No Order data available
-</div>
+
 <div *ngIf="order!==null && order !== undefined">
-    <div style="display: inline-block; width: max-content;" >
+    <div class="stdd" style="width: max-content;" >
          
           <div class="stdd w80" >{{order.orderNo}}</div>
           <div class="stdd w90" >{{order.orderDate | date: 'dd-MMM-yy'}}</div>
 
-          <div *ngIf="order.status != 'concluded' "
+          <div *ngIf="order.status == 'concluded' "
                class="stdd w200" title="this order cannot be edited as it is concluded"  
-               (click)="editClicked()" 
           >
                {{order.customerName}}
           </div>
-          <div class="stdd w100">{{order.cityOfWorking}}</div>
-     
-          <div class="stdd w150 cursorpointer" (click)="contractReviewClicked()"
-               [ngClass]="order.contractReviewStatus==='Accepted' 
-                    ?'green'
-                    : order.contractReviewStatus==='Accepted with regrets' 
-                         ? 'blue': 'red'" 
-          >
-               {{order.contractReviewStatus }}
+          <div *ngIf="order.status != 'concluded'" class="stdd w200" (click)="editClicked()" >
+               {{order.customerName}}
           </div>
-         
+          <div class="stdd w80">{{order.cityOfWorking}}</div>
+          
+          <div *ngIf="order.contractReviewStatus==='Not Reviewed'" class="stdd w100 cursorpointer red" 
+               title="click to conduct Contract Review of this category"     
+          (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
+          <div *ngIf="order.contractReviewStatus==='regretted'" class="stdd w100 cursorpointer blue" 
+               title="click to view/edit contract review of this category"
+               (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
+          <div *ngIf="order.contractReviewStatus==='Accepted'" class="stdd w100 cursorpointer green" 
+               title="click to view/edit contract review of this category"
+               (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>     
+          
           <div class="stdd w100" title="click for technical & commercial review of this order" 
-               (click)="contractReviewClicked()"     
-          >
-               {{order.contractReviewedOn | date: 'dd-MMM-yy'}}
+               (click)="contractReviewClicked()">{{order.contractReviewedOn | date: 'dd-MMM-yy'}}
           </div>
           <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall red cursorpointer"
                (click)="forwardOrderToHRDept()" title="click to forward this Order to HR Dept Head"
@@ -37,22 +36,18 @@
                {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
           </div>
           
+          <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button" (click)="editClicked()"></button>
           <button class="stdd w15 fa fa-users" (click)="dlForwardToAssociatesClicked()" 
                title="Forward this order to Associates (to be selected)" ></button>
 
           <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
                title="compose email message of acknowldgement to client" ></button>
-          
-          <div style="display: inline-block; width: 250px;"> 
-               <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button"
-                    (click)="editClicked()"
-               ></button>
-               <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
-                    title="CVs already referrED to clients for this Order"
-                    (click)="cvReferredClicked()"
-               ></button>
-          
-              <button class="stdd fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
-         </div>
+          <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
+               title="CVs already referrED to clients for this Order"
+               (click)="cvReferredClicked()"
+          ></button>
+     
+          <button class="stdd w15 fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
+
     </div>
 </div>

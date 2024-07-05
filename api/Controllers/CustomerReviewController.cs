@@ -1,7 +1,6 @@
 using api.Entities.Admin.Client;
 using api.Errors;
 using api.Extensions;
-using api.Interfaces.Admin;
 using api.Interfaces.Customers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +18,30 @@ namespace api.Controllers
             return await _custRvwRepo.GetCustomerReview(customerId);
         }
 
+        [HttpGet("getOrCreateObject/{customerid}")]
+        public async Task<CustomerReview> GetOrCreateCustomerReviewObject(int customerid) {
+            return await _custRvwRepo.GetOrCreateCustomerReviewObject(customerid, User.GetUsername());
+        }
+
+        [HttpPost("insertnew")]
+        public async Task<bool> GetCustomerReview(CustomerReview review)
+        {
+            return await _custRvwRepo.InsertNewCustomerReview(review);
+        }
+
         [HttpPut("customerreview")]
         public async Task<bool> UpdateCustomerReview(CustomerReview customerReview)
         {
             return await _custRvwRepo.UpdateCustomerReview(customerReview, User.GetUsername());
+        }
+
+        [HttpPut("approveReviewItem/{reviewitemid}")] 
+        public async Task<ActionResult<bool>> ApproveReviewItem(int reviewitemid) {
+            var updated = await _custRvwRepo.ApproveReviewItem(reviewitemid, User.GetUsername());
+
+            if(!updated) return BadRequest(new ApiException(400, "Failed to update", "Failed to update the customer review item"));
+
+            return Ok(true);
         }
 
         [HttpGet("customerReviewStatusData")]

@@ -23,8 +23,8 @@ import { IOfficialIdsAndOrderItemIdsDto } from 'src/app/_dtos/admin/officialIdsA
 import { TaskService } from 'src/app/_services/admin/task.service';
 import { JdModalComponent } from '../jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../remuneration-modal/remuneration-modal.component';
-import { OrderItemReviewModalComponent } from '../order-item-review-modal/order-item-review-modal.component';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
+import { OrderItemReviewComponent } from '../order-item-review/order-item-review.component';
 
 @Component({
   selector: 'app-order-edit',
@@ -487,7 +487,7 @@ export class OrderEditComponent implements OnInit {
                   reviewItem: response
                 }}
       
-                this.bsModalRef = this.modalService.show(OrderItemReviewModalComponent, config);
+                this.bsModalRef = this.modalService.show(OrderItemReviewComponent, config);
       
                 this.bsModalRef.content.updateModalReview.subscribe((response: string) => {
                     if(response !== '') {

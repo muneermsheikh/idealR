@@ -1,0 +1,109 @@
+<div class="modal-header my-0">
+    <h6>Edit Customer</h6>
+    <button class="btn btn-success w35 fa fa-save" 
+        style="margin-left: 400px;" (click)="updateCustomer()" ></button>
+    <button class="btn fa fa-window-close fa-2x pull-right" (click)="close()" ></button>
+</div>
+
+<div class="modal-body my-0">
+    <div *ngIf="customer !== undefined">
+        <form [formGroup]="form">
+            <label class="lbl w100">Name:</label> 
+            <div class="stdd w300">
+                <app-text-input [label]="'Customer Name'" formControlName="customerName"></app-text-input>
+            </div>
+            <label class="lbl w80">Known As:</label> 
+            <div class="stdd w150">
+                <app-text-input [label]="'Known As'" formControlName="knownAs"></app-text-input>
+            </div>
+
+            <br><label class="lbl w100">Address:</label> 
+            <div class="stdd w250">
+                <app-text-input [label]="'Address'" formControlName="add" ></app-text-input>
+            </div>
+            
+             <div class="stdd w150" style="margin-left: 10px;">
+                <app-text-input [label]="'Address2'" formControlName="add2" ></app-text-input>
+            </div>
+
+            <br><label class="lbl w100">City:</label> 
+            <div class="stdd w100 fSmall">
+                <app-text-input [label]="'Pin'" formControlName="city"></app-text-input>
+            </div>
+
+            <label class="lbl w50" style="margin-left: 15px;">PIN:</label> 
+            <div class="stdd w75">
+                <app-text-input [label]="'Pin'" formControlName="pin" ></app-text-input>
+            </div>
+
+            <label class="lbl w75 fSmall" style="margin-left: 5px;">District:</label> 
+            <div class="stdd w100 fSmall">
+                <app-text-input [label]="'District'" formControlName="district" ></app-text-input>
+            </div>
+            <label class="lbl w75" style="margin-left: 5px;">Country:</label> 
+            <div class="stdd w100 fSmall">
+                <app-text-input [label]="'Country'" formControlName="country" ></app-text-input>
+            </div>
+            
+            <br><label class="lbl w100 fSmall">email:</label> 
+            <div class="stdd w250">
+                <app-text-input [label]="'Email'" formControlName="email" ></app-text-input>
+            </div>
+            <label class="lbl w75" style="margin-left: 10px;">Website:</label> 
+            <div class="stdd w200">
+                <app-text-input [label]="'Website'" formControlName="website" ></app-text-input>
+            </div>
+            
+            <br><label class="lbl w100 fSmall">Phone:</label> 
+            <div class="stdd w100 fSmall">
+                <app-text-input [label]="'Phone'" formControlName="phone" ></app-text-input>
+            </div>
+            <label class="lbl w50 fSmall">Phone2:</label> 
+            <div class="stdd w100 fSmall">
+                <app-text-input [label]="'Phone'" formControlName="phone2"></app-text-input>
+            </div>
+            
+            <br><label style="display: inline-block; vertical-align: top; width: 100px">Introduction:</label> 
+            <textarea name="intro" id="intro" rows="2" cols="80" style="display: inline-block; margin-left: 10px;" formControlName="introduction"></textarea>
+                        
+            <hr class="my-1">
+            
+            <label class="fSmaller w150">Official Name</label>
+            <label class="fSmaller w125">Designation</label>
+            <label class="fSmaller w70">Divn</label>
+            <label class="fSmaller w100">Phone</label>
+            <label class="fSmaller w100">Mobile</label>
+            <label class="fSmaller w150">Email</label>
+            <button class="btn w25 fa fa-plus" (click)="addCustomerOfficial()" ></button>
+            <hr class="my-0">
+            
+            <div formArrayName="customerOfficials">
+                <div *ngFor="let off of customerOfficials.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <div class="stdd1px w150 b">
+                            <app-text-input [label]="'Official Name'" formControlName="officialName"></app-text-input>
+                        </div>
+                        <div class="stdd1px w125 b">
+                            <app-text-input [label]="'Designation'" formControlName="designation"></app-text-input>
+                        </div>
+                        <div class="stdd1px w70 b">
+                            <app-text-input [label]="'Divn'" formControlName="divn"></app-text-input>
+                        </div>                                    
+                        <div class="stdd1px w100 b">
+                            <app-text-input [label]="'Phone'" formControlName="phoneNo" style="text-align: right;"></app-text-input>
+                        </div>
+                         <div class="stdd1px w100 b">
+                            <app-text-input [label]="'Phone'" formControlName="mobile"></app-text-input>
+                        </div>
+                        <div class="stdd1px w150 b">
+                            <app-text-input [label]="'Email'" formControlName="email"></app-text-input>
+                        </div>
+                        <button class="btn fa fa-trash red" (click)="removeCustomerOfficial(i)" ></button>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

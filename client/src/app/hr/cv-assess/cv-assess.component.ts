@@ -165,7 +165,6 @@ export class CvAssessComponent implements OnInit {
   updateAssessment() {
   
     var formdata = this.form.value;
-    console.log('formdata', formdata);
 
     if(this.cvAssessment) {
       this.toastr.info('cvassessmentid', this.cvAssessment.id.toString()) ;

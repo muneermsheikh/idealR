@@ -5,6 +5,8 @@ using api.Data;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
@@ -144,13 +146,7 @@ namespace api.Extensions
                 int intCandidateName=0, intEmail=0, intAlternateEmail=0, intAlternatePhone=0, intDob=0;
                 int intMobileNo=0, intAlternateNo=0, intResumeTitle=0, intKeySkills=0, intWorkExp=0, intCurrentLocation=0;
                 int intEducation=0, intGender=0, intAge=0, intAddress=0, intResumeId=0,intDesignation=0;
-
-                /*for (int i = 1; i <= columns; i++)
-                {
-                    dataTable.Columns.Add("Column" + i);
-                }
-                */
-                
+    
                 var Source = "TimesJobs";
                 var DateRegistered = DateTime.Now;
                 for(int col=1; col <= columns; col++) {
@@ -183,8 +179,6 @@ namespace api.Extensions
                     
                 for (int row = rowTitle+1; row <= rows; row++)
                 {
-                    //DataRow dataRow = dataTable.NewRow();
-                    
                     CandidateName = intCandidateName == 0 ? "" : worksheet.Cells[row, intCandidateName].Value.ToString() ?? "";
                     EmailId = intEmail == 0 ? "" : worksheet.Cells[row, intEmail].Value.ToString() ?? "";
                     AlternateEmailId = intAlternateEmail == 0 ? "" : worksheet.Cells[row, intAlternateEmail].Value.ToString() ?? "";
@@ -252,7 +246,7 @@ namespace api.Extensions
             return string.IsNullOrEmpty(strError) ? "" : strError;
         }
 
-        static async Task<int> ReadCustomerDataExcelFile(this DataContext context, string filePath)
+        public static async Task<int> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
         {
             //column title in row 2, data starts from row 3
             //string filePath = "D:\\IdealR_/Ideal/api/CandidateExcelData.xlsx";
@@ -276,22 +270,18 @@ namespace api.Extensions
                 int intAppUserId3=0, intGender3=0, intKnownAs3=0, intOfficialName3=0, intOfficialTitle3=0,
                     intOfficialDesignation3=0, intDept3=0, intMobileNo3=0,intOfficialEmail3=0, intUsername3=0;
                 int intCustomerStatus=0;
-                for (int i = 1; i <= columns; i++)
-                {
-                    dataTable.Columns.Add("Column" + i);
-                }
                 
                 for(int col=3; col <= columns; col++) {
                     var colTitle = worksheet.Cells[5, col].Value.ToString();
                     switch (colTitle.ToLower()) {
-                        case "customertype": intCustomerType=col;break;
-                        case "customername": intCustomerName=col; break;
-                        case "knownas": intKnownAs=col;break;
-                        case "add": intAddress=col;break;
-                        case "add2": intAddress2=col;break;
+                        case "customertype": case "customer type": intCustomerType=col;break;
+                        case "customername": case "customer name": intCustomerName=col; break;
+                        case "knownas": case "known as": intKnownAs=col;break;
+                        case "add": case "address": intAddress=col;break;
+                        case "add2": case "address2": intAddress2=col;break;
                         case "city": intCity=col;break;
                         case "pin": intPin=col;break;
-                        case "district": intDistrict=col;break;
+                        case "district": case "dist": intDistrict=col;break;
                         case "state": intState=col;break;
                         case "country": intCountry=col;break;
                         case "email": intEmail=col;break;
@@ -300,39 +290,39 @@ namespace api.Extensions
                         case "phone2": intPhone2=col;break;
                         case "createdon": intCreatedOn=col;break;
                         case "introduction": intIntroduction=col;break;
-                        case "customerstatus": intStatus=col;break;
+                        case "customerstatus": case "customer status": intStatus=col;break;
                         case "isblacklisted": intIsBlacklisted=col;break;
 
-                        case "industrytype1": intIndustryType1=col;break;
-                        case "industrytype2": intIndustryType2=col;break;
-                        case "industrytype3": intIndustryType3=col;break;
+                        case "industrytype1": case "industry type 1": case "indsutry type1": intIndustryType1=col;break;
+                        case "industrytype2":  case "industry type 2": case "indsutry type2": intIndustryType2=col;break;
+                        case "industrytype3": case "industry type 3": case "indsutry type3": intIndustryType3=col;break;
 
                         case "gender1": intGender1=col;break;
 
-                        case "appuserid1": intAppUserId1=col;break;
-                        case "username1": intUsername1=col;break;
-                        case "officialname1": intOfficialName1=col;break;
-                        case "officialtitle1": intOfficialName1=col;break;
-                        case "designation1": intOfficialDesignation1=col;break;
-                        case "dept1": intDept1=col;break;
-                        case "officialmobile1": intMobileNo1=col;break;
-                        case "officialemail1": intOfficialEmail3=col;break;
+                        case "appuserid1": case "appuserid 1": intAppUserId1=col;break;
+                        case "username1": case "user name1": intUsername1=col;break;
+                        case "officialname1": case "official name 1": case "officialname 1": intOfficialName1=col;break;
+                        case "officialtitle1": case "official title 1": case "officialtitle 1":  intOfficialName1=col;break;
+                        case "designation1": case "designation 1": intOfficialDesignation1=col;break;
+                        case "dept1": case "department1": case "department 1": intDept1=col;break;
+                        case "officialmobile1": case "official mobile1" : case "official mobile 1": intMobileNo1=col;break;
+                        case "officialemail1":case "official email1": case "official email 1": intOfficialEmail3=col;break;
 
-                        case "appuserid2": intAppUserId2=col;break;
-                        case "username2": intUsername2=col;break;
-                        case "officialname2": intOfficialName2=col;break;
-                        case "officialtitle2": intOfficialName2=col;break;
-                        case "designation2": intOfficialDesignation2=col;break;
-                        case "dept2": intDept2=col;break;
-                        case "officialmobile2": intMobileNo2=col;break;
-                        case "officialemail2": intOfficialEmail2=col;break;
+                        case "appuserid2": case "appuserid 2":  intAppUserId2=col;break;
+                        case "username2": case "user name2":  intUsername2=col;break;
+                        case "officialname2":case "official name 2": case "officialname 2": intOfficialName2=col;break;
+                        case "officialtitle2": case "officialtitle 2": case "official title 2":intOfficialName2=col;break;
+                        case "designation2": case "designation 2": intOfficialDesignation2=col;break;
+                        case "dept2": case "department 2": case "department2": intDept2=col;break;
+                        case "officialmobile2": case "official mobile2": case "officialmobile 2": intMobileNo2=col;break;
+                        case "officialemail2": case "official email2": case "officialemail 2": intOfficialEmail2=col;break;
 
                         case "appuserid3": intAppUserId3=col;break;
-                        case "username3": intUsername3=col;break;
-                        case "officialname3": intOfficialName3=col;break;
-                        case "officialtitle3": intOfficialTitle3=col;break;
+                        case "username3": case "username 3": intUsername3=col;break;
+                        case "officialname3": case "official name 3": case "officialname 3":intOfficialName3=col;break;
+                        case "officialtitle3": case "official title 3": case "officialtitle 3": intOfficialTitle3=col;break;
                         case "designation3": intOfficialDesignation3=col;break;
-                        case "dept3": intDept3=col;break;
+                        case "dept3":case "department 3": case "department3": intDept3=col;break;
                         case "officialmobile3": intMobileNo3=col;break;
                         case "officialemail3": intOfficialEmail3=col;break;
 
@@ -346,7 +336,6 @@ namespace api.Extensions
 
                 for (int row = 2; row <= rows; row++)
                 {
-                    DataRow dataRow = dataTable.NewRow();
                     var CustomerType = worksheet.Cells[row, intCustomerType].Value.ToString() ?? "Customer";
                     var CustomerName = worksheet.Cells[row, intCustomerName].Value.ToString() ?? "";
                     var KnownAs = worksheet.Cells[row, intKnownAs].Value.ToString() ?? "";
@@ -437,7 +426,7 @@ namespace api.Extensions
                         };
                         customerOfficials.Add(Official);
                     }
-
+                    
                     if(!string.IsNullOrEmpty(IndustryType1)) {
                         var industry = new CustomerIndustry {Industry = new Industry {IndustryName = IndustryType1}};
                         customerIndustries.Add(industry);

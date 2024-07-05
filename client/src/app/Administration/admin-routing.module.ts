@@ -6,7 +6,6 @@ import { AgentsResolver } from '../_resolvers/admin/agents.resolver';
 import { RouterModule } from '@angular/router';
 import { SelectionsComponent } from './selections/selections.component';
 import { EmploymentsComponent } from './employments/employments.component';
-import { CustomersComponent } from './customers/customers.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from './industries/industries.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
@@ -26,6 +25,13 @@ import { OrderFwdsComponent } from './orders/order-fwds/order-fwds.component';
 import { OrderForwardComponent } from './orders/order-forward/order-forward.component';
 import { OfficialIdAndCustomerNamesResolver } from '../_resolvers/admin/customers/officialIdAndCustomerNameResolver';
 import { SelectionPendingComponent } from './selections/selection-pending/selection-pending.component';
+import { CustomerListComponent } from './customer-list/customer-list.component';
+import { CustomerResolver } from '../_resolvers/admin/customerResolver';
+import { CustomerEditComponent } from './customer-edit/customer-edit.component';
+import { FeedbackComponent } from '../feedback/feedback/feedback.component';
+import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
+import { CustomerReviewResolver } from '../_resolvers/customerReviewResolver';
+import { OrderItemReviewComponent } from './orders/order-item-review/order-item-review.component';
 
 
 const routes = [
@@ -65,6 +71,12 @@ const routes = [
     }
   },
 
+  {path: 'orderitemreview/:id', component: OrderItemReviewComponent,
+    resolve: {
+      orderitemreview: ContractReviewItemDtoResolver
+    }
+  },
+
   {path: 'orderassessment/:id', component: OrderAssessmentComponent,
     resolve: {
       orderAssessment: OrderAssessmentResolver
@@ -83,7 +95,25 @@ const routes = [
 
   {path: 'qualifications', component: QualificationsComponent },
 
-  {path: 'customers', component: CustomersComponent},
+  {path: 'customers', component: CustomerListComponent},
+
+  {path: 'customerEdit/:id', component: CustomerEditComponent,
+    resolve: {
+      customer: CustomerResolver
+    }
+  },
+    
+  {path: 'reviewEdit/:id', component: CustRvwEditModalComponent,
+    resolve: {
+      review: CustomerReviewResolver
+    }
+  },
+
+  {path: 'feedback/:id', component: FeedbackComponent,
+    resolve: {
+      customer: CustomerResolver
+    }
+  },
   
   {path: 'userroles', component: UserManagementComponent}
 ]

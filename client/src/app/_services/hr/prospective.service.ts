@@ -65,7 +65,6 @@ export class ProspectiveService {
       const response = this.cache.get(Object.values(dParams).join('-'));
       if(response) return of(response);
   
-      //let params = GetHttpParamsForCallRecord(dParams);
       let params = getHttpParamsForProspectiveCandidates(dParams);
   
       return getPaginatedResult<IProspectiveBriefDto[]>(this.apiUrl + 

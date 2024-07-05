@@ -253,79 +253,85 @@ namespace api.Data.Repositories.Admin
             return smsMessage;
         }
 
-        public async Task<MessageWithError> AckEnquiryToCustomer(Order order)
+        public async Task<MessageWithError> AckEnquiryToCustomerWithoutSave(Order order)
         {
             var msgWithErr = new MessageWithError();
-          
-            var customer = await _context.Customers.Where(x => x.Id == order.CustomerId)
-                .Include(x => x.CustomerOfficials).FirstOrDefaultAsync();
 
-            if (customer==null || customer.CustomerOfficials==null || customer.CustomerOfficials.Count == 0) {
+            var acknowledged = await _context.AckanowledgeToClients.Where(x => x.OrderId == order.Id).FirstOrDefaultAsync();
+
+            if(acknowledged != null) {
+                msgWithErr.ErrorString = "This Order has already been acknowledged on " + acknowledged.DateAcknowledged;
+                return msgWithErr;
+            }
+            
+            var obj = await _context.Orders.Include(x => x.OrderItems.OrderBy(x => x.SrNo))
+                .Where(x => x.Id == order.Id)
+                .FirstOrDefaultAsync();
+            
+            if (obj==null) {
                 msgWithErr.ErrorString = "failed to retrieve customer data for customer";
                 return msgWithErr;
             }
                 
-            var OrderItems = order.OrderItems.OrderBy(x => x.SrNo).ToList();
+            var OrderItems = obj.OrderItems;
 
-            var projectManagerId = order.ProjectManagerId == 0 ? 8 : order.ProjectManagerId;
-
-            EmployeeBriefDto projManager = _mapper.Map<EmployeeBriefDto>(await _empRepo.GetEmployeeFromEmpId(projectManagerId)) ?? throw new Exception("Project Manager for the DL undefined");
-
+            var officials = await _context.CustomerOfficials.Where(x => x.CustomerId == obj.CustomerId).ToListAsync();
             string[] officialDepts = { "main contact", "hr", "accounts", "logistics" };
-            CustomerOfficial official = null;
-            foreach (var off in officialDepts)
-            {
-                official = customer.CustomerOfficials.Where(x => x.Divn?.ToLower() == off).FirstOrDefault();
-                if (official != null) {
-                    msgWithErr.Notification = "Customer Official Divn not defined";
-                    break;
-                }
+            CustomerOfficial official=null;
+            
+            foreach(var dept in officialDepts) {
+                official = officials.Where(x => dept.ToLower() == dept).FirstOrDefault();
+                if(official!=null) break;    
+            }
+            if(official==null) {
+                msgWithErr.ErrorString = "Failed to locate Customer Official with the required departments";
+                return msgWithErr;
             }
 
-            official??=customer.CustomerOfficials.FirstOrDefault();
+            var projectManagerId = obj.ProjectManagerId == 0 ? 8 : order.ProjectManagerId;
+            var senderObj = await _userManager.GetAppUserObjFromEmployeeId(_context, projectManagerId);
+            var recipientObj = await _userManager.GetAppUserObjFromCustomerOfficial(_context, official.Id);
+            var messageType = "OrderAcknowledgement";
+            
+            var ackn = new AcknowledgeToClient{OrderId = obj.Id, CustomerId = obj.CustomerId, CustomerName = obj.Customer.CustomerName,
+                DateAcknowledged=DateTime.Now, MessageType = messageType, RecipientEmailId=recipientObj.AppUserEmail,
+                RecipientUsername=recipientObj.Username, SenderEmailId=senderObj.AppUserEmail,  SenderUsername=senderObj.Username};
+
+            _context.AckanowledgeToClients.Add(ackn);
 
             bool HasException = false;
-            var msg = _today + "<br><br>M/S" + customer.CustomerName;
-            if (!string.IsNullOrEmpty(customer.Add)) msg += "<br>" + customer.Add;
-            if (!string.IsNullOrEmpty(customer.Add2)) msg += "<br>" + customer.Add2;
-            msg += "<br>" + customer.City + ", " + customer.Country + "<br><br>";
+            var msg = _today + "<br><br>M/S" + obj.Customer.CustomerName;
+            if (!string.IsNullOrEmpty(obj.Customer.Add)) msg += "<br>" + obj.Customer.Add;
+            if (!string.IsNullOrEmpty(obj.Customer.Add2)) msg += "<br>" + obj.Customer.Add2;
+            msg += "<br>" + obj.Customer.City + ", " + obj.Customer.Country + "<br><br>";
             msg += official == null ? "" : "Kind Attn : " + official.Title + official.OfficialName + ", " + official.Designation + "<br><br>";
             msg += "Dear " + official?.Gender == "F" ? "Madam:" : "Sir:" + "<br><br>";
-            msg += "Thank you very much for your manpower enquiry dated " + order.OrderDate + " for following personnel: ";
-            msg += "<br><br>" + _commonMsg.ComposeOrderItems(order.OrderNo, OrderItems, HasException) + "<br><br>";
+            msg += "Thank you very much for your manpower enquiry dated " + DateOnly.FromDateTime(obj.OrderDate) + 
+                " for following personnel: ";
+            msg += "<br><br>" + _commonMsg.ComposeOrderItems(obj.OrderNo, OrderItems, HasException) + "<br><br>";
             msg += HasException == true
                 ? "Please note the exceptions mentioned under the column <i>Exceptions</i> and respond ASAP.  " +
                         "We will initiate execution of the wroks at this end on receipt of your clarificatins.<br><br>"
                 : "We have initiated the works, and will revert to you soon with our delivery plan.<br><br>";
             msg += "Your point of contact for this order execution shall be the undersigned<br><br>";
-            msg += "Please feel free to reach me for any clarification.<br><br>Best regards<br><br>" +
-                projManager.FirstName + " " + projManager.FamilyName 
-                    + "<br>" + projManager.Position + "<br>" + _confg.GetSection("IdealUserName").Value;
-            //msg += string.IsNullOrEmpty(projManager .OfficialPhoneNo) == true ? "" : "<br>Phone: " + projManager.OfficialPhoneNo;
-            //msg += string.IsNullOrEmpty(projManager.OfficialMobileNo) == true ? "" : "<br>Mobile: " + projManager.OfficialMobileNo;
-            //msg += string.IsNullOrEmpty(projManager.OfficialEmail) == true ? "" : "<br>Email: " + projManager.OfficialEmail;
-
-            var senderEmailAddress = _confg["EmailSenderEmailId"] ?? "";
-            var senderUserName = _confg["EmailSenderDisplayName"] ?? "";
-            var recipientUserName = customer.CustomerName ?? "";
-            var recipientEmailAddress = official?.Email ?? "";
-            var ccEmailAddress = _confg["EmailCCandAck"] ?? "";
-            var bccEmailAddress = _confg["EmailBCCandAck"] ?? "";
+            msg += "Please feel free to reach me for any clarification, or our Senior Management in case of escalation.<br><br>Best regards<br><br>" +
+                senderObj.KnownAs + "<br>" + senderObj.Position + "<br>" + senderObj.Username;
+        
             var subject = "Your enquiry dated " + order.OrderDate + " is registered by us under Serial No. " + order.OrderNo;
-            var messageTypeId = "OrderAcknowledgement";
+            
             
             var emailMessage = new Message
             {
                 MessageComposedOn = _today,
-                SenderEmail = senderEmailAddress,
-                SenderUsername = senderUserName,
-                RecipientUsername = recipientUserName,
-                RecipientEmail = recipientEmailAddress,
+                SenderEmail = senderObj.AppUserEmail,
+                SenderUsername = senderObj.Username,
+                RecipientUsername = recipientObj.Username,
+                RecipientEmail = recipientObj.AppUserEmail,
                 Subject = subject,
                 Content = msg,
-                MessageType = messageTypeId,
-                RecipientAppUserId = official.AppUserId,
-                SenderAppUserId = projManager.AppUserId
+                MessageType = messageType,
+                RecipientAppUserId =recipientObj.AppUserId,
+                SenderAppUserId = senderObj.AppUserId
             };
             var msgs = new List<Message>();
             msgs.Add(emailMessage);

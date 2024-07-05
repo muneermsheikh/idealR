@@ -12,12 +12,24 @@ export class CustomerReviewService {
  
   constructor(private http: HttpClient) { }
 
-  getCustomerReview(orderid: number){
-    return this.http.get<ICustomerReview>(this.baseUrl + 'CustomerReview/customerreview/' + orderid);
+  getCustomerReview(customerid: number){
+    return this.http.get<ICustomerReview>(this.baseUrl + 'CustomerReview/customerreview/' + customerid);
+  }
+
+  getOrCreateCustomerReview(customerid: number) {
+    return this.http.get<ICustomerReview>(this.baseUrl + 'CustomerReview/getOrCreateObject/' + customerid);
   }
 
   updateCustomerReview(model: ICustomerReview) {
     return this.http.put<boolean>(this.baseUrl + 'CustomerReview/customerreview', model)
+  }
+
+  postNewCustomerReview(model: ICustomerReview) {
+    return this.http.post<boolean>(this.baseUrl + 'CustomerReview/insertnew', model);
+  }
+
+  approveCustomerReviewItem(reviewitemid: number) {
+    return this.http.put<boolean>(this.baseUrl + 'CustomerReview/approveReviewItem/' + reviewitemid, {});
   }
 
   getCustomerReviewStatusData() {

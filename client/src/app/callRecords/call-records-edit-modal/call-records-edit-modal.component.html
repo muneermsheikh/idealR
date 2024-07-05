@@ -6,10 +6,6 @@
 </div>
 
 <div class="modal-body my-0">
-    <div *ngIf="!callRecord" >
-        <h6>No Call Records on record matching your instructions</h6>
-    </div>
-
     <div *ngIf="callRecord">
         <form [formGroup]="form" >
             <label class="lbl w150 fSmaller">Name of the Person:</label> 

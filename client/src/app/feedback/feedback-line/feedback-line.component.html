@@ -1,0 +1,10 @@
+<div *ngIf="fdbk">
+    <div class="stdd w200">{{fdbk.customerName}}</div>
+    <div class="stdd w75">{{fdbk.city}}</div>
+    <div class="stdd w125">{{fdbk.officialName}}</div>
+    <div class="stdd w100">{{fdbk.dateIssued | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w100">{{fdbk.dateReceived | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w75">{{fdbk.gradeAssessedByClient}}</div>
+    <button class="btn fa fa-pencil" (click)="editClicked(fdbk.id)" ></button>
+    <button class="btn fa fa-trash red" (click)="deleteClicked(fdbk.id)" ></button>
+</div>

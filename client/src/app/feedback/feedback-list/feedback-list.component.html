@@ -1,0 +1,51 @@
+
+<div class="stdd" *ngIf="pagination !== undefined">
+    <pagination
+        class="stdd my-2"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+</div>
+
+
+<div class="stdd" *ngIf="feedbacks">
+    <input (keyup.enter)="onSearch()" type="text" title="enter text to search" 
+         class="stdd form-control w300" style="margin-left: 20px;" #search placeholder="Search">
+    <button type="button" (click)="onSearch()" class="stdd btn btn-outline-primary">Search</button>
+     
+    <button type="button" (click)="onReset()" class="stdd btn btn-outline-success mx-3" >
+         Reset
+    </button>
+    
+    <h6 class="stdd">To add a new feedback, go to the customers listing, click a button to the right against a customer name</h6>
+</div>
+
+<hr class="my-0">
+<div class="stdd w200">Customer</div>
+<div class="stdd w75">City</div>
+<div class="stdd w125">Official Name</div>
+<div class="stdd w100">Issued On</div>
+<div class="stdd w100">Received On</div>
+<div class="stdd w75">Grade</div>
+<hr class="my-0">
+<div *ngIf="!feedbacks">
+    No feedback data available as per your search conditions
+</div>
+
+<div *ngIf="feedbacks">
+    <div *ngFor="let fdbk of feedbacks">
+        <app-feedback-line
+            [fdbk]="fdbk"
+            (editEvent)="editClicked($event)"
+            (deleteEvent)="deleteClicked($event)"
+        ></app-feedback-line>
+    </div>
+    
+</div>
+

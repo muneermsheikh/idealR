@@ -9,7 +9,7 @@ namespace api.Interfaces.Admin
 {
     public interface IComposeMessagesAdminRepository
     {
-        Task<MessageWithError> AckEnquiryToCustomer(Order order);
+        Task<MessageWithError> AckEnquiryToCustomerWithoutSave(Order order);
         Task<Message> ForwardEnquiryToHRDept(Order order);
         Task<ICollection<Message>> ComposeCVFwdMessagesToClient(ICollection<CVFwdMsgDto> fwdMsgsDto, string Username);
         Task<Message> ComposeSelDecisionRemindersToClient(int CustomerId, string Username);

@@ -4,7 +4,10 @@ using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Identity;
+using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Extensions
 {
@@ -34,7 +37,7 @@ namespace api.Extensions
         }
 
         public static async Task<int> UpdateEmployeeAppUserId(this Employee employee,
-            UserManager<AppUser> userManager, DataContext context, string cityName)
+            UserManager<AppUser> userManager, string cityName)
         {
             var off =await userManager.FindByEmailAsync(employee.OfficialEmail);
             if(off == null){
@@ -96,6 +99,41 @@ namespace api.Extensions
 
             return dto;
         }
+
+        public static async Task<AppUserBriefDto> GetAppUserObjFromEmployeeId(this UserManager<AppUser> userManager,
+            DataContext context, int EmployeeId)
+        {
+            var email = await context.Employees.Where(x => x.Id == EmployeeId)
+                .Select(x => new {appuserid=x.AppUserId, AppUserEmail=x.OfficialEmail, Name=x.FirstName, Position=x.Position})
+                .FirstOrDefaultAsync();
+
+            if(email == null) return null;
+
+            var obj = email.appuserid == 0 
+                ? await userManager.FindByIdAsync(email.appuserid.ToString())         
+                : await userManager.FindByEmailAsync(email.AppUserEmail);
+
+            return  new AppUserBriefDto { KnownAs = obj.KnownAs, AppUserId=EmployeeId, Username= obj.UserName, AppUserEmail=obj.Email,
+                Position=email.Position, Name=email.Name};
+        }
+
+        public static async Task<AppUserBriefDto> GetAppUserObjFromCustomerOfficial(this UserManager<AppUser> userManager,
+            DataContext context, int OfficialId)
+        {
+            var email = await context.CustomerOfficials.Where(x => x.Id == OfficialId)
+                .Select(x => new {appuserid=x.AppUserId, Email=x.Email, Name=x.OfficialName, Position=x.Designation})
+                .FirstOrDefaultAsync();
+
+            if(email == null) return null;
+
+            var obj = email.appuserid == 0 
+                ? await userManager.FindByIdAsync(email.appuserid.ToString())         
+                : await userManager.FindByEmailAsync(email.Email);
+
+            return  new AppUserBriefDto { KnownAs = obj.KnownAs, AppUserId=OfficialId, Username= obj.UserName, 
+                AppUserEmail=obj.Email, Name=email.Name, Position=email.Position};
+        }
+
 
         public static async Task<UsernameAndEmailDto> AppUserEmailAndUsernameFromAppUsername(this UserManager<AppUser> userManager, string username)
         {
