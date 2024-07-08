@@ -131,6 +131,9 @@ namespace api.Data.Migrations
                     b.Property<string>("PhoneNo")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Status")
                         .HasColumnType("TEXT");
 
@@ -414,6 +417,9 @@ namespace api.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
@@ -440,6 +446,9 @@ namespace api.Data.Migrations
 
                     b.Property<string>("HowReceived")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("OfficialAppUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("OfficialName")
                         .HasColumnType("TEXT");
@@ -2025,6 +2034,9 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Qualifications")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReferredByName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecondName")

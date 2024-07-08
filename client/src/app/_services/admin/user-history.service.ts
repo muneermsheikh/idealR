@@ -97,7 +97,7 @@ export class UserHistoryService {
   }
 
   updateUserHistory(model: any) {
-    return this.http.put<IUserHistoryReturnDto>(this.apiUrl + 'UserHistory', model);
+    return this.http.put<IUserHistoryReturnDto>(this.apiUrl + 'CallRecord', model);
   }
 
   composeEmailMessageOfConsent() {

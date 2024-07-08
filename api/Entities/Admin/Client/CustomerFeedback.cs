@@ -5,7 +5,9 @@ namespace api.Entities.Admin.Client
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string City  { get; set; }
+        public string Country { get; set; }
         public string OfficialName { get; set; }
+        public int OfficialAppUserId { get; set; }
         public string Designation { get; set; }
         public string Email { get; set; }
         public string PhoneNo { get; set; }

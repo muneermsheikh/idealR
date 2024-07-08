@@ -33,7 +33,9 @@ namespace api.Data.Repositories.Admin
                .SingleOrDefaultAsync();
 
                if (existingObj == null) throw new Exception("The Contract Review model does not exist in the database");
+
                if (existingObj.ContractReviewItems == null) throw new Exception("The Contract Review Items collection does not exist in the database");
+               
                if (existingObj.ContractReviewItems.Any(x => x.ContractReviewItemQs == null)) 
                     throw new Exception("Review Parameters in one of the items do not exist");
 
@@ -277,6 +279,7 @@ namespace api.Data.Repositories.Admin
           public async Task<ContractReview> AddContractReview(ContractReview contractReview)
           {
                _context.ContractReviews.Add(contractReview);
+               //*TODO* data verification
 
                try {
                     await _context.SaveChangesAsync();

@@ -13,19 +13,24 @@ export class FeedbackLineComponent {
   @Input() fdbk: IFeedbackDto|undefined;
   @Output() editEvent = new EventEmitter<number>();
   @Output() deleteEvent = new EventEmitter<number>();
+  @Output() emailEvent = new EventEmitter<number>();
 
   constructor(private service: FeedbackService){};
 
   editClicked(fdbkId: number) { 
     this.service.getFeedbackWithItems(fdbkId).subscribe({
       next: response => {
-          this.editEvent.emit(this.fdbk!.id);
+          this.editEvent.emit(fdbkId);
       }
     })
   }
 
   deleteClicked(fdbkId: number) {
 
+  }
+
+  generateEmail(fdbkId: number) {
+    this.emailEvent.emit(fdbkId)
   }
 
 }

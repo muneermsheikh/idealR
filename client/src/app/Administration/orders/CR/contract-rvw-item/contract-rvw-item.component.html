@@ -1,0 +1,56 @@
+<div class="fa fa-eye-slash fa-2x cursorPointer b" style="display: inline-block; font-size: medium;"
+    *ngIf="toggle" title="click to hide the display" (click)="toggleImage()"> - Hide {{item?.professionName}}</div>
+<div class="fa fa-eye fa-2x cursorPointer b"  style="display: inline-block; font-size: medium;"
+    *ngIf="!toggle" title="click to show the display" (click)="toggleImage()"> - Show {{item?.professionName}}</div>
+
+<div *ngIf="item && toggle" style="margin-left: 25px;">
+    <label class="stdd w75 b">Quantity</label>
+    <input type="text" class="stdd mx-2 w35" [(ngModel)]="item.quantity" >
+    <label class="stdd w75 b">Assign to</label>
+    <ng-select 
+        style="display: inline-block;  font-size: small; width: 100px; vertical-align: top;"
+        [items]="empIdAndNames"
+        bindLabel="knownAs"
+        bindValue="username"
+        labelForId="username"
+        clearAllText="Clear"
+        [(ngModel)]="item.hrExecUsername"
+    ></ng-select>
+    <label class="stdd w100 b">Charges</label>
+    <input type="text" class="stdd mx-2 w50" [(ngModel)]="item.charges">
+    <label class="stdd w100 b">Source From</label>
+    <input type="text" class="stdd w100 mx-2" [(ngModel)]="item.sourceFrom" >
+    <label class="stdd W100 b">Require Assess</label>
+    <input type="text" class="stdd mx-2 w35" [(ngModel)]="item.requireAssess" >
+    <label class="stdd w100 b">Review Status</label>
+    <ng-select 
+        style="display: inline-block;  font-size: small; width: 200px; vertical-align: top;"
+        [items]="reviewStatuses"
+        bindLabel="status"
+        bindValue="status"
+        labelForId="status"
+        clearAllText="Clear"
+        [(ngModel)]="item.reviewItemStatus"
+    ></ng-select>
+    
+    <button class="btn fa fa-arrow-right green fa-2x" style="margin-left: 15px;"
+        title="copy the edited item to to the Contract Review Object.  You will need to save the object for the changes to take effect."
+        (click)="update()" ></button>
+    <br><label class="stdd w35 b" style="margin-left: 25px;" >Sr#</label>
+    <label class="stdd w65 vAlignM b" >Manda-<br>tory</label>
+    <label class="stdd w475 vAlignM b" >Parameter</label>
+    <label class="stdd w75 vAlignM b" >Accep-<br>ted</label>
+    <label class="stdd w150 vAlignM b" >Remarks</label>
+    <hr style="margin-top: 0px; margin-bottom: 0px;">
+    <div *ngFor="let q of item.contractReviewItemQs">
+        <input type="text" class="stdd w35" style="margin-left: 25px !important;" 
+            [(ngModel)]="q.srNo" placeholder="SrNo">
+        <input type="checkbox" style="margin-left: 18px; margin-right: 18px;" class="stdd w35 form-check-input checkbox" [(ngModel)]="q.isMandatoryTrue"  >
+        <textarea rows="1" cols="75" class="stdd" [(ngModel)]="q.reviewParameter" placeholder="Parameter" ></textarea>
+        <input type="checkbox" style="margin-left: 20px; margin-right: 25px;" 
+            class="form-check-input checkbox" [(ngModel)]="q.response">
+        <textarea cols="50" rows="1" class="stdd" (change)="responseChanged(q)" [(ngModel)]="q.remarks" ></textarea>
+    </div>
+    
+</div>
+

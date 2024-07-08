@@ -58,9 +58,13 @@ namespace api.Helpers
             CreateMap<OrderItem, OrderItemBriefDto>();
             CreateMap<OrderItemToCreateDto, OrderItem>();
             CreateMap<Order, OrderDisplayWithItemsDto>();
-            CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>();
+            
+            CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>()
+                .ForMember(s=>s.OrderForwardCategoriesDto, o => o.MapFrom(x => x.OrderForwardCategories));
+            CreateMap<OrderForwardCategoryOfficial, OrderForwardToOfficialDto>();
+            
             CreateMap<OrderForwardCategory, OrderForwardCategoryDto>();
-            //CreateMap<OrderForwardCategoryOfficial, OrderForwardCategoryOffDto>();
+            CreateMap<OrderForwardCategoryOfficial, OrderForwardToOfficialDto>();
             
             CreateMap<ContractReviewItemQ, ContractReviewItemStddQ>();
             CreateMap<ContractReview, ContractReviewDto>();

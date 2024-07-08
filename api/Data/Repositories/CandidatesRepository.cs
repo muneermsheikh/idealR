@@ -470,22 +470,35 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<ICollection<UserAttachment>> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments)
+        public async Task<UserAttachmentsWithErrDto> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments)
         {
             var attachmentsToReturn = new List<UserAttachment>();
+            var dtoReturn = new UserAttachmentsWithErrDto();
 
             foreach(var attach in userAttachments)
             {
-                var existing = await _context.UserAttachments.Where(x => x.Name == attach.Name).FirstOrDefaultAsync();
+                var existing = await _context.UserAttachments
+                    .Where(x => x.Name == attach.Name && x.CandidateId == attach.CandidateId)
+                    .FirstOrDefaultAsync();
                 if(existing != null)  {
                     _context.Entry(existing).CurrentValues.SetValues(attach);
                     _context.Entry(existing).State = EntityState.Modified;
-
-                    attachmentsToReturn.Add(existing);
+                    //attachmentsToReturn.Add(existing);
+                } else {
+                    _context.UserAttachments.Add(attach);
                 }
+                dtoReturn.UserAttachments.Add(existing);
             }
 
-            return await _context.SaveChangesAsync() > 0 ? attachmentsToReturn : null;
+            try{
+                await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                dtoReturn.ErrorString = ex.Message;
+            } catch (Exception ex) {
+                dtoReturn.ErrorString = ex.Message;
+            } 
+            
+            return dtoReturn;
         }
 
         public async Task<UserAttachment> GetUserAttachmentById(int attachmentId)
@@ -523,6 +536,7 @@ namespace api.Data.Repositories
                 .Include(x => x.UserProfessions)
                 .Include(x => x.UserExperiences)
                 .Include(x => x.UserQualifications)
+                .Where(x => x.Id == candidateid)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync();
             return obj;
@@ -532,6 +546,11 @@ namespace api.Data.Repositories
         {
             var count = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
             return count;
+        }
+
+        public async Task<int> GetNextApplicationNo() {
+            var no = await _context.Candidates.MaxAsync(x => x.ApplicationNo);
+            return no==0 ? 1000 : no+1;
         }
     }
 }

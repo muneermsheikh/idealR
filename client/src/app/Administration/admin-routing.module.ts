@@ -32,6 +32,9 @@ import { FeedbackComponent } from '../feedback/feedback/feedback.component';
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
 import { CustomerReviewResolver } from '../_resolvers/customerReviewResolver';
 import { OrderItemReviewComponent } from './orders/order-item-review/order-item-review.component';
+import { ContractReviewResolver } from '../_resolvers/admin/contractReviewResolver';
+import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
+import { FeedbackListComponent } from '../feedback/feedback-list/feedback-list.component';
 
 
 const routes = [
@@ -77,6 +80,12 @@ const routes = [
     }
   },
 
+  {path: 'orderReview/:id', component: ContractRvwComponent,
+    resolve: {
+      orderReview: ContractReviewResolver
+    }
+  },
+  
   {path: 'orderassessment/:id', component: OrderAssessmentComponent,
     resolve: {
       orderAssessment: OrderAssessmentResolver
@@ -109,6 +118,8 @@ const routes = [
     }
   },
 
+  {path: 'feedback', component: FeedbackListComponent},
+  
   {path: 'feedback/:id', component: FeedbackComponent,
     resolve: {
       customer: CustomerResolver

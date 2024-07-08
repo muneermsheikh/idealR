@@ -26,8 +26,14 @@ namespace api.Controllers
 
             var attachment = await _candRepo.GetUserAttachmentById(attachmentid);
             if (attachment==null) return NotFound(new ApiException(402, "Not Found","the requested record does not exist"));
+            if(string.IsNullOrEmpty(attachment.UploadedLocation)) return BadRequest(new ApiException(400, "Bad Request", "UploadedLocation not defined"));
+            
+            var ln = attachment.UploadedLocation.Length;
+            var FileName = attachment.UploadedLocation + attachment.Name;
+            /*var FileName = attachment.UploadedLocation[(ln - 6)..] == "Images" 
+                ? attachment.UploadedLocation + "\\" + attachment.Name 
+                : attachment.UploadedLocation + "\\" + "Assets\\Images\\" + attachment.Name ; */
 
-            var FileName=attachment.UploadedLocation + '/' + attachment.Name;
             //if(string.IsNullOrEmpty(FileName)) return BadRequest("No URL found in the attachment record");
 
             if(!System.IO.File.Exists(FileName)) return NotFound("the File " + attachment.Name + " does not exist");

@@ -1,14 +1,13 @@
-export interface 		IOrderForwardCategoryOfficial
+export interface IOrderForwardCategoryOfficial
 {
 	checked: boolean;
 	id: number;
 	orderForwardCategoryId: number;
-	orderItemId: number;
 	customerOfficialId: number;
 	officialName: string;
 	agentName: string;
-	dateTimeForwarded: Date;
-	dateOnlyForwarded: Date;
+	dateForwarded: Date;
+	//dateOnlyForwarded: Date;
 	emailIdForwardedTo: string;
 	phoneNoForwardedTo: string;
 	whatsAppNoForwardedTo: String;
@@ -20,14 +19,15 @@ export class OrderForwardCategoryOfficial implements IOrderForwardCategoryOffici
 	checked = false;
 	id= 0;
 	orderForwardCategoryId= 0;
-	orderItemId= 0;
+	agentName= '';
 	customerOfficialId= 0;
 	officialName = '';
-	agentName= '';
-	dateTimeForwarded= new Date('1900-01-01');
-	dateOnlyForwarded= new Date('1900-01-01');
+	dateForwarded= new Date('1900-01-01');
+	//dateOnlyForwarded= new Date('1900-01-01');
 	emailIdForwardedTo= '';
 	phoneNoForwardedTo= '';
 	whatsAppNoForwardedTo= '';
 	username= '';
+
+	orderItemId= 0;
 }

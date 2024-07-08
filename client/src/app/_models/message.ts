@@ -2,13 +2,18 @@ export interface Message
 {
     id: number;
     cvRefId: number;
-    senderId: number;
+    senderAppUserId: number;
     senderUsername: string;
-    senderPhotoUrl: string;
-    recipientId: number;
+    senderEmail: string;
+    //senderPhotoUrl: string;
+    recipientAppUserId: number;
     recipientUsername: string;
-    recipientPhotoUrl: string;
+    recipientEmail: string;
+    subject: string;
+    messageComposedOn: Date;
+    //recipientPhotoUrl: string;
+
     content: string;
-    dateRead?: Date;
+    //dateRead?: Date;
     messageSent: Date
 }

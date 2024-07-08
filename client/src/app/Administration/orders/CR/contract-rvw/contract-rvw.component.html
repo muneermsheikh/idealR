@@ -1,0 +1,29 @@
+<h6 style="display: inline-block;">Edit Contract Review - </h6>
+<div style="display: inline-block; font-weight: bold; margin-left: 15px;">Order No. {{review?.orderNo}} - {{review?.customerName}}</div>
+
+<label class="mx-3" style="display: inline-block;">Review Status</label>
+<ng-select 
+    style="display: inline-block;  font-size: small; width: 200px; vertical-align: top;"
+    [items]="reviewStatuses"
+    bindLabel="status"
+    bindValue="status"
+    labelForId="status"
+    clearAllText="Clear"
+    [(ngModel)]="review!.reviewStatus"
+></ng-select>
+
+<label class="mx-5" style="display: inline-block;">Reviewed On</label>
+
+<input class="stdd w110 mx-2" type="text" placeholder="Order Date" [(ngModel)]="review!.reviewedOn" 
+    bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+
+<button style="display: inline-block; margin-left: 150px;" (click)="updateClicked()" class="btn fa fa-save green fa-2x"></button>
+
+<button style="display: inline-block; margin-left: 50px;" (click)="close()" class="btn fa fa-window-close fa-2x"></button>
+<hr style="border-style: double; color: black; margin:0px;">
+<div *ngFor="let item of review?.contractReviewItems">
+    <app-contract-rvw-item
+        [item]="item"
+        (itemSaveEvent)="accumulateEvents($event)"
+    ></app-contract-rvw-item>
+</div>

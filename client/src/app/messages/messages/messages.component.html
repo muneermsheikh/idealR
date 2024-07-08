@@ -52,19 +52,11 @@
                 <td> {{message.content}}</td>
                 <td>
                     <div *ngIf="container === 'Outbox'">
-                        <img
-                            class="img-circle rounded-circle me-2 width: 15%"
-                            src="{{message.recipientPhotoUrl || './assets/user.png'}}"
-                            alt="recipient photo">
                         <strong>{{message.recipientUsername |
                             titlecase}}</strong>
                     </div>
                     <div *ngIf="container !== 'Outbox'">
-                        <img
-                            class="img-circle rounded-circle me-2 width: 15%"
-                            src="{{message.senderPhotoUrl || './assets/user.png'}}"
-                            alt="recipient photo">
-                        <strong>{{message.senderUsername | titlecase}}</strong>
+                            <strong>{{message.senderUsername | titlecase}}</strong>
                     </div>
                 </td>
                 <td >{{message.messageSent | timeago}}</td>

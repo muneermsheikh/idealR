@@ -20,7 +20,7 @@ namespace api.Data.Repositories.Admin
         private readonly IConfiguration _config;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICustomerRepository _custRepo;
-        private readonly DateOnly _dateToday;
+        private readonly DateTime _dateToday = DateTime.Now;
         private readonly IMapper _mapper;
         private readonly string _RAName;
         public ComposeMessagesHRRepository(DataContext context, IConfiguration config,       
@@ -31,7 +31,6 @@ namespace api.Data.Repositories.Admin
             _userManager = userManager;
             _config = config;
             _context = context;
-            _dateToday = DateOnly.FromDateTime(DateTime.UtcNow);
             _RAName = _config["RAName"];
         }
 

@@ -9,6 +9,7 @@ import { CallRecordParams } from '../_models/params/callRecordParams';
 import { ICallRecordItem } from '../_models/admin/callRecordItem';
 import { ICallRecordDto } from '../_dtos/admin/callRecordDto';
 import { ICallRecord } from '../_models/admin/callRecord';
+import { ICallRecordResult } from '../_dtos/admin/callRecordResult';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,11 @@ export class CallRecordsService {
   pagination: Pagination | undefined; //<IUserHistoryDto[]>;
   cache = new Map();
   
+  callRecordStatus: ICallRecordResult[] = [{status: "wrong number"}, {status: "Not Responding"}, {status: "Will Revert later"},
+    {status: "Declined-Family issues"}, {status: "Declined for overseas"}, {status: "Declined-Low remuneration"},
+    {status: "Declined - SC Not agreed"}, {status: "Interested - to negotiate remuneration"},
+    {status: "Interested, and keen"}, {status: "Interested, but doubtful"}]
+    
   constructor(private http: HttpClient) { }
 
   getHistories(hParams: CallRecordParams) {      //: Observable<IPagination<IUserHistoryDto[]>>
@@ -47,6 +53,11 @@ export class CallRecordsService {
         'CallRecord/callRecordWithItems/' + callRecordId + '/' + personType + '/' + personid + '/' + categoryRef);
   }
 
+  getCallRecordStatus () {
+      return this.callRecordStatus
+  }
+
+
   updateHistoryItem(item: ICallRecordItem) {
     return this.http.post<ICallRecordItem>(this.apiUrl + 'userHistory/userhistoryitem', item);
   }
@@ -60,8 +71,8 @@ export class CallRecordsService {
     return this.hParams;
   }
 
-  updateCallRecord(model: any) {
-    return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord', model);
+  updateCallRecord(model: ICallRecord) {
+    return this.http.put<boolean>(this.apiUrl + 'CallRecord', model);
   }
 
   updateCallRecordObject(model: any) {
@@ -76,6 +87,8 @@ export class CallRecordsService {
     return this.http.delete(this.apiUrl + 'userHistory/historyItemId/' + itemid);
   }
 
-  
-  
+  getCallRecordFromPhoneNo(phoneno: string) {
+    return this.http.get<ICallRecord>(this.apiUrl + 'callRecord/callRecordFromPhoneNo/' + phoneno);
+  }
+     
 }

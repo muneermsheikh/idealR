@@ -45,6 +45,7 @@ export class CandidateEditComponent implements OnInit {
 
   //id: string='';
   isAddMode: boolean=false;
+  strAddMode='';
   loading = false;
   submitted = false;
   bsValueDate = new Date();
@@ -125,9 +126,8 @@ export class CandidateEditComponent implements OnInit {
         this.qualifications = data['qualifications'],
         this.agents = data['agents'],
         this.candidate = data['candidate'];
-
         this.isAddMode = this.candidate?.id===0;
-       
+        this.strAddMode = this.isAddMode ? "Entering new candidate" : "Editing Application No." + this.candidate?.applicationNo;
     });
 
     if(this.candidate) this.InitializeAndPopulateFormArray(this.candidate);
@@ -149,7 +149,7 @@ export class CandidateEditComponent implements OnInit {
       aadharNo: [cv.aadharNo],
       ppNo: [cv.ppNo],
       ecnr: [cv.ecnr],
-      referredBy: [cv.referredBy],
+      companyId: [cv.companyId],
       referredByName: [cv.referredByName],
 
       address: [cv.address],
@@ -217,12 +217,12 @@ export class CandidateEditComponent implements OnInit {
 
     })
 
-    /*if(this.registerForm.controls['password']) {
+    if(this.registerForm.controls['password']) {
       this.registerForm.controls['password'].valueChanges.subscribe({
         next: () => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
       })
 
-    } */
+    } 
   }
 
   //edit form
@@ -474,6 +474,7 @@ export class CandidateEditComponent implements OnInit {
     }
 
     formData.append('data', JSON.stringify(this.registerForm.value));
+
     if(!this.candidate && formData.get('password') === undefined) {
       this.toastrService.info('Password not provided');
       return;
@@ -484,21 +485,24 @@ export class CandidateEditComponent implements OnInit {
 
         this.candidateService.registerNewWithFiles(formData).subscribe({
           next: (response: IApiReturnDto) => {
-            
-            if(response.errorMessage!==null) {
+            console.log('response in angular:', response);
+            if(response.errorMessage!=='') {
               this.toastrService.error('failed to save the candidate data', response.errorMessage);
             } else {
               this.toastrService.success('candidate saved, with Application No. ' + response.returnInt.toString(), 'Profile successfully inserted');
               this.registerForm.setValue({'applicationNo': response.returnInt});
             }},
-          error: error => this.toastrService.error('failed to insert the candidate', error)
+          error: error => {
+            this.toastrService.error('failed to insert the candidate', error.error.details);
+
+          }
     })} else {
         this.toastrService.info('udating ...');
         this.candidateService.UpdateCandidateWithFiles(formData).subscribe({
-          next: (response: ICandidateAndErrorStringDto) => {
+          next: (response: IApiReturnDto) => {
             //console.log('returned from api:', response);
-            if(response?.errorString !== '') {
-              this.toastrService.error('failed to update the candidate', response.errorString);
+            if(response?.errorMessage !== '') {
+              this.toastrService.error('failed to update the candidate', response.errorMessage);
             } else {
               this.toastrService.success('updated the candidate successfully');
               this.router.navigateByUrl(this.returnUrl);

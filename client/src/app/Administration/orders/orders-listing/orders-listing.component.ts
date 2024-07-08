@@ -153,7 +153,7 @@ export class OrdersListingComponent implements OnInit {
   }
 
    contractReviewOrder(id: number) {
-    this.navigateByRoute(id, '/administration/orderitemreview', true);
+    this.navigateByRoute(id, '/administration/orderReview', true);
   }
   
 

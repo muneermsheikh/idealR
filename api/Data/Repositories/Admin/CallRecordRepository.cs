@@ -268,8 +268,8 @@ namespace api.Data.Repositories.Admin
         public async Task<PagedList<CallRecordBriefDto>> GetCallRecordPaginated(CallRecordParams hParams, string Username)
         {
             var query = _context.CallRecords.AsQueryable();
-        
-            query = query.Where(x => x.PersonId == hParams.PersonId);
+
+            if(!string.IsNullOrEmpty(hParams.PersonId)) query = query.Where(x => x.PersonId == hParams.PersonId);
             if (!string.IsNullOrEmpty(hParams.Username)) query = query.Where(x => x.Username == Username);
             if(!string.IsNullOrEmpty(hParams.Subject)) query = query.Where(x => x.Subject == hParams.Subject);
             if(!string.IsNullOrEmpty(hParams.Status)) query = query.Where(x => x.Status == hParams.Status);
@@ -295,13 +295,13 @@ namespace api.Data.Repositories.Admin
             if(obj != null && obj.Id > 0) {
                 var callRecordItem = new CallRecordItem{
                     Id=0, CallRecordId=obj.Id, AdvisoryBy="", ContactResult=dto.Status, DateOfContact= DateTime.Now, 
-                    GistOfDiscussions="", NextAction="", NextActionOn=DateTime.Now, IncomingOutgoing="out", PhoneNo=dto.PhoneNo, 
-                    Username = username
+                    GistOfDiscussions="", NextAction="", NextActionOn=DateTime.Now, IncomingOutgoing="out", 
+                    PhoneNo=dto.PhoneNo, Username = username
                 };
                 obj.CallRecordItems.Add(callRecordItem);
             } else {
 
-                obj = await GenerateCallRecord(dto.CallRecordId, dto.PersonType, dto.PersonId, dto.CategoryRef, username);
+                obj = await GenerateCallRecord(dto.PersonType, dto.PersonId, dto.CategoryRef, username);
 
                 /* var callRecordItem = new CallRecordItem{
                     Id=0, CallRecordId=obj.Id, AdvisoryBy="", ContactResult=dto.Status, DateOfContact= DateTime.Now, GistOfDiscussions="", 
@@ -368,13 +368,13 @@ namespace api.Data.Repositories.Admin
             
         }
 
-        private async Task<CallRecord> GenerateCallRecord(int callRecordId, string personType, string personId, 
+        private async Task<CallRecord> GenerateCallRecord(string personType, string personId, 
             string categoryRef, string username) {
 
             var obj = new CallRecord();
 
             var callRecordItem = new CallRecordItem{
-                    Id=0, CallRecordId=callRecordId, AdvisoryBy="", ContactResult="Not Started", 
+                    Id=0, CallRecordId=0, AdvisoryBy="", ContactResult="Not Started", 
                     DateOfContact= DateTime.Now, GistOfDiscussions="", NextAction="", 
                     NextActionOn=DateTime.Now, IncomingOutgoing="out", PhoneNo="", Username = username
                 };
@@ -469,12 +469,46 @@ namespace api.Data.Repositories.Admin
         public async Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personType, string personId,
             string categoryRef, string Username)
         {
-            var query = await _context.CallRecords.Include(x => x.CallRecordItems.OrderByDescending(x => x.DateOfContact))
-                .Where(x => x.PersonId == personId).FirstOrDefaultAsync();
+            var query = callRecordId > 0 
+                ? await _context.CallRecords.Include(x => x.CallRecordItems)
+                    .Where(x => x.Id == callRecordId).FirstOrDefaultAsync()
+                : await GenerateCallRecord(personType, personId, categoryRef, Username);
 
-            query ??= await GenerateCallRecord(callRecordId, personType, personId, categoryRef, Username);
-            
             return query;
         }
+
+        public async Task<CallRecord> GetCallRecordWithItemsFromPhoneNo(string phoneNo, string username)
+        {
+            
+            var query = await _context.CallRecords
+                .Include(x => x.CallRecordItems)
+                .Where(x => x.PhoneNo.Contains(phoneNo))
+            .FirstOrDefaultAsync();
+
+            if(query == null) {
+                var queryP = await _context.ProspectiveCandidates.Where(x => x.PhoneNo.Contains(phoneNo)).FirstOrDefaultAsync();
+                if(queryP != null) query = await GenerateCallRecord(queryP.PersonType, queryP.PersonId, queryP.CategoryRef, username);
+                if(query == null) {
+                    
+                    var candidateId = await _context.UserPhones.Where(x => x.MobileNo.Contains(phoneNo)).Select(x => x.CandidateId).FirstOrDefaultAsync();
+                    if(candidateId == 0) return null;
+                    var queryC = await _context.Candidates.Where(x => x.Id==candidateId).FirstOrDefaultAsync();
+                    query = await GenerateCallRecord("Candidate", queryC.Id.ToString(), "", username);
+                    
+                    if(query==null) {
+                        var queryD = await _context.CustomerOfficials.Where(x => x.PhoneNo.Contains(phoneNo)).FirstOrDefaultAsync();
+                        query = await GenerateCallRecord("Official", queryD.Id.ToString(), "", username);
+                    }
+
+                    if(query == null) {
+                        var queryE = await _context.Employees.Where(x => x.OfficialMobileNo.Contains(phoneNo)).FirstOrDefaultAsync();
+                        query = await GenerateCallRecord("Employee", queryE.Id.ToString(), "", username);
+                    } 
+
+                }
+            }
+            return query;
+        }
+
     }
 }

@@ -84,6 +84,15 @@ namespace api.Controllers
             return await _repo.GetFeedbackStddQs();
         }
 
-        
+        [HttpGet("sendfeedback/{id}/{url}")]
+        public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id, string url)
+        {
+            var err = await _repo.SendFeedbackEmailToCustomer(id, url, User.GetUsername());
+
+            if(string.IsNullOrEmpty(err)) return Ok("");
+
+            return BadRequest(new ApiException(400, "Failed to generate email to client", err));
+
+        }
     }
 }

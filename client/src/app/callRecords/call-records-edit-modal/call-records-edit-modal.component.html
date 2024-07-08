@@ -8,25 +8,25 @@
 <div class="modal-body my-0">
     <div *ngIf="callRecord">
         <form [formGroup]="form" >
-            <label class="lbl w150 fSmaller">Name of the Person:</label> 
-            <div class="stdd w150 fSmaller" >{{callRecord.personName}}</div>
+            <label class="lbl w150">Name of the Person:</label> 
+            <div class="stdd w150" >{{callRecord.personName}}</div>
         
-            <label class="lbl w125 fSmaller mL15">CategoryRef:</label> 
-                <div class="stdd fSmaller w150">{{callRecord.categoryRef}}</div>
-            <br><label class="lbl fSmaller w150">Subject:</label> 
-                <div class="stdd fSmaller w150">{{callRecord.subject}}</div>
-            <label class="lbl w125 fSmaller mL15">Status:</label> 
-            <div class="stdd fSmaller w100">{{callRecord.status}}</div>
+            <label class="lbl w125 mL15">CategoryRef:</label> 
+                <div class="stdd w150">{{callRecord.categoryRef}}</div>
+            <br><label class="lbl w150">Subject:</label> 
+                <div class="stdd w150">{{callRecord.subject}}</div>
+            <label class="lbl w125 mL15">Status:</label> 
+            <div class="stdd  w100">{{callRecord.status}}</div>
 
             <hr class="my-1">
             
-            <label class="lbl fSmaller w80">Date</label>
-            <label class="lbl fSmaller w50">In/Out</label>
-            <label class="lbl fSmaller w80">Phone</label>
-            <label class="lbl fSmaller w150">Gist of discussions</label>
-            <label class="lbl fSmaller w125">Result</label>
-            <label class="lbl fSmaller w125">Next action</label>
-            <label class="lbl fSmaller w100">On</label>
+            <label class="lbl w80">Date</label>
+            <label class="lbl w30">In/<br>Out</label>
+            <label class="lbl w125">Result</label>
+            <label class="lbl w80">Phone</label>
+            <label class="lbl w125">Gist of discussions</label>
+            <label class="lbl w125">Next action</label>
+            <label class="lbl w100">On</label>
             <button class="btn w25 fa fa-plus" (click)="addCallRecordItem()" ></button>
             <hr class="my-0">
 
@@ -34,19 +34,15 @@
                 <div *ngFor="let item of callRecordItems.controls; let i=index">
                     <div [formGroupName]="i">
                         
-                        <input class="stdd  fSmaller w80" type="text" placeholder="Date" 
+                        <input class="stdd w80" type="text" placeholder="Date" 
                             formControlName="dateOfContact" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-                        <input type="text" class="stdd fSmaller w50" formControlName="incomingOutgoing" >
+                        
+                        <input type="text" class="stdd fSmaller w30" formControlName="incomingOutgoing" >
                       
-                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
-                        
-                        <textarea formControlName="gistOfDiscussions" cols="20" rows="2" 
-                            class="stdd  fSmaller"></textarea>
-                        
                         <ng-select
-                            class="stdd w125  fSmaller"
+                            class="select w125"
                             style="border-color: black;"
                             [items]="contactResults"
                             bindLabel="status"
@@ -55,8 +51,14 @@
                             formControlName="contactResult"
                         ></ng-select>
 
+                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
+                        
+                        <textarea formControlName="gistOfDiscussions" cols="15" rows="2" 
+                            class="stdd  fSmaller"></textarea>
+                        
+
                         <ng-select
-                            class="stdd w125 fSmaller"
+                            class="select w125"
                             style="border-color: black;"
                             [items]="contactResults"
                             bindLabel="status"
@@ -65,7 +67,7 @@
                             formControlName="nextAction"
                         ></ng-select>
 
-                        <input class="stdd w75 fSmaller" type="text" placeholder="Date" 
+                        <input class="stdd w75" type="text" placeholder="Date" 
                             formControlName="nextActionOn" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">

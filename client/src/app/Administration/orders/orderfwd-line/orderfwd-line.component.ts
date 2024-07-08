@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IOrderForwardToAgentDto } from 'src/app/_dtos/orders/orderForwardToAgentDto';
 import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 
 @Component({
@@ -9,7 +8,7 @@ import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent
 })
 export class OrderfwdLineComponent {
 
-  @Input() fwd: IOrderForwardToAgentDto | undefined;
+  @Input() fwd: IOrderForwardToAgent | undefined;
   
   @Output() editEvent = new EventEmitter<number>();
   @Output() deleteEventMain = new EventEmitter<number>();

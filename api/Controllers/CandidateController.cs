@@ -125,7 +125,7 @@ namespace api.Controllers
 
         
         [HttpGet("emailexists")]
-        public async Task<AppUser> AppUserOfEmail(string email)
+        public async Task<AppUser> AppUserFromEmail(string email)
         {
             var appuser = await _userManager.FindByEmailAsync(email);
             if (appuser == null) return null;
@@ -147,27 +147,20 @@ namespace api.Controllers
         }
 
         [HttpPost("RegisterByUpload"), DisableRequestSizeLimit]
-        public async Task<ActionResult<Candidate>> Upload()
+        public async Task<ActionResult<ApiReturnDto>> Upload()
         {
             var appuser = await _userManager.FindByNameAsync(User.GetUsername());
             var username = User.GetUsername();
             var userattachments = new List<UserAttachment>();
-            
+            var ApplicationNoString = await _candidateRepo.GetNextApplicationNo();
+
             try
             {
                 var modelData = JsonSerializer.Deserialize<RegisterDto>(Request.Form["data"],   //THE CNDIDATE OBJECT
                         new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                 
                 var files = Request.Form.Files;
-                //create the candidate object frist, because the file attachment to save later needs candidate.Id
-                var CandidateDtoWithErr = await CreateAppUserAndCandidate(modelData, User.GetUsername());
-                if(!string.IsNullOrEmpty(CandidateDtoWithErr.ErrorString)) {
-                        return BadRequest(new ApiException(400, "Bad Request", CandidateDtoWithErr.ErrorString));
-                }
-
-                var candidateCreated = CandidateDtoWithErr.candidate;
-                var ApplicationNoString = candidateCreated.ApplicationNo.ToString().Trim();
-                //candidate is created, now check for any file attachment to download and save.
+                 //candidate is created, now check for any file attachment to download and save.
                 //file in params will have the posted file
                 
                 var folderName = Path.Combine("Assets", "Images");
@@ -188,15 +181,32 @@ namespace api.Controllers
                     using var stream = new FileStream(fullPath, FileMode.Create);
                     file.CopyTo(stream);
 
-                    var attachment = new UserAttachment{ AppUserId = appuser.Id, AttachmentType = "", 
+                    /*var attachment = new UserAttachment{ AppUserId = appuser.Id, AttachmentType = "", 
                         CandidateId = candidateCreated.Id, Name = ApplicationNoString + "-" + fileName, 
                         UploadedbyUserName = username, 
-                        Length = Convert.ToInt32(file.Length/1024), UploadedLocation = pathToSave, UploadedOn = _today };
-                    userattachments.Add(attachment);
+                        Length = Convert.ToInt32(file.Length/1024), 
+                        UploadedLocation = pathToSave, UploadedOn = _today };
+                    */
+                    var attachmt = modelData.UserAttachments.Where(x => x.Name == file.FileName).FirstOrDefault();
+                    if(attachmt != null) {
+                        attachmt.AppUserId=appuser.Id;
+                        attachmt.UploadedLocation=pathToSave;
+                        attachmt.Length=file.Length/2048;
+                        attachmt.UploadedOn = _today;
+                        attachmt.Name = fileName;
+                        attachmt.UploadedbyUserName=User.GetUsername();
+                    }
+                    
+                    
                 }
 
-                await _candidateRepo.UpdateCandidateAttachments(userattachments);
-                return candidateCreated;
+                //create the candidate object frist, because the file attachment to save later needs candidate.Id
+                var CandidateDtoWithErr = await CreateAppUserAndCandidate(modelData, username);
+                if(!string.IsNullOrEmpty(CandidateDtoWithErr.ErrorMessage)) {
+                        return BadRequest(new ApiException(400, "Bad Request", CandidateDtoWithErr.ErrorMessage));
+                }
+               
+                return CandidateDtoWithErr;
             }
             catch (Exception ex)
             {
@@ -205,29 +215,28 @@ namespace api.Controllers
 
             
         }
-
         //registers individuals. For customers and vendors, it will register the users for customers that exist
         //the IFormFile collection has following prefixes to filenames:
         //pp: passport; ph: photo, ec: educational certificates, qc: qualification certificates
-        
-        private async Task<CandidateAndErrorStringDto> CreateAppUserAndCandidate(RegisterDto registerDto, string Username) 
+        private async Task<ApiReturnDto> CreateAppUserAndCandidate(RegisterDto registerDto, string Username) 
         {
-            var dtoToReturn = new CandidateAndErrorStringDto();
+            var tempPassword="TempPa#sword0";
+
+            var dtoToReturn = new ApiReturnDto();
 
             //attempt to create AppUser
-            var existingAppUser = await AppUserOfEmail(registerDto.Email);
-            
+            var existingAppUser = await _userManager.FindByEmailAsync(registerDto.Email);
             if (existingAppUser != null) {
-                dtoToReturn.ErrorString = "Email address is in use";
+                dtoToReturn.ErrorMessage = "Email address is in use";
                 return dtoToReturn; }
 
             if (!string.IsNullOrEmpty(registerDto.AadharNo) &&  await _candidateRepo.AadharNoExists(registerDto.AadharNo)) {
-                dtoToReturn.ErrorString = "Aadhar Number is in use";
+                dtoToReturn.ErrorMessage = "Aadhar Number is in use";
                 return dtoToReturn; }
 
-            if (!string.IsNullOrEmpty(registerDto.AadharNo)) {
+            if (!string.IsNullOrEmpty(registerDto.PpNo)) {
                 if(await _candidateRepo.CheckPPExists(registerDto.PpNo)) {
-                    dtoToReturn.ErrorString = "Passport Number is in use";
+                    dtoToReturn.ErrorMessage = "Passport Number is in use";
                     return dtoToReturn; 
                 }
             }
@@ -236,17 +245,12 @@ namespace api.Controllers
             {
                 foreach (var ph in registerDto.UserPhones) {
                     if (string.IsNullOrEmpty(ph.MobileNo)) {
-                        dtoToReturn.ErrorString = "Mobile Number cannot be blank";
+                        dtoToReturn.ErrorMessage = "Mobile Number cannot be blank";
                         return dtoToReturn; 
                     } 
                 }
             }
             
-            if(string.IsNullOrEmpty(registerDto.Password)) {
-                dtoToReturn.ErrorString = "Password not provided";
-                return dtoToReturn;
-            }
-
             //create and save AppUser 
             var user = new AppUser();
 
@@ -259,15 +263,14 @@ namespace api.Controllers
                 UserName = registerDto.Email
             };
             
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, tempPassword);
             if (!result.Succeeded) {
-                dtoToReturn.ErrorString = result.Errors.Select(x => x.Description).FirstOrDefault();
+                dtoToReturn.ErrorMessage = result.Errors.Select(x => x.Description).FirstOrDefault();
                 return dtoToReturn;
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Candidate");
 
-            
             var userDtoToReturn = new UserDto
             {
                 KnownAs = user.KnownAs,
@@ -284,7 +287,7 @@ namespace api.Controllers
             if(candidateCreated == null) {
                 //failed, delete appuser created
                 await _userManager.DeleteAsync(user);
-                dtoToReturn.ErrorString="Failed To Create the candidate";
+                dtoToReturn.ErrorMessage="Failed To Create the candidate";
                 return dtoToReturn;
             } else {
                 //user.loggedInEmployeeId=candidateCreated.Id;
@@ -292,14 +295,14 @@ namespace api.Controllers
             }
     
         
-            dtoToReturn.candidate = candidateCreated;
+            dtoToReturn.ReturnInt = candidateCreated.ApplicationNo;
             return  dtoToReturn;
         }
           
         [HttpPut("updatecandidatewithfiles"), DisableRequestSizeLimit]
-          public async Task<ActionResult<CandidateAndErrorStringDto>> EditCandidateWithUpload()
+          public async Task<ActionResult<ApiReturnDto>> EditCandidateWithUpload()
           {
-               var dtoToReturn = new CandidateAndErrorStringDto();
+               var dtoToReturn = new ApiReturnDto();
 
                string applicationno="";
 
@@ -314,7 +317,7 @@ namespace api.Controllers
                     //var modelData = Request.Form["data"];
                     //CompanyId=null DOB null, remove entityaddress, remove userPassports,
                     if(!await _candidateRepo.UpdateCandidate(modelData)) {
-                        dtoToReturn.ErrorString = "Failed to update candidate obkect";
+                        dtoToReturn.ErrorMessage = "Failed to update candidate obkect";
                         return BadRequest(new ApiException(404, "Bad Request", "Failed to update candidate object"));
 
                     }
@@ -365,8 +368,8 @@ namespace api.Controllers
                     }
                     var attachmentsUpdated = await _candidateRepo.AddAndSaveUserAttachments(userattachmentlist, User.GetUsername());                   
                     //candidateObject.UserAttachments=attachmentsUpdated;
-                    dtoToReturn.candidate=modelData;
-                    if(string.IsNullOrEmpty(dtoToReturn.ErrorString)) dtoToReturn.ErrorString="";
+                    dtoToReturn.ReturnInt=Convert.ToInt32(applicationno);
+                    if(string.IsNullOrEmpty(dtoToReturn.ErrorMessage)) dtoToReturn.ErrorMessage="";
                     return Ok(dtoToReturn);
                }
                catch (Exception ex)
@@ -395,7 +398,7 @@ namespace api.Controllers
 
             var obj = await _candidateRepo.UpdateCandidateAttachments(attachmentlist);
 
-            if(obj != null) return obj.FirstOrDefault();
+            if(obj != null) return obj.UserAttachments.FirstOrDefault();
 
             return BadRequest(new ApiException(400, "Bad Request", "failed to update the user attachment"));
         }

@@ -2,6 +2,7 @@ using api.Data.Migrations;
 using api.DTOs.HR;
 using api.Entities.Admin.Client;
 using api.Helpers;
+using api.Interfaces.Admin;
 using api.Interfaces.HR;
 using api.Params;
 using AutoMapper;
@@ -15,8 +16,10 @@ namespace api.Data.Repositories.HR
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public FeedbackRepository(DataContext context, IMapper mapper)
+        private readonly IComposeMessagesAdminRepository _msgRep;
+        public FeedbackRepository(DataContext context, IMapper mapper, IComposeMessagesAdminRepository msgRep)
         {
+            _msgRep = msgRep;
             _mapper = mapper;
             _context = context;
         }
@@ -204,5 +207,19 @@ namespace api.Data.Repositories.HR
 
         }
 
+        public async Task<string> SendFeedbackEmailToCustomer(int feedbackId, string Url, string username)
+        {
+            var strErr="";
+
+            var msgWithErr = await _msgRep.ComposeFeedbackMailToCustomer(feedbackId, Url, username);
+            if(msgWithErr.Messages.Count > 0) {
+                _context.Messages.Add(msgWithErr.Messages.FirstOrDefault());
+                strErr = await _context.SaveChangesAsync() > 0 ? "" : msgWithErr.ErrorString;
+            } else {
+                strErr = msgWithErr.ErrorString;
+            }
+
+            return strErr;
+        }
     }
 }

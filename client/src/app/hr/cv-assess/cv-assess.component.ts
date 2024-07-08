@@ -243,7 +243,6 @@ export class CvAssessComponent implements OnInit {
   }
 
   openSwitchMapModalChecklist() {
-    console.log('switchmodal checklist:', this.checklist);
 
     if(this.checklist && this.cvBrief) {
 

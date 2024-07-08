@@ -84,7 +84,7 @@ namespace api.Data.Repositories.Orders
             
             return orderFwd;
         }
-        public async Task<PagedList<OrderForwardToAgentDto>> GetPagedListOfOrderFwds(OrderFwdParams fParams)
+        public async Task<PagedList<OrderForwardToAgent>> GetPagedList(OrderFwdParams fParams)
         {
             var query = _context.OrderForwardToAgents
                 .Include(x => x.OrderForwardCategories)
@@ -93,10 +93,10 @@ namespace api.Data.Repositories.Orders
             
             //if(fParams.ProfessionId != 0) qyery = query.Where(x => x.OrderForwardCategories.Select(y => y.ProfessionId).ToList().Contains(fParams.ProfessionId).Where(x => x.ProfessionId == fParams.ProfessionId));
             if(fParams.OrderId != 0) query = query.Where(x => x.OrderId == fParams.OrderId);
+           var paged = await PagedList<OrderForwardToAgent>.CreateAsync(query.AsNoTracking()
+                    //.ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
+                    , fParams.PageNumber, fParams.PageSize);
             
-            var paged = await PagedList<OrderForwardToAgentDto>.CreateAsync(query.AsNoTracking()
-                    .ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider),
-                    fParams.PageNumber, fParams.PageSize);
             
             return paged;
 

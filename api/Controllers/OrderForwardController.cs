@@ -23,7 +23,7 @@ namespace api.Controllers
         [HttpGet("pagedlist")]
         public async Task<ActionResult<PagedList<OrderForwardToAgentDto>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
         {
-            var fwds = await _orderFwdRepo.GetPagedListOfOrderFwds(fParams);
+            var fwds = await _orderFwdRepo.GetPagedList(fParams);
 
             if(fwds == null) return NotFound("No matching Order Forward records found");
 

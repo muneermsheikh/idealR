@@ -14,8 +14,10 @@ export class MessagesComponent implements OnInit{
   pagination?: Pagination;
   container = "Inbox";
   pageNumber = 1;
-  pageSize = 5;
+  pageSize = 10;
   loading = false;
+
+  lastContainer = "";
 
   constructor(private messageService: MessageService) { }
 
@@ -24,6 +26,8 @@ export class MessagesComponent implements OnInit{
   }
 
   loadMessages() {
+    if(this.container == this.lastContainer) return;
+
     this.loading = true;
     this.messageService.getMessages(this.pageNumber, this.pageSize, this.container).subscribe({
       next: response => {
@@ -32,6 +36,8 @@ export class MessagesComponent implements OnInit{
         this.loading = false;
       }
     })
+
+    this.lastContainer = this.container;
   }
 
   deleteMessage(id: number) {

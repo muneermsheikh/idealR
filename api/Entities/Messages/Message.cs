@@ -23,8 +23,8 @@ namespace api.Entities.Messages
         public string BCCEmail { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
-        public DateOnly MessageComposedOn {get; set;}
-        public DateOnly? MessageSentOn { get; set; } 
+        public DateTime MessageComposedOn {get; set;}
+        public DateTime? MessageSentOn { get; set; } 
         public bool SenderDeleted { get; set; }=false;
         public bool RecipientDeleted { get; set; }=false;
         

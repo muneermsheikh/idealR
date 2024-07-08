@@ -127,5 +127,10 @@ export class FeedbackListComponent implements OnInit {
         
       });
     }
+
+    emailClicked(event: any) {    //emits feedback.Id
+    
+      this.service.sendFeedbackEmailToClient(event)
+    }
   
 }

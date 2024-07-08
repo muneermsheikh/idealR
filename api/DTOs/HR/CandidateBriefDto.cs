@@ -9,6 +9,7 @@ namespace api.DTOs.HR
         public string FullName {get; set;}
      //[Required]         
         public string KnownAs { get; set; }
+        public string ReferredByName { get; set; }
         public string City {get; set;}
         public string Email { get; set; }
         public DateTime Created { get; set; }

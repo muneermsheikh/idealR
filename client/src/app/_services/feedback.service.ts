@@ -66,6 +66,13 @@ export class FeedbackService {
     return this.http.get<IFeedbackInput>(this.apiUrl + 'Feedback/newfeedback/' + customerId );
   }
   
+  sendFeedbackEmailToClient(id: number) {
+    console.log('reached feedbackservice, sedfeebdack', id);
+    var url = "<a [routerLink]=[" + this.apiUrl + '/Feedback/' + id + "] >here</a>";
+    console.log('reached feedbackservice, URL', url);
+    return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/' + url);
+  }
+
   setParams(params: FeedbackParams) {
     this.fParams = params
   }

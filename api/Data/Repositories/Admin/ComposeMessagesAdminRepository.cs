@@ -24,7 +24,7 @@ namespace api.Data.Repositories.Admin
         private readonly IMapper _mapper;
         private readonly IConfiguration _confg;
         private readonly IQueryableRepository _queryRepo;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public ComposeMessagesAdminRepository(DataContext context, UserManager<AppUser> userManager, 
              IComposeMessagesForTypes commonMsg, IEmployeeRepository empRepo, IMapper mapper, 
              IQueryableRepository queryRepo, IConfiguration confg)
@@ -520,5 +520,56 @@ namespace api.Data.Repositories.Admin
             return message;
         }
 
+        public async Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string Url, string username)
+        {
+            var msgWithErr = new MessageWithError();
+
+            var fdbk = await _context.CustomerFeedbacks.Include(x => x.FeedbackItems)
+                .Where(x => x.Id == feedbackId).FirstOrDefaultAsync();
+
+            var senderObj = await _userManager.FindByIdAsync(_confg["DocControllerAdminAppUserId"]);
+            if (senderObj == null) {
+                msgWithErr.ErrorString = "Failed to get DocControllerAdmin AppUserId";
+                return msgWithErr;
+            }
+
+            var recipientObj = await _userManager.FindByIdAsync(fdbk.OfficialAppUserId.ToString());
+            if(recipientObj == null) {
+                msgWithErr.ErrorString = "Failed to get recipient Object";
+                return msgWithErr;
+            }
+
+            
+            string msg=_today + "<br><br>Mr. " + fdbk.OfficialName + 
+                "<br>" + fdbk.Designation +"<br>" + fdbk.CustomerName + 
+                "<br>" + fdbk.City + "<br>" + fdbk.Country + "<br>Email: " + fdbk.Email +
+                "<br><br>Dear Sir:<br><br>";
+            
+            msg +="As per requirements of ISO:9001-2015 certification, we are required to compile customer " +
+                "feedbacks to analyse their appreciations as well as grievances, so as to upgrade our systems " +
+                "to improve our customer satisfaction index. Please " + 
+                "Click <a href='" + Url + "'>here</a> to open the page containing the feedback questionnaire. " +
+                "If for some reason you are not able to access the link, a hard copy is attached, which will require " + 
+                "it to be printed, filled-in, scanned and send back to us.  The online version will be quite convenient to you, "+
+                "but we leave it to your convenience. <br><br>We thank you for your cooperation, which will certainly " +
+                "lead to our providing you improved services.";
+            msg +="<br><br>We thank you for the opportunity to serve you, and assure you of our best and prompt services, always!" +
+                "<br><br>Best regards<br><br>" + senderObj.KnownAs;
+
+            var message = new Message
+            {
+                MessageType = "CustomerFeedback",
+                SenderAppUserId = senderObj.Id, MessageComposedOn = _today,
+                SenderUsername = senderObj.UserName, SenderEmail = senderObj.Email,
+                RecipientAppUserId = recipientObj.Id, RecipientUsername = recipientObj.UserName,
+                RecipientEmail = recipientObj.Email, Subject = "Customer Feedback as per ISO-9001:2015",
+                Content = msg
+            };
+
+            msgWithErr.ErrorString="";
+            msgWithErr.Messages = new List<Message>{message};
+            
+            return msgWithErr;
+        }
     }
 }

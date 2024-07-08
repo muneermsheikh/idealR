@@ -4,9 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, filter, iif, of, switchMap, tap } from 'rxjs';
 import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
-import { IOrderForwardCategory } from 'src/app/_models/orders/orderForwardCategory';
-import { IOrderForwardCategoryOfficial } from 'src/app/_models/orders/orderForwardCategoryOfficial';
-import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
+import { IOrderForwardCategoryDto, IOrderForwardToAgentDto, IOrderForwardToOfficialDto } from 'src/app/_dtos/orders/orderForwardToAgentDto';
 import { OrderForwardService } from 'src/app/_services/admin/order-forward.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 
@@ -18,7 +16,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 export class OrderForwardComponent implements OnInit {
 
   form: FormGroup = new FormGroup({});
-  orderFwd: IOrderForwardToAgent | undefined;
+  orderFwd: IOrderForwardToAgentDto | undefined;
   customers: IOfficialAndCustomerNameDto[]=[];
   bsValueDate = new Date();
 
@@ -36,8 +34,7 @@ export class OrderForwardComponent implements OnInit {
       if(this.orderFwd) this.CreateAndInitializeForm(this.orderFwd);
   }
   
-  CreateAndInitializeForm(fwd: IOrderForwardToAgent) {
-    console.log('fwd: ', fwd);
+  CreateAndInitializeForm(fwd: IOrderForwardToAgentDto) {
     this.form = this.fb.group({
       id: [fwd.id ?? 0],
       orderId: [fwd.orderId ?? 0, Validators.required],
@@ -46,15 +43,13 @@ export class OrderForwardComponent implements OnInit {
       customerId: [fwd.customerId ?? 0, Validators.required],
       customerName: [fwd.customerName ?? ''],
       customerCity: [fwd.customerCity] ?? '',
-      projectManagerId: [fwd.projectManagerId ?? 0],
 
       orderForwardCategories: this.fb.array(
         fwd.orderForwardCategories.map(cat => (
           this.fb.group({
               id: [cat.id ?? 0],
-              orderId: [cat.orderId ?? 0, Validators.required],
               orderItemId: [cat.orderItemId ?? 0, Validators.required],
-              orderForwardToAgentId: [cat.orderForwardToAgentId ?? 0, Validators.required],
+              orderForwardToAgentId: [cat.agentId ?? 0, Validators.required],
               professionId: [cat.professionId ?? 0, Validators.required],
               professionName: [cat.professionName ?? ''],
               charges: [cat.charges ?? 0],
@@ -64,11 +59,10 @@ export class OrderForwardComponent implements OnInit {
                     this.fb.group({
                         id: [off.id],
                         orderForwardCategoryId: [off.orderForwardCategoryId ?? 0, Validators.required],
-                        orderItemId: [off.orderItemId ?? 0, Validators.required],
                         customerOfficialId: [off.customerOfficialId ?? 0, Validators.required],
-                        officialName: [off.officialName ?? ''],
+                        customerOfficialName: [off.customerOfficialName ?? ''],
                         agentName: [off.agentName ?? '', Validators.required],
-                        dateTimeForwarded: [off.dateTimeForwarded ?? new Date()],
+                        dateTimeForwarded: [off.dateForwarded ?? new Date()],
                         emailIdForwardedTo: [off.emailIdForwardedTo ?? ''],
                         phoneNoForwardedTo: [off.phoneNoForwardedTo ?? ''],
                         whatsAppNoForwardedTo: [off.whatsAppNoForwardedTo ?? ''],
@@ -262,10 +256,10 @@ export class OrderForwardComponent implements OnInit {
   formContainsError() {
     var formdata = this.form.value;
     var err: string='';
-    formdata.orderForwardCategories.forEach((cat: IOrderForwardCategory) => {
-        cat.orderForwardCategoryOfficials.forEach((off:IOrderForwardCategoryOfficial) => {
+    formdata.orderForwardCategories.forEach((cat: IOrderForwardCategoryDto) => {
+        cat.orderForwardCategoryOfficials.forEach((off:IOrderForwardToOfficialDto) => {
             if(off.customerOfficialId===0) err +='Customer Not Selected';
-            if(off.dateOnlyForwarded!== undefined) err += 'Date forwarded not selected';
+            if(off.dateForwarded!== undefined) err += 'Date forwarded not selected';
         })
     });
 

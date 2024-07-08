@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { User } from 'src/app/_models/user';
+import { CallRecordsService } from 'src/app/_services/call-records.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 
 @Component({
@@ -14,7 +15,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 })
 export class CallRecordsEditModalComponent implements OnInit {
 
-  @Input() updateCallRecordEvent = new EventEmitter<ICallRecord>();
+  @Output() updateCallRecordEvent = new EventEmitter<boolean>();
   
   callRecord: ICallRecord | undefined;
   candidatName='';
@@ -30,7 +31,9 @@ export class CallRecordsEditModalComponent implements OnInit {
   inOutList: ICallRecordResult[]=[{status: "In"}, {status: "Out"}];
 
   constructor(private bsModalRef: BsModalRef, private toastr: ToastrService,
-    private fb: FormBuilder, private confirm: ConfirmService){}
+    private fb: FormBuilder, private confirm: ConfirmService, private service: CallRecordsService){
+      this.contactResults = this.service.getCallRecordStatus()
+    }
 
   ngOnInit(): void {
     if(this.callRecord) this.InitializeForm(this.callRecord);
@@ -87,8 +90,13 @@ export class CallRecordsEditModalComponent implements OnInit {
 
   updateCallRecord() {
     var formdata = this.form.value;
-    this.updateCallRecordEvent.emit(formdata);
-    this.bsModalRef.hide();
+    this.service.updateCallRecord(formdata).subscribe({
+      next: succeeded => {
+        this.updateCallRecordEvent.emit(succeeded);
+        if(succeeded) this.bsModalRef.hide();
+      }
+    })
+  
   }
 
   close() {

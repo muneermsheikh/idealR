@@ -303,7 +303,9 @@ export class CvsAvailableToRefComponent implements OnInit {
       error: (err: any) => this.toastr.error(err, 'Error in referring the CVs;')
     })
     
+  }
 
-
+  close() {
+    this.router.navigateByUrl(this.returnUrl);
   }
 }

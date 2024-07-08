@@ -139,7 +139,7 @@ namespace api.Data.Repositories
         }
 
 
-        public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
         {
             var qry = _context.Messages.OrderByDescending(x => x.MessageSentOn).AsQueryable();
 
@@ -152,10 +152,13 @@ namespace api.Data.Repositories
                 _ => qry = qry.Where(x => x.RecipientUsername == messageParams.Username && x.RecipientDeleted == false)
             };
 
-            var messages = qry.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
+            qry = qry.Where(x => x.Id > 6 && x.Id < 13);
 
-            return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+            //var messages = qry.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
 
+            var msgs = await PagedList<Message>.CreateAsync(qry, messageParams.PageNumber, messageParams.PageSize);
+
+            return msgs;
         }
 
         public async Task<ICollection<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName)

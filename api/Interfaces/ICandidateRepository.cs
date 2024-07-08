@@ -21,12 +21,13 @@ namespace api.Interfaces
         Task<bool> AadharNoExists(string aadharNo);
         Task<Candidate> CreateCandidateAsync(RegisterDto registerDto, string Username);
         Task<int> GetApplicationNoFromCandidateId(int candidateId);
+        Task<int> GetNextApplicationNo();
         Task<int> GetAppUserIdOfCandidate(int candidateid);
 
         //attachments
         Task<ICollection<UserAttachment>> AddAndSaveUserAttachments(ICollection<UserAttachment> userAttachments, string username);
         Task<bool> DeleteUserAttachment(int userAttachmentId);
-        Task<ICollection<UserAttachment>> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments);
+        Task<UserAttachmentsWithErrDto> UpdateCandidateAttachments(ICollection<UserAttachment> userAttachments);
         //Task<bool> UpdateCandidateAttachmentsWithFileNames (ICollection<string> filenames, int candidateId);
         Task<UserAttachment> GetUserAttachmentById (int attachmentId);
         Task<ICollection<UserAttachment>> GetUserAttachmentByCandidateId (int candidateid);

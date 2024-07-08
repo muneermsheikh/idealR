@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IOrderForwardToAgentDto } from 'src/app/_dtos/orders/orderForwardToAgentDto';
 import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 import { Pagination } from 'src/app/_models/pagination';
 import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
@@ -20,7 +19,7 @@ export class OrderFwdsComponent {
   
   data: IOrderForwardToAgent[]=[];
 
-  fwdsToAgent: IOrderForwardToAgentDto[]=[];
+  fwdsToAgent: IOrderForwardToAgent[]=[];
 
   fwdToAgent: IOrderForwardToAgent | undefined;
   fwdParams = new OrderFwdParams();
@@ -46,6 +45,7 @@ export class OrderFwdsComponent {
               this.fwdsToAgent = response.result;
               this.pagination = response.pagination;
               this.totalCount = response.count;
+              console.log('orderfwds loadfwdrecords:', this.fwdsToAgent);
           }
         },
         error: (error: any) => console.log(error)

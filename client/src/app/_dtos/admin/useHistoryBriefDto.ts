@@ -7,10 +7,10 @@ export interface IUserHistoryBriefDto
     categoryRef: string;
     categoryName: string;
     personType: string;
-    candidateName: string;
+    personName: string;
     personId: string;
-    emailId: string;
-    mobileNo:string;
+    email: string;
+    phoneNo:string;
     createdOn: Date;
     status: string;
  }

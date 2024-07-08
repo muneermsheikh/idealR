@@ -16,7 +16,7 @@ namespace api.Interfaces.Admin
         Task<string> UpdateForwardOrderToHR (int orderid, string Username);
         Task<OrderForwardToAgent> OrderFowardsOfAnOrder(int orderid);
         Task<OrderForwardToAgentDto> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username);
-        Task<PagedList<OrderForwardToAgentDto>> GetPagedListOfOrderFwds(OrderFwdParams fParams);
+        Task<PagedList<OrderForwardToAgent>> GetPagedList(OrderFwdParams fParams);
         Task<bool> DeleteOrderForward(int orderid);
         Task<bool> DeleteOrderForwardCategory(int orderitemid);
         Task<bool> DeleteOrderForwardCategoryOfficial(int orderFwdOfficialId);

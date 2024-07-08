@@ -20,9 +20,8 @@ namespace api.DTOs
         [Required] public string City { get; set; }
         public string Pin { get; set; }
         [Required] public string Country { get; set; }
-        [Required]
-        [StringLength(8, MinimumLength = 4)]
-        public string Password { get; set; }
+        /*[Required, StringLength(8, MinimumLength = 4)]
+        public string Password { get; set; }*/
         public ICollection<UserPhone> UserPhones { get; set; }
         public ICollection<UserProfession> UserProfessions { get; set; }
         public ICollection<UserQualification> UserQualifications { get; set; }

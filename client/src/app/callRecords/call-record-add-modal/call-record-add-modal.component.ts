@@ -14,7 +14,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 })
 export class CallRecordAddModalComponent implements OnInit {
 
-  @Output() callRecordAddEvent = new EventEmitter<ICallRecord>();
+  @Output() callRecordAddEvent = new EventEmitter<boolean>();
   
   callRecord: ICallRecord| undefined;
   contactResult: string='';
@@ -36,7 +36,7 @@ export class CallRecordAddModalComponent implements OnInit {
 
     var confirmMsg = 'confirm update this Call Record. ';
 
-    const observableInner = this.service.updateCallRecord(this.callRecord);
+    const observableInner = this.service.updateCallRecord(this.callRecord!);
     const observableOuter = this.confirm.confirm('confirm Update', confirmMsg);
 
     observableOuter.pipe(

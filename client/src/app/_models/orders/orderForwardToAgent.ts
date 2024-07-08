@@ -9,11 +9,11 @@ export interface IOrderForwardToAgent
 	customerId: number;
 	customerName: string;
 	customerCity: string;
-	projectManagerId: number;
+	//projectManagerId: number;
 	orderForwardCategories: IOrderForwardCategory[];
 }
 
-export class OrderForwardToAgent 
+export class OrderForwardToAgent implements IOrderForwardToAgent
 {
 	id= 0;
 	orderId= 0;
@@ -22,6 +22,6 @@ export class OrderForwardToAgent
 	customerId= 0;
 	customerName= '';
 	customerCity= '';
-	projectManagerId= 0;
+	//projectManagerId= 0;
 	orderForwardCategories: IOrderForwardCategory[]=[];
 }

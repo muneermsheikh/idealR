@@ -254,7 +254,7 @@ namespace api.Data.Repositories
         {
             var obj = await _context.Customers.Where(x => x.CustomerType.ToLower() == customerType.ToLower())
                 .Select(x => new ClientIdAndNameDto{
-                     customerId=x.Id, CustomerName=x.CustomerName, KnownAs = x.KnownAs,
+                     Id=x.Id, CustomerName=x.CustomerName, KnownAs = x.KnownAs, City = x.City
                 }).ToListAsync();
             
             return obj;

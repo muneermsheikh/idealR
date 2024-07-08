@@ -4,7 +4,6 @@ import { map, of } from 'rxjs';
 import { IForwardedCategoryDto } from 'src/app/_dtos/admin/forwardedCategoryDto';
 import { IOfficialIdsAndOrderItemIdsDto } from 'src/app/_dtos/admin/officialIdsAndOrderItemIdsDto';
 import { IOrderForwardToAgentDto } from 'src/app/_dtos/orders/orderForwardToAgentDto';
-import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 import { IOrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
 import { Pagination } from 'src/app/_models/pagination';
 import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
@@ -50,7 +49,7 @@ export class OrderForwardService {
 
   //get dlforwards of an orderid
   getOrderForwardOfAnOrder(orderid: number) {
-    return this.http.get<IOrderForwardToAgent>(this.apiUrl + 'Orderforward/getOrGenerateOrderFwdToAgent/' + orderid );
+    return this.http.get<IOrderForwardToAgentDto>(this.apiUrl + 'Orderforward/getOrGenerateOrderFwdToAgent/' + orderid );
   }
 
   getAssociatesForwardedForADL(orderid: number) {
@@ -58,14 +57,14 @@ export class OrderForwardService {
   }
 
   generateObjToForwarOrderToAgent(orderid: number) {
-    return this.http.get<IOrderForwardToAgent>(this.apiUrl + 'OrderForward/generateOrderFwdToAgent/' + orderid, {});
+    return this.http.get<IOrderForwardToAgentDto>(this.apiUrl + 'OrderForward/generateOrderFwdToAgent/' + orderid, {});
   }
 
-  insertForwarOrderToAgent(model: IOrderForwardToAgent) {
+  insertForwarOrderToAgent(model: IOrderForwardToAgentDto) {
     return this.http.post<boolean>(this.apiUrl + 'OrderForward/insertOrderFwdToAgent', model);
   }
 
-  updateForwarOrderToAgent(model: IOrderForwardToAgent) {
+  updateForwarOrderToAgent(model: IOrderForwardToAgentDto) {
     return this.http.put<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToAgent', model);
   }
 

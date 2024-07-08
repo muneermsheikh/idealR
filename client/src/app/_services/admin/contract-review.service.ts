@@ -31,8 +31,8 @@ export class ContractReviewService {
   
   constructor(private http: HttpClient) { }
 
-  getContractReview(orderid: number) {
-    return this.http.get<IContractReview[]>(this.apiUrl + 'ContractReview/contractreviewfromOrderId' + orderid);
+  getOrGenerateContractReview(orderid: number) {
+    return this.http.get<IContractReview>(this.apiUrl + 'ContractReview/getOrGenerate/' + orderid);
   }
 
   getContractReviewItem(orderitemid: number) {

@@ -8,18 +8,16 @@ namespace api.Entities.HR
         {
         }
 
-
         public int ApplicationNo { get; set; }
-//names                
         [Required, MaxLength(1)]
         public string Gender {get; set;}="M";
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string FamilyName { get; set; }
-        //[Required]         
         public string KnownAs { get; set; }
         public string UserName { get; set; }
         public int? CustomerId { get; set; }
+        public string ReferredByName { get; set; }
         public string Source {get; set;}
         //[Required]
         public DateTime? DOB { get; set; }

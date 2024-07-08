@@ -15,5 +15,6 @@ namespace api.Interfaces.HR
         Task<CustomerFeedback> SaveNewFeedback(FeedbackInput feedbackInput);
         Task<bool> DeleteFeedback(int FeedbackId);
         Task<bool> DeleteFeedbackItem(int FeedbackItemId);
+        Task<string> SendFeedbackEmailToCustomer(int feedbackId, string url, string username);
     }
 }

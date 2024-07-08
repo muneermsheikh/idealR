@@ -28,6 +28,14 @@ namespace api.Controllers
             return Ok(data);
         }
 
+        [HttpGet("callRecordFromPhoneNo/{phoneno}")]
+        public async Task<ActionResult<CallRecord>> GetCallRecordFromPhoneNo(string phoneno)
+        {
+            var data = await _histRepo.GetCallRecordWithItemsFromPhoneNo(phoneno, User.GetUsername());
+            return Ok(data);
+        }
+
+
         [HttpGet("dto")]
         public async Task<ActionResult<CallRecordDto>> GetCallRecordDto(CallRecordParams histParams)
         {
@@ -106,5 +114,7 @@ namespace api.Controllers
             
             return Ok(obj);
         }
+
+
     }
 }

@@ -19,7 +19,6 @@ import { MemberCardComponent } from './members/member-card/member-card.component
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
-import { RegisterComponent } from './register/register.component';
 import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
@@ -47,7 +46,6 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     //MemberDetailsComponent,
     MemberCardComponent,
     MemberEditComponent,
-    RegisterComponent,
     MemberLikedListComponent,
     HasRoleDirective,
     UserManagementComponent,

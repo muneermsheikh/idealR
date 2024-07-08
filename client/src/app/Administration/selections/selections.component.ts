@@ -14,7 +14,7 @@ import { EmploymentModalComponent } from './employment-modal/employment-modal.co
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
 import { SelectionModalComponent } from './selection-modal/selection-modal.component';
 import { IEmployment } from 'src/app/_models/admin/employment';
-import { IEmploymentDto } from 'src/app/_dtos/admin/employmentDto';
+
 
 @Component({
   selector: 'app-selections',

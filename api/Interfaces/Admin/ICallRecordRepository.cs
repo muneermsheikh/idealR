@@ -21,5 +21,6 @@ namespace api.Interfaces.Admin
         Task<CallRecordDto> GetCallRecordDtoByParams(CallRecordParams histParams);
         Task<CallRecord> GetCallRecordWithItems(int callRecordId, string personType, string personId,
             string categoryRef, string Username);
+        Task<CallRecord> GetCallRecordWithItemsFromPhoneNo(string phoneNo, string username);
     }
 }

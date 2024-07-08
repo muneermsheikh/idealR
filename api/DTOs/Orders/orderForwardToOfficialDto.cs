@@ -2,6 +2,7 @@ namespace api.Entities.Admin.Order
 {
     public class OrderForwardToOfficialDto
     {
+        public int Id { get; set; }
         public int OrderForwardCategoryId { get; set; }
         public string AgentName {get; set;}
         public int CustomerOfficialId { get; set; }

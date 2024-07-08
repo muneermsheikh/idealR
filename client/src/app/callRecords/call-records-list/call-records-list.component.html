@@ -11,21 +11,24 @@
           lastText="&raquo;">
      ></pagination>
 
-     <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
-     <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
-     <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
-     <button class="btn btn-outline-success  form-inline" routerLink="/admin" >Close</button>
-     <button class="btn btn-outline-success pull-right" routerLink="/admin" >Back</button>
+     <input (keyup.enter)="onSearch()" type="text" 
+          class="stdd form-control w300" #search placeholder="Search">
+     <button (click)="onSearch()" title="search the records based upon search string entered"
+          class="btn btn-outline-primary mx-1 fa fa-search"></button>
+     <button (click)="onReset()" title="clears all search parameters"
+          class="btn btn-outline-success mx-1 fa fa-refresh"></button>
+     <button class="btn btn-outline-success  form-inline fa fa-window-close" title="go back to Administration Menu"
+          routerLink="/administration" ></button>
 </div>
 
 <div class="form-inline" style="margin-left: 50px;">
      <label class="lbl w75">App No</label>
-     <label class="lbl w200">Name</label>
+     <label class="lbl w175">Name</label>
      <label class="lbl w150">CategoryRef</label>
      <label class="lbl w100">Source</label>
-     <label class="lbl w150">Email</label>
-     <label class="lbl w100">Mobile No</label>
-     <label class="lbl w75">Status</label>
+     <label class="lbl w175">Email</label>
+     <label class="lbl w100">Phone No</label>
+     <label class="lbl w100">Status</label>
 
      <div *ngIf="!callRecords || callRecords.length === 0" class="my-2">
           <h6>No call records on record as per parameters given</h6>

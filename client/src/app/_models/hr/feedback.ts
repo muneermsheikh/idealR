@@ -4,7 +4,9 @@
     customerId: number;
     customerName: string;
     city: string;
+    country: string;
     officialName: string;
+    officialAppUserId: number;
     designation: string;
     email: string;
     phoneNo: string;

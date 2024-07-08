@@ -36,7 +36,8 @@ import { CustomerEditComponent } from './customer-edit/customer-edit.component';
 import { CustomerReviewComponent } from './customer-review/customer-review.component';
 import { CustomerReviewModalComponent } from './customer-review-modal/customer-review-modal.component';
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
-import { ContractReviewComponent } from './orders/contract-review/contract-review.component';
+import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
+import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract-rvw-item.component';
 
 
 @NgModule({
@@ -55,7 +56,6 @@ import { ContractReviewComponent } from './orders/contract-review/contract-revie
     ChooseAgentsModalComponent,
     JdModalComponent,
     RemunerationModalComponent,
-    //OrderAssessmentItemQComponent,
     OrderAssessmentComponent,
     OrderAssessmentItemComponent,
     ProspectiveListComponent,
@@ -76,7 +76,8 @@ import { ContractReviewComponent } from './orders/contract-review/contract-revie
     CustomerReviewComponent,
     CustomerReviewModalComponent,
     CustRvwEditModalComponent,
-    ContractReviewComponent
+    ContractRvwComponent,
+    ContractRvwItemComponent
   ],
   imports: [
     CommonModule,

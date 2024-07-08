@@ -31,7 +31,7 @@ const routes = [
     },
     data: {breadcrumb: 'Edit Candidate'}},
 
-    {path: 'availablecandidates', component: CvsAvailableToRefComponent,
+    {path: 'availableToRef', component: CvsAvailableToRefComponent,
         resolve: {
           professions: CategoryListResolver,
           agents: AgentsResolver

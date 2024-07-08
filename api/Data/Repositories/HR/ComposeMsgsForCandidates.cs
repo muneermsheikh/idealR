@@ -16,7 +16,7 @@ namespace api.Data.Repositories.HR
     {
         private readonly DataContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.Now);
+        private readonly DateTime _today = DateTime.Now;
         public ComposeMsgsForCandidates(DataContext context, UserManager<AppUser> userManager)
         {
             _userManager = userManager;

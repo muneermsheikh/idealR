@@ -41,7 +41,7 @@ namespace api.Controllers
             };
         }
 
-        [HttpPost("register")]
+        /*[HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if(await userExists(registerDto.Username)) return BadRequest("username is already taken");
@@ -63,6 +63,7 @@ namespace api.Controllers
                 Gender = user.Gender
             };
         }
+        */
 
         private async Task<bool> userExists (string username)
         {

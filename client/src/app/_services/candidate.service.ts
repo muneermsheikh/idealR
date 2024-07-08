@@ -13,7 +13,6 @@ import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
 import { ICandidateAndErrorStringDto } from '../_dtos/hr/candidateAndErrorStringDto';
-import { ICvAssessmentHeader } from '../_models/hr/cvAssessmentHeader';
 import { ICvsAvailableDto } from '../_dtos/admin/cvsAvailableDto';
 
 @Injectable({
@@ -128,7 +127,7 @@ export class CandidateService {
 
 
   UpdateCandidateWithFiles(model: any) {
-      return this.http.put<ICandidateAndErrorStringDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
+      return this.http.put<IApiReturnDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }
     
   setCurrentUser(user: User) {

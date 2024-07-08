@@ -18,17 +18,22 @@
                 <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
               </li>
               <!--*appHasRole="['Admin', 'AdminManager']" -->
-              <li 
-                  class="nav-item">
-                <a class="nav-link" routerLink="/userroles" routerLinkActive="active">Authorities and Roles</a>
-              </li>
+              <label style="display: inline-block; width: 150px; font-size: smaller; font-weight: bold; vertical-align: middle;">Call Record Phone No</label>
+              <input type="text" style="display: inline-block;width: 150px;"
+                  name = "phoneNo"
+                  [(ngModel)]="stPhoneNo"
+                  class = "form-control mx-2"
+                  placeholder="person Id to search"
+              >
+              <button class="btn btn-success fa fa-phone" (click)="editCallRecord()"  title="click to display call record details for the phone no" type="submit"></button>
+              
               <li class="nav-item" (click)="logout()">
                 <a class="nav-link">Log Out</a>
               </li>
           </ng-container>
-          <li class="nav-item" >
+          <!-- <li class="nav-item" >
             <a class="nav-link" routerLink="/errors" routerlinkActive="active">Errors</a>
-          </li>
+          </li> -->
         </ul>
 
         <div class="dropdown" *ngIf="(accountService.currentUser$|async) as user" dropdown>

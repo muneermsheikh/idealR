@@ -11,7 +11,6 @@ import { CallRecordsEditModalComponent } from '../call-records-edit-modal/call-r
 import { IContactResult } from 'src/app/_models/admin/contactResult';
 import { CallRecordAddModalComponent } from '../call-record-add-modal/call-record-add-modal.component';
 import { CallRecordParams, ICallRecordParams } from 'src/app/_models/params/callRecordParams';
-import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { ICallRecordItem } from 'src/app/_models/admin/callRecordItem';
 
 @Component({
@@ -36,7 +35,8 @@ export class CallRecordsListComponent implements OnInit{
   user?: User;
     
   constructor(private service: UserHistoryService, private confirm: ConfirmService,
-      private toastr: ToastrService,private bsModalRef: BsModalRef, private bsModalService: BsModalService){}
+      private toastr: ToastrService, private bsModalRef: BsModalRef, 
+      private bsModalService: BsModalService){}
   
   ngOnInit(): void {
     this.getCallRecords(this.userHistoryParams);
@@ -107,10 +107,10 @@ export class CallRecordsListComponent implements OnInit{
         class: 'modal-dialog-centered modal-md',
         initialState: {
           callRecord: callRecordItem,
-          phoneNo: item.mobileNo,
-          email: item.emailId,
+          phoneNo: item.phoneNo,
+          email: item.email,
           status: "Not Started",
-          candidateName: item.candidateName,
+          candidateName: item.personName,
           categoryRef: item.categoryName,
           contactResults: this.contactResults
         }
@@ -125,7 +125,7 @@ export class CallRecordsListComponent implements OnInit{
       switchMap((response: ICallRecordItem) => {
           var params: ICallRecordParams = {personType:item.personType, subject:'',
             personId:item.personId, incomingOutgoing: response.incomingOutgoing, id:response.id,
-            mobileNo:response.phoneNo, emailId:item.emailId, dateOfContact:response.dateOfContact,
+            mobileNo:response.phoneNo, emailId:item.email, dateOfContact:response.dateOfContact,
             username:this.user?.userName!, gistOfDiscussions:response.gistOfDiscussions,
             advisoryBy:response.advisoryBy, categoryRef: item.categoryRef, search:'',
             sort: '', status: response.contactResult, pageNumber:1, pageSize:10, statusClass: "",
@@ -149,37 +149,33 @@ export class CallRecordsListComponent implements OnInit{
   }
 
   editCallRecord(callRecord: any, item: IUserHistoryBriefDto) {
-
     if(callRecord === null) {
-      this.toastr.warning('No Call REcord object returned by modal form');
+      this.toastr.warning('No Call Record object returned by modal form');
       return;
     }  
+
     const config = {
         class: 'modal-dialog-centered modal-lg',
         initialState: {
           callRecord,
           status: item.status,
-          candidateName: item.candidateName,
+          candidateName: item.personName,
           categoryRef: item.categoryName
         }
       }
 
       this.bsModalRef = this.bsModalService.show(CallRecordsEditModalComponent, config);
-      const observableOuter =  this.bsModalRef.content.updateUserHistoryEvent;
+      const observableOuter =  this.bsModalRef.content.updateCallRecordEvent;
       
-      observableOuter.pipe(
-        filter((response: ICallRecord) => response !==null),
-        switchMap((response: ICallRecord) =>  {
-          return this.service.updateUserHistory(response)
-        })
-      ).subscribe((response: string) => {
-  
-        if(response==='') {
-          this.toastr.success('User History updated', 'Success');
-  
-        } else {
-          this.toastr.warning(response, 'Failure');
-        }
+      observableOuter.subscribe({
+        next: (succeeded: boolean) => {
+          if(succeeded) {
+              this.toastr.success('The Call Record was updated', 'success')
+          } else {
+            this.toastr.warning('Failed to update the call Record', 'Failed')
+          }
+        }, 
+        error: (err: any) => this.toastr.error(err, 'Error encountered')
       })
         
    }
