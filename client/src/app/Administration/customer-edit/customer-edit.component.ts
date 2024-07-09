@@ -23,7 +23,6 @@ export class CustomerEditComponent implements OnInit {
   
   form: FormGroup = new FormGroup({});
 
-  
 
   constructor(private toastr: ToastrService, private service: CustomersService, private activatedRoute: ActivatedRoute,
     private fb: FormBuilder, private confirm: ConfirmService, private router: Router){

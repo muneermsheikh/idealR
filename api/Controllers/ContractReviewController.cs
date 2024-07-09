@@ -6,11 +6,12 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    //[Authorize(Policy = "ContractReviewPolicy")]
+    [Authorize(Policy = "ContractReviewPolicy")]
     public class ContractReviewController : BaseApiController
     {
         private readonly IContractReviewRepository _repo;

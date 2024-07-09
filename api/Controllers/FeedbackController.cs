@@ -7,11 +7,12 @@ using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.HR;
 using api.Params;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-
+    [Authorize(Policy ="CVRefPolicy")]
     /*
         1. feedback question parameters are in table feedbackStddQs
         2. when a feedback question is to be sent to the customer, a questionnaire is created WITHOUT SAVING IN DATABASE

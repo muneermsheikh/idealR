@@ -5,11 +5,12 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Orders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    //[Authorize(Policy = "OrderForwardPolicy")]
+    [Authorize(Policy = "OrderForwardPolicy")]
     public class OrderForwardController : BaseApiController
     {
         private readonly IOrderForwardRepository _orderFwdRepo;

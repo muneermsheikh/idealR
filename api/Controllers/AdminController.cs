@@ -20,7 +20,8 @@ namespace api.Controllers
         public async Task<ActionResult> GetUsersWithRoles()
         {
             var users = await _userManager.Users
-                .Include(x => x.UserRoles)
+                .Include(x => x.UserRoles.Where(x => x.Role.Name !="Candidate"))    //not Candidzte
+
                 .OrderBy(u => u.UserName)
                 .Select(u => new
                 {

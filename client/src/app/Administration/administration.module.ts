@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../_modules/shared.module';
 import { MenuComponent } from './menu/menu.component';
@@ -38,6 +38,9 @@ import { CustomerReviewModalComponent } from './customer-review-modal/customer-r
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
 import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
 import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract-rvw-item.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { MessageComponent } from './message/message/messages.component';
+
 
 
 @NgModule({
@@ -77,12 +80,15 @@ import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract
     CustomerReviewModalComponent,
     CustRvwEditModalComponent,
     ContractRvwComponent,
-    ContractRvwItemComponent
+    ContractRvwItemComponent,
+    MessageComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
+    AngularEditorModule,
     SharedModule
-  ]
+  ],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AdministrationModule { }

@@ -2,22 +2,27 @@ using api.Entities.Admin.Client;
 using api.Errors;
 using api.Extensions;
 using api.Interfaces.Customers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Policy = "AdminPolicy")]
     public class CustomerReviewController: BaseApiController
     {
         private readonly ICustomerReviewRepository _custRvwRepo;
         public CustomerReviewController(ICustomerReviewRepository custRvwRepo) => _custRvwRepo = custRvwRepo;
 
 
+        [AllowAnonymous]
         [HttpGet("customerreview/{customerId}")]
         public async Task<CustomerReview> GetCustomerReview(int customerId)
         {
             return await _custRvwRepo.GetCustomerReview(customerId);
         }
 
+        
+        [AllowAnonymous]
         [HttpGet("getOrCreateObject/{customerid}")]
         public async Task<CustomerReview> GetOrCreateCustomerReviewObject(int customerid) {
             return await _custRvwRepo.GetOrCreateCustomerReviewObject(customerid, User.GetUsername());

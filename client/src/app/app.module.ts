@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
 
 import { HomeComponent } from './home/home.component';
-import { MessagesComponent } from './messages/messages/messages.component';
 import { SharedModule } from './_modules/shared.module';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
@@ -31,6 +30,14 @@ import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
 import { CandidateAssessmentComponent } from './hr/candidate-assessment/candidate-assessment.component';
 import { CandidateAssessComponent } from './hr/candidate-assess/candidate-assess.component';
 import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
+//material includes
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -38,7 +45,6 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     AppComponent,
     NavComponent,
     HomeComponent,
-    MessagesComponent,
     TestErrorComponent,
     NotFoundComponent,
     ServerErrorComponent,
@@ -67,9 +73,17 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+
     //FormsModule,
     //ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatExpansionModule,
+    MatTooltipModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

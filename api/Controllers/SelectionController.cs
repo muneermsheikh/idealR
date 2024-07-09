@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = "SelectionPolicy")]
     public class SelectionController : BaseApiController
     {
         private readonly ISelDecisionRepository _selRepo;

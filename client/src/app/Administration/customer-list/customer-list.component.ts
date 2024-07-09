@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { ICustomerBriefDto } from 'src/app/_dtos/admin/customerBriefDto';
 import { Pagination } from 'src/app/_models/pagination';
@@ -12,9 +12,6 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CustomerEditModalComponent } from '../customer-edit-modal/customer-edit-modal.component';
 import { ICustomer } from 'src/app/_models/admin/customer';
 import { CustomerReviewService } from 'src/app/_services/admin/customer-review.service';
-import { ICustomerReview } from 'src/app/_models/admin/customerReview';
-import { CustomerReviewModalComponent } from '../customer-review-modal/customer-review-modal.component';
-import { CustRvwEditModalComponent } from '../cust-rvw-edit-modal/cust-rvw-edit-modal.component';
 
 @Component({
   selector: 'app-customer-list',
@@ -43,8 +40,7 @@ export class CustomerListComponent implements OnInit{
       private router: Router,
       private confirm: ConfirmService, 
       private toastr: ToastrService, 
-      private modalService: BsModalService,
-      private reviewService: CustomerReviewService) 
+      private modalService: BsModalService) 
   {
         service.setParams(this.cParams);
         

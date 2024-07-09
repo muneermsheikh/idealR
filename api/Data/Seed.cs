@@ -51,7 +51,10 @@ namespace api.Data
                     new() {Name = "Order"},
                     new() {Name = "Contract Review"},
                     new() {Name = "Customer Official"},
-                    new() {Name = "OrderForward"}
+                    new() {Name = "OrderForward"},
+                    new() {Name = "OrderCreate"},
+                    new() {Name = "Process Executive"},
+                    new() {Name = "Process Supervisor"}
                 };
 
                 foreach(var role in roles) {

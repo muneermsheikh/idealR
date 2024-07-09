@@ -4,11 +4,13 @@ using api.Entities.HR;
 using api.Errors;
 using api.Extensions;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace api.Controllers
 {
+    [Authorize(Policy ="HRMPolicy")]
     public class FileUploadController : BaseApiController
     {
         private readonly ICandidateRepository _candRepo;

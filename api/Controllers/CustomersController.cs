@@ -11,11 +11,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    //[Authorize(Policy="AdminPolicy")]
+    
     public class CustomersController : BaseApiController
     {
         private readonly ICustomerRepository _customerRepo;
@@ -28,6 +27,7 @@ namespace api.Controllers
             _customerRepo = customerRepo;
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpGet]
         public async Task<ActionResult<PagedList<CustomerDto>>> GetCustomers([FromQuery]CustomerParams customerParams)
         { 
@@ -41,6 +41,7 @@ namespace api.Controllers
 
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpPost]
         public async Task<ActionResult> CreateCustomer(CreateCustomerDto createDto)
         {
@@ -59,6 +60,7 @@ namespace api.Controllers
             return Ok(cities);
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpDelete("customer/{id}")]
         public async Task<ActionResult> DeleteCustomer(int id)
         {
@@ -67,6 +69,7 @@ namespace api.Controllers
             return BadRequest("Failed to delete the customer");
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpDelete("official/{id}")]
         public async Task<ActionResult> DeleteCustomerOfficial(int id)
         {
@@ -75,6 +78,7 @@ namespace api.Controllers
             return BadRequest("Failed to delete the customer official");
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpPut("edit")]
         public async Task<ActionResult<string>> EditCustomer(Customer customer)
         {
@@ -112,6 +116,7 @@ namespace api.Controllers
             return await _customerRepo.GetCustomerAndOfficials(customerType);
         }
 
+        [Authorize(Policy="CustomerPolicy")]
         [HttpPut("updateofficialwithappuserid")]
         public async Task<ActionResult<bool>> UpdateCustomerOfficialWithAppUserId(CustomerOfficial official)
         {

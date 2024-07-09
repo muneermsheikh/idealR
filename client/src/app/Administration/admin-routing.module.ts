@@ -35,6 +35,7 @@ import { OrderItemReviewComponent } from './orders/order-item-review/order-item-
 import { ContractReviewResolver } from '../_resolvers/admin/contractReviewResolver';
 import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
 import { FeedbackListComponent } from '../feedback/feedback-list/feedback-list.component';
+import { MessageComponent } from './message/message/messages.component';
 
 
 const routes = [
@@ -92,7 +93,7 @@ const routes = [
     }
   },
   
-  {path: 'selections', component: SelectionsComponent},
+  {path: 'selections', canActivate: ['SelectionsGuard'], component: SelectionsComponent },
 
   {path: 'pendingSelections', component: SelectionPendingComponent},
 
@@ -125,6 +126,8 @@ const routes = [
       customer: CustomerResolver
     }
   },
+
+  {path: 'messages', component: MessageComponent},
   
   {path: 'userroles', component: UserManagementComponent}
 ]

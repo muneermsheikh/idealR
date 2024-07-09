@@ -6,10 +6,12 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.HR;
 using api.Params.HR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Policy ="HRMPolicy")]
     public class CandidateAssessmentController : BaseApiController
     {
         private readonly ICandidateAssessentRepository _repo;

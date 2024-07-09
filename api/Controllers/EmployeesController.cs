@@ -1,4 +1,5 @@
 using System.Diagnostics.Contracts;
+using System.Drawing;
 using api.DTOs;
 using api.DTOs.Admin;
 using api.Entities.Admin;
@@ -7,6 +8,7 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -50,6 +52,7 @@ namespace api.Controllers
             return Ok(emps);
         }
         
+        [Authorize(Policy = "HRMPolicy")]
         [HttpPut]
         public async Task<ActionResult<bool>> EditEmployee(Employee employee)
         {
@@ -68,12 +71,14 @@ namespace api.Controllers
 
         }
 
+        [Authorize(Policy = "HRMPolicy")]
         [HttpDelete("{employeeid}")]
         public async Task<ActionResult<bool>> DeleteEmployee(int employeeid)
         {
             return await _empRepo.DeleteEmployee(employeeid);
         }
 
+        [Authorize(Policy = "HRMPolicy")]
         [HttpPost("employee")]
         public async Task<ActionResult<Employee>> AddNewEmployee(EmployeeToAddDto employee)
           {

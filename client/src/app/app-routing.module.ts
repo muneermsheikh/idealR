@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { MessagesComponent } from './messages/messages/messages.component';
 import { authGuard } from './_guards/auth.guard';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
@@ -12,6 +11,8 @@ import { OpenOrderItemsResolver } from './_resolvers/openOrderItemsResolver';
 import { CandidateAssessedResolver } from './_resolvers/hr/candidate-assessed.resolver';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { UsersWithRolesResolver } from './_resolvers/usersWithRolesResolver';
+import { HrGuard } from './_guards/hr.guard';
+import { ProcessGuard } from './_guards/process.guard';
 
 
 const routes: Routes = [
@@ -22,11 +23,12 @@ const routes: Routes = [
     canActivate: [authGuard],
     children: [
       
-      {path: 'candidates', loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
+      {path: 'candidates', canActivate:[HrGuard],
+        loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
 
       {path: 'feedback', loadChildren:() => import('./feedback/feedback.module').then(mod => mod.FeedbackModule)},
       
-      {path: 'hr/cvassess/:id', component: CvAssessComponent, 
+      {path: 'hr/cvassess/:id', component: CvAssessComponent, canActivate: [HrGuard],
       resolve: {
         openOrderItemsBrief: OpenOrderItemsResolver,
         assessmentsDto: CandidateAssessedResolver,
@@ -39,11 +41,9 @@ const routes: Routes = [
 
       {path: 'callRecords', loadChildren: () => import('./callRecords/call-record.module').then(mod => mod.CallRecordModule)},
 
-      {path: 'deployment', loadChildren:() => import('./deployments/deployment.module').then(mod=>mod.DeploymentModule)},
-      
-      {path: 'messages', component:MessagesComponent},
-      {path: 'memberlikes', component: MemberLikedListComponent},
-      
+      {path: 'deployment', canActivate: [ProcessGuard],
+        loadChildren:() => import('./deployments/deployment.module').then(mod=>mod.DeploymentModule)},
+     
       {path: 'userroles', component: UserManagementComponent,
         resolve: {
           userswithroles: UsersWithRolesResolver

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
+import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 
 @Component({
@@ -10,8 +12,16 @@ import { AccountService } from 'src/app/_services/account.service';
 export class MenuComponent {
 
   uploadExcel=false;
+  user?: User;
 
-  constructor(private toastr:ToastrService, private accountService: AccountService) {}
+  constructor(private toastr:ToastrService, private accountService: AccountService) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if (user) this.user = user;
+        console.log('user', this.user);
+      }
+    })
+  }
 
   close() {
     

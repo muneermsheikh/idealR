@@ -1,0 +1,72 @@
+<div class="stdd col-4" style="vertical-align: top;">
+    <div class="mb-4 d-flex">
+        <div class="btn-group" name="container">
+            <button class="btn btn-primary"  title="Unread messages"
+                btnRadio="Unread" [(ngModel)]="container" (click)="loadMessages()">
+                <i class="fa fa-envelope"></i>
+            </button>
+            <button class="btn btn-primary" 
+                btnRadio="Inbox" title="Inbox messages"
+                [(ngModel)]="container" (click)="loadMessages()">
+                <i class="fa fa-envelope-open"></i> 
+            </button>
+            <button class="btn btn-primary" title="sent messages"
+                btnRadio="Outbox"
+                [(ngModel)]="container" (click)="loadMessages()">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    
+        <pagination *ngIf="!loading && pagination && messages && messages.length > 0"
+            [boundaryLinks]="true"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            [maxSize]="10"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
+        </pagination>
+    
+    </div>
+    
+    <div class="row" *ngIf="!messages || messages?.length === 0">
+        <h3>No messages</h3>
+    </div>
+    
+    <div class="stdd row" *ngIf="messages && messages?.length !== 0" style="vertical-align: top;">
+        <div *ngIf="container==='Inbox'">
+            <label class="lbl col-2" >Date</label>
+            <label class="lbl col-3" >From</label>
+            <label class="lbl col-4" >Subject</label>
+            <div *ngFor="let msg of messages">
+                <div class="stdd cursorPointer col-2" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn | date: 'dd-MMM-yy'}}</div>
+                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.senderEmail}}</div>
+                <div class="stdd cursorPointer col-4" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.subject}}</div>
+                <button class="stdd btn col-1 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
+            </div>
+        </div>
+    
+        <div class="stdd" *ngIf="container==='Outbox'">
+            <label class="lbl col-3" >Date</label>
+            <label class="lbl col-4" >To</label>
+            <label class="lbl col-4" >Subject</label>
+            <div *ngFor="let msg of messages">
+                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn}}</div>
+                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.recipientEmail}}</div>
+                <div class="stdd cursorPointer col-4" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.subject}}</div>
+                <button class="stdd btn col-1 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="stdd col-7" style="vertical-align: top;">
+    <div *ngIf="messageSentOn.getFullYear() < 2000" (click)="sendMessage()">Draft message</div>
+    <angular-editor
+        [(ngModel)]="msgToDisplay"
+    ></angular-editor>
+</div>

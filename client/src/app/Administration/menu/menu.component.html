@@ -1,19 +1,131 @@
 <div class="container d-flex justify-contents-between align-items-center mt-5">
+    <!--<div style="display: inline-block; font-size: bold;">Logged in user: {{user?.knownAs}}</div>
+    <div style="display: inline-block; font-size: bold;">
+        {{user?.roles?.flat()}} 
+    </div> -->
+    <br>
+    <!--<li *appHasRole="['HR Manager', 'HR Supervisor', 'Admin', 'Admin Manager', 'Document Controller-Admin']" class="nav-item">
+        <a routerLink="/administration/pendingSelections" 
+            routerLinkActive="active" class="nav-link">Pending Selections</a>
+    </li> -->
+    <div title="selections awaiting from customers" class="nav-item menuStdd">
+        <a routerLink="/administration/pendingSelections" class="nav-item menuStdd"
+            routerLinkActive="active" >Pending Selections</a>
+    </div>
+
+    <!-- <li *appHasRole="['Admin']" class="nav-item">
+        <a routerLink="/administration/orders" title="listing of Orders" 
+        routerLinkActive="active" class="nav-link">Orders Listing</a>
+    </li> -->
+
+    <div class="nav-item menuStdd"  title="listing of Orders">
+        <a routerLink="/administration/orders" 
+        routerLinkActive="active" class="nav-link">Orders Listing</a>
+    </div>
+
+    <!-- <li *appHasRole="['Order Forward']" class="nav-item">
+        <a routerLink="/administration/ordersforwarded" title="orders already forwarded to Associates" 
+            routerLinkActive="active" class="nav-link">Orders ForwardED</a>
+    </li> -->
+    <div  class="nav-item menuStdd">
+        <a routerLink="/administration/ordersforwarded" title="orders already forwarded to Associates" 
+            routerLinkActive="active" >Orders ForwardED</a>
+    </div>
+
+    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Admin', 'Admin Manager', 'Document Controller-Admin']" class="nav-item">
+        <a routerLink="/candidates/availableToRef" title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers" 
+            routerLinkActive="active" class="nav-link">Refer CVs to clients</a>
+    </li> -->
+
+    <div class="nav-item menuStdd" 
+        title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers" >
+        <a routerLink="/candidates/availableToRef" routerLinkActive="active" >Refer CVs to clients</a>
+</div>
+
+    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Admin', 'Admin Manager', 'Document Controller-Admin']" class="nav-item">
+        <a routerLink="/administration/selections" title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers" 
+            routerLinkActive="active" class="nav-link">Selections made</a>
+    </li> -->
+
+    <div class="nav-item menuStdd" 
+        title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers">
+        <a routerLink="/administration/selections"  routerLinkActive="active" >Selections made</a>
+    </div>
+
+    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Document Controller-Admin']" class="nav-item">
+        <a routerLink="/administration/selections" 
+            routerLinkActive="active" class="nav-link">Selections</a>
+    </li> -->
+
+    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Document Controller-Admin']" class="nav-item"
+        title="employment details of selected candidates" >
+        <a routerLink="/administration/selections" routerLinkActive="active" class="nav-link">Employments</a>
+    </li> -->
+
+    <div class="nav-item menuStdd" title="messages concerning the logged-in users" >
+        <a routerLink="/administration/employment" routerLinkActive="active" >Employments</a>
+    </div>
+
+    <div class="nav-item  menuStdd" title="messages concerning the logged-in User" 
+        routerLink="/administration/messages" routerLinkActive="active" >
+        Messages
+    </div>
+
+    <!-- <li class="nav-item" *appHasRole="['Document Controller-Admin', 'Document Controller-Processing', 'Candidate', 'Client']" class="nav-item"
+        title="Feedbacks from customers/candidates" >
+        <a routerLink="/administration/feedback" routerLinkActive="active" class="nav-link">Feedback</a>
+    </li> -->
     
-    <button class="stdd" routerLink="/administration/selections" title="Orders Index">Selections</button>
-    <button class="stdd" routerLink="/administration/pendingSelections" title="Orders Index">Pending Selections</button>
-    <button class="stdd" routerLink="/administration/orders" title="Orders Index">Orders Listing</button>
-    <button class="stdd" routerLink="/administration/ordersforwarded" title="Orders Forwarded Listing">Orders Forwarded<br>Listing</button>
-    <button class="stdd" routerLink="/candidates/availableToRef" title="forward shortlited CVs to customers">Submit CVs<br>to clients</button>
-    <button class="stdd" routerLink="/administration/selections" title="register selections or rejections by clients">Selections</button>
-    <button class="stdd" routerLink="/administration/employment" title="edit employment details of selected candidates">Employments</button>
-    <button class="stdd" title="Categories" routerLink="/administration/categories">Categories</button>
-    <button class="stdd" title="Qualifications" routerLink="/administration/qualifications">Qualifications</button>
-    <button class="stdd" title="Industry Types" routerLink="/administration/industries">Industry Types</button>
-    <button class="stdd" title="Customers, Associates and Vendors" routerLink="/administration/customers">Clients<br>Associates, Vendors</button>
-    <button class="stdd" title="Customer Feedback Listing" routerLink="/administration/feedback">Feedbacks</button>
-    <button class="stdd" title="Customer Feedback Listing" routerLink="/userroles">Authorities<br>and Roles</button>
-    <button class="stdd" title="import prospective candidates from excel sheet" (click)="importCustomerExcel()">import customer<br>Excel Sheet</button>
+    <div title="Feedback from customers, vendors and candidates" class="nav-item  menuStdd"
+        routerLink="/administration/feedback" routerLinkActive="active" >
+        Feedback
+    </div>
+    <!--<li class="nav-item" class="nav-item" title="Feedbacks from customers/candidates" >
+        <a routerLink="/administration/feedback" routerLinkActive="active" class="nav-link">Feedback</a>
+    </li> -->
+    <!-- <li class="nav-item" *appHasRole="['Admin']" class="nav-item"
+        title="Authorities and Roles">
+        <a routerLink="/userroles" routerLinkActive="active" class="nav-link">authorities & roles</a>
+    </li> -->
+    <div class="nav-item menuStdd" title="Authorities and Roles">
+        <a routerLink="/userroles" routerLinkActive="active" >authorities & roles</a>
+    </div>
+    <div title="Authorities and Roles"  class="nav-item  menuStdd"
+        routerLink="/userroles" routerLinkActive="active">
+        Authorities & Roles
+    </div>
+    <!-- <li class="nav-item" *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" 
+        class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a  routerLinkActive="active" class="nav-link">Import from Excel Sheet</a>
+    </li> -->
+    <!-- <li class="nav-item" class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a  routerLinkActive="active" class="nav-link">Import from Excel Sheet</a>
+    </li> -->
+    <div class="nav-item menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" 
+        routerLink="/userroles" routerLinkActive="active">
+        Authorities & Roles
+    </div>
+    <!-- <li class="nav-item" *appHasRole="['Admin']" class="nav-item" 
+        title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a routerLink="/administration/customers" routerLinkActive="active" class="nav-link">Customers<br>Associates<br>Vendors</a>
+    </li> -->
+    <div  class="nav-link menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a routerLink="/administration/customers" routerLinkActive="active" 
+       >Customers<br>Associates<br>Vendors</a>
+    </div>
+    
+    <div class="nav-item nav-link menuStdd"  title="Categories" >
+        <a routerLink="/administration/categories" routerLinkActive="active" >Categories</a>
+    </div>
+    
+    <div title="Qualifications" class="nav-item nav-link menuStdd" >
+        <a routerLink="/administration/qualifications" routerLinkActive="active">Quallifications</a>
+    </div>
+    
+    <div class="nav-item nav-link menuStdd" title="industry Types" >
+        <a routerLink="/administration/industries" routerLinkActive="active" >Industry Types</a>
+    </div>
+    
     <button class="stdd fa fa-undo" title="go back to home" (click)="close()"></button>
 
 </div>
@@ -35,4 +147,59 @@
         (change)="onFileInputChange($event)" >
 
     <button class="stdd btn fa fa-window-close" style="margin-left: 100px;" (click)="importCustomerExcel()" ></button>
+</div>
+
+
+<div class="lblB my-5">
+    Functions and Roles requirement for this menu functions
+    <ul>
+        <label class="lblB w150">Function</label>
+        <label class="lblB w450">Roles Required</label>
+        <li>
+            <label class="lblB w150" title="CVs awaiting selections from client">Pending Selections</label>
+            <label class="lbl w450">HR Manager, HR Supervisor, Admin' Admin Manager, Document Controller-Admin</label>
+        </li>
+        <li>
+            <label title="selections already made" class="lblB w150">Selection</label>
+            <label class="lbl w450">Admin, AdminManager, Document Controller-Admin, HR Manager, HR Supervisor</label>
+        </li>
+        
+        <li>
+            <label class="lblB w150" title="Orders Listing">Orders Listing</label>
+            <label class="lbl w450">Admin</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="Requirements Forwarded to Associates">Requirements forwarded</label>
+            <label class="lbl w450">Requirements forwarded</label>
+        </li>
+        
+        <li>
+            <label class="lblB w150" title="CVs awaiting selections from client">Pending Selections</label>
+            <label class="lbl w450">HR Manager, HR Supervisor, Admin, Admin Manager, Document Controller-Admin</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="CVs awaiting selections from client">Selections</label>
+            <label class="lbl w450">HR Manager, HR Supervisor, Document Controller-Admin</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="forward requirements to Associates">Refer CVs to customers</label>
+            <label class="lbl w450">Order Forward</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="employment details of selected candidates">Employments</label>
+            <label class="lbl w450">HR Manager, HR Supervisor, Admin, Admin Manager, Document Controller-Admin</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="employment details of selected candidates">Messages</label>
+            <label class="lbl w450">All roles - only log-in required</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="Feedbacks from customers, vendors and candidates">Feedbacks</label>
+            <label class="lbl w450">Document Controller-Admin, Document Controller-Processing, Candidate, Client</label>
+        </li>
+        <li>
+            <label class="lblB w150" title="import customer, candidate, employees data from excel sheet">Import from Excel</label>
+            <label class="lbl w450">Document Controller-Admin, Document Controller-Processing, Candidate, Client</label>
+        </li>
+    </ul>
 </div>

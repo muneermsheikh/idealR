@@ -8,6 +8,7 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces.HR;
 using api.Params.HR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -61,7 +62,7 @@ namespace api.Controllers
             return q;
         }
 
-        
+        [Authorize(Policy = "HRMPolicy")]
         [HttpPost]
         public async Task<ActionResult<AssessmentQBank>> InsertAssessmentQ(AssessmentQBank qbank)
         {
@@ -79,6 +80,7 @@ namespace api.Controllers
             return q;
         }
 
+        [Authorize(Policy ="HRMPolicy")]
         [HttpPut]
         public async Task<AssessmentQBank> UpdateAssessmentQBank(AssessmentQBank qBank)
         {
@@ -86,6 +88,7 @@ namespace api.Controllers
             return success;
         }
 
+        [Authorize(Policy ="HRMPoicy")]
         [HttpPut("stddq")]
         public async Task<ActionResult<AssessmentStddQ>> UpdateStddQ(AssessmentStddQ stddQ)
         {
@@ -93,6 +96,7 @@ namespace api.Controllers
 
         }
 
+        [Authorize(Policy ="HRMPolicy")]
         [HttpDelete("stddq/{questionId}")]
         public async Task<ActionResult<bool>> DeleteStandardQ(int questionId)
         {

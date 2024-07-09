@@ -5,7 +5,6 @@ import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { ToastrService } from 'ngx-toastr';
 import { map, of, switchMap, timer } from 'rxjs';
 import { IApiReturnDto } from 'src/app/_dtos/admin/apiReturnDto';
-import { ICandidateAndErrorStringDto } from 'src/app/_dtos/hr/candidateAndErrorStringDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { ICandidate } from 'src/app/_models/hr/candidate';
 import { IQualification } from 'src/app/_models/hr/qualification';

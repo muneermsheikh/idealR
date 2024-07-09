@@ -21,7 +21,7 @@ export class HasRoleDirective implements OnInit{
     }
 
   ngOnInit(): void {
-    console.log('roles in has-role-directive: ', this.user.roles);
+    //console.log('roles in has-role-directive: ', this.user.roles);
     
     if (this.user.roles.some(r => this.appHasRole.includes(r))) {
       this.viewContainerRef.createEmbeddedView(this.templateRef);

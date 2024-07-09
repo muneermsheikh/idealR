@@ -14,21 +14,26 @@
               <li class="nav-item">
                 <a class="nav-link" routerLink="/deployment" routerLinkActive="active">Deployment</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
+              <!-- <li class="nav-item">
+                <a class="nav-link" routerLink="/administration/messages" routerLinkActive="active">Messages</a>
               </li>
+            -->
               <!--*appHasRole="['Admin', 'AdminManager']" -->
-              <label style="display: inline-block; width: 150px; font-size: smaller; font-weight: bold; vertical-align: middle;">Call Record Phone No</label>
-              <input type="text" style="display: inline-block;width: 150px;"
-                  name = "phoneNo"
+              <li class="nav-item" style="width: 150px;">
+                <a class="nav-link" routerLinkActive="active" style="width: 150px;">Call Record</a>
+              </li>
+
+              <input type="text" style="height: 2em;"
+                  name = "stPhoneNo" 
+                  type="text"
                   [(ngModel)]="stPhoneNo"
-                  class = "form-control mx-2"
-                  placeholder="person Id to search"
+                  class = "form-control me-2"
+                  placeholder="phone no"
               >
               <button class="btn btn-success fa fa-phone" (click)="editCallRecord()"  title="click to display call record details for the phone no" type="submit"></button>
               
               <li class="nav-item" (click)="logout()">
-                <a class="nav-link">Log Out</a>
+                <a class="nav-link" style="width: 75px;">Log Out</a>
               </li>
           </ng-container>
           <!-- <li class="nav-item" >

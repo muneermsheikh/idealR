@@ -37,6 +37,8 @@ namespace api.Extensions
             services.AddAuthorization(opt => {
                 opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
                 opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
+                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
+                opt.AddPolicy("CustomePolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
                 opt.AddPolicy("HRSupPolicy", policy => policy.RequireRole("HR Supervisor", "HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("HRExecPolicy", policy => policy.RequireRole("HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("AsstHRExecPolicy", policy => policy.RequireRole("Asst HR Executive"));
@@ -49,6 +51,8 @@ namespace api.Extensions
                 opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager"));
                 opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("Order Forward"));
                 opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
+                opt.AddPolicy("SelectionPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Document Controller-Admin"));
+                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Document Controller-Admin"));
             });
 
             return services;

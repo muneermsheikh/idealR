@@ -1,7 +1,5 @@
 
 using api.DTOs;
-using api.Entities;
-using api.Entities.Admin;
 using api.Entities.Admin.Order;
 using api.Entities.Messages;
 using api.Errors;

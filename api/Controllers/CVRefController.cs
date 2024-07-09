@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    //[Authorize(Policy = "CVRefPolicy")]
+    [Authorize(Policy = "CVRefPolicy")]
     public class CVRefController : BaseApiController
     {
           private readonly ICVRefRepository _cvrefRepo;

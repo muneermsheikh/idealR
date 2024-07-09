@@ -4,3 +4,37 @@
     height: 6em;
     width: 150px;
 }
+
+.lbl {
+    font-size: small;
+    margin-left: 2px;
+    margin-right: 2px;
+    word-wrap: break-word;
+    vertical-align: top;
+}
+
+.menuStdd {
+    display: inline-block;
+    width: 100px;
+    margin-right: 3px;
+    margin-left: 3px;
+    word-wrap: break-word;
+    text-align: center;
+    vertical-align: top;
+    border:2px;
+    cursor: pointer;
+}
+
+.lblB{
+    font-size: small;
+    font-weight: bold;
+    margin-left: 2px;
+    margin-right: 2px;
+    word-wrap: normal;
+    vertical-align: top;
+}
+
+.w150 {width: 150px;}
+.w450 {width: 450px;}
+
+.cursorPointer{cursor:pointer; color: darkgreen;}

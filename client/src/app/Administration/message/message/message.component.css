@@ -1,0 +1,27 @@
+.stdd {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: small;
+    vertical-align: top;
+    word-wrap: normal;
+    word-break: break-all;
+}
+
+.lbl {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: small;
+    font-weight: bold;
+    vertical-align: top;
+    word-break: normal;
+    word-wrap: normal;
+}
+
+.cursorPointer {
+    cursor: pointer;
+    color: darkblue;
+}
+
+.red {color: red;}
