@@ -1,5 +1,6 @@
 export interface IPendingDebitApprovalDto
 {
+	id: number;
 	voucherEntryId: number;
 	voucherNo: number;
 	voucherDated: Date;
@@ -7,13 +8,14 @@ export interface IPendingDebitApprovalDto
 	drAccountName: string;
 	drAmount: number;
 	drEntryApproved: boolean;
-	drEntryApprovedByEmployeeId: number;
+	drEntryApprovedByUsername: string;
 	drEntryApprovedOn: Date;
-
+	selected: boolean;
 }
 
 export class PendingDebitApprovalDto implements IPendingDebitApprovalDto
 {
+	id=0;
 	voucherEntryId = 0;
 	voucherNo=0;
 	voucherDated=new Date();
@@ -21,6 +23,7 @@ export class PendingDebitApprovalDto implements IPendingDebitApprovalDto
 	drAccountName = '';
 	drAmount = 0;
 	drEntryApproved = false;
-	drEntryApprovedByEmployeeId = 0;
+	drEntryApprovedByUsername = '';
 	drEntryApprovedOn = new Date();
+	selected = false;
 }

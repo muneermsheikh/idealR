@@ -24,18 +24,18 @@ export class DeployLineComponent {
     //if(this.dep?.deploySequence) this.sequence = of(this.dep?.deploySequence);
   }
 
- editDep() {
+  editDep() {
 
-  if(this.dep) {
-    this.service.getDeploymentWithItems(this.dep.depId).subscribe({
-      next: (response: IDep) => {
-        if(response) {
-          this.editDepEvent.emit(response);
-          //console.log('emitted from dep line:', response);
-        } 
-      }
-    })
-  }
+    if(this.dep) {
+      this.service.getDeploymentWithItems(this.dep.depId).subscribe({
+        next: (response: IDep) => {
+          if(response) {
+            this.editDepEvent.emit(response);
+            //console.log('emitted from dep line:', response);
+          } 
+        }
+      })
+    }
   
  }
 

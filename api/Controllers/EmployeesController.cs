@@ -1,6 +1,3 @@
-using System.Diagnostics.Contracts;
-using System.Drawing;
-using api.DTOs;
 using api.DTOs.Admin;
 using api.Entities.Admin;
 using api.Errors;
@@ -13,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Policy ="AdminPolicy")]      //RequireRoles: Admin
     public class EmployeesController : BaseApiController
     {
         private readonly IEmployeeRepository _empRepo;

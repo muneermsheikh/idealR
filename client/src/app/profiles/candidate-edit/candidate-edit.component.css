@@ -42,7 +42,6 @@ input[type="radio"]:checked::before {
 
 
 .lblS {
-    font-weight: 125;
     font-size:smaller;
     display: inline-block;
     vertical-align: top;
@@ -51,7 +50,6 @@ input[type="radio"]:checked::before {
 	margin-top: 5px;
 }
 .lbl {
-    font-weight: 125;
     font-size:smaller;
     display: inline-block;
     font-weight: bold;

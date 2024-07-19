@@ -1,0 +1,11 @@
+
+.menuStdd {
+    display: inline-block;
+    width: 150px;
+    margin: 0 10px 0 10px;
+    word-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
+    border:2px;
+    cursor: pointer;
+}

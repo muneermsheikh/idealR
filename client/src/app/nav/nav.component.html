@@ -4,36 +4,40 @@
     
         <ul class="navbar-nav me-auto mb-2 mb-md-0" >
           <ng-container *ngIf="accountService.currentUser$|async">
+            <li class="nav-item">
+              <a class="nav-link menu" routerLink="/accordionTest" routerLinkActive="active">accordion test</a>
+            </li>
+          
               <li class="nav-item">
-                <a class="nav-link" routerLink="/candidates" routerLinkActive="active">Candidates</a>
+                <a class="nav-link menu" routerLink="/candidates" routerLinkActive="active">Candidates</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" routerLink="/administration" routerLinkActive="active">Administration</a>
+                <a class="nav-link menu" routerLink="/administration" routerLinkActive="active">Administration</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" routerLink="/deployment" routerLinkActive="active">Deployment</a>
+                <a class="nav-link menu" routerLink="/deployment" routerLinkActive="active">Deployment</a>
               </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" routerLink="/administration/messages" routerLinkActive="active">Messages</a>
+              
+              <li class="nav-item">
+                <a class="nav-link menu" routerLink="/finance" routerLinkActive="active">Finance</a>
               </li>
-            -->
-              <!--*appHasRole="['Admin', 'AdminManager']" -->
+              
               <li class="nav-item" style="width: 150px;">
-                <a class="nav-link" routerLinkActive="active" style="width: 150px;">Call Record</a>
+                <a class="nav-link menu" routerLinkActive="active" style="width: 150px;">Call Record</a>
               </li>
 
-              <input type="text" style="height: 2em;"
+              <input type="text" style="height: 2em; width: 125px;"
                   name = "stPhoneNo" 
                   type="text"
                   [(ngModel)]="stPhoneNo"
-                  class = "form-control me-2"
+                  class = "form-control me-2 menu"
                   placeholder="phone no"
               >
               <button class="btn btn-success fa fa-phone" (click)="editCallRecord()"  title="click to display call record details for the phone no" type="submit"></button>
               
               <li class="nav-item" (click)="logout()">
-                <a class="nav-link" style="width: 75px;">Log Out</a>
+                <a class="nav-link menu" style="width: 100px;">Log Out</a>
               </li>
           </ng-container>
           <!-- <li class="nav-item" >
@@ -44,13 +48,13 @@
         <div class="dropdown" *ngIf="(accountService.currentUser$|async) as user" dropdown>
           <a class="dropdown-toggle text-light text-decoration-none" dropdownToggle>Welcome {{user.knownAs | titlecase}}</a>
           <div class="dropdown-menu" *dropdownMenu>
-            <a class="dropdown-item" routerLink="/member/edit">Edit Profile</a>
-            <a class="dropdown-item" (click)="logout()">Log Out</a>
+            <a class="dropdown-item menu" routerLink="/member/edit">Edit Profile</a>
+            <a class="dropdown-item menu" (click)="logout()">Log Out</a>
           </div>
         </div>
 
         <form *ngIf="!(accountService.currentUser$|async)" #loginForm = "ngForm" (ngSubmit)="login()" 
-            class="d-flex" autocomplete="off" role="search">
+            class="d-flex menu" autocomplete="off" role="search">
               <input type="text"
                 name = "username" 
                 type="text"
@@ -61,12 +65,12 @@
               <input type="text"
                 name = "password"
                 [(ngModel)]="model.password"
-                class = "form-control me-2"
+                class = "form-control me-2 menu"
                 placeholder="Password"
                 type="password"
               >
               
-              <button class="btn btn-success" type="submit">Login</button>
+              <button class="btn btn-success menu" type="submit">Login</button>
         </form>
       </div>
   </nav>

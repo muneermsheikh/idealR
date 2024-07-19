@@ -16,7 +16,7 @@ export class SelDecisionParams
      includeDeployment: boolean=false;
      
      pageNumber = 1;
-     pageSize=5;
+     pageSize=15;
      sort = "";
      search: string='';
 }

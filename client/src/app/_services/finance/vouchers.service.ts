@@ -1,18 +1,18 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { IApiReturnDto } from 'src/app/_dtos/admin/apiReturnDto';
 import { IVoucher } from 'src/app/_models/finance/voucher';
 import { Pagination } from 'src/app/_models/pagination';
 import { transactionParams } from 'src/app/_models/params/finance/transactionParams';
 import { User } from 'src/app/_models/user';
 import { environment } from 'src/environments/environment.development';
-import { getPaginatedResult, getPaginationHeaders } from '../paginationHelper';
+import { getPaginatedResult } from '../paginationHelper';
 import { IStatementofAccountDto } from 'src/app/_dtos/finance/statementOfAccountDto';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class VouchersService {
 
   apiUrl = environment.apiUrl;
@@ -26,13 +26,17 @@ export class VouchersService {
   
   constructor(private http: HttpClient) { }
   
-  getVouchers(oParams: transactionParams) {
+  getVouchers() {
 
-    const response = this.cache.get(Object.values(oParams).join('-'));
+    const response = this.cache.get(Object.values(this.sParams).join('-'));
     if(response) return of(response);
 
-    let params = getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
+    var oParams = this.sParams;
+    let params = new HttpParams();
 
+    params = params.append('pageNumber', oParams.pageNumber.toString());
+    params = params.append('pageSize', oParams.pageSize.toString());
+    
     if (oParams.cOAId !== 0 )  params = params.append('coaId', oParams.cOAId.toString());
     if (oParams.voucherNo !== 0 )  params = params.append('voucherNo', oParams.voucherNo.toString());
     if (oParams.voucherDated  !== '' )  params = params.append('vocherDated', oParams.voucherDated);
@@ -40,13 +44,12 @@ export class VouchersService {
     if (oParams.amount !== 0 )  params = params.append('amount', oParams.amount.toString());
     if (oParams.accountName === '') params = params.append('accountName', oParams.accountName);
     if (oParams.search) params = params.append('search', oParams.search);
-    params = params.append('sort', this.sParams.sort);
-    params = params.append('pageNumber', this.sParams.pageNumber.toString());
-    params = params.append('pageSize', this.sParams.pageSize.toString());
-
     
+    params = params.append('sort', this.sParams.sort);
+
     return getPaginatedResult<IVoucher[]>(this.apiUrl + 'finance/voucherspagedlist', params, this.http).pipe(
       map(response => {
+        console.log('response in voucherservice:', response);
         this.cache.set(Object.values(oParams).join('-'), response);
         return response;
       })
@@ -58,7 +61,7 @@ export class VouchersService {
     var voucher: IVoucher;
     if(id===0) return of(undefined);
     
-    return this.http.get<IVoucher|undefined>(this.apiUrl + 'finance/vouchers/' + id);
+    return this.http.get<IVoucher|undefined>(this.apiUrl + 'finance/voucher/' + id);
   }
 
   deleteVoucher(id: number)

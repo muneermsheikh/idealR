@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "HRMPolicy")]
+    [Authorize(Policy = "HRMPolicy")]    //Roles: HR Manager, HR Supervisor, HR Executive, Admin, Admin Manager
     public class ChecklistController : BaseApiController
     {
         private readonly IChecklistRepository _repo;

@@ -8,6 +8,7 @@ namespace api.Entities.Finance
         {
         }
 
+        //public string PartyName { get; set; }
         public int CVRefId { get; set; }
         [MaxLength(1)]
         public string Divn {get; set;}

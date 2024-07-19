@@ -20,20 +20,20 @@ namespace api.Data.Repositories.Master
             _context = context;
         }
 
-        public async Task<string> AddIndustry(string IndustryName)
+        public async Task<Industry> AddIndustry(string IndustryName)
         {
             var q = await _context.Industries
                 .Where(x => x.IndustryName.ToLower() == IndustryName.ToLower())
                 .FirstOrDefaultAsync();
 
-            if(q != null) return "That industry name already exists";
+            if(q != null) return q;
 
 
             var obj = new Industry{IndustryName = IndustryName};
 
             _context.Entry(obj).State = EntityState.Added;
 
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to add the industry";
+            return await _context.SaveChangesAsync() > 0 ? obj : null;
         }
 
         public async Task<string> DeleteIndustry(string IndustryName)

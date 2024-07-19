@@ -1,0 +1,44 @@
+
+<h4 style="margin-right: 15px; display: inline-block;">Voucher Lists</h4>
+	<pagination class="stdd" *ngIf="pagination !== undefined"
+		[totalItems]="pagination!.totalItems"
+		[itemsPerPage]="pagination!.itemsPerPage"
+		(pageChanged)="onPageChanged($event)"
+		[maxSize]="10"
+		previousText="&lsaquo;"
+		nextText="&rsaquo;"
+		firstText="&laquo;"
+		lastText="&raquo;">
+	</pagination>
+
+	<input (keyup.enter)="onSearch()" type="text" class="stdd w200" style="margin-left: 15px;" #search placeholder="Search">
+	<button (click)="onSearch()" title="search the text entered" class="stdd btn fa-solid fa-find mx-2"></button>
+
+	<button class="btn mx-2 fa fa-plus mx-2" style="display:inline-block;" 
+		title="add a new Finance Voucher" (click)="addNewFinanceTransaction()" ></button>
+	<button title="return to calling program" class="btn mx-2 fa fa-window-close" 
+		style="display:inline-block;" (click)="returnToCaller()" ></button>
+	
+
+<hr style="padding-top: 0px;  padding-bottom:0px;margin-top:0px; margin-bottom: 0px; margin-left: 10px; padding-right: 10px;" >
+
+<div class="container displayInBlockV my-0 py-0 ml-5" >
+	<div class="stdd vAlignM w90 b">Voucher No</div>
+	<div class="stdd vAlignM w100 b">Dated</div>
+	<div class="stdd vAlignM mx-1 w200 b">Account Name</div>
+	<div class="stdd vAlignM w90 b" style="text-align:center;">Amount</div>
+	<div class="stdd vAlignM w250 b">Narration</div>
+	<div class="stdd vAlignM hM w60 b">Approved</div>
+	<div class="stdd vAlignM hM w60 b">By</div>
+	<div class="stdd vAlignM hM w75 b">On</div>
+	
+<hr class="my-0 py-0 ml-5">
+	<div *ngFor="let item of vouchers">
+		<app-voucher-item
+			[t]="item"
+			(editEvent)="editTransaction($event, true)"
+	    	(deleteEvent)="deleteVoucher($event)"
+			>
+		</app-voucher-item>
+	</div>
+</div>

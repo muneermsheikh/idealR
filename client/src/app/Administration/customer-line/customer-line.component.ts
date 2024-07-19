@@ -21,6 +21,7 @@ export class CustomerLineComponent {
   @Output() selectedEvent = new EventEmitter<number>();
   @Output() EvaluationEvent = new EventEmitter<number>();
   @Output() feedbackEvent = new EventEmitter<number>();
+  @Output() displayHistoryEvent = new EventEmitter<number>();
 
   constructor(private service: CustomersService, private toastr: ToastrService,
       private confirm: ConfirmService){}
@@ -45,6 +46,10 @@ export class CustomerLineComponent {
 
   feedbackFormClicked() {
     this.feedbackEvent.emit(this.dto!.id);
+  }
+
+  displayHistory() {
+    this.displayHistoryEvent.emit(this.dto!.id);
   }
   
 }

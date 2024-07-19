@@ -429,10 +429,10 @@ namespace api.Data.Migrations
                     b.Property<string>("CustomerSuggestion")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateIssued")
+                    b.Property<DateOnly>("DateIssued")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateReceived")
+                    b.Property<DateOnly>("DateReceived")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Designation")
@@ -440,6 +440,9 @@ namespace api.Data.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("FeedbackNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GradeAssessedByClient")
                         .HasColumnType("TEXT");
@@ -907,6 +910,9 @@ namespace api.Data.Migrations
                     b.Property<string>("HrExecUsername")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OrderItemId")
                         .HasColumnType("INTEGER");
 
@@ -1141,13 +1147,22 @@ namespace api.Data.Migrations
                     b.Property<int>("Charges")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("OrderForwardToAgentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CustomerCity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderNo")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProfessionId")
@@ -1157,8 +1172,6 @@ namespace api.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderForwardToAgentId");
 
                     b.HasIndex("OrderItemId")
                         .IsUnique();
@@ -1174,6 +1187,9 @@ namespace api.Data.Migrations
 
                     b.Property<string>("AgentName")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerOfficialId")
                         .HasColumnType("INTEGER");
@@ -1653,6 +1669,9 @@ namespace api.Data.Migrations
                     b.Property<string>("Narration")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PartyName")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateOnly>("VoucherDated")
                         .HasColumnType("TEXT");
 
@@ -1699,7 +1718,7 @@ namespace api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vouchers");
+                    b.ToTable("Voucher");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.VoucherAttachment", b =>
@@ -1717,20 +1736,25 @@ namespace api.Data.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("FinanceVoucherId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UploadedByUsername")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("VoucherId")
+                    b.Property<int?>("VoucherId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FinanceVoucherId");
+
                     b.HasIndex("VoucherId");
 
-                    b.HasIndex("FileName", "VoucherId")
+                    b.HasIndex("FileName", "FinanceVoucherId")
                         .IsUnique();
 
                     b.ToTable("VoucherAttachments");
@@ -1757,8 +1781,8 @@ namespace api.Data.Migrations
                     b.Property<bool>("DrEntryApproved")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DrEntryApprovedByEmployeeById")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("DrEntryApprovedByUsername")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("DrEntryApprovedOn")
                         .HasMaxLength(10)
@@ -1826,7 +1850,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("VoucherId");
 
-                    b.ToTable("VoucherItems");
+                    b.ToTable("VoucherItem");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentQBank", b =>
@@ -3164,10 +3188,10 @@ namespace api.Data.Migrations
                     b.Property<int>("CvRefId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("MessageComposedOn")
+                    b.Property<DateTime>("MessageComposedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly?>("MessageSentOn")
+                    b.Property<DateTime?>("MessageSentOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MessageType")
@@ -3543,15 +3567,6 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
-                {
-                    b.HasOne("api.Entities.Admin.Order.OrderForwardToAgent", null)
-                        .WithMany("OrderForwardCategories")
-                        .HasForeignKey("OrderForwardToAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategoryOfficial", b =>
                 {
                     b.HasOne("api.Entities.Admin.Order.OrderForwardCategory", null)
@@ -3651,11 +3666,15 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Finance.VoucherAttachment", b =>
                 {
-                    b.HasOne("api.Entities.Finance.Voucher", "Voucher")
+                    b.HasOne("api.Entities.Finance.FinanceVoucher", null)
                         .WithMany("VoucherAttachments")
-                        .HasForeignKey("VoucherId")
+                        .HasForeignKey("FinanceVoucherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("api.Entities.Finance.Voucher", "Voucher")
+                        .WithMany("VoucherAttachments")
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Voucher");
                 });
@@ -3973,11 +3992,6 @@ namespace api.Data.Migrations
                     b.Navigation("OrderForwardCategoryOfficials");
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardToAgent", b =>
-                {
-                    b.Navigation("OrderForwardCategories");
-                });
-
             modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>
                 {
                     b.Navigation("ContractReviewItem");
@@ -4001,6 +4015,8 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
                 {
+                    b.Navigation("VoucherAttachments");
+
                     b.Navigation("VoucherEntries");
                 });
 

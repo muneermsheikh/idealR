@@ -2,13 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, of } from 'rxjs';
 import { IForwardedCategoryDto } from 'src/app/_dtos/admin/forwardedCategoryDto';
-import { IOfficialIdsAndOrderItemIdsDto } from 'src/app/_dtos/admin/officialIdsAndOrderItemIdsDto';
 import { IOrderForwardToAgentDto } from 'src/app/_dtos/orders/orderForwardToAgentDto';
 import { IOrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
 import { Pagination } from 'src/app/_models/pagination';
 import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
 import { environment } from 'src/environments/environment.development';
 import { getPaginatedResult } from '../paginationHelper';
+import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +43,13 @@ export class OrderForwardService {
   }
 
    //forward DL to agents
-  forwardDLtoSelectedAgents(ids: IOfficialIdsAndOrderItemIdsDto) {
+  /*forwardDLtoSelectedAgents(ids: IOfficialIdsAndOrderItemIdsDto) {
     return this.http.post<string>(this.apiUrl + 'Orderforward', ids );
+  }*/
+
+  forwardOrderToSelectedAgents(dtos: IOfficialAndCustomerNameDto[], orderid: number) {
+    console.log('orderforwardservice.forwardOrderToselected', dtos, orderid);
+    return this.http.post<string>(this.apiUrl + 'Orderforward/forwardToAgents/' + orderid, dtos );
   }
 
   //get dlforwards of an orderid

@@ -18,23 +18,26 @@ export class UserManagementComponent implements OnInit{
   clBtnName='';
   pagination: Pagination | undefined;
   
-  availableRoles = [
+  /*availableRoles = [
     'Candidate', 'Employee', 'Client', 'Admin', 'HR Manager', 'HR Supervisor', 'HR Executive',
     'Asst HR Executive', 'Accounts Manager', 'Finance Manager', 'Cashier', 'Accountant',
     'Document Controller-Admin', 'Document Controller-Processing', 'Processing Manager',
     'AdminManager', 'Receptionist', 'Marketing Manager', 'Design Assessment Questions',
     'Register Selections and Rejections', 'Approve release of documents'
   ]
+*/
 
   selectedRoles: string[]=[];
-
+  
+  availableRoles: string[]=[];
 
   constructor(private activatedRoute: ActivatedRoute, private adminService: AdminService, private modalService: BsModalService) {};
 
   ngOnInit(): void {
     //this.getUsersWithRoles();
     this.activatedRoute.data.subscribe(data => {
-      this.users = data['userswithroles']
+      this.users = data['userswithroles'];
+      this.availableRoles = data['roles'];
     })
    
   }

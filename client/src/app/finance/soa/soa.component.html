@@ -1,0 +1,40 @@
+<div *ngIf="soa===undefined">
+	no data available
+</div>
+<div *ngIf="soa!==undefined && soa!==null">
+	Extract of transactions of: <strong> {{soa.accountName}} </strong> 
+		for the period between {{soa.fromDate | date: 'dd-MMM-yy'}} and {{soa.uptoDate | date: 'dd-MMM-yy'}}
+	
+	<button class="btn stdd ml-15 fa fa-2x fa-undo" (click)="returnToCaller()" ></button>
+</div>
+
+<br>
+<div *ngIf="soa!==undefined && soa!==null" class="container">
+	<label class="stdd w100">Voucher No </label>
+	<label class="stdd w100">Date</label>
+	<label class="stdd w150">Account</label>
+	<label class="stdd w75 tAlignRight">Debit</label>
+	<label class="stdd mx-2 w75 tAlignRight">Credit</label>
+	
+	<hr>
+	<div class="opBal">Opening Balance</div>
+	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance > 0">{{soa.opBalance}}</div>
+	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance <= 0">{{soa.opBalance}}</div>
+	
+	<div *ngFor="let item of soa.statementOfAccountItems">
+
+		<app-soa-line
+			[soaItem]="item"
+			(displayVoucherEvent)="displayVoucherClicked($event)"
+			>
+		</app-soa-line>
+	</div>
+	<br>
+
+	<div class="opBal" >Overall Total</div>
+	<div class="stdd w75 tAlignRight" >{{overallTotalDr.toLocaleString()}}</div>
+	<div class="stdd w75 tAlignRight" >{{overallTotalCr.toLocaleString()}}</div>
+
+	<br><label style="margin: 1px 1px 1px 322px; font-size: small; font-weight: bold; text-align: right;">Balance</label>
+	<div class="stdd w75 b tAlignRight">{{overallBal.toLocaleString() }} {{overallBalSuffix}}</div>
+</div>

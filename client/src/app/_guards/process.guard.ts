@@ -8,22 +8,27 @@ import { AccountService } from '../_services/account.service';
   providedIn: 'root'
 })
 export class ProcessGuard implements CanActivate {
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService, private toastr: ToastrService) { }
  
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
     return this.accountService.currentUser$.pipe(
       map(user => {
-        if (user?.roles?.includes('Document Controller-Processing')
-          || user?.roles?.includes('Process Executive')
-          || user?.roles?.includes('Process Supervisor')
+        const roles = user!.roles;
+        console.log('admin included:', roles.includes('Admin'), roles);
+
+        if (roles.includes('Document Controller-Processing')
+          || roles.includes('Process Executive')
+          || roles.includes('Process Supervisor')
+          || roles.includes('Admin')
         ) return true;
         else {
           //this.router.navigate(['/account/login'], {queryParams: {returnUrl: state.url}});
+          this.toastr.warning('You do not have authorization to acess this resource');
           return false
         }
-      })
+     })
     );
   }
   

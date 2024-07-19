@@ -1,6 +1,7 @@
 using System.Data.Common;
-using System.Runtime.InteropServices.Marshalling;
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
+using api.DTOs.Customer;
 using api.Entities.Admin.Order;
 using api.Extensions;
 using api.Helpers;
@@ -20,10 +21,8 @@ namespace api.Data.Repositories.Orders
         private readonly IConfiguration _config;
         private readonly IComposeMessagesHRRepository _msgRep;
         private readonly IMapper _mapper;
-        private readonly int _defaultProjectManagerId = 0;
-        private readonly int _defaultProjManagerAppUserId=0;
         private readonly ICustomerRepository _custRepo;
-        public OrderForwardRepository(DataContext context, ICustomerRepository custRepo,
+        public OrderForwardRepository(DataContext context, ICustomerRepository custRepo, 
             IConfiguration config, IComposeMessagesHRRepository msgRep, IMapper mapper)
         {
             _custRepo = custRepo;
@@ -31,70 +30,19 @@ namespace api.Data.Repositories.Orders
             _msgRep = msgRep;
             _config = config;
             _context = context;
-            _defaultProjectManagerId = Convert.ToInt32(_config["EmpHRSupervisorId"] ?? "0");
-            _defaultProjManagerAppUserId = Convert.ToInt32(_config["HRSupAppuserId"] ?? "0");
         }
 
-        public async Task<OrderForwardToAgent> GenerateOrderForwardToAgent(int orderid)
+        public async Task<PagedList<OrderForwardToAgentDto>> GetPagedList(OrderFwdParams fParams)
         {
-            var orderFwd = await _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories)
-                .ThenInclude(x => x.OrderForwardCategoryOfficials)
-                .Where(x => x.OrderId == orderid)
-                .FirstOrDefaultAsync();
-            
-            if(orderFwd != null) return orderFwd;
-
-            //generate a new object
-
-            var offList = new List<OrderForwardCategoryOfficial>
-            {
-                new() {
-                    //CustomerOfficialId = 5, OfficialName = "VK Patel",
-                    //AgentName = "Binladen Industrial Co Ltd", 
-                    DateForwarded = DateTime.Now
-                }
-            };
-            
-
-            var itemsWithCharges = await (from item in _context.OrderItems where item.OrderId==orderid
-                //join ord in _context.Orders on item.OrderId equals ord.Id
-                join cat in _context.Professions on item.ProfessionId equals cat.Id
-                join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId
-                select new {rvw.Charges, cat.ProfessionName, item})
-                .ToListAsync();
-            //var items = await _context.OrderItems.Where(x => x.OrderId == orderid).ToListAsync();
-            var categories = new List<OrderForwardCategory>();
-            
-            foreach(var orderitem in itemsWithCharges) {
-                    categories.Add(new OrderForwardCategory{
-                        OrderItemId = orderitem.item.Id, ProfessionId=orderitem.item.ProfessionId, 
-                        Charges=orderitem.Charges, OrderId=orderitem.item.OrderId, ProfessionName=orderitem.ProfessionName,
-                        OrderForwardCategoryOfficials = offList
-                });
-                
-                var order = await _context.Orders.Where(x => x.Id == orderid)
-                    .Select(x => new {CustomerName=x.Customer.CustomerName, OrderNo=x.OrderNo,
-                    OrderDate = x.OrderDate}).FirstOrDefaultAsync(); 
-
-                orderFwd = new OrderForwardToAgent{customerName = order.CustomerName,
-                    OrderDate= order.OrderDate, OrderId = orderid, OrderNo = order.OrderNo,
-                    OrderForwardCategories = categories};
-            }
-            
-            return orderFwd;
-        }
-        public async Task<PagedList<OrderForwardToAgent>> GetPagedList(OrderFwdParams fParams)
-        {
-            var query = _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories)
-                .ThenInclude(x => x.OrderForwardCategoryOfficials)
+            var query = _context.OrderForwardCategories
+                //.Include(x => x.OrderForwardCategoryOfficials)
                 .AsQueryable();
             
-            //if(fParams.ProfessionId != 0) qyery = query.Where(x => x.OrderForwardCategories.Select(y => y.ProfessionId).ToList().Contains(fParams.ProfessionId).Where(x => x.ProfessionId == fParams.ProfessionId));
+            if(fParams.ProfessionId != 0) query = query.Where(x => x.ProfessionId == fParams.ProfessionId).Where(x => x.ProfessionId == fParams.ProfessionId);
             if(fParams.OrderId != 0) query = query.Where(x => x.OrderId == fParams.OrderId);
-           var paged = await PagedList<OrderForwardToAgent>.CreateAsync(query.AsNoTracking()
-                    //.ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
+            
+            var paged = await PagedList<OrderForwardToAgentDto>.CreateAsync(query.AsNoTracking()
+                    .ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
                     , fParams.PageNumber, fParams.PageSize);
             
             
@@ -156,184 +104,30 @@ namespace api.Data.Repositories.Orders
             return "";
         }
 
-        public async Task<string> InsertOrderForwardedToAgents(OrderForwardToAgent fwd, string username)
+        public async Task<string> UpdateOrderForwardCategories(ICollection<OrderForwardCategory> models, string username)
         {
-            //if the header exists, get it
-            foreach(var cat in fwd.OrderForwardCategories) {
-                foreach(var off in cat.OrderForwardCategoryOfficials) {
-                    if(string.IsNullOrEmpty(off.AgentName)) {
-                        var custAndOff = await _custRepo.GetCustomerOfficialDto(off.CustomerOfficialId);
-                        if(custAndOff != null) {
-                            off.AgentName = custAndOff.CustomerName;
-                            off.EmailIdForwardedTo = custAndOff.OfficialEmailId;
-                            off.Username = username;
-                        }
-                    }
-                }
-            }
-            
-            if (fwd.ProjectManagerId == 0) fwd.ProjectManagerId = _defaultProjectManagerId;
-            
-            var orderFwd = await _context.OrderForwardToAgents.Include(x => x.OrderForwardCategories)
-                .ThenInclude(x => x.OrderForwardCategoryOfficials).FirstOrDefaultAsync();
-
-            if(orderFwd != null) {  //add the categories+officials to the existing header
-                
-                foreach(var cat in fwd.OrderForwardCategories) {
-                    var existingCatItem = orderFwd.OrderForwardCategories.Where(c => c.OrderItemId == cat.OrderItemId).SingleOrDefault();
-                    
-                    if(existingCatItem == null) {       //OrderForwardCategory does not exist for the OrderItemId, which is unique index
-                            orderFwd.OrderForwardCategories.Add(new OrderForwardCategory{
-                            Charges = cat.Charges, OrderForwardToAgentId = cat.OrderForwardToAgentId,
-                            OrderId = cat.OrderId, OrderItemId=cat.OrderItemId, ProfessionId = cat.ProfessionId,
-                            ProfessionName = cat.ProfessionName, OrderForwardCategoryOfficials = cat.OrderForwardCategoryOfficials
-                        });
-                    } else {        //OrderForwardCategory exists, so append the officials to this record
-                        existingCatItem.OrderForwardCategoryOfficials = cat.OrderForwardCategoryOfficials;
-                    }
-                    
-                }
-                _context.Entry(orderFwd).State = EntityState.Modified;
-
-            } else {        //create all objects including the header
-                if(fwd.CustomerId == 0) {
-                    var st = await _context.GetCustomerIdAndNameFromOrderId(fwd.OrderId);
-                    var index=st.IndexOf("|");
-                    fwd.CustomerId = Convert.ToInt32(st.Substring(0, index));
-                    fwd.customerName = st.Substring(index+1);
-                }
-                _context.OrderForwardToAgents.Add(fwd);
-                _context.Entry(fwd).State = EntityState.Added;
-            }
-            
-            var msgs = await _msgRep.ComposeMsgsToForwardOrdersToAgents(fwd, username);
-
-            if(msgs != null && msgs.Count > 0) foreach(var msg in msgs) {_context.Entry(msg).State = EntityState.Added;}
-            
-            try {
-                await _context.SaveChangesAsync();
-            } catch (Exception ex) {
-                return ex.Message;
-            }
-
-            return "";
-
-        }
-        
-        public async Task<string> UpdateOrderForwardedToAgents(OrderForwardToAgent model, string username)
-        {
-            //variables to store new objects, for composing msgs
-            var OrderFwdCategories = new List<OrderForwardCategory>();
-            var OrderFwdCategory = new OrderForwardCategory();
-            var OrderFwdOfficials = new List<OrderForwardCategoryOfficial>();
-            var OrderFwdToAgent = new OrderForwardToAgent();
-
-            var existing = await _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories)
-                .ThenInclude(x => x.OrderForwardCategoryOfficials)
-                .Where(x => x.Id == model.Id)
-                .FirstOrDefaultAsync();
-            
-            if(existing == null) return "No order forwarding object exists to edit";
-
-            _context.Entry(existing).CurrentValues.SetValues(model);
-
-            foreach(var existingItem in existing.OrderForwardCategories.ToList())
+            var cats = new List<OrderForwardCategory>();
+            foreach(var model in models)
             {
-                if(!model.OrderForwardCategories.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
-                {
-                    _context.OrderForwardCategories.Remove(existingItem);
-                    _context.Entry(existingItem).State = EntityState.Deleted;
-                }
+                var stErr =await UpdateOrderForwardCategory(model);
+                if(string.IsNullOrEmpty(stErr)) cats.Add(model);
             }
 
-            foreach(var newItem in model.OrderForwardCategories)
-            {
-                OrderFwdCategories = new List<OrderForwardCategory>();
-                OrderFwdCategory = new OrderForwardCategory();
+            var orderid = models.Select(x => x.OrderId).FirstOrDefault();
 
-                var existingItem = existing.OrderForwardCategories
-                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+            var fwdToAgent = await _context.Orders.Where(x => x.Id == orderid)
+                .Include(x => x.Customer)
+                .Select(x => new OrderForwardToAgentDto{
+                    CustomerCity = x.Customer.City, CustomerId=x.CustomerId, Id=0,
+                        CustomerName=x.Customer.CustomerName, OrderDate = x.OrderDate, OrderId=x.Id,
+                        OrderNo = x.OrderNo, ProjectManagerId = x.ProjectManagerId,
+                        OrderForwardCategories = cats        
+                    }).FirstOrDefaultAsync();
                 
-                if(existingItem != null) {
-                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
-                    _context.Entry(existingItem).State = EntityState.Modified;
-                } else {
-                    var itemToInsert = new OrderForwardCategory 
-                    {
-                        Charges = newItem.Charges,
-                        OrderForwardToAgentId = newItem.OrderForwardToAgentId,
-                        OrderId =  newItem.OrderId,
-                        OrderItemId = newItem.OrderItemId,
-                        ProfessionId = newItem.ProfessionId,
-                        ProfessionName = newItem.ProfessionName,
-                        //OrderForwardCategoryOfficials = newItem.OrderForwardCategoryOfficials
-                    };
-                    
-                    existing.OrderForwardCategories.Add(itemToInsert);
-                    _context.Entry(itemToInsert).State = EntityState.Added;
 
-                    OrderFwdCategory = itemToInsert;
-                }
-
-                foreach(var existingSubItem in existingItem?.OrderForwardCategoryOfficials.ToList())
-                {
-                    if(!existingItem.OrderForwardCategoryOfficials.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
-                    {
-                        _context.OrderForwardCategoryOfficials.Remove(existingSubItem);
-                        _context.Entry(existingSubItem).State = EntityState.Deleted;
-                    }
-                }
-                
-                OrderFwdOfficials = new List<OrderForwardCategoryOfficial>();
-                foreach(var newSubItem in newItem.OrderForwardCategoryOfficials)
-                {
-                    var subItemExisting = existingItem.OrderForwardCategoryOfficials
-                        .Where(c => c.Id == newSubItem.Id && c.Id != default(int)).SingleOrDefault();
-                    
-                    if(subItemExisting != null)
-                    {
-                        _context.Entry(subItemExisting).CurrentValues.SetValues(newSubItem);
-                        _context.Entry(subItemExisting).State = EntityState.Modified;
-                    } else {
-                        var subItemToInsert = new OrderForwardCategoryOfficial
-                        {
-                            AgentName=newSubItem.AgentName,
-                            CustomerOfficialId = newSubItem.CustomerOfficialId,
-                            DateForwarded = newSubItem.DateForwarded,
-                            EmailIdForwardedTo = newSubItem.EmailIdForwardedTo,
-                            OfficialName = newSubItem.OfficialName,
-                            OrderForwardCategoryId = newSubItem.OrderForwardCategoryId,
-                            PhoneNoForwardedTo = newSubItem.PhoneNoForwardedTo,
-                            Username = newSubItem.Username,
-                            WhatsAppNoForwardedTo = newSubItem.WhatsAppNoForwardedTo
-                        };
-
-                        existingItem.OrderForwardCategoryOfficials.Add(subItemToInsert);
-                        _context.Entry(subItemToInsert).State = EntityState.Added;
-
-                        OrderFwdOfficials.Add(subItemToInsert);
-                    }
-                }
-
-                OrderFwdCategory.OrderForwardCategoryOfficials = OrderFwdOfficials;
-                OrderFwdCategories.Add(OrderFwdCategory);
-
-                if(OrderFwdCategory != null) {
-                    OrderFwdCategory.OrderForwardCategoryOfficials = OrderFwdOfficials;
-                    OrderFwdToAgent = new OrderForwardToAgent {
-                        CustomerCity = model.CustomerCity, CustomerId=model.CustomerId, Id=model.Id,
-                        customerName=model.customerName, OrderDate = model.OrderDate, OrderId=model.OrderId,
-                        OrderNo = model.OrderNo, ProjectManagerId = model.ProjectManagerId,
-                        OrderForwardCategories = OrderFwdCategories
-                    };
-                }
-                
-                _context.Entry(existing).State = EntityState.Modified;
-            }
-
-            var msgs = await _msgRep.ComposeMsgsToForwardOrdersToAgents(OrderFwdToAgent, username);
-            if(msgs.Count > 0) foreach(var msg in msgs) {_context.Entry(msg).State = EntityState.Added;}
+            //var msgs = await _msgRep.ComposeMsgsToForwardOrdersToAgents(fwdToAgent, username);
+            
+            //if(msgs.Count > 0) foreach(var msg in msgs) {_context.Entry(msg).State = EntityState.Added;}
   
             try {
                 await _context.SaveChangesAsync();
@@ -343,29 +137,138 @@ namespace api.Data.Repositories.Orders
                 return ex.Message;
             }
 
-            //compose email messages
+            return "";
+            
+        }
+
+        private async Task<string> UpdateOrderForwardCategory(OrderForwardCategory model)
+        {
+
+             var existing = await _context.OrderForwardCategories
+                .Include(x => x.OrderForwardCategoryOfficials)
+                .Where(x => x.Id == model.Id)
+                .FirstOrDefaultAsync();
+            
+            if(existing == null) return "No order forwarding object exists to edit";
+
+            _context.Entry(existing).CurrentValues.SetValues(model);
+
+            foreach(var existingItem in existing.OrderForwardCategoryOfficials.ToList())
+            {
+                if(!model.OrderForwardCategoryOfficials.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.OrderForwardCategoryOfficials.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted;
+                }
+            }
+            
+
+            foreach(var newItem in model.OrderForwardCategoryOfficials)
+            {
+                var itemExisting = existing.OrderForwardCategoryOfficials
+                        .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                    
+                    if(itemExisting != null)
+                    {
+                        _context.Entry(itemExisting).CurrentValues.SetValues(newItem);
+                        _context.Entry(itemExisting).State = EntityState.Modified;
+                    } else {
+                        var itemToInsert = new OrderForwardCategoryOfficial
+                        {
+                            AgentName=newItem.AgentName,
+                            CustomerOfficialId = newItem.CustomerOfficialId,
+                            DateForwarded = newItem.DateForwarded,
+                            EmailIdForwardedTo = newItem.EmailIdForwardedTo,
+                            OfficialName = newItem.OfficialName,
+                            OrderForwardCategoryId = newItem.OrderForwardCategoryId,
+                            PhoneNoForwardedTo = newItem.PhoneNoForwardedTo,
+                            Username = newItem.Username,
+                            WhatsAppNoForwardedTo = newItem.WhatsAppNoForwardedTo
+                        };
+
+                        existing.OrderForwardCategoryOfficials.Add(itemToInsert);
+                        _context.Entry(itemToInsert).State = EntityState.Added;
+                    }
+                
+                _context.Entry(existing).State = EntityState.Modified;
+            }
+
           return "";
         }
 
-        public async Task<OrderForwardToAgent> OrderFowardsOfAnOrder(int orderid)
+        public async Task<string> InsertOrderForwardCategory(OrderForwardCategory model, string username)
         {
-            var obj = await _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories).ThenInclude(x => x.OrderForwardCategoryOfficials)
-                .Where(x => x.OrderId == orderid).FirstOrDefaultAsync();
+             var existing = await _context.OrderForwardCategories
+                .Include(x => x.OrderForwardCategoryOfficials)
+                .Where(x => x.OrderItemId == model.OrderItemId)
+                .FirstOrDefaultAsync();
             
-            return obj;
+            if(existing==null) {
+                _context.OrderForwardCategories.Add(model);
+                return await _context.SaveChangesAsync() > 0 ? "": "Failed to create the Order Forward Catgory";
+            }
+            
+            //the order forward category exists, so modify it
+            _context.Entry(existing).CurrentValues.SetValues(model);
+
+            foreach(var existingItem in existing.OrderForwardCategoryOfficials.ToList())
+            {
+                if(!model.OrderForwardCategoryOfficials.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.OrderForwardCategoryOfficials.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted;
+                }
+            }
+
+            foreach(var newItem in model.OrderForwardCategoryOfficials)
+            {
+                var existingItem = existing.OrderForwardCategoryOfficials
+                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                
+                if(existingItem != null) {
+                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                } else {
+                    var itemToInsert = new OrderForwardCategoryOfficial 
+                    {
+                            AgentName=newItem.AgentName,
+                            CustomerOfficialId = newItem.CustomerOfficialId,
+                            DateForwarded = newItem.DateForwarded,
+                            EmailIdForwardedTo = newItem.EmailIdForwardedTo,
+                            OfficialName = newItem.OfficialName,
+                            OrderForwardCategoryId = newItem.OrderForwardCategoryId,
+                            PhoneNoForwardedTo = newItem.PhoneNoForwardedTo,
+                            Username = newItem.Username,
+                            WhatsAppNoForwardedTo = newItem.WhatsAppNoForwardedTo};
+                    
+                    existing.OrderForwardCategoryOfficials.Add(itemToInsert);
+                    _context.Entry(itemToInsert).State = EntityState.Added;
+                }
+            }
+
+            _context.Entry(existing).State = EntityState.Modified;
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                return "Database Error" + ex.Message;
+            } catch (Exception ex) {
+                return ex.Message;
+            }
+
+          return "";
         }
 
-        public async Task<OrderForwardToAgentDto> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username)
+        public async Task<ICollection<OrderForwardCategoryDto>> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username)
         {
-            var obj = await _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories).ThenInclude(x => x.OrderForwardCategoryOfficials)
+            var obj = await _context.OrderForwardCategories
+                .Include(x => x.OrderForwardCategoryOfficials)
                 .Where(x => x.OrderId == orderid)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
             
             var categoriesDto = new List<OrderForwardCategoryDto>();
 
-            foreach(var cat in obj.OrderForwardCategories) {
+            foreach(var cat in obj) {
 
                 var officials = new List<OrderForwardToOfficialDto>();
                 foreach(var off in cat.OrderForwardCategoryOfficials) {
@@ -382,34 +285,30 @@ namespace api.Data.Repositories.Orders
                 
                 var catDto = new OrderForwardCategoryDto {
                     Charges  = cat.Charges, OrderItemId = cat.OrderItemId, 
+                    OrderId = cat.OrderId, OrderNo = cat.OrderNo, OrderDate=cat.OrderDate,
+                    CustomerCity=cat.CustomerCity, CustomerName=cat.CustomerName,
                     ProfessionId = cat.ProfessionId, ProfessionName = cat.ProfessionName,
                     OfficialsDto = officials
                 };
                 categoriesDto.Add(catDto);
             }
             
-            var dto = new OrderForwardToAgentDto {
-                OrderId = orderid,OrderDate = obj.OrderDate,
-                CustomerName = obj.customerName, OrderNo=obj.OrderNo,
-                OrderForwardCategoriesDto = categoriesDto
-
-            };
-
-            return dto;
+            return categoriesDto;
         }
 
         public async Task<bool> DeleteOrderForward(int orderid)
         {
-            var obj = await _context.OrderForwardToAgents
-                .Include(x => x.OrderForwardCategories)
-                .ThenInclude(x => x.OrderForwardCategoryOfficials)
-                .FirstOrDefaultAsync();
+            var obj = await _context.OrderForwardCategories
+                .Include(x => x.OrderForwardCategoryOfficials)
+                .ToListAsync();
             
             if (obj == null) return false;
 
-            _context.OrderForwardToAgents.Remove(obj);
-            _context.Entry(obj).State = EntityState.Deleted;
-
+            foreach(var dto in obj) {
+                _context.OrderForwardCategories.Remove(dto);
+                _context.Entry(dto).State = EntityState.Deleted;
+            }
+            
             try {
                 await _context.SaveChangesAsync();
             } catch {
@@ -458,5 +357,69 @@ namespace api.Data.Repositories.Orders
             return true;
         }
 
+        public async Task<string> InsertOrderForwardCategories(ICollection<OfficialAndCustomerNameDto> officialIds, int orderid, string username)
+        {
+            var officialids = officialIds.Select(x => x.Id).Distinct().ToList();
+            var orderitems = await _context.OrderItems.Where(x => x.OrderId == orderid)
+                //.Select(x => x.ProfessionId)
+                .ToListAsync();
+            
+            var officials =await(from off in _context.CustomerOfficials where officialids.Contains(off.Id)
+                join cust in _context.Customers on off.CustomerId equals cust.Id
+                select  new OrderForwardCategoryOfficial {
+                    AgentName = cust.CustomerName, 
+                    CustomerOfficialId = off.Id,
+                    OfficialName = off.OfficialName,
+                    DateForwarded = DateTime.Now,
+                    EmailIdForwardedTo = off.Email,
+                    PhoneNoForwardedTo = off.PhoneNo, Username = username
+                }).ToListAsync();
+
+            var categories = await (from item in _context.OrderItems where orderitems.Select(x=>x.Id).ToList().Contains(item.Id)
+                    join order in _context.Orders on item.OrderId equals order.Id 
+                    join cust in _context.Customers on order.CustomerId equals cust.Id
+                    join cat in _context.Professions on item.ProfessionId equals cat.Id
+                    //join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId into rvwitems 
+                        //from rvwitem in rvwitems.DefaultIfEmpty()
+                    select new OrderForwardCategory {
+                        OrderId=orderid,
+                        OrderNo=order.OrderNo, 
+                        OrderDate = order.OrderDate,
+                        CustomerName=cust.CustomerName,
+                        CustomerCity = cust.City,
+                        OrderItemId = item.Id,
+                        ProfessionId = item.ProfessionId,
+                        ProfessionName = cat.ProfessionName,
+                        Charges = 0,    // rvwitem.Charges,
+                        //OrderForwardCategoryOfficials = officials
+                    }).ToListAsync();
+            
+            foreach(var cat in categories) {
+                
+                var stErr = await insertOrderCategoryToDB(cat);
+                if (stErr != "") return stErr;
+            }
+
+            var msgs = await _msgRep.ComposeMsgsToForwardOrdersToAgents(categories, officials, username);
+            if(msgs.Count > 0) foreach(var msg in msgs){_context.Messages.Add(msg);}
+            await _context.SaveChangesAsync();
+            return "";
+        }
+
+        private async Task<string> insertOrderCategoryToDB(OrderForwardCategory fwdCat)
+        {
+            _context.OrderForwardCategories.Add(fwdCat);
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                return ex.Message;
+            } catch (Exception ex) {
+                return ex.Message;
+            }
+
+            return "";
+        }
     }
 }
+

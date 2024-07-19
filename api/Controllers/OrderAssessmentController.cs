@@ -9,7 +9,7 @@ using SQLitePCL;
 
 namespace api.Controllers
 {
-    [Authorize(Policy ="HRMPolicy")]
+    [Authorize(Policy ="HRMPolicy")]    //RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
     public class OrderAssessmentController : BaseApiController
     {
         private readonly IOrderAssessmentRepository _repo;
@@ -94,7 +94,7 @@ namespace api.Controllers
 
             if(!updated) return BadRequest("Failed to update the Order Item Assessment");
 
-            return Ok();
+            return Ok(true);
         }
 
 

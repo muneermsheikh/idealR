@@ -54,7 +54,20 @@ export class IndustriesService {
   }
 
   updateIndustry(id: number, name: string) {
-    var ind: IIndustryType = {id: id, industryName: name};
-    return this.http.put<boolean>(this.apiUrl + 'Industries/edit', ind);
+    if(id===0) {
+      return this.http.post<IIndustryType>(this.apiUrl + 'Industries/add/' + name, {})
+    } else {
+      var ind: IIndustryType = {id: id, industryName: name};
+      return this.http.put<boolean>(this.apiUrl + 'Industries/edit', ind);
+    }
+  }
+
+  
+  setParams(params: IndustryParams) {
+    this.mParams = params;
+  }
+  
+  getParams() {
+    return this.mParams;
   }
 }

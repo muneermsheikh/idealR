@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { IJDDto } from 'src/app/_dtos/admin/jdDto';
@@ -11,7 +11,7 @@ import { OrderService } from 'src/app/_services/admin/order.service';
 })
 export class JdModalComponent implements OnInit {
 
-  @Input() updateSelectedJD = new EventEmitter();
+  @Output() updateSelectedJD = new EventEmitter<boolean>();
   //jds: any;
   title: string='';
   jd?: IJDDto;
@@ -31,9 +31,12 @@ export class JdModalComponent implements OnInit {
   }
 
   confirm() {
-    
-    this.updateSelectedJD.emit(this.jd);
 
+    this.service.updateJD(this.jd).subscribe({
+      next: succeeded => this.updateSelectedJD.emit(succeeded),
+      error: () => this.updateSelectedJD.emit(false)
+    })
+    
     this.bsModalRef.hide();
   }
 

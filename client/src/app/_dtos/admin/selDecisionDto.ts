@@ -1,6 +1,7 @@
 export interface ISelDecisionDto
 {
     id: number;
+    checked: boolean;
     cvRefId: number;
     orderItemId: number;
     professionId: number;

@@ -18,7 +18,7 @@ using SQLitePCL;
 
 namespace api.Controllers
 {
-    [Authorize(Policy="HRMPolicy")]
+    [Authorize(Policy="HRMPolicy")]      //Roles: HR Manager, HR Supervisor, HR Executive, Admin, Admin Manager
     public class CandidateController : BaseApiController
     {
         private readonly IMapper _mapper;
@@ -47,8 +47,8 @@ namespace api.Controllers
 
             if(candidates == null) return NotFound("No matching candidates found");
 
-            Response.AddPaginationHeader(new PaginationHeader(candidates.CurrentPage, candidates.PageSize, 
-                candidates.TotalCount, candidates.TotalPages));
+            Response.AddPaginationHeader(new PaginationHeader(candidates.CurrentPage, 
+                candidates.PageSize, candidates.TotalCount, candidates.TotalPages));
             
             return Ok(candidates);
 

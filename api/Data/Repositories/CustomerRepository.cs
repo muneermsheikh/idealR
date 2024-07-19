@@ -294,10 +294,11 @@ namespace api.Data.Repositories
         {
             var query = await (from off in _context.CustomerOfficials
                 join cust in _context.Customers on off.CustomerId equals cust.Id
-                     where cust.CustomerType==customerType
+                     where cust.CustomerType.ToLower()==customerType.ToLower()
                 select new OfficialAndCustomerNameDto{
                     CustomerId = cust.Id, CustomerName=cust.CustomerName, Id=off.Id,
-                    OfficialName = off.OfficialName + "-" + cust.KnownAs
+                    OfficialName = off.OfficialName,
+                    CustomerIsBlacklisted = cust.IsBlackListed, Email = off.Email, PhoneNo=off.PhoneNo
                 }).OrderBy(x => x.CustomerName).ThenBy(x => x.OfficialName)
                 .ToListAsync();
             

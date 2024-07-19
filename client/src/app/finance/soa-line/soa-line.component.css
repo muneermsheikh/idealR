@@ -1,0 +1,25 @@
+.stdd {
+	display: inline-block;
+    margin: 0 1px 0 1px;
+    word-wrap: break-word;
+    font-size: small;
+    vertical-align: top;
+ }
+
+.numberStdd{
+    display: inline-block;
+    margin: 0 1px 0 1px;
+    vertical-align: top;
+    text-align: right;
+    font-size: small;
+}
+
+.tAlignRight {text-align: right;}
+.fontSmaller {font-size: smaller;}
+
+.vAlignTop {vertical-align: top;}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}

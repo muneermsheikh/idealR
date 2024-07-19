@@ -1,4 +1,4 @@
-<h6 style="display: inline-block;">Orders Listing</h6>
+<div style="display: inline-block; font-size: large; font-weight: bold;" >Orders Listing</div>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
      <pagination class="stdd"
           [totalItems]="pagination!.totalItems"
@@ -16,7 +16,7 @@
           class="stdd btn btn fa fa-search fa-2x"></button>
      <button (click)="onReset()" title="Resets the search criteria" 
           class="stdd btn fa fa-refresh fa-2x"></button>
-     <button class="stdd btn fa fa-plus fa-2x" title="Add a new Order" routerLink="/orders/add" ></button>
+     <button class="stdd btn fa fa-plus fa-2x" title="Add a new Order" routerLink="/administration/orders/edit/0" ></button>
 
      <button class="stdd btn fa fa-window-close fa-2x" routerLink="/admin" ></button>
 </div>

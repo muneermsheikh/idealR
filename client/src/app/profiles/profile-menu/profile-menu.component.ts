@@ -29,7 +29,7 @@ export class ProfileMenuComponent {
   }
 
   OpenAvailableCandidatesComponent() {
-    this.navigateByRoute(0, "/candidates/availablecandidates", false);
+    this.navigateByRoute(0, "/candidates/availableToRef", false);
   }
 
   OpenCandidatesListingComponent() {

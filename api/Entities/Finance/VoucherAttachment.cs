@@ -7,7 +7,7 @@ namespace api.Entities.Finance
         }
 
 
-        public int VoucherId { get; set; }
+        public int FinanceVoucherId { get; set; }
         public int AttachmentSizeInBytes { get; set; }
         public string FileName { get; set; }
         public string Url { get; set; }

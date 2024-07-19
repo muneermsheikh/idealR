@@ -13,12 +13,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TextInputComponent } from '../_forms/text-input/text-input.component';
 import { DatePickerComponent } from '../_forms/date-picker/date-picker.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { HasRoleDirective } from '../_directives/has-role.directive';
+
 
 
 @NgModule({
   declarations: [
     TextInputComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    HasRoleDirective
   ],
   imports: [
     CommonModule,
@@ -40,9 +43,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ModalModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
-    NgSelectModule
-    
+    NgSelectModule,
   ],
+  
   exports: [
     BsDropdownModule,
     TabsModule,
@@ -57,7 +60,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ReactiveFormsModule,
     NgSelectModule,
     TextInputComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    HasRoleDirective,
   ]
 })
 export class SharedModule { }

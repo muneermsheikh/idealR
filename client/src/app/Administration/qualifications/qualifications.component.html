@@ -1,1 +1,29 @@
-<p>qualifications works!</p>
+<h4 class="stdd w200">Qualification Listing</h4>
+<div style="display: inline-block; margin-left: 15px; vertical-align: top;">
+    
+    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid w200" #search placeholder="Search">
+    <button (click)="onSearch()" title="searches the database based upon criteria entered in the search box" 
+         class="stdd btn btn fa fa-search fa-2x"></button>
+    <button (click)="onReset()" title="Resets the search criteria" 
+         class="stdd btn fa fa-refresh fa-2x"></button>
+    <button class="stdd btn fa fa-plus fa-2x" title="Add a new Order" routerLink="/orders/add" ></button>
+
+    <button class="stdd btn fa fa-window-close fa-2x" routerLink="/administration" ></button>
+</div>
+
+<div class="container">
+    <div class="form-inline" >
+        <div class="stdd w50 b" >Id</div>
+        <div class="stdd w200 b" >Qualification Name</div>
+        <button class="btn fa fa-plus fa-2x" (click)="addQualification()" ></button>
+    </div>
+    
+    <div *ngIf="!qualifications">No Qualifications on record</div>
+    
+    <div *ngFor="let cat of qualifications" class="row">
+        <div class="stdd w50" style="text-align: right;">{{cat.id}}</div>
+        <div class="stdd w200">{{cat.qualificationName}}</div>
+        <button class="stdd w15 btn fa fa-pencil fa-2x" (click)="editQualification(cat.id, cat.qualificationName)" ></button>
+        <button class="stdd w15 btn fa fa-trash red fa-2x" style="margin-left: 2px;" (click)="deleteQualification(cat.id)" ></button>
+    </div>
+</div>

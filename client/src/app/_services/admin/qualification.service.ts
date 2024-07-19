@@ -16,6 +16,7 @@ export class QualificationService {
   currentUser$ = this.currentUserSource.asObservable();
   mParams = new qualificationParams();
   
+  
   constructor(private http: HttpClient) { }
 
   getQualificationList(){
@@ -29,12 +30,13 @@ export class QualificationService {
   }
 
   updateQualification(id: number, name: string) {
-    var prof: IQualification = {id: id, name: name};
+    var prof: IQualification = {id: id, qualificationName: name};
     return this.http.put<IQualification>(this.apiUrl + 'Qualification/edit', prof);
   }
 
   deleteQualification(id: number) {
     return this.http.delete<boolean>(this.apiUrl + 'Qualification/delete/' + id);
   }
+
   
 }

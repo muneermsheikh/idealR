@@ -6,8 +6,8 @@ namespace api.Params
         public int CustomerId { get; set; }
         public string Email { get; set; }
         public string PhoneNo { get; set; }
-        public DateTime DateIssued { get; set; }
-        public DateTime DateReceived { get; set; }
+        public DateOnly DateIssued { get; set; }
+        public DateOnly DateReceived { get; set; }
     }
 
 }

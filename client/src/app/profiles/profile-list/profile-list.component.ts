@@ -223,7 +223,7 @@ export class ProfileListComponent implements OnInit{
           //assessmentsDto,
           userobject: this.service.user,
           toedit: toedit, 
-          returnUrl: '/candidates' 
+          returnUrl: '/candidates/listing' 
         } }
     )
   }

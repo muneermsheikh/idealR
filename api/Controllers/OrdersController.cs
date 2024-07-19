@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = "AdminPolicy")]     //Role: Admin
     public class OrdersController : BaseApiController
     {
         private readonly IOrdersRepository _repo;
@@ -34,7 +34,7 @@ namespace api.Controllers
         public async Task<ActionResult<bool>> EditOrder(Order order)
         {
             var edited = await _repo.EditOrder(order);
-            if (edited) return Ok();
+            if (edited) return Ok(true);
             return BadRequest("Failed to update the order");
         }
         

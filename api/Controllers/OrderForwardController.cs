@@ -1,4 +1,6 @@
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
+using api.DTOs.Customer;
 using api.Entities.Admin.Order;
 using api.Errors;
 using api.Extensions;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "OrderForwardPolicy")]
+    [Authorize(Policy = "OrderForwardPolicy")]      //Role-Order Forward
     public class OrderForwardController : BaseApiController
     {
         private readonly IOrderForwardRepository _orderFwdRepo;
@@ -34,17 +36,6 @@ namespace api.Controllers
             return Ok(fwds);
         }
 
-        [HttpGet("getOrGenerateOrderFwdToAgent/{orderid}")]
-        public async Task<ActionResult<OrderForwardToAgent>> GenerateOrderForwardToAgents(int orderid)
-        {
-            
-            var obj = await _orderFwdRepo.GenerateOrderForwardToAgent(orderid);
-            
-            if(obj != null) return Ok(obj);
-            
-            return BadRequest(new ApiException(404, "Failed to generate the Order Forward Mesasge for AGents"));
-        }
-
         [HttpGet("generateOrderFwdToHR/{orderid}")]
         public async Task<ActionResult<OrderForwardToHR>> GenerateOrderForwardToHR(int orderid)
         {
@@ -64,38 +55,28 @@ namespace api.Controllers
             return BadRequest(new ApiException(404, "Failed to forward Order to HR Dept", errorString));
         }
 
-        [HttpPut("updateOrderFwdToAgent")]
-        public async Task<ActionResult<string>> UpdateOrderForwardedToAgent(OrderForwardToAgent fwd)
+        [HttpPost("forwardToAgents/{orderid}")]
+        public async Task<ActionResult<bool>> ForwardOrderToAgents(int orderid, ICollection<OfficialAndCustomerNameDto> dtos)
         {
-            var errorString = await _orderFwdRepo.UpdateOrderForwardedToAgents (fwd, User.GetUsername());
+            var stErr = await _orderFwdRepo.InsertOrderForwardCategories(dtos, orderid, User.GetUsername());
+
+            if(string.IsNullOrEmpty(stErr)) return Ok("");
+
+            return BadRequest(new ApiException(400, "Failed to forward the requirements", stErr));
+        }
+
+        [HttpPut("updateOrderFwdToAgent")]
+        public async Task<ActionResult<string>> UpdateOrderForwardedToAgent(ICollection<OrderForwardCategory> fwd)
+        {
+            var errorString = await _orderFwdRepo.UpdateOrderForwardCategories (fwd, User.GetUsername());
             
             if(string.IsNullOrEmpty(errorString)) return Ok();
             
             return BadRequest(new ApiException(404, "Failed to forward Order to Associates", errorString));
         }
 
-        [HttpPost("insertOrderFwdToAgent")]
-        public async Task<ActionResult<string>> InsertOrderForwardedToAgent(OrderForwardToAgent orderFwd)
-        {
-            var errorString = await _orderFwdRepo.InsertOrderForwardedToAgents(orderFwd, User.GetUsername());
-            if(string.IsNullOrEmpty(errorString)) return Ok();
-            
-            return BadRequest(new ApiException(404, "Failed to forward Order to selected Associates", errorString));
-        }
-
-      
-        [HttpGet("byorderid/{orderid}")]
-        public async Task<ActionResult<ICollection<OrderForwardToAgent>>> GetDLForwardsOfOrderId(int orderid)
-        {
-            var dto = await _orderFwdRepo.OrderFowardsOfAnOrder(orderid);
-            
-            if (dto==null) return NotFound(new ApiException(402, "No Forwards exist for the selected order"));
-            
-            return Ok(dto);
-        }
-
         [HttpGet("associatesforwardedForOrderId/{orderid}")]
-        public async Task<ActionResult<OrderForwardToAgentDto>> AssociatesToWhomOrderForwarded (int orderid)
+        public async Task<ActionResult<ICollection<OrderForwardCategoryDto>>> AssociatesToWhomOrderForwarded (int orderid)
         {
             var forwarded = await _orderFwdRepo.AssociatesOfOrderForwardsOfAnOrder(orderid, User.GetUsername());
 

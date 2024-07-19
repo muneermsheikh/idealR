@@ -1,7 +1,9 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, of, switchMap, take, tap } from 'rxjs';
+import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
+import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
 import { IOrderBriefDto } from 'src/app/_dtos/admin/orderBriefDto';
 import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
@@ -10,9 +12,11 @@ import { orderParams } from 'src/app/_models/params/Admin/orderParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
+import { OrderForwardService } from 'src/app/_services/admin/order-forward.service';
 import { OrderService } from 'src/app/_services/admin/order.service';
 import { TaskService } from 'src/app/_services/admin/task.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
+import { SelectAssociatesModalComponent } from 'src/app/modals/select-associates-modal/select-associates-modal.component';
 
 @Component({
   selector: 'app-orders-listing',
@@ -53,13 +57,15 @@ export class OrdersListingComponent implements OnInit {
     {name: 'Reviewed and declined', value: 'ReviewedAndDeclined'}
   ]
 
+  bsModalRef: BsModalRef|undefined;
+
   constructor(private service: OrderService, 
     //private mastersService: MastersService,
     private accountsService: AccountService,
-    private taskService: TaskService,
+    private taskService: TaskService, private orderFwdService: OrderForwardService,
     private router: Router, private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private customerService: CustomersService,
+    private toastr: ToastrService, private modalService: BsModalService,
+    private customerService: CustomersService, private dlFwdService: OrderForwardService,
     private confirmService: ConfirmService) {
       this.accountsService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
      }
@@ -163,8 +169,31 @@ export class OrdersListingComponent implements OnInit {
   }
 
   orderForwardToAssociates(event: any) {
-      var id = event;
-      this.navigateByRoute(id, 'administration/orderfwd', true);
+
+    const config = {
+      class: 'modal-dialog-centered modal-lg',
+      initialState: {
+      }
+    }
+
+    this.bsModalRef = this.modalService.show(SelectAssociatesModalComponent, config);
+
+    const observableOuter =  this.bsModalRef.content?.selectedOfficialsEvent;    //returns a sngle object, not collection
+
+    observableOuter.pipe(
+      filter((response: IOfficialAndCustomerNameDto[]) => response.length > 0),
+      switchMap((response: IOfficialAndCustomerNameDto[]) => {
+        var orderid = event;
+        return this.orderFwdService.forwardOrderToSelectedAgents(response, orderid)
+      })
+    ).subscribe(
+      () => {
+        this.toastr.success('requirement forwarded', 'Success');
+      },
+      (err: any) => {
+        console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
+      }
+    )
   }
 
   orderForwardedToAssociates(event: any) {

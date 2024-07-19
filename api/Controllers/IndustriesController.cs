@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    
     public class IndustriesController : BaseApiController
     {
         private readonly IIndustryRepository _indRepo;
@@ -17,7 +18,7 @@ namespace api.Controllers
         }
 
         [HttpGet("industryPaged")]
-        public async Task<ActionResult<PagedList<Industry>>> GetIndustriesPagedList(IndustryParams iParams)
+        public async Task<ActionResult<PagedList<Industry>>> GetIndustriesPagedList([FromQuery]IndustryParams iParams)
         {
             var obj = await _indRepo.GetIndustries(iParams);
 
@@ -58,12 +59,13 @@ namespace api.Controllers
         }
 
         [HttpPost("add/{industryName}")]
-        public async Task<ActionResult<bool>> AddANewQualification(string industryName)
+        public async Task<ActionResult<Industry>> AddNewIndustry(string industryName)
         {
-            var errString = await _indRepo.AddIndustry(industryName);
-            if(string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Failed to add the Industry Name", errString));
-
-            return Ok("Industry is added");
+            var obj = await _indRepo.AddIndustry(industryName);
+            
+            if(obj == null) return BadRequest(new ApiException(400, "Failed to add", "Failed to insert the Industry"));
+            
+            return Ok(obj);
 
         }
 

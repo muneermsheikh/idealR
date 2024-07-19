@@ -84,30 +84,30 @@ namespace api.Data.Repositories.Admin
                     dto.coaCR = coaSalesRecruitment;   
                     var candidate = candidates.Where(x => x.Id==dto.CandidateId).FirstOrDefault();
  
-                    var voucheritems = new List<VoucherItem>
+                    var voucheritems = new List<VoucherEntry>
                     {
-                        new() {TransDate = DateTime.Now,   //  dto.ConclusionDate, 
+                        new() {TransDate = DateOnly.FromDateTime(DateTime.Now),   //  dto.ConclusionDate, 
                             COAId = dto.coaDR.Id, AccountName = dto.coaDR.AccountName,
                             Narration = "Service charges applied, post offer acceptance by candidate",
                             Dr = dto.Charges
                         },
-                        new() {TransDate = DateTime.Now,     //VoucherId = voucher.Id,
+                        new() {TransDate = DateOnly.FromDateTime(DateTime.Now),     //VoucherId = voucher.Id,
                             COAId = dto.coaCR.Id, AccountName = dto.coaCR.AccountName, 
                             Narration = "Sales towards recruitment of the candidate",
                             Cr = dto.Charges
                         }                    
                     };
 
-                    var voucher = new Voucher {     //FinanceVoucher {
+                    var voucher = new FinanceVoucher {     //FinanceVoucher {
                         Divn="R", COAId= dto.coaCR.Id, AccountName = dto.coaCR.AccountName, 
                         Amount = dto.Charges, 
                         VoucherNo = await _finRepo.GetNextVoucherNo(),
-                        VoucherDated = DateTime.Now, //Iddto.ConclusionDate,
-                        CVRefId = dto.CVRefId,
+                        VoucherDated = DateOnly.FromDateTime(DateTime.Now), //Iddto.ConclusionDate,
+                        //CVRefId = dto.CVRefId,
                         Narration="Offer accepted by " + candidate.FullName + ", App# " + candidate.ApplicationNo,
-                        VoucherItems = voucheritems
+                        VoucherEntries = voucheritems
                     };
-                    _context.Vouchers.Add(voucher);
+                    _context.FinanceVouchers.Add(voucher);
            
                 //2 - create Dep record
                     var ids = await _context.GetOrderItemIdAndCustomerId(dto.CVRefId);

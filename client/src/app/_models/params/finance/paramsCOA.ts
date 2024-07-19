@@ -5,6 +5,7 @@ export class ParamsCOA
     accountId = 0;
     accountType = "";
     accountClass = '';
+    
     pageNumber = 1;
     pageSize = 10;
     sort = 'accountName';

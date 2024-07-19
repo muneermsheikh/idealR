@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "AdminPolicy")]
+    [Authorize(Policy = "AdminPolicy")]     //ROLES: Admin
     public class CustomerReviewController: BaseApiController
     {
         private readonly ICustomerReviewRepository _custRvwRepo;

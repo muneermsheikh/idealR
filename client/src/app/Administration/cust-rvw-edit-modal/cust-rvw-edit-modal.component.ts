@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { ICustomerReview } from 'src/app/_models/admin/customerReview';
 import { User } from 'src/app/_models/user';

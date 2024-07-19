@@ -100,7 +100,7 @@
           
           <div class="stdd w500" *ngIf="candidate.id === 0" >
                <br><label for="password" class="lbl">Password</label>
-               <app-text-input [label]="'Password'" [type]="'password'" formControlName="passwword" ></app-text-input>
+               <app-text-input [label]="'Password'" [type]="'password'" formControlName="password" ></app-text-input>
                <app-text-input [label]="'Confirm Password'" [type]="'password'" ></app-text-input>
           </div>
 
@@ -122,9 +122,9 @@
           
      </div>
      <div class="stdd col-6 mt-1" style="margin-left: 5px;">
-           <tabset class="member-tabset" #memberTabs>
+           <tabset style="background-color:black; color: whitesmoke;" class="member-tabset" #memberTabs>
                <tab heading='Phones, Prof & Qualification' (selectTab)="onTabActivated($event)">
-                    <label class="lbl">Phones</label>
+                    <h4 style="background-color: auto !important;">Phones</h4>
                     <div formArrayName="userPhones" style="font-size: small;" class="col-12 my-1 px-0">
                          <div class="stdd col-1">Sr No</div>
                          <div class="stdd col-4">Phone</div>
@@ -273,6 +273,8 @@
                     </div>
                </tab>
           </tabset>
+
+
      </div>
    
       <div class="row" *ngIf="validationErrors">

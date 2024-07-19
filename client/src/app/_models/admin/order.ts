@@ -32,7 +32,7 @@ export class Order implements IOrder
 {
      id=0; 
      orderNo= 0; 
-     orderDate = new Date('1900-01-01'); 
+     orderDate = new Date(); 
      customerId= 0; 
      customerName= '';
      buyerEmail= ''; 

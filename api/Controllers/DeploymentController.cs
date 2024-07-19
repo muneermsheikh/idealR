@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "ProcessPolicy")]
+    [Authorize(Policy = "ProcessPolicy")]       //RequireRole("Document Controller-Processing", "Processing Manager", "Process Supervisor", "Admin"));
     public class DeploymentController : BaseApiController
     {
         private readonly IDeploymentRepository _depRepo;

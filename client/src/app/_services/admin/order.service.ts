@@ -17,6 +17,7 @@ import { IJDDto } from 'src/app/_dtos/admin/jdDto';
 import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
 import { OpenOrderItemsParams } from 'src/app/_models/params/Admin/openOrderItemsParams';
 import { IOrderToCreateDto } from 'src/app/_dtos/orders/orderToCreateDto';
+import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
 
 @Injectable({
   providedIn: 'root'
@@ -120,7 +121,7 @@ export class OrderService {
     }
     
     updateJD(model: any) {
-      return this.http.put(this.apiUrl + 'orders/jd', model);
+      return this.http.put<boolean>(this.apiUrl + 'orders/jd', model);
 
     }
 
@@ -146,6 +147,10 @@ export class OrderService {
     
     deleteOrder(orderid: number) {
       return this.http.delete<boolean>(this.apiUrl + 'orders/deleteorder/' + orderid);
+    }
+
+    getOfficials(customerType: string) {
+      return this.http.get<IOfficialAndCustomerNameDto[]>(this.apiUrl + 'customers/officialidandcustomernames/' + customerType);
     }
 
     setOParams(params: orderParams) {

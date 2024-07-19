@@ -246,8 +246,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 
     let params = new HttpParams();
 
-    params = params.append('pageNumber', mParams.pageNumber);
-    params = params.append('pageSize', mParams.pageSize)
+    params = params.append('pageNumber', mParams.pageNumber.toString());
+    params = params.append('pageSize', mParams.pageSize.toString())
 
     if (mParams.professionName !== '') params = params.append('name', mParams.professionName);
     if (mParams.id !== 0) params = params.append('id', mParams.id!.toString());

@@ -6,7 +6,7 @@ namespace api.Interfaces.Masters
 {
     public interface IProfessionRepository
     {
-            Task<string> AddProfession(string ProfessionName);
+            Task<Profession> AddProfession(string ProfessionName);
             Task<string> EditProfession(Profession profession);
             Task<string> DeleteProfession(string ProfessionName);
             Task<string> DeleteProfessionById(int professionid);

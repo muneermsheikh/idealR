@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
@@ -16,7 +16,7 @@ import { EmployeeService } from 'src/app/_services/admin/employee.service';
 export class OrderItemReviewComponent {
 
   //called by order-edit
-  @Input() updateModalReview = new EventEmitter();
+  @Output() updateModalReview = new EventEmitter<boolean>();
   
   reviewItem?: IContractReviewItemDto;
   
@@ -42,14 +42,8 @@ export class OrderItemReviewComponent {
   }
 
   ngOnInit(): void {
-    
-    this.activatedRoute.data.subscribe({
-      next: data => {
-        this.reviewItem = data['orderitemreview'];
-        console.log('reviewitem', this.reviewItem);
-        if(this.reviewItem) this.createAndInitializeForm(this.reviewItem);
-      }
-    })
+ 
+    if(this.reviewItem) this.createAndInitializeForm(this.reviewItem);
 
   }
 
@@ -67,7 +61,8 @@ export class OrderItemReviewComponent {
         contractReviewItemQs: this.fb.array(
           rvw.contractReviewItemQs.map(x => (
             this.fb.group({
-              id: x.id ?? 0, orderItemId: x.orderItemId ?? 0, 
+              id: x.id ?? 0, 
+              orderItemId: x.orderItemId ?? 0, 
               contractReviewItemId: [x.contractReviewItemId ?? 0, Validators.required],
               srNo: x.srNo ?? 0, reviewParameter: [x.reviewParameter ?? '', Validators.required],
               response: x.response ?? false, responseText: x.responseText ?? '',
@@ -111,8 +106,6 @@ export class OrderItemReviewComponent {
 
 
   confirm() {
-    //this.updateModalReview.emit(this.form.value);
-    //this.form.get('requireAssess')?.setValue(+this.form.get('requireAssess')?.value);
     this.service.updateContractReviewItem(this.form.value)
       .subscribe(response => {
         this.updateModalReview.emit(response);
@@ -126,9 +119,7 @@ export class OrderItemReviewComponent {
   }
 
   employeeChanged(event: any) {
-    console.log('clicked',event);
     this.skills = event.hrSkills.map((x: any) => x.professionName);
-    
   }
 
 }

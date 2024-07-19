@@ -2,16 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './menu/menu.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
-import { AgentsResolver } from '../_resolvers/admin/agents.resolver';
 import { RouterModule } from '@angular/router';
 import { SelectionsComponent } from './selections/selections.component';
-import { EmploymentsComponent } from './employments/employments.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from './industries/industries.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
 import { UserManagementComponent } from '../admin/user-management/user-management.component';
 import { OrdersListingComponent } from './orders/orders-listing/orders-listing.component';
-import { OrderEditComponent } from './orders/order-edit/order-edit.component';
 import { OrderResolver } from '../_resolvers/orderResolver';
 import { EmployeeIdsAndKnownAsResolver } from '../_resolvers/employeeIdsAndKnownAsResolver';
 import { CustomerIdAndNamesResolver } from '../_resolvers/admin/customerIdAndNamesResolver';
@@ -28,7 +25,6 @@ import { SelectionPendingComponent } from './selections/selection-pending/select
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { CustomerResolver } from '../_resolvers/admin/customerResolver';
 import { CustomerEditComponent } from './customer-edit/customer-edit.component';
-import { FeedbackComponent } from '../feedback/feedback/feedback.component';
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
 import { CustomerReviewResolver } from '../_resolvers/customerReviewResolver';
 import { OrderItemReviewComponent } from './orders/order-item-review/order-item-review.component';
@@ -36,6 +32,10 @@ import { ContractReviewResolver } from '../_resolvers/admin/contractReviewResolv
 import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
 import { FeedbackListComponent } from '../feedback/feedback-list/feedback-list.component';
 import { MessageComponent } from './message/message/messages.component';
+import { DLComponent } from './dl/dl.component';
+import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
+import { FeedbackComponent } from '../feedback/feedback/feedback.component';
+import { FeedbackHistoryResolver } from '../_resolvers/admin/feedbackHistoryResolver';
 
 
 const routes = [
@@ -49,14 +49,14 @@ const routes = [
     }
   },
   
-  {path: 'orders/edit/:id', component: OrderEditComponent,
+  {path: 'orders/edit/:id', component: DLComponent,
     resolve: {
       order: OrderResolver,
-      associates: AgentsResolver,
+      //associates: AgentsResolver,
       customers: CustomerIdAndNamesResolver,
       employees: EmployeeIdsAndKnownAsResolver,
       professions: CategoryListResolver,
-      contractReviewItemDto: ContractReviewItemDtoResolver
+      //contractReviewItemDto: ContractReviewItemDtoResolver
     }
   },
 
@@ -93,11 +93,9 @@ const routes = [
     }
   },
   
-  {path: 'selections', canActivate: ['SelectionsGuard'], component: SelectionsComponent },
+  {path: 'selections', component: SelectionsComponent },
 
   {path: 'pendingSelections', component: SelectionPendingComponent},
-
-  {path: 'employment', component: EmploymentsComponent},
 
   {path: 'categories', component: CategoriesComponent},
 
@@ -119,11 +117,12 @@ const routes = [
     }
   },
 
-  {path: 'feedback', component: FeedbackListComponent},
+  {path: 'feedbacklist', component: FeedbackListComponent},
   
-  {path: 'feedback/:id', component: FeedbackComponent,
+  {path: 'feedback/:id/:customerId', component: FeedbackComponent,
     resolve: {
-      customer: CustomerResolver
+      feedback: FeedbackInputResolver,
+      history: FeedbackHistoryResolver
     }
   },
 

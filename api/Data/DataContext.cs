@@ -70,9 +70,9 @@ namespace api.Data
         public DbSet<COA> COAs {get; set;}
         public DbSet<FinanceVoucher> FinanceVouchers {get; set;}
         public DbSet<VoucherEntry> VoucherEntries {get; set;}
-        public DbSet<Voucher> Vouchers {get; set;}
+        //public DbSet<Voucher> Vouchers {get; set;}
         public DbSet<VoucherAttachment> VoucherAttachments{get; set;}
-        public DbSet<VoucherItem> VoucherItems {get; set;}
+        //public DbSet<VoucherItem> VoucherItems {get; set;}
         
         //HR
         public DbSet<AssessmentQBank> AssessmentQBanks {get; set;}
@@ -212,7 +212,7 @@ namespace api.Data
             builder.Entity<Employment>().HasIndex(x => x.CvRefId).IsUnique();
             builder.Entity<Employment>().HasIndex(x => x.SelectionDecisionId).HasFilter("SelectionDecisionId is NOT NULL");
 
-            //builder.Entity<FinanceVoucher>().HasMany(x => x.VoucherEntries).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<FinanceVoucher>().HasMany(x => x.VoucherEntries).WithOne().OnDelete(DeleteBehavior.Cascade);
            // builder.Entity<Process>().HasMany(x => x.ProcessItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Dep>().HasIndex(x => x.CvRefId).IsUnique();
             builder.Entity<Dep>().HasMany(x => x.DepItems).WithOne().OnDelete(DeleteBehavior.Cascade);
@@ -222,8 +222,8 @@ namespace api.Data
 
             builder.Entity<DepItem>().HasIndex(x => new {x.DepId, x.Sequence}).IsUnique();
             
-            builder.Entity<Voucher>().HasMany(x => x.VoucherItems).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<VoucherAttachment>().HasIndex(x => new {x.FileName, x.VoucherId}).IsUnique();
+            //builder.Entity<Voucher>().HasMany(x => x.VoucherItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<VoucherAttachment>().HasIndex(x => new {x.FileName, x.FinanceVoucherId}).IsUnique();
             builder.Entity<COA>().HasIndex(i => i.AccountName).IsUnique();
 
            // builder.Entity<UserHistory>().HasMany(x => x.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
@@ -260,7 +260,7 @@ namespace api.Data
                 .OnDelete(DeleteBehavior.NoAction);
             
             builder.Entity<OrderForwardToAgent>().HasIndex(x => x.OrderId).IsUnique();
-            builder.Entity<OrderForwardToAgent>().HasMany(x => x.OrderForwardCategories).WithOne().OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<OrderForwardToAgent>().HasMany(x => x.OrderForwardCategories).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderForwardCategory>().HasMany(x => x.OrderForwardCategoryOfficials).WithOne().OnDelete(DeleteBehavior.Cascade);    
             builder.Entity<OrderForwardCategory>().HasIndex(x => x.OrderItemId).IsUnique();
             builder.Entity<OrderForwardCategoryOfficial>().HasIndex(x => new {x.OrderForwardCategoryId, 

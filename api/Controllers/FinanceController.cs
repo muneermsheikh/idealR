@@ -13,7 +13,8 @@ using SQLitePCL;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "AccountsPolicy")]
+    [Authorize(Policy = "AccountsPolicy")] //RequireRole("Accountant", "Accounts Manager", "Finance Manager"));
+
     public class FinanceController : BaseApiController
     {
         private readonly IFinanceRepository _finRepo;
@@ -24,11 +25,11 @@ namespace api.Controllers
         }
 
         [HttpGet("DrApprovalsPending")]
-        public async Task<ActionResult<PagedList<PendingDebitApprovalDto>>> GetPendingDebitApproval(DrApprovalParams pParams)
+        public async Task<ActionResult<PagedList<PendingDebitApprovalDto>>> GetPendingDebitApproval([FromQuery]DrApprovalParams pParams)
         {
             var data = await _finRepo.GetPendingDebitApprovals(pParams);
 
-            if(data == null || data.Count ==0) return NotFound(new ApiException(400, "No data found", ""));
+            //if(data == null || data.Count ==0) return NotFound(new ApiException(400, "No data found", ""));
 
               Response.AddPaginationHeader(new PaginationHeader(data.CurrentPage, data.PageSize, 
                 data.TotalCount, data.TotalPages));
@@ -37,7 +38,7 @@ namespace api.Controllers
         }
 
         [HttpGet("coalist")]
-        public async Task<ActionResult<ICollection<COA>>> GetCOAList(COAParams coaParams)
+        public async Task<ActionResult<ICollection<COA>>> GetCOAList([FromQuery]COAParams coaParams)
         {
             var obj = await _finRepo.GetCOAList(coaParams);
 
@@ -47,7 +48,7 @@ namespace api.Controllers
         }
 
         [HttpGet("coapagedlist")]
-        public async Task<ActionResult<PagedList<COA>>> GetCOAPagedList(COAParams coaParams)
+        public async Task<ActionResult<PagedList<COA>>> GetCOAPagedList([FromQuery]COAParams coaParams)
         {
             var pagedList = await _finRepo.GetCOAPagedList(coaParams);
             if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
@@ -115,13 +116,22 @@ namespace api.Controllers
         }
 
         //vouchers
+
+        [HttpGet("voucher/{id}")]
+        public async Task<ActionResult<FinanceVoucher>> GetVoucherById(int id)
+        {
+            var obj = await _finRepo.GetVoucher(id);
+            if(obj==null) return BadRequest(new ApiException(400, "Failed to retrieve the Voucher"));
+
+            return Ok(obj);
+        }
         [HttpGet("nextvoucherno")]
         public async Task<ActionResult<int>> GetNextVoucherNo()
         {
             return await _finRepo.GetNextVoucherNo();
         }
         [HttpGet("voucherspagedlist")]
-        public async Task<ActionResult<PagedList<Voucher>>> GetVouchersPagedList(VoucherParams vParams)
+        public async Task<ActionResult<PagedList<Voucher>>> GetVouchersPagedList([FromQuery]VoucherParams vParams)
         {
             var pagedList = await _finRepo.GetVouchers(vParams);
             if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
@@ -133,16 +143,16 @@ namespace api.Controllers
         }
 
         [HttpPut("updatePaymentConfirmation")]
-        public async Task<ActionResult<bool>> UpdatePaymentConfirmation(ICollection<UpdatePaymentConfirmationDto> pDtos)
+        public async Task<ActionResult<bool>> UpdatePaymentConfirmation(ICollection<PendingDebitApprovalDto> pDtos)
         {
-            var updated = await _finRepo.UpdateCashAndBankDebitApprovals(pDtos);
+            var updated = await _finRepo.UpdateTransactionConfirmations(pDtos);
             if(!updated) return BadRequest(new ApiException(400, "Bad Request","Failed to update the payment confirmations"));
             
             return Ok(updated);
         }
 
         [HttpPut("voucher")]
-        public async Task<ActionResult<Voucher>> EditVoucher(Voucher voucher)
+        public async Task<ActionResult<Voucher>> EditVoucher(FinanceVoucher voucher)
         {
             var existing = await _finRepo.EditVoucher(voucher);
             if(!existing) return BadRequest(new ApiException(400, "Bad Request", "Failed to update the Voucher"));
@@ -219,7 +229,7 @@ namespace api.Controllers
                          }
                         //insert in voucherAttachments
                         var attachment = new VoucherAttachment{
-                            VoucherId=voucherId,
+                            FinanceVoucherId=voucherId,
                             AttachmentSizeInBytes = Convert.ToInt32(file.Length/1024), 
                             FileName=file.FileName, 
                             Url=fullPath, 
@@ -248,15 +258,12 @@ namespace api.Controllers
 
                try
                {
-                    var modelData = JsonSerializer.Deserialize<Voucher>(Request.Form["data"],  
+                    var modelData = JsonSerializer.Deserialize<FinanceVoucher>(Request.Form["data"],  
                          new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
                     
                     var files = Request.Form.Files;                    
-                    var voucherObjectDto = await _finRepo.UpdateFinanceVoucherWithFileUploads(modelData);
+                    var voucherObject = await _finRepo.UpdateFinanceVoucher(modelData);
                     
-                    var voucherObject = voucherObjectDto.Voucher;
-                    var newAttacments = voucherObjectDto.NewAttachments;  //not written to file
-
                     if(voucherObject==null) return BadRequest(new ApiException(404, "Failed to update Finance Voucher object"));
                     voucherid=voucherObject.Id;
                     
@@ -289,18 +296,18 @@ namespace api.Controllers
                               file.CopyTo(stream);
                          }
 
-                         newAttacments.Add(new VoucherAttachment{
+                         /* newAttacments.Add(new VoucherAttachment{
                              VoucherId=modelData.Id, 
                              AttachmentSizeInBytes=Convert.ToInt32(file.Length/204),
                              Url=fullPath, 
                              FileName =@"'\" + folderName + @"\" + fileName + "'",
                              DateUploaded=_today,
                             UploadedByUsername = User.GetUsername()                              
-                         }); 
+                         }); */
 
                     }
 
-                    if(newAttacments.Count > 0) await _finRepo.AddVoucherAttachments(newAttacments);
+                    //if(newAttacments.Count > 0) await _finRepo.AddVoucherAttachments(newAttacments);
     
                     return Ok();
                }

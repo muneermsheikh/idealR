@@ -1,0 +1,30 @@
+.w20 {width: 20px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w200 {width: 200px;}
+
+.stdd {
+    display: inline-block;
+    margin: 0 2px 0 2px;
+    font-size: small;
+    vertical-align: top;
+}
+
+.hAlignCenter {
+    text-align: center;
+}
+
+.hAlignRight {
+    text-align: right;
+}
+
+.green {color: darkgreen;}
+.lbl {
+    display: inline-block;
+    margin: 0 2px 0 2px;
+    font-size: small;
+    font-weight: bold;
+    vertical-align: top;
+}

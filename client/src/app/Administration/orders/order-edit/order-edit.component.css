@@ -1,11 +1,8 @@
 .stdd {
     display: inline-block !important;
     vertical-align: top;
-    margin-left: 3px;
-    margin-right:3px;
-    margin-top: 1px;
-    margin-bottom: 1px;
-   font-size: smaller;
+    margin: 0 3px 0px 3px;
+    font-size: smaller;
 }
 
 label{display: inline-block;}
@@ -27,17 +24,13 @@ label{display: inline-block;}
     display: inline-block !important;
     font-size: small;
     font-weight: bold;
-    margin-left: 2px;
-    margin-right:2px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin: 1px 2px 1px 2px;
 }
 
 .chk {
   display: inline-block !important;
   text-align: center;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin: 0 5px 0 5px;
   vertical-align: middle;
 }
 

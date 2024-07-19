@@ -25,6 +25,7 @@ export class SelectionsComponent implements OnInit {
   
   @ViewChild('search', {static: false}) searchTerm: ElementRef | undefined;
   selections: ISelDecisionDto[]=[];
+  selectionsSelected: ISelDecisionDto[]=[];
    
   pagination: Pagination | undefined;
   user?: User;
@@ -96,11 +97,26 @@ export class SelectionsComponent implements OnInit {
     })
   }
 
-  remindCandidateForDecision(id: any) {   //id is seldecisionid
-
+  remindCandidateForAcceptances(cvrefids: number[]) {   //id is seldecisionid
+      this.service.remindCandidatesForAcceptance(cvrefids).subscribe({
+        next: response => {
+          if(response === '') {
+            this.toastr.success('Messages composed and saved.  You can view/edit/send these messages from the Messages Component', 'Messages composed')
+          } else {
+            this.toastr.warning('Failed to generate/save Messages', 'Failed')
+          }
+        },
+        error: err => {
+          if(err?.error?.error) {
+            this.toastr.error(err?.error?.error, 'Error encountered')
+          } else {
+            this.toastr.error(err, 'Error encountered')
+          }
+        }
+      })
   }
 
-  deleteSelection(id: number) {
+  deleteSelection(id: any) {
     return this.service.deleteSelectionDecision(id).subscribe(response => {
       this.toastr.success('the chosen selection deleted');
     }, error => {
@@ -111,7 +127,7 @@ export class SelectionsComponent implements OnInit {
  displayEmploymentModal(employment: any, empItem: ISelDecisionDto){
 
     if(employment === null) {
-      this.toastr.warning('No Employment object returned from the modal form');
+      this.toastr.warning('No Employment object available for the candidate');
       return;
     }  
 
@@ -200,6 +216,42 @@ export class SelectionsComponent implements OnInit {
 
   }
  
+  
+  selectedClicked(item: any) {
+
+    var index = this.selectionsSelected.findIndex(x => x.id === item.id);
+    if(index === -1) {
+      this.selectionsSelected.push(item)
+    } else {
+      if(item.checked)   {
+        this.selectionsSelected[index].checked=true
+      } else {
+        this.selectionsSelected.splice(index,1,item)
+      }
+    }
+    console.log(this.selectionsSelected);
+  }
+
+  sendReminders() {
+      var cvrefids = this.selectionsSelected.map(x => x.cvRefId);
+      this.service.remindCandidatesForAcceptance(cvrefids).subscribe({
+        next: response => {
+          if(response ==='' || response === null) {
+            this.selections.map(x => x.checked=false);
+            this.toastr.success('Acceptance reminder email messages composed.  You can view/edit these messages in the MESSAGES section', 'success')
+          } else {
+            this.toastr.warning(response, 'Failed to compose reminder acceptance email messages')
+          }
+        }, error : err => {
+          if(err?.error?.error) {
+            this.toastr.error(err?.error?.error, 'Error encountered')
+          } else {
+            this.toastr.error(err, 'Error encountered')
+          }
+        }
+      })
+  }
+
   onPageChanged(event: any){
     const params = this.service.getParams();
     if (this.sParams.pageNumber !== event) {

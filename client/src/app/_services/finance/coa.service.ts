@@ -7,9 +7,7 @@ import { ICOA } from 'src/app/_models/finance/coa';
 import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
 import { CandidateCOAParamsDto } from 'src/app/_dtos/finance/candidateCOAParamsDto';
 import { Pagination } from 'src/app/_models/pagination';
-import { IPendingDebitApprovalDto } from 'src/app/_dtos/finance/pendingDebitApprovalDto';
-import { COADto } from 'src/app/_dtos/finance/coaDto';
-import { getPaginatedResult, getPaginationHeaders } from '../paginationHelper';
+import { getPaginatedResult } from '../paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -42,15 +40,17 @@ export class COAService {
   }
   */
 
-  /*
-  getCoas(oParams: ParamsCOA) {
+  
+  getCoas() {
 
-    const response = this.cache.get(Object.values(oParams).join('-'));
+      var oParams = this.getParams();  
+      const response = this.cache.get(Object.values(oParams).join('-'));
+      
       if(response) return of(response);
   
-      let params = this.populateCOAParams(oParams);
+      let params = this.getHttpParamsForCOA(oParams);
         
-      return getPaginatedResult<ICOA[]>(this.apiUrl + 'users', params, this.http).pipe(
+      return getPaginatedResult<ICOA[]>(this.apiUrl + 'Finance/coapagedlist', params, this.http).pipe(
         map(response => {
           this.cache.set(Object.values(oParams).join('-'), response);
           return response;
@@ -58,7 +58,7 @@ export class COAService {
       )
    
     }
-*/
+
   editCOA(coa : ICOA | undefined)
   {
       return this.http.put<ICOA>(this.apiUrl + 'finance/coa', coa);
@@ -97,9 +97,12 @@ export class COAService {
   }
 
   
-  populateCOAParams(oParams: ParamsCOA) {
-    let params = getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
-  
+  getHttpParamsForCOA(oParams: ParamsCOA) {
+    
+      let params = new HttpParams();  // getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
+      params = params.append('pageSize', oParams.pageSize);
+      params = params.append('pageNumber', oParams.pageNumber);
+
       if (oParams.search) params = params.append('search', oParams.search);
       if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
       if (oParams.sort !== '') params = params.append('sort', oParams.sort);

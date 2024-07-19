@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
@@ -17,6 +18,7 @@ export class SelectionLineComponent {
   @Output() deleteSelectionEvent = new EventEmitter<number>();
   @Output() editSelectionEvent = new EventEmitter<ISelectionDecision>();
   @Output() remindCandidateForDecisionEvent = new EventEmitter<number>();
+  @Output() selectedEvent = new EventEmitter<ISelDecisionDto>();
 
   constructor(private service: SelectionService){}
 
@@ -48,11 +50,16 @@ export class SelectionLineComponent {
   }
 
   remindCandidateForDecision() {
-    if(this.selection) this.remindCandidateForDecisionEvent.emit(this.selection.id);
+    if(this.selection?.selectionStatus !== 'Selected') {
+      inject(ToastrService).warning('This candidate has conveyed his decision on his selection - (' + 
+        this.selection?.selectionStatus + '). No reminder to the candidate need be given', 'No reminder feasible');
+    } else {
+      if(this.selection) this.remindCandidateForDecisionEvent.emit(this.selection.id);
+    }
   }
 
-  
-
-
+  selectedClicked() {
+    this.selectedEvent.emit(this.selection);
+  }
 
 }

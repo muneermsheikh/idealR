@@ -1,0 +1,53 @@
+<div class="modal-header">
+	<div class="b">{{title}}</div>
+	<button type="button" title="submit" class="stdd btn btn-default green fa fa-2x fa-check" (click)="addNewVoucher()"></button>
+	<button class="stdd close pull-right fa fa-2x fa-close" type="button" (click)="close()"></button>
+</div>
+
+<div class="modal-body">
+	<label class="stdd w125 b">Paid On: </label>
+	<input class="stdd w125" type="text" placeholder="Paid On" 
+		[(ngModel)]="newVoucher.paymentDate"
+		bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+
+	<br><label class="stdd w125 b">Paid To: </label>
+	<input type="text" class="stdd w200" [(ngModel)]="newVoucher.partyName">
+	
+	<label class="stdd w125 b">Debit Account: </label>
+	<ng-select 
+		style="border: color(from color srgb r g b); width: 200px;"
+		[items]="coas"
+		bindLabel="accountName"
+		bindValue="id"
+		labelForId="id"
+		clearAllText="Clear"
+		(change)="updateDrAccountName($event)"
+		[(ngModel)]="newVoucher.debitCOAId"
+	></ng-select>
+
+	<label class="stdd w125 b">Credit Account: </label>
+	<ng-select 
+		style="border: color(from color srgb r g b); width: 200px;"
+		[items]="coas"
+		bindLabel="accountName"
+		bindValue="id"
+		labelForId="id"
+		clearAllText="Clear"
+		(change)="updateCrAccountName($event)"
+		[(ngModel)]="newVoucher.creditCOAId"
+	></ng-select>
+
+	<br>
+	<label class="stdd w125">Narration: </label>
+	<input type="text" [(ngModel)]="newVoucher.narration"
+		style="display: inline-block;font-size:x-small;margin:0 2px 0 2px; width: 400px">
+	
+	<br>
+	<label class="stdd w125">Requires Approval: </label>
+	<input type="checkbox" [ngModel]="drEntryRequiresApproval" 
+		style="display: inline-block; margin: 0 2px 0 2px; width: 20px; border-color: black;">
+
+</div>
+<div class="modal-footer">
+
+</div>

@@ -6,10 +6,12 @@ using api.Helpers;
 using api.Interfaces.Admin;
 using api.Params.Admin;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    [Authorize(Policy ="HRMPolicy")]        //RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
     public class EmploymentController : BaseApiController
     {
         private readonly IEmploymentRepository _employmentRepo;

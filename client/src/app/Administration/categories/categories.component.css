@@ -1,0 +1,13 @@
+.stdd {
+    display: inline-block !important;
+    margin: 0px 2px 0px 2px;
+    font-size: small;
+}
+
+.b {font-weight: bold;}
+.red {color: red;}
+
+.w15 {width: 15px;}
+.w50 {width: 50px;}
+.w300 {width: 300px;}
+.w150 {width: 150px;}

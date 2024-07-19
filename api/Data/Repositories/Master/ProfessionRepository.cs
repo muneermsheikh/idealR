@@ -19,20 +19,19 @@ namespace api.Data.Repositories.Master
         }
 
 
-        public async Task<string> AddProfession(string ProfessionName)
+        public async Task<Profession> AddProfession(string ProfessionName)
         {
             var q = await _context.Professions
                 .Where(x => x.ProfessionName.ToLower() == ProfessionName.ToLower())
                 .FirstOrDefaultAsync();
 
-            if(q != null) return "That Profession already exists";
-
+            if(q != null) return q;
 
             var obj = new Profession{ProfessionName = ProfessionName};
 
             _context.Entry(obj).State = EntityState.Added;
 
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to add the Profession";
+            return await _context.SaveChangesAsync() > 0 ? obj : null;
         }
 
         public async Task<string> DeleteProfession(string ProfessionName)
@@ -102,8 +101,8 @@ namespace api.Data.Repositories.Master
             if(pParams.Id != 0) obj = obj.Where(x => x.Id == pParams.Id);
 
             var paged = await PagedList<Profession>.CreateAsync(obj.AsNoTracking()
-                .ProjectTo<Profession>(_mapper.ConfigurationProvider),
-                pParams.PageNumber, pParams.PageSize);
+                //.ProjectTo<Profession>(_mapper.ConfigurationProvider),
+                ,pParams.PageNumber, pParams.PageSize);
             
             return paged;
         }

@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { CvAssessModalComponent } from '../hr/cv-assess-modal/cv-assess-modal.component';
 import { CandidateAssessmentDtoResolver } from '../_resolvers/hr/candidate-assessmentDtoResolver';
 import { ProspectiveListComponent } from '../Administration/Prospectives/prospective-list/prospective-list.component';
+import { FileuploadComponent } from './fileupload/fileupload.component';
 
 const routes = [
     {path: '', component: ProfileMenuComponent},
@@ -43,7 +44,8 @@ const routes = [
           candidateAssessmentDto: CandidateAssessmentDtoResolver
         }
     },
-    {path: 'prospective', component: ProspectiveListComponent}
+    {path: 'prospective', component: ProspectiveListComponent},
+    {path: 'fileupload', component: FileuploadComponent}
 
 ]
 

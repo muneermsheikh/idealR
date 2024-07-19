@@ -1,4 +1,4 @@
-<h6>Customer Listing</h6>
+<h4>Customer Listing</h4>
 
 <pagination class="stdd" *ngIf="pagination !== undefined"
         [totalItems]="pagination!.totalItems"
@@ -26,8 +26,8 @@
     <button (click)="onReset()" title="resets search parameters" 
         class="btn btn-outline-success fa fa-refresh mx-1"></button>
 
-    <button (click)="close()" title="resets search parameters" 
-        class="btn btn-outline-success fa fa-refresh mx-1"></button>
+    <button (click)="close()" title="close this page" 
+        class="btn btn-outline-success fa fa-window-close mx-1"></button>
 
     <hr class="my-0">
     <label class="lbl w35">Sel</label>
@@ -41,7 +41,16 @@
     <div *ngIf="!customerDtos">
         No matching customers on record
     </div>
-    <div *ngIf="customerDtos">
+    <div class="col-3" *ngIf="display">
+        <div layout="column" flex style="overflow: scroll;">
+            <div id="content" ng-view flex *ngFor="let hist of history">
+                <div class="stdd w100 cursorPointer" (click)="displayFeedback(hist.feedbackId)">{{hist.feedbackIssueDate | date: 'ddMMMyy'}}</div>
+                <!-- <div class="stdd w100 cursorPointer" (click)="displayFeedback(hist.feedbackId)">{{hist.feedbackRecdDate | date: 'ddMMMyy'}}</div> -->
+            </div>
+        </div>
+    </div>
+    
+    <div *ngIf="customerDtos" class="col-9">
         <div *ngFor="let dto of customerDtos">
             <app-customer-line
                 [dto]="dto"
@@ -49,8 +58,14 @@
                 (deleteClicked)="deleteClicked($event)"
                 (feedbackEvent)="feedbackClicked($event)"
                 (EvaluationEvent)="evaluationClicked($event)"    
+                (displayHistoryEvent)="displayHistory($event)"
             ></app-customer-line>
         </div>
     </div>
 
     <!--evaluationEvent emits ICustomerReview-->
+    <div *ngIf="history && display">
+        <app-feedback
+            
+        ></app-feedback>
+    </div>

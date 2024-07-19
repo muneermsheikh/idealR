@@ -95,10 +95,10 @@ namespace api.Controllers
             return BadRequest("Problem deleting the message");
         }
             
-        public async Task<ActionResult<string>> ComposeMsgsToForwardOrdersToAgents(OrderForwardToAgent orderForward)
+        public async Task<ActionResult<string>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categoryForwards)
         {
-            
-            var msg= await _msgHRRepo.ComposeMsgsToForwardOrdersToAgents(orderForward, User.GetUsername());
+            var officials = (ICollection<OrderForwardCategoryOfficial>)categoryForwards.Select(x => x.OrderForwardCategoryOfficials).ToList();        
+            var msg= await _msgHRRepo.ComposeMsgsToForwardOrdersToAgents(categoryForwards, officials, User.GetUsername());
 
             if(msg==null) return BadRequest(new ApiException(400,"Bad Request", "failed to compose message for the Order Forwards"));
 

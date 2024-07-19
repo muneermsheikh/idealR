@@ -13,12 +13,8 @@ import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
-import { MemberListComponent } from './members/member-list/member-list.component';
-import { MemberCardComponent } from './members/member-card/member-card.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
-import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
-import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
@@ -38,6 +34,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SelectAssociatesModalComponent } from './modals/select-associates-modal/select-associates-modal.component';
+import { InputModalComponent } from './modals/input-modal/input-modal.component';
+import { DateInputRangeModalComponent } from './modals/date-input-range-modal/date-input-range-modal.component';
 
 
 @NgModule({
@@ -48,12 +47,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TestErrorComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    MemberListComponent,
-    //MemberDetailsComponent,
-    MemberCardComponent,
-    MemberEditComponent,
-    MemberLikedListComponent,
-    HasRoleDirective,
+  
     UserManagementComponent,
     PhotoManagementComponent,
     RolesModalComponent,
@@ -66,7 +60,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
    
     CandidateAssessComponent,
     CvAssessModalComponent,
+    SelectAssociatesModalComponent,
+    InputModalComponent,
+    DateInputRangeModalComponent,
     
+        
   ],
   imports: [
     BrowserModule,
@@ -74,16 +72,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     HttpClientModule,
     BrowserAnimationsModule,
 
-    //FormsModule,
-    //ReactiveFormsModule,
-    SharedModule,
-    MatIconModule,
+    //material
     MatButtonModule,
-    MatToolbarModule,
+    MatIconModule,
     MatSidenavModule,
+    MatToolbarModule,
     MatListModule,
     MatExpansionModule,
     MatTooltipModule,
+    
+    //FormsModule,
+    //ReactiveFormsModule,
+    SharedModule,
+    
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

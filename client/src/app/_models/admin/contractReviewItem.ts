@@ -5,6 +5,7 @@ export interface IContractReviewItem
      id: number; 
      contractReviewId: number; 
      orderItemId: number; 
+     orderId: number;
      professionName: string; 
      quantity: number;
      ecnr: boolean; 

@@ -10,9 +10,18 @@ namespace api.Controllers
     public class AdminController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
-        public AdminController(UserManager<AppUser> userManager)
+        private readonly RoleManager<AppRole> _roleManager;
+        public AdminController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
+        }
+
+        [Authorize(Policy = "AdminPolicy")]     //Roles: Admin
+        [HttpGet("identityroles")]
+        public async Task<ICollection<string>> GetRoles() {
+            var roles = await _roleManager.Roles.OrderBy(x => x.Name).Select(x => x.Name).ToListAsync();
+            return roles;
         }
 
         [Authorize(Policy = "AdminPolicy")]
@@ -20,8 +29,8 @@ namespace api.Controllers
         public async Task<ActionResult> GetUsersWithRoles()
         {
             var users = await _userManager.Users
-                .Include(x => x.UserRoles.Where(x => x.Role.Name !="Candidate"))    //not Candidzte
-
+                .Include(x => x.UserRoles)    //not Candidzte
+                .Where(x => x.UserRoles.Any(y => y.Role.Name != "Candidate"))
                 .OrderBy(u => u.UserName)
                 .Select(u => new
                 {

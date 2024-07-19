@@ -1,11 +1,7 @@
 //using System.Diagnostics;
 using System.Data.Common;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using api.Data.Migrations;
 using api.DTOs.Admin;
 using api.Entities.Deployments;
-using api.Entities.Finance;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
@@ -17,10 +13,8 @@ using api.Interfaces.Messages;
 using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace api.Data.Repositories.Admin
 {
@@ -32,14 +26,18 @@ namespace api.Data.Repositories.Admin
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly DateTime _today = DateTime.UtcNow;
+        private readonly IConfiguration _config;
+        private readonly string _tempPassword;
         public SelDecisionRepository(DataContext context, IComposeMessagesAdminRepository msgAdmRepo, 
-               IFinanceRepository finRepo , IMapper mapper, UserManager<AppUser> userManager            )
+           IFinanceRepository finRepo , IMapper mapper, UserManager<AppUser> userManager, IConfiguration config)
         {
+            _config = config;
             _userManager = userManager;
             _mapper = mapper;
             _finRepo = finRepo;
             _msgAdmRepo = msgAdmRepo;
             _context = context;
+            _tempPassword = _config["tempPassword"];
         }
 
         public async Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username)
@@ -124,6 +122,53 @@ namespace api.Data.Repositories.Admin
             return msgs;
         }
 
+        
+        public async Task<string> ComposeAcceptanceReminderToCandidates(List<int> cvrefids, string Username)
+        {
+            if(cvrefids.Count == 0) return null;
+
+            var selectedDetails = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
+                join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId 
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join order in _context.Orders on item.OrderId equals order.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
+                join emp in _context.Employments on sel.CvRefId equals emp.CvRefId
+                
+                select new SelectionMessageDto {
+                    CustomerName = order.Customer.CustomerName,
+                    CustomerCity = order.Customer.City,
+                    OrderNo = order.OrderNo,
+                    ProfessionName = item.Profession.ProfessionName,
+                    SelectionStatus = sel.SelectionStatus,
+                    //RejectionReason = sel.RejectionReason,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateId = cv.Id,
+                    CandidateTitle = cv.Gender == "M" ? "Mr." : "Ms.",
+                    CandidateName = cv.FullName,
+                    CandidateGender = cv.Gender,
+                    CandidateAppUserId = cv.AppUserId,
+                    Employment = emp
+            }).ToListAsync();
+            
+            string ErrorString="";
+            ErrorString = await VerifyDataAvailableForSelMessages(selectedDetails);
+            if(!string.IsNullOrEmpty(ErrorString)) throw new Exception(ErrorString) ;
+
+            var msgErr = await _msgAdmRepo.ComposeAcceptanceReminderToCandidates(selectedDetails, Username);
+
+            if(!string.IsNullOrEmpty(msgErr.ErrorString)) {
+                return msgErr.ErrorString;
+            }
+
+            foreach(var msg in msgErr.Messages) {
+                _context.Messages.Add(msg);
+            }
+
+            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save messages";
+
+        }
+    
+
         private async Task<AppUser> AppUserFromEmployeeId(int EmployeeId, string email) {
             
             var empObj = EmployeeId == 0 
@@ -145,7 +190,7 @@ namespace api.Data.Repositories.Admin
                     City = empObj.City, Country = empObj.Country
                 };
                 
-                await _userManager.CreateAsync(newAppUser, "Pa$$w0rd");
+                await _userManager.CreateAsync(newAppUser, _tempPassword);
             }
 
             if(newAppUser != null) {
@@ -158,12 +203,10 @@ namespace api.Data.Repositories.Admin
         }
 
         private async Task<AppUser> AppUserFromCandidateId(int CandidateId) {
-            var candidateObj = await _context.Candidates.Where(x => x.Id == CandidateId)
-                .FirstOrDefaultAsync();
+            var candidateObj = await _context.Candidates.FindAsync(CandidateId);
             if(candidateObj == null) return null;
 
-            if (candidateObj.AppUserId  != 0) return await _userManager
-                .FindByIdAsync(candidateObj.AppUserId.ToString());
+            if (candidateObj.AppUserId  != 0) return await _userManager.FindByIdAsync(candidateObj.AppUserId.ToString());
             
             //user does not have appuser object
             
@@ -175,13 +218,20 @@ namespace api.Data.Repositories.Admin
             }
             
             if(newAppUser.Id == 0) {        //appuser not found
-                newAppUser.Gender = candidateObj.Gender; newAppUser.KnownAs=candidateObj.KnownAs;
-                newAppUser.DateOfBirth= (DateTime)candidateObj.DOB; newAppUser.Created =_today;
-                newAppUser.City = candidateObj.City; newAppUser.Country = candidateObj.Country;
-                newAppUser.Email = candidateObj.Email; 
-                newAppUser.PhoneNumber = candidateObj.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault();
+                newAppUser = new AppUser{
+                    Gender = candidateObj.Gender ?? "Male",
+                    KnownAs=candidateObj.KnownAs ?? "",
+                    //if(candidateObj.DOB != null) newAppUser.DateOfBirth= (DateTime)candidateObj.DOB; 
+                    Created =_today,
+                    City = candidateObj.City ?? "",
+                    Country = candidateObj.Country ?? "India",
+                    Email = candidateObj.Email ?? "",
+                    UserName = candidateObj.Email,
+                    PhoneNumber = candidateObj.UserPhones == null ? "" : candidateObj.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault()
+                };
                 
-                await _userManager.CreateAsync(newAppUser, "Pa$$w0rd");
+                var result = await _userManager.CreateAsync(newAppUser, _tempPassword);
+                if(result.Succeeded) newAppUser = await _userManager.FindByEmailAsync(candidateObj.Email);
             }
 
             if(newAppUser.Id != 0) {
@@ -203,10 +253,10 @@ namespace api.Data.Repositories.Admin
                 if(recipientObj == null) ErrString += ", Failed to get recipient AppUser object";
                 if(string.IsNullOrEmpty(item.SelectionStatus)) ErrString += ", " + "Selection Status not defined for " + item.CandidateKnownAs;
 
-                var empObj = item.HRSupId == 0 
+                /*var empObj = item.HRSupId == 0 
                     ? await AppUserFromEmployeeId(0, item.HRExecEmail)
                     : await AppUserFromEmployeeId(item.HRSupId, "");
-                
+                */
              }
              return ErrString;
         }
@@ -215,7 +265,7 @@ namespace api.Data.Repositories.Admin
         {
             var selections = await _context.SelectionDecisions.ToListAsync();
             var employments = await _context.Employments.ToListAsync();
-            var vouchers = await _context.Vouchers.ToListAsync();
+            var vouchers = await _context.FinanceVouchers.ToListAsync();
             var deps = await _context.Deps.ToListAsync();
 
             //Deletebehavior.Cascade for Selections and other related tables cd not be set, so all related
@@ -262,11 +312,11 @@ namespace api.Data.Repositories.Admin
             
             //4 = DELETE VOUCHERS
             if(offerAcceptedOn.Year > 2000) {
-                var voucher = await _context.Vouchers
-                    .Where(x => x.CVRefId == cvrefid && x.COAId == coaRecruitmentSales
-                        &&  DateOnly.FromDateTime(x.VoucherDated) == DateOnly.FromDateTime(offerAcceptedOn)).FirstOrDefaultAsync();
+                var voucher = await _context.FinanceVouchers
+                    .Where(x => x.COAId == coaRecruitmentSales
+                        &&  x.VoucherDated == DateOnly.FromDateTime(offerAcceptedOn)).FirstOrDefaultAsync();
                 if(voucher != null) {
-                    _context.Vouchers.Remove(voucher);
+                    _context.FinanceVouchers.Remove(voucher);
                     _context.Entry(voucher).State = EntityState.Deleted; 
                 }
             }

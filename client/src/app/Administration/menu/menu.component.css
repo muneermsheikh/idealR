@@ -38,3 +38,8 @@
 .w450 {width: 450px;}
 
 .cursorPointer{cursor:pointer; color: darkgreen;}
+
+.divDisabled {
+    pointer-events: none;
+    opacity: 0.4;
+}

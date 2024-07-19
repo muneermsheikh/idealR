@@ -4,4 +4,7 @@ export interface IOfficialAndCustomerNameDto
     customerId: number;
     customerName: string;
     officialName: string;
+    email: string;
+    phoneNo: string;
+    customerIsBlacklisted: boolean;
 }

@@ -1,4 +1,4 @@
-<h6 style="display: inline-block;">Listing of Orders Forwarded to Agents</h6>
+<div style="font-size: medium; font-weight: bold; display: inline-block;">Listing of Orders Forwarded to Associates</div>
 <div style="display: inline-block; margin-left: 15px;" *ngIf="pagination !== undefined">
      <pagination
         [totalItems]="pagination!.totalItems"
@@ -13,16 +13,10 @@
 </div>
 
 
-    <input (keyup.enter)="onSearch()" type="text" 
-        class="stdd form-control w300" #search placeholder="Search">
-
-    <button (click)="onReset()" 
-        class="btn btn-outline-success mx-1">Reset</button>
-
-    <button class="btn btn-outline-success" routerLink="/administration/forwards/add" >Add</button>
-
-<button class="btn btn-outline-success mx-5" routerLink="/administration" >Close</button>
-
+    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" style="display: inline-block;" #search placeholder="Search">
+    <button (click)="onReset()" class="btn btn-outline-success mx-2 fa fa-refresh fa-2x"></button>
+    <button class="btn btn-outline-success fa fa-plus fa-2x mx-2" routerLink="/administration/forwards/add" ></button>
+    <button class="btn btn-outline-success mx-2 fa fa-window-close fa-2x" routerLink="/administration" ></button>   
 
 <div class="form-inline b">
     <label class="stdd w70 b">Order No</label>
@@ -35,7 +29,7 @@
     <label class="stddF w150 b">Date Forwarded</label>
     <label class="stddF w150 b">User Name</label>-->
 
-    <div *ngIf="fwdsToAgent===undefined || fwdsToAgent === null" >
+    <div *ngIf="fwdsToAgent === null || fwdsToAgent.length === 0" class="my-5 red mL50">
         No Order Forwarding data available
     </div>
 

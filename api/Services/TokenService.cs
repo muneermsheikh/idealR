@@ -23,8 +23,10 @@ namespace api.Services
         public async Task<string> CreateToken(AppUser user)
         {
            var claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                //new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                //new(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.UserName)
             };
             
             var roles = await _userManager.GetRolesAsync(user);

@@ -2,8 +2,9 @@ namespace api.DTOs.Finance
 {
     public class StatementOfAccountItemDto
     {
+        public int Id { get; set; }
         public int VoucherNo { get; set; }
-        public DateTime TransDate { get; set; }
+        public DateOnly TransDate { get; set; }
         public int COAId { get; set; }
         public string AccountName { get; set; }
         public long Dr {get; set;}

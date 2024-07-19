@@ -1,0 +1,27 @@
+<h4 stdd>Transactions pending approval</h4>
+<div class="lbl w200">Logged in User: {{user?.knownAs}}</div>
+<button class="lbl btn fa fa-check fa-2x green" style="margin-left: 100px;" 
+    title="Confirm receipt of funds pending for acceptace" (click)="update()" ></button>
+
+<div class="container my-2">
+    <label class="lbl w100">Approved</label>
+    <label class="lbl w75">Voucher No</label>
+    <label class="lbl w100 hAlignCenter">Dated</label>
+    <label class="lbl w200">Account Name</label>
+    <label class="lbl w75">Amount</label>
+    
+    <div *ngIf="pending">
+        <div *ngFor="let item of pending">
+            <input type="checkbox" 
+                style="margin: 0 40px 0 40px; border-color: black; "
+                class="form-check-input w20 hAlignCenter"
+                [(ngModel)]="item.drEntryApproved"
+                (click)="selectedClicked(item)" >
+            
+            <div class="stdd w75 hAlignCenter">{{item!.voucherNo}}</div>
+            <div class="stdd w100 hAlignCenter">{{item!.voucherDated|date:'dd-MMM-yy'}}</div>
+            <div class="stdd w200">{{item!.drAccountName}}</div>
+            <div class="stdd w75 hAlignRight">{{item!.drAmount.toLocaleString()}}</div>
+        </div>
+    </div>
+</div>

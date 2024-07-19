@@ -49,8 +49,8 @@ export class ContractRvwComponent implements OnInit {
   updateClicked() {
     if(this.review !== undefined) {
         this.service.updateContractReview(this.review).subscribe({
-          next: response => {
-            if(response !== null) {
+          next: succeeded => {
+            if(succeeded) {
               this.toastr.success('the Contract Review was updated', 'success')
             } else {
               this.toastr.warning('failed to update the contract review', 'failure')
@@ -61,21 +61,12 @@ export class ContractRvwComponent implements OnInit {
     }
   }
 
-  accumulateEvents(event: any) {
-    if(event===null) return;
+  updateContractReviewItem(event: any) {
 
-    this.objectEdited=true;
-
-    if(this.review !== undefined) {
       var index = this.review?.contractReviewItems.findIndex(x => x.orderItemId == event.orderItemId);
-      if(index === -1) {
-        this.review.contractReviewItems.push(event);
-      } else {
-        this.review.contractReviewItems[index]=event;
+      if(index !== -1 && this.review !== undefined) {
+        this.review.contractReviewItems[index!]=event;
       }
-  
-    }
-    
   }
 
   close() {

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "ContractReviewPolicy")]
+    [Authorize(Policy = "ContractReviewPolicy")]        //Role-Contract Review
     public class ContractReviewController : BaseApiController
     {
         private readonly IContractReviewRepository _repo;
@@ -36,8 +36,8 @@ namespace api.Controllers
         [HttpPut("reviewitem")]
         public async Task<ActionResult<bool>> UpdateReviewItem(ContractReviewItem reviewitem)
         {
-            var item = await _repo.EditContractReviewItem(reviewitem);
-            return item;
+            var item = await _repo.EditContractReviewItem(reviewitem, false);   //the false flag causes updates to be written to DB
+            return item != null;
         }
 
         [HttpPost("contractreview")]
@@ -51,18 +51,18 @@ namespace api.Controllers
         }
 
         [HttpPut("contractreview")]
-        public async Task<ActionResult<ContractReview>> EditContractReview (ContractReview contractReview)
+        public async Task<ActionResult<bool>> EditContractReview (ContractReview contractReview)
         {
-            var review = await _repo.EditContractReview(contractReview); //on return from repo, this has twice the number of OrderItems ???
-            if (review == null) return BadRequest("Failed to update the contract review");
+            var succeeded = await _repo.EditContractReview(contractReview); //on return from repo, this has twice the number of OrderItems ???
+            if (!succeeded) return BadRequest("Failed to update the contract review");
 
-            return Ok(review);
+            return Ok(succeeded);
         }
 
         [HttpGet("reviewitem/{orderitemid}")]
         public async Task<ActionResult<ContractReviewItemDto>> GetContractReviewItem(int orderitemid)
         {
-                var item = await _repo.GetContractReviewItem(orderitemid, User.GetUsername());
+                var item = await _repo.GetOrGenerateContractReviewItem(orderitemid, User.GetUsername());
                 if (item == null) return NotFound(new ApiException(400, "Bad Request", "Failed to retrieve the contract review item"));
 
                 return Ok(item);
@@ -134,7 +134,7 @@ namespace api.Controllers
         [HttpPut("updateorderreviewstatus/{orderid}")]
         public async Task<ActionResult<bool>> UpdateOrderReviewStatus(int orderid)
         {
-            var updated = await _repo.UpdateOrderReviewStatus(orderid);
+            var updated = await _repo.UpdateOrderReviewStatusWITHSAVE(orderid,0);
             if(!updated) return BadRequest("Failed to update the review statuses");
 
             return Ok();

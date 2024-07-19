@@ -2,10 +2,8 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../_modules/shared.module';
 import { MenuComponent } from './menu/menu.component';
-import { OrderIndexComponent } from './orders/order-index/order-index.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { SelectionsComponent } from './selections/selections.component';
-import { EmploymentsComponent } from './employments/employments.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from './industries/industries.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
@@ -40,15 +38,15 @@ import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.comp
 import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract-rvw-item.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MessageComponent } from './message/message/messages.component';
-
+import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
+import { DLComponent } from './dl/dl.component';
+import { DLItemComponent } from './dl-item/dl-item.component';
 
 
 @NgModule({
   declarations: [
     MenuComponent,
-    OrderIndexComponent,
     SelectionsComponent,
-    EmploymentsComponent,
     CategoriesComponent,
     IndustriesComponent,
     QualificationsComponent,
@@ -81,7 +79,10 @@ import { MessageComponent } from './message/message/messages.component';
     CustRvwEditModalComponent,
     ContractRvwComponent,
     ContractRvwItemComponent,
-    MessageComponent
+    MessageComponent,
+    CategoryEditModalComponent,
+    DLComponent,
+    DLItemComponent,
   ],
   imports: [
     CommonModule,

@@ -47,7 +47,8 @@
             routerLinkActive="active" class="nav-link">Selections made</a>
     </li> -->
 
-    <div class="nav-item menuStdd" 
+    <div 
+        class="nav-item menuStdd" 
         title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers">
         <a routerLink="/administration/selections"  routerLinkActive="active" >Selections made</a>
     </div>
@@ -61,10 +62,6 @@
         title="employment details of selected candidates" >
         <a routerLink="/administration/selections" routerLinkActive="active" class="nav-link">Employments</a>
     </li> -->
-
-    <div class="nav-item menuStdd" title="messages concerning the logged-in users" >
-        <a routerLink="/administration/employment" routerLinkActive="active" >Employments</a>
-    </div>
 
     <div class="nav-item  menuStdd" title="messages concerning the logged-in User" 
         routerLink="/administration/messages" routerLinkActive="active" >
@@ -90,26 +87,19 @@
     <div class="nav-item menuStdd" title="Authorities and Roles">
         <a routerLink="/userroles" routerLinkActive="active" >authorities & roles</a>
     </div>
-    <div title="Authorities and Roles"  class="nav-item  menuStdd"
-        routerLink="/userroles" routerLinkActive="active">
-        Authorities & Roles
-    </div>
-    <!-- <li class="nav-item" *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" 
-        class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
-        <a  routerLinkActive="active" class="nav-link">Import from Excel Sheet</a>
-    </li> -->
+ 
+    <!-- *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" -->
+    <li  class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a  routerLinkActive="active" (click)="uploadExcel = !uploadExcel" class="nav-link">Import from Excel Sheet</a>
+    </li> 
     <!-- <li class="nav-item" class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
         <a  routerLinkActive="active" class="nav-link">Import from Excel Sheet</a>
     </li> -->
-    <div class="nav-item menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" 
-        routerLink="/userroles" routerLinkActive="active">
-        Authorities & Roles
-    </div>
     <!-- <li class="nav-item" *appHasRole="['Admin']" class="nav-item" 
         title="import data from Excel Sheets - for Candidate, customer or Employees" >
         <a routerLink="/administration/customers" routerLinkActive="active" class="nav-link">Customers<br>Associates<br>Vendors</a>
     </li> -->
-    <div  class="nav-link menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+    <div  class="nav-link menuStdd" title="Customers, Vendors and Associates" >
         <a routerLink="/administration/customers" routerLinkActive="active" 
        >Customers<br>Associates<br>Vendors</a>
     </div>
@@ -155,13 +145,34 @@
     <ul>
         <label class="lblB w150">Function</label>
         <label class="lblB w450">Roles Required</label>
+
+        <!--
+        opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+                opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
+                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
+                opt.AddPolicy("CustomePolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
+                opt.AddPolicy("HRSupPolicy", policy => policy.RequireRole("HR Supervisor", "HR Executive", "Asst HR Executive"));
+                opt.AddPolicy("HRExecPolicy", policy => policy.RequireRole("HR Executive", "Asst HR Executive"));
+                opt.AddPolicy("AsstHRExecPolicy", policy => policy.RequireRole("Asst HR Executive"));
+                opt.AddPolicy("AdminManagerPolicy", policy => policy.RequireRole("Admin Manager"));
+                opt.AddPolicy("MarketingManagerPolicy", policy => policy.RequireRole("Marketing Manager"));
+                opt.AddPolicy("ContractReviewPolicy", policy => policy.RequireRole("Contract Review"));
+                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("Admin Manager", "Document Controller-Admin"));
+                opt.AddPolicy("AccountsPolicy", policy => policy.RequireRole("Accountant", "Accounts Manager", "Finance Manager"));
+                opt.AddPolicy("CashierPolicy", policy => policy.RequireRole("Cashier"));
+                opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager"));
+                opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("Order Forward"));
+                opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
+                opt.AddPolicy("SelectionPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Document Controller-Admin"));
+                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Document Controller-Admin"));
+        -->
         <li>
             <label class="lblB w150" title="CVs awaiting selections from client">Pending Selections</label>
-            <label class="lbl w450">HR Manager, HR Supervisor, Admin' Admin Manager, Document Controller-Admin</label>
+            <label class="lbl w450">HR Manager, HR Supervisor, Admin, Admin Manager, Document Controller-Admin</label>
         </li>
         <li>
             <label title="selections already made" class="lblB w150">Selection</label>
-            <label class="lbl w450">Admin, AdminManager, Document Controller-Admin, HR Manager, HR Supervisor</label>
+            <label class="lbl w450">Admin, Admin Manager, Document Controller-Admin, HR Manager, HR Supervisor</label>
         </li>
         
         <li>

@@ -82,50 +82,43 @@ namespace api.Data.Repositories.Admin
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(OrderForwardToAgent dlforward, 
-            string Username)
+        public async Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, ICollection<OrderForwardCategoryOfficial> fwdOfficials, string Username)
         {
             var msgData = new List<OrderItemBriefDtoWithOfficialIdsDto>();
+            var orderid = categories.Select(x => x.OrderId).FirstOrDefault();
+
+            var order = await _context.Orders
+                .Include(x => x.OrderItems).ThenInclude(x => x.JobDescription)
+                .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
+                .Include(x => x.Customer)
+                .Where(x => x.Id == orderid)
+                .FirstOrDefaultAsync();
+
+            var projManagerId = order.ProjectManagerId;
             
-            var projManagerId = dlforward.ProjectManagerId;
             if(projManagerId == 0) return null;
             var projManagerAppUserId =  await _context.GetAppUserIdOfEmployee(projManagerId);
             if(projManagerAppUserId == 0) projManagerAppUserId = Convert.ToInt32(_config["HRSupAppuserId"] ?? "0");
-            
-            var fwdOfficials = new List<OrderForwardCategoryOfficial>();
-            
+           
             var msgs = new List<Message>();
-
-            foreach(var itm in dlforward.OrderForwardCategories)
-            {
-                foreach(var dt in itm.OrderForwardCategoryOfficials)
-                {
-                    fwdOfficials.Add(dt);
-                }
-            }
 
             fwdOfficials = fwdOfficials.Distinct().ToList();
 
-            var distinctOrderItemIds = dlforward.OrderForwardCategories.Select(x => x.OrderItemId).Distinct().ToList();
+            var distinctOrderItemIds = categories.Select(x => x.OrderItemId).Distinct().ToList();
             //queries that has to use expressions at client level - like distinctOrderItemIds.contains(xx) - 
             //are not translated by EF Core.  The query ahs to be redesigned
 
             var item = new OrderItemBriefDto();
             var ItemBriefDtos = new List<OrderItemBriefDto>();
 
-            var orderAndItems = await _context.Orders
-                .Include(x => x.OrderItems).ThenInclude(x => x.JobDescription)
-                .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
-                .Where(x => x.Id == dlforward.OrderId).FirstOrDefaultAsync();
-    
-            foreach(var itm in orderAndItems.OrderItems) {
+            foreach(var itm in order.OrderItems) {
                 item = new OrderItemBriefDto {
-                    OrderItemId = itm.Id, AboutEmployer = orderAndItems.Customer?.Introduction,
-                     CustomerId = orderAndItems.CustomerId, CustomerName = orderAndItems.Customer?.CustomerName,
-                      Ecnr = itm.Ecnr, CompleteBefore = itm.CompleteBefore, JobDescription = itm.JobDescription,
-                      Remuneration = itm.Remuneration, OrderDate = orderAndItems.OrderDate,
-                       OrderId=orderAndItems.Id, OrderNo = orderAndItems.OrderNo, ProfessionId=itm.ProfessionId,
-                       ProfessionName = itm.Profession?.ProfessionName, Quantity=itm.Quantity, SrNo=itm.SrNo,
+                    OrderItemId = itm.Id, AboutEmployer = order.Customer?.Introduction,
+                    CustomerId = order.CustomerId, CustomerName = order.Customer?.CustomerName,
+                    Ecnr = itm.Ecnr, CompleteBefore = itm.CompleteBefore, JobDescription = itm.JobDescription,
+                    Remuneration = itm.Remuneration, OrderDate = order.OrderDate,
+                    OrderId=order.Id, OrderNo = order.OrderNo, ProfessionId=itm.ProfessionId,
+                    ProfessionName = itm.Profession?.ProfessionName, Quantity=itm.Quantity, SrNo=itm.SrNo,
                     Status = itm.Status
                 };
                 ItemBriefDtos.Add(item);
@@ -139,13 +132,8 @@ namespace api.Data.Repositories.Admin
             var OfficialIdsForEmails = fwdOfficials.Where(x => !string.IsNullOrEmpty(x.EmailIdForwardedTo))
                 .Select(x => x.CustomerOfficialId).ToList();
             
-            var OfficialIdsForSMS  = fwdOfficials.Where(x => !string.IsNullOrEmpty(x.PhoneNoForwardedTo) )
-                .Select(x => x.CustomerOfficialId).ToList();
-            var OfficialIdsForWhatsApp = fwdOfficials.Where(x => !string.IsNullOrEmpty(x.WhatsAppNoForwardedTo))
-                .Select(x => x.CustomerOfficialId).ToList();
-            
-            string subject = "Requirements under Order No.: " + dlforward.OrderNo + " dated " + 
-                    dlforward.OrderDate + dlforward.CustomerCity;
+            string subject = "Requirements under Order No.: " + order.OrderNo + " dated " + 
+                    order.OrderDate + order.Customer.City;
 
             msgs = (List<Message>)await ComposeEmailMsgForOrderForwards(ItemBriefDtos, subject, fwdOfficials, Username);
 

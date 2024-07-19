@@ -112,7 +112,7 @@ namespace api.Data.Repositories.Finance
              
             var paged = await PagedList<COA>.CreateAsync(
                 query.AsNoTracking()
-                .ProjectTo<COA>(_mapper.ConfigurationProvider)
+                //.ProjectTo<COA>(_mapper.ConfigurationProvider)
                 , coaParams.PageNumber, coaParams.PageSize);
     
 
@@ -141,17 +141,17 @@ namespace api.Data.Repositories.Finance
         {
             var cashandbank = await _context.COAs.Where(x => x.AccountClass=="CashAndBank").Select(x => x.Id).ToListAsync();
 
-			var qry = (from e in _context.VoucherItems
-				where e.DrEntryApproved != true & e.Dr > 0  & cashandbank.Contains(e.COAId)
-				join v in _context.Vouchers on e.VoucherId equals v.Id
+			var qry = (from e in _context.VoucherEntries
+				where e.DrEntryApproved != true && e.Dr > 0  && cashandbank.Contains(e.COAId)
+				join v in _context.FinanceVouchers on e.FinanceVoucherId equals v.Id
 				select new PendingDebitApprovalDto{
-                     DrAccountId=e.COAId, DrAccountName=e.AccountName, DrAmount=e.Dr, VoucherItemId=e.Id, 
+                     DrAccountId=e.COAId, DrAccountName=e.AccountName, DrAmount=e.Dr, VoucherEntryId=e.Id, 
                      DrEntryApproved = e.DrEntryApproved, VoucherDated =v.VoucherDated, VoucherNo=v.VoucherNo
                 }).AsQueryable();
 			
             if(!string.IsNullOrEmpty(pParams.AccountName)) 
                 qry = qry.Where(x => x.DrAccountName.ToLower() == pParams.AccountName.ToLower());
-            
+           
 			var paged = await PagedList<PendingDebitApprovalDto>.CreateAsync(
                 qry.AsNoTracking()
                 .ProjectTo<PendingDebitApprovalDto>(_mapper.ConfigurationProvider)
@@ -159,10 +159,61 @@ namespace api.Data.Repositories.Finance
             return paged;
         }
 
-        public Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate)
+        public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate)
         {
-            throw new NotImplementedException();
+           //DateTime uptoDate = UptoDate.Hour < 1 ? UptoDate.AddHours(23) : UptoDate;
+			
+			var trans =  await (from i in _context.VoucherEntries 
+                    where i.COAId == accountid && i.TransDate >= fromDate && i.TransDate <= uptoDate
+				join v in _context.FinanceVouchers on i.FinanceVoucherId equals v.Id
+				join a in _context.COAs on i.COAId equals a.Id
+				orderby i.TransDate descending
+				select new StatementOfAccountItemDto {
+                    Id = i.Id,
+					VoucherNo = v.VoucherNo,
+					TransDate = i.TransDate,
+					COAId = a.Id,
+					AccountName = a.AccountName,
+					Dr = i.Dr,
+					Cr = i.Cr,
+					Narration = i.Narration
+				}).ToListAsync();
+						
+						
+			var transtest = await (from v in _context.VoucherEntries where v.COAId==accountid 
+				select new {v.Id, v.TransDate, v.COAId, v.AccountName, v.Dr, v.Cr})
+                    .OrderByDescending(x => x.TransDate).ToListAsync();
+			var opBal = await (from v in _context.VoucherEntries where v.COAId==accountid && v.TransDate < fromDate
+				group v by v.COAId into g 
+				select new {Id = g.Key, Bal = g.Sum(e => -e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
+			var oclBalTest = await (from v in _context.VoucherEntries where v.COAId==accountid && v.TransDate >= uptoDate
+				select new {v.Id, v.TransDate, v.COAId, v.AccountName, v.Dr, v.Cr}).ToListAsync();
+
+			var BalForThePeriod = await (from v in _context.VoucherEntries 
+					where v.COAId==accountid 
+						&& v.TransDate >= fromDate 
+						&& v.TransDate <= uptoDate
+				group v by v.COAId into g 
+				select new {Id = g.Key, Bal = -g.Sum(e => e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
+
+			var dto = new StatementOfAccountDto{
+				AccountId=accountid,
+				AccountName= trans.Count()==0 ? await GetAccountNameFromCOA(accountid) : trans[0].AccountName, 
+				FromDate = fromDate,
+				UptoDate = uptoDate,
+				StatementOfAccountItems = trans,
+				OpBalance = opBal==null? 0 : opBal.Bal,
+				ClBalance = BalForThePeriod==null ? 0 : BalForThePeriod.Bal
+			};
+
+			return dto;	
         }
+
+        private async Task<string> GetAccountNameFromCOA(int coaid) {
+			var s = await _context.COAs.Where(x => x.Id==coaid).Select(x=> x.AccountName).FirstOrDefaultAsync();
+			if(s==null) return "";
+			return s;
+		}
 
         public async Task<COA> GetSalesRecruitmentCOA()
         {
@@ -193,7 +244,7 @@ namespace api.Data.Repositories.Finance
         //vouchers
         public async Task<int> GetNextVoucherNo()
         {
-            var vno = await _context.Vouchers
+            var vno = await _context.FinanceVouchers
                 .OrderByDescending(x => x.VoucherNo)
                 .Select(x => x.VoucherNo)
                 .Take(1).FirstOrDefaultAsync();
@@ -202,8 +253,7 @@ namespace api.Data.Repositories.Finance
             return vno == 0 ? 1000 : vno + 1;
         }
  
- 
-        public async Task<Voucher> AddNewVoucher(Voucher voucher, string Username)
+         public async Task<Voucher> AddNewVoucher(Voucher voucher, string Username)
         {
             _context.Entry(voucher).State = EntityState.Modified;
 
@@ -212,33 +262,34 @@ namespace api.Data.Repositories.Finance
             return voucher;
         }
 
-        public async Task<Voucher> GetVoucher(int id)
+        public async Task<FinanceVoucher> GetVoucher(int id)
         {
-            var voucher = await _context.Vouchers.Include(x => x.VoucherItems)
+            var voucher = await _context.FinanceVouchers.Include(x => x.VoucherEntries)
                 .Where(x => x.Id == id).FirstOrDefaultAsync();
             
             return voucher;
         }
 
-        public async Task<PagedList<Voucher>> GetVouchers(VoucherParams vParams)
+        public async Task<PagedList<FinanceVoucher>> GetVouchers(VoucherParams vParams)
         {
-            var query = _context.Vouchers.AsQueryable();
+            var query = _context.FinanceVouchers.AsQueryable();
 
             if(vParams.VoucherNo !=0) {
                 query = query.Where(x => x.VoucherNo == vParams.VoucherNo);
             } else {
                 if(vParams.VoucherDated.Year > 2000) query = query.Where(x => x.VoucherDated == vParams.VoucherDated);
                 if(vParams.DateFrom.Year > 2000 && vParams.DateUpto.Year > 2000) 
-                    query = query.Where(x => DateOnly.FromDateTime(x.VoucherDated) >= DateOnly.FromDateTime(vParams.DateFrom) &&
-                        DateOnly.FromDateTime(x.VoucherDated) <= DateOnly.FromDateTime(vParams.DateUpto));
+                    query = query.Where(x => x.VoucherDated >= vParams.DateFrom &&
+                        x.VoucherDated <= vParams.DateUpto);
                 if(vParams.CoaId !=0) query = query.Where(x => x.COAId == vParams.CoaId);
                 if(vParams.Amount != 0) query = query.Where(x => x.Amount == vParams.Amount);
                 if(!string.IsNullOrEmpty(vParams.Divn)) query = query.Where(x => x.Divn == vParams.Divn);
+                if(!string.IsNullOrEmpty(vParams.Search)) query = query.Where(x => x.AccountName.ToLower().Contains(vParams.Search.ToLower()));
             }
-            
-            var paged = await PagedList<Voucher>.CreateAsync(
+         
+            var paged = await PagedList<FinanceVoucher>.CreateAsync(
                 query.AsNoTracking()
-                .ProjectTo<Voucher>(_mapper.ConfigurationProvider)
+                //.ProjectTo<Voucher>(_mapper.ConfigurationProvider)
                 , vParams.PageNumber, vParams.PageSize);
     
 
@@ -246,27 +297,27 @@ namespace api.Data.Repositories.Finance
             
         }
 
-        public async Task<bool> EditVoucher(Voucher newObject)
+        public async Task<bool> EditVoucher(FinanceVoucher newObject)
         {
-            var existing = await _context.Vouchers.Include(x => x.VoucherItems)
+            var existing = await _context.FinanceVouchers.Include(x => x.VoucherEntries)
                 .Where(x => x.Id == newObject.Id).AsNoTracking().FirstOrDefaultAsync();
             
             _context.Entry(existing).CurrentValues.SetValues(newObject);
 
              //delete records in existingObject that are not present in new object
-            foreach (var existingItem in existing.VoucherItems.ToList())
+            foreach (var existingItem in existing.VoucherEntries.ToList())
             {
-                if(!newObject.VoucherItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                if(!newObject.VoucherEntries.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
-                    _context.VoucherItems.Remove(existingItem);
+                    _context.VoucherEntries.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted; 
                 }
             }
 
             //items in current object - either updated or new items
-            foreach(var newItem in newObject.VoucherItems)
+            foreach(var newItem in newObject.VoucherEntries)
             {
-                var existingItem = existing.VoucherItems
+                var existingItem = existing.VoucherEntries
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
                 {
@@ -274,7 +325,7 @@ namespace api.Data.Repositories.Finance
                     _context.Entry(existingItem).State = EntityState.Modified;
                 } else {    //insert new navigation record
                         
-                    var itemToInsert = new VoucherItem
+                    var itemToInsert = new VoucherEntry
                     {
                         AccountName = await GetAccountNameFromId(newItem.COAId),
                         COAId = newItem.COAId,
@@ -283,7 +334,7 @@ namespace api.Data.Repositories.Finance
                         Remarks = newItem.Remarks, TransDate=newItem.TransDate
                     };
 
-                    existing.VoucherItems.Add(itemToInsert);
+                    existing.VoucherEntries.Add(itemToInsert);
                     _context.Entry(itemToInsert).State = EntityState.Added;
                 }
             }
@@ -295,25 +346,31 @@ namespace api.Data.Repositories.Finance
 
         public async Task<bool> DeleteVoucher(int id)
         {
-            var task = await _context.Vouchers.FindAsync(id);
+            var task = await _context.FinanceVouchers.FindAsync(id);
             if(task == null) return false;
 
-            _context.Vouchers.Remove(task);
+            _context.FinanceVouchers.Remove(task);
             _context.Entry(task).State = EntityState.Deleted;
 
             return await _context.SaveChangesAsync() > 0;
         }
    
-        public Task<bool> UpdateCashAndBankDebitApprovals(ICollection<UpdatePaymentConfirmationDto> updateDto)
+        public async Task<bool> UpdateTransactionConfirmations(ICollection<PendingDebitApprovalDto> updateDto)
         {
-            throw new NotImplementedException();
+            var transactions = (ICollection<VoucherItem>)_mapper.Map<VoucherItem>(updateDto);
+
+            foreach(var entry in transactions) {
+                _context.Entry(entry).State = EntityState.Modified;
+            }
+
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<string> AddVoucherAttachments(ICollection<VoucherAttachment> attachments)
         {
             var ct = 0;
             foreach(var item in attachments) {
-                if(item.VoucherId ==0 || string.IsNullOrEmpty(item.FileName) || item.AttachmentSizeInBytes ==0) continue;
+                if(item.FinanceVoucherId ==0 || string.IsNullOrEmpty(item.FileName) || item.AttachmentSizeInBytes ==0) continue;
                 ct++;
                 _context.VoucherAttachments.Add(item);
             }
@@ -331,15 +388,15 @@ namespace api.Data.Repositories.Finance
             return "";
         }
 
-        public async Task<VoucherWithNewAttachmentDto> UpdateFinanceVoucherWithFileUploads(Voucher model)
+        public async Task<FinanceVoucher> UpdateFinanceVoucher(FinanceVoucher model)
 		{
 			var fileDirectory = Directory.GetCurrentDirectory();
 			List<string>  attachmentsToDelete = new List<string>();          //lsit of files to delete physically from the api space
                	List<VoucherAttachment> attachmentsToAdd = new List<VoucherAttachment>();
 			
-			var existingVoucher = await _context.Vouchers.Where(x => x.Id == model.Id)
-				.Include(x => x.VoucherItems)
-				.Include(x => x.VoucherAttachments)
+			var existingVoucher = await _context.FinanceVouchers.Where(x => x.Id == model.Id)
+				.Include(x => x.VoucherEntries)
+				//.Include(x => x.VoucherAttachments)
 				.FirstOrDefaultAsync();
 
             	if(existingVoucher==null) return null;
@@ -347,25 +404,25 @@ namespace api.Data.Repositories.Finance
             	_context.Entry(existingVoucher).CurrentValues.SetValues(model);
 
 			//delete from DB those child items which are not present in the model
-			foreach(var existingItem in existingVoucher.VoucherItems)
+			foreach(var existingItem in existingVoucher.VoucherEntries)
 			{
-				if(!model.VoucherItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+				if(!model.VoucherEntries.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
 				{
-					_context.VoucherItems.Remove(existingItem);
+					_context.VoucherEntries.Remove(existingItem);
 					_context.Entry(existingItem).State=EntityState.Deleted;
 				}
 			}
             	
 			//items that are not deleted, are either to be updated or new added;
-			foreach(var item in model.VoucherItems)
+			foreach(var item in model.VoucherEntries)
 			{
-				var existingItem = existingVoucher.VoucherItems.Where(c => c.Id == item.Id && c.Id != default(int)).SingleOrDefault();
+				var existingItem = existingVoucher.VoucherEntries.Where(c => c.Id == item.Id && c.Id != default(int)).SingleOrDefault();
 				if (existingItem != null) {
 					_context.Entry(existingItem).CurrentValues.SetValues(item);
 					_context.Entry(existingItem).State = EntityState.Modified;
 				} else {
-					var newItem = new VoucherItem {
-						VoucherId=existingVoucher.Id,
+					var newItem = new VoucherEntry {
+						FinanceVoucherId=existingVoucher.Id,
 						TransDate = item.TransDate,
 						COAId = item.COAId,
 						AccountName = item.AccountName,
@@ -373,43 +430,10 @@ namespace api.Data.Repositories.Finance
 						Cr = item.Cr,
 						Narration = item.Narration
 					};
-					existingVoucher.VoucherItems.Add(newItem);
+					existingVoucher.VoucherEntries.Add(newItem);
 					_context.Entry(newItem).State = EntityState.Added;
 				}
 			}
-
-			foreach(var existingItem in existingVoucher.VoucherAttachments)
-			{
-				if(!model.VoucherAttachments.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
-				{
-					_context.VoucherAttachments.Remove(existingItem);
-					_context.Entry(existingItem).State=EntityState.Deleted;
-					//prepare to delete files physically from storage folder
-					var filepath = existingItem.Url ?? fileDirectory + "/assets/images";
-                              attachmentsToDelete.Add(filepath + "/" + existingItem.FileName);        //save file nams to delete later
-				}
-			}
-            	
-			//items that are not deleted, are either to be updated or new added;
-			foreach(var item in model.VoucherAttachments)
-			{
-				var existingItem = existingVoucher.VoucherAttachments.Where(c => c.Id == item.Id && c.Id != default(int)).SingleOrDefault();
-				if (existingItem != null) {
-					_context.Entry(existingItem).CurrentValues.SetValues(item);
-					_context.Entry(existingItem).State = EntityState.Modified;
-				} 
-				/*//new attachments are inserted in voucherAttachment table after they are uploaded to the designated folder - in the Controller
-				else {
-					var newItem = new VoucherAttachment (model.Id, 
-					item.AttachmentSizeInBytes, item.FileName, item.Url, item.DateUploaded, 0);
-					
-					existingVoucher.VoucherAttachments.Add(newItem);
-					_context.Entry(newItem).State = EntityState.Added;
-					attachmentsToAdd.Add(item);
-				}
-				*/
-			}
-
 
 			_context.Entry(existingVoucher).State=EntityState.Modified;
 
@@ -417,27 +441,16 @@ namespace api.Data.Repositories.Finance
 
 			try {
 				recordsAffected = await _context.SaveChangesAsync();
-			} catch (Exception ex)
-			{
+            } catch (DbException ex) {
+                Console.Write(ex.Message);
+                return null;
+			} catch (Exception ex) {
 				Console.Write(ex.Message);
 				return null;
 			}
-			
-			if(recordsAffected > 0 && attachmentsToDelete.Count > 0) {
-				do {
-					try {
-						File.Delete(attachmentsToDelete[attachmentsToDelete.Count]);
-					} catch (Exception ex) {
-						Console.Write(ex.Message);
-					}
-				} while (attachmentsToDelete.Count > 0);
-			}
-        
-            return new VoucherWithNewAttachmentDto{
-                Voucher = existingVoucher,
-                NewAttachments = attachmentsToAdd
-            };
 
+            return existingVoucher;
+			
 		}
 
     }

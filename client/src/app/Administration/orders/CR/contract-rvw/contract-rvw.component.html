@@ -24,6 +24,6 @@
 <div *ngFor="let item of review?.contractReviewItems">
     <app-contract-rvw-item
         [item]="item"
-        (itemSaveEvent)="accumulateEvents($event)"
+        (itemSaveEvent)="updateContractReviewItem($event)"
     ></app-contract-rvw-item>
 </div>

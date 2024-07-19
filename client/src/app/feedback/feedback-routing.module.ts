@@ -7,12 +7,13 @@ import { FeedbackMenuComponent } from './feedback-menu/feedback-menu.component';
 import { FeedbackStddQsComponent } from './feedback-stdd-qs/feedback-stdd-qs.component';
 import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
 
+
 const routes = [
   {path: '', component: FeedbackMenuComponent},
   {path: 'list', component: FeedbackListComponent},
-  {path: 'edit/:id', component: FeedbackComponent,
+  {path: 'edit/:id/:customerId', component: FeedbackComponent,
       resolve: {
-        fdbackInput: FeedbackInputResolver
+        fdbackInput: FeedbackInputResolver 
       }
   },
   {path: 'stddQs', component: FeedbackStddQsComponent}

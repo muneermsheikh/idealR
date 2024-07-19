@@ -12,6 +12,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CustomerEditModalComponent } from '../customer-edit-modal/customer-edit-modal.component';
 import { ICustomer } from 'src/app/_models/admin/customer';
 import { CustomerReviewService } from 'src/app/_services/admin/customer-review.service';
+import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
 
 @Component({
   selector: 'app-customer-list',
@@ -35,6 +36,10 @@ export class CustomerListComponent implements OnInit{
   
   pagination: Pagination | undefined;
   bsModalRef: BsModalRef | undefined;
+
+  display: boolean=false;
+  customerIdSelected: number=0;
+  history: IFeedbackHistoryDto[]=[];
 
   constructor(private service: CustomersService, 
       private router: Router,
@@ -183,8 +188,8 @@ export class CustomerListComponent implements OnInit{
       var id=event;
  
       if(id === undefined)   return;
-
-      this.navigateByRoute(id, '/feedback/edit');
+      //this.router.navigateByUrl('/administration/feedback/0/' + event);
+      this.navigateByRoute(event, '/administration/feedback/0');
     }
 
     evaluationClicked(event: any) {   //customer line emits ICustomerReview
@@ -227,6 +232,26 @@ export class CustomerListComponent implements OnInit{
 
   close() {
     this.router.navigateByUrl(this.returnUrl);
+  }
+
+  getHistories(customerId: number) {
+
+  }
+
+  displayFeedback(feedbackId: number) {
+
+  }
+
+  displayHistory(customerId: number) {
+    this.display=!this.display;
+
+    if(this.display) {
+        if(this.customerIdSelected == customerId) return;
+        this.service.getFeedbackHistory(customerId).subscribe({
+          next: response => this.history = response
+        })
+        this.customerIdSelected = customerId;
+    }
   }
 
 }

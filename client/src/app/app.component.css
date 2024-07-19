@@ -15,3 +15,22 @@
     align-items: center;
     justify-content: center;
 } 
+
+md-sidenav, 
+md-sidenav.md-locked-open, 
+md-sidenav.md-closed.md-locked-open-add-active {
+    min-width: 200px !important;
+    width: 85vw !important;
+    max-width: 400px !important;
+    font-size: small !important;
+} 
+.sidenav {
+    display: inline-block;
+    width: inherit;
+    font-size: small !important;
+    height: inherit;
+}
+
+.mat-sidenav-backdrop.mat-sidenav-shown{
+    background-color: transparent !important;
+}

@@ -6,6 +6,7 @@ namespace api.Entities.Admin.Order
     {
         public int ContractReviewId { get; set; }
         public int OrderItemId { get; set; }
+        public int OrderId { get; set; }
         public string ProfessionName { get; set; }
         public int Quantity { get; set; }
         public bool Ecnr { get; set; }

@@ -5,7 +5,6 @@ import { authGuard } from './_guards/auth.guard';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
-import { MemberLikedListComponent } from './members/member-liked-list/member-liked-list.component';
 import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
 import { OpenOrderItemsResolver } from './_resolvers/openOrderItemsResolver';
 import { CandidateAssessedResolver } from './_resolvers/hr/candidate-assessed.resolver';
@@ -13,6 +12,7 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { UsersWithRolesResolver } from './_resolvers/usersWithRolesResolver';
 import { HrGuard } from './_guards/hr.guard';
 import { ProcessGuard } from './_guards/process.guard';
+import { RolesResolver } from './_resolvers/identity/roles.resolver';
 
 
 const routes: Routes = [
@@ -22,7 +22,6 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [
-      
       {path: 'candidates', canActivate:[HrGuard],
         loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
 
@@ -39,14 +38,17 @@ const routes: Routes = [
         .then(mod => mod.AdministrationModule), 
       },
 
+      {path: 'finance', loadChildren:() => import('./finance/finance.module').then(mod => mod.FinanceModule) },
+      
       {path: 'callRecords', loadChildren: () => import('./callRecords/call-record.module').then(mod => mod.CallRecordModule)},
 
-      {path: 'deployment', canActivate: [ProcessGuard],
+      {path: 'deployment', //canActivate: [ProcessGuard],
         loadChildren:() => import('./deployments/deployment.module').then(mod=>mod.DeploymentModule)},
      
       {path: 'userroles', component: UserManagementComponent,
         resolve: {
-          userswithroles: UsersWithRolesResolver
+          userswithroles: UsersWithRolesResolver,
+          roles: RolesResolver
         }
         //, canActivate: [adminGuard]
       }

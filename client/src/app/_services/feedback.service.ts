@@ -8,6 +8,7 @@ import { FeedbackParams } from '../_models/params/hr/feedbackParams';
 import { GetHttpParamsForFeedback, getPaginatedResult } from './paginationHelper';
 import { IFeedback, IFeedbackInput } from '../_models/hr/feedback';
 import { IFeedbackDto } from '../_dtos/hr/feedbackDto';
+import { IFeedbackHistoryDto } from '../_dtos/admin/feedbackAndHistoryDto';
 
 @Injectable({
   providedIn: 'root'
@@ -61,16 +62,21 @@ export class FeedbackService {
     return this.http.delete<boolean>(this.apiUrl + 'Feedback/deleteinput/' + inputId);
   }
 
-  getFeedbackObject(customerId: number) {
+  getFeedbackObject(feedbackId: number, customerId: number) {
     
-    return this.http.get<IFeedbackInput>(this.apiUrl + 'Feedback/newfeedback/' + customerId );
+    return this.http.get<IFeedback>(this.apiUrl + 'Feedback/newfeedback/' + feedbackId + '/' + customerId  );
   }
   
+  getFeedbackHistory(customerId: number) {
+    return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + customerId);
+  }
+
   sendFeedbackEmailToClient(id: number) {
-    console.log('reached feedbackservice, sedfeebdack', id);
-    var url = "<a [routerLink]=[" + this.apiUrl + '/Feedback/' + id + "] >here</a>";
+
+    var url ="sample string"; // "<a [routerLink]=[" + this.apiUrl + '/Feedback/' + id + "] >here</a>";
     console.log('reached feedbackservice, URL', url);
-    return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/' + url);
+    //return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/' + url);
+    return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + id);
   }
 
   setParams(params: FeedbackParams) {

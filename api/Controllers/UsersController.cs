@@ -24,8 +24,6 @@ namespace api.Controllers
             _userServices = userServices;
             _mapper = mapper;
             _userRepository = userRepository;
-            
-       
         }
 
         [HttpGet("userswithroles")]

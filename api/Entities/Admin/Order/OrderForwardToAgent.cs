@@ -9,6 +9,6 @@ namespace api.Entities.Admin.Order
         public string customerName {get; set;}
         public string CustomerCity {get; set;}
         public int ProjectManagerId {get; set;}
-        public ICollection<OrderForwardCategory> OrderForwardCategories {get; set;}
+        //public ICollection<OrderForwardCategory> OrderForwardCategories {get; set;}
     }
 }

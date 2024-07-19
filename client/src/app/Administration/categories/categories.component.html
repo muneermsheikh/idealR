@@ -1,1 +1,36 @@
-<p>categories works!</p>
+<h4 class="w200">Categories Listing</h4>
+<div style="display: inline-block; margin-left: 15px; vertical-align: top;">
+    <pagination class="stdd"
+         [totalItems]="pagination!.totalItems"
+         [itemsPerPage]="pagination!.itemsPerPage"
+         (pageChanged)="onPageChanged($event)"
+         [maxSize]="10"
+         previousText="&lsaquo;"
+         nextText="&rsaquo;"
+         firstText="&laquo;"
+         lastText="&raquo;">
+    ></pagination>
+    
+    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid w200" #search placeholder="Search">
+    <button (click)="onSearch()" title="searches the database based upon criteria entered in the search box" 
+         class="btn btn fa fa-search fa-2x"></button>
+    <button (click)="onReset()" title="Resets the search criteria" 
+         class="btn fa fa-refresh fa-2x"></button>
+    <button class="btn fa fa-plus fa-2x" title="Add a new Category" (click)="addCategory()" ></button>
+
+    <button class="btn fa fa-window-close fa-2x" routerLink="/administration" ></button>
+</div>
+<div class="container my-2">
+    <div class="stdd w50 b" >Sr#</div>
+    <div class="stdd w300 b" >Category Name</div>
+    
+    <div *ngIf="!categories">No Categories on record</div>
+    
+    <div *ngFor="let cat of categories" class="row">
+
+        <div class="stdd w50" style="text-align: right;">{{cat.id}}</div>
+        <div class="stdd w300">{{cat.professionName}}</div>
+        <button class="stdd w15 btn fa fa-pencil" (click)="editCategory(cat.id, cat.professionName)" ></button>
+        <button class="stdd w15 btn fa fa-trash red" (click)="deleteCategory(cat.id)" ></button>
+    </div>
+</div>         

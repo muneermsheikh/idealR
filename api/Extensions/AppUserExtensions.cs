@@ -85,7 +85,6 @@ namespace api.Extensions
 
          public static async Task<UsernameAndEmailDto> AppUserEmailAndUsernameFromAppUserId(this UserManager<AppUser> userManager, int appUserId)
         {
-            
             var obj = await userManager.FindByIdAsync(appUserId.ToString());
             if(obj==null) return null;
             var dto = new UsernameAndEmailDto
@@ -133,7 +132,6 @@ namespace api.Extensions
             return  new AppUserBriefDto { KnownAs = obj.KnownAs, AppUserId=OfficialId, Username= obj.UserName, 
                 AppUserEmail=obj.Email, Name=email.Name, Position=email.Position};
         }
-
 
         public static async Task<UsernameAndEmailDto> AppUserEmailAndUsernameFromAppUsername(this UserManager<AppUser> userManager, string username)
         {

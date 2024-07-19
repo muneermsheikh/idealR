@@ -1,6 +1,7 @@
-    export interface IFeedback
+export interface IFeedback
 {
     id: number;
+    feedbackNo: number;
     customerId: number;
     customerName: string;
     city: string;
@@ -15,6 +16,26 @@
     gradeAssessedByClient: string;
     customerSuggestion: string;
     feedbackItems: IFeedbackItem[];
+}
+
+export class Feedback implements IFeedback
+{
+    id=0;
+    feedbackNo: number=0;
+    customerId= 0;
+    customerName='';
+    city= '';
+    country= '';
+    officialName= '';
+    officialAppUserId= 0;
+    designation= '';
+    email= '';
+    phoneNo= '';
+    dateIssued= new Date();
+    dateReceived?=new (Date);
+    gradeAssessedByClient= '';
+    customerSuggestion= '';
+    feedbackItems: IFeedbackItem[]=[];
 }
 
 export interface IFeedbackItem
@@ -61,6 +82,24 @@ export interface IFeedbackInput
     gradeAssessedByClient: string;
     customerSuggestion: string;
     feedbackInputItems: IFeedbackInputItem[];
+}
+
+
+export class FeedbackInput implements IFeedbackInput
+{
+    id = 0;
+    feedbackId=0;
+    customerId=0;
+    customerName='';
+    city='';
+    officialName='';
+    designation='';
+    email='';
+    phoneNo='';
+    dateIssued = new Date();
+    gradeAssessedByClient='';
+    customerSuggestion='';
+    feedbackInputItems: IFeedbackInputItem[]=[];
 }
 
 export interface IFeedbackInputItem

@@ -8,6 +8,7 @@
     display: inline-block;
     font-size: medium;
     word-wrap: break-word;
+    vertical-align: top;
 }
 
 .w200 {width: 200px;}

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    
+    [Authorize(Policy = "CustomerPolicy")]      //"HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
     public class CustomersController : BaseApiController
     {
         private readonly ICustomerRepository _customerRepo;
@@ -77,6 +77,7 @@ namespace api.Controllers
             
             return BadRequest("Failed to delete the customer official");
         }
+        
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPut("edit")]

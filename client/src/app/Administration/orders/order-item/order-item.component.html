@@ -15,15 +15,11 @@
           </div>
           <div class="stdd w80">{{order.cityOfWorking}}</div>
           
-          <div *ngIf="order.contractReviewStatus==='Not Reviewed'" class="stdd w100 cursorpointer red" 
-               title="click to conduct Contract Review of this category"     
-          (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
-          <div *ngIf="order.contractReviewStatus==='regretted'" class="stdd w100 cursorpointer blue" 
-               title="click to view/edit contract review of this category"
+          <div class="stdd w100 cursorpointer" 
+               title="click to conduct Contract Review of this Order" 
+               [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'red' 
+                    : order.contractReviewStatus==='regretted' ? 'red' : 'green'" 
                (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
-          <div *ngIf="order.contractReviewStatus==='Accepted'" class="stdd w100 cursorpointer green" 
-               title="click to view/edit contract review of this category"
-               (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>     
           
           <div class="stdd w100" title="click for technical & commercial review of this order" 
                (click)="contractReviewClicked()">{{order.contractReviewedOn | date: 'dd-MMM-yy'}}

@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
 import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 import { Pagination } from 'src/app/_models/pagination';
 import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
@@ -26,8 +27,10 @@ export class OrderFwdsComponent {
   pagination: Pagination | undefined;
   totalCount = 0;
 
+  hideCategory:boolean=false;
+
   constructor(private fb: FormBuilder, private activatedRouter: ActivatedRoute,
-      private service: OrderForwardService) {}
+      private service: OrderForwardService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
   
@@ -83,11 +86,18 @@ export class OrderFwdsComponent {
   }
 
   orderFwdDelete(event: any) {
-
+    this.service.deleteForward(event).subscribe({
+      next: succeeded => {
+        this.toastr.success('Deleted', 'The Order Forward along with its related records was deleted');
+      }
+    })
   }
 
   orderCategoryDelete(event: any) {
-
+    this.service.deleteOrderFwdCategory(event).subscribe({
+      next: succeeded => 
+        this.toastr.success('Deleted', 'The Order Forward along with its related records was deleted')
+    })
   }
 
   orderCatOfficialDelete(event: any) {

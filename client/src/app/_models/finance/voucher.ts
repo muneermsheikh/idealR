@@ -1,17 +1,17 @@
 import { IVoucherAttachment } from "./voucherAttachment";
-import { IVoucherItem, VoucherItem } from "./voucherItem";
+import { IVoucherEntry, VoucherEntry } from "./voucherEntry";
 
 export interface IVoucher
 {
+	partyName: string;
 	id: number;
 	divn: string;
 	cOAId: number;
 	accountName: string;
 	voucherNo: number;
 	voucherDated: Date;
-	employeeId: number;
-	reviewedById: number;
-	reviewedByName: string;
+	username: string;
+	reviewedByUsername: string;
 	reviewedOn: Date;
 	amount: number;
 	narration: string;
@@ -19,21 +19,21 @@ export interface IVoucher
 	approvedByEmployeeId: number;
 	approvedOn: Date;
 	*/
-	voucherItems: IVoucherItem[];
+	voucherEntries: IVoucherEntry[];
 	voucherAttachments: IVoucherAttachment[];
 }
 
 export class Voucher implements IVoucher
 {
+	partyName='';
 	id=0;
 	divn = '';
 	cOAId = 0;
 	accountName='';
 	voucherNo = 0;
 	voucherDated = new Date();
-	employeeId = 0;
-	reviewedById = 0;
-	reviewedByName = '';
+	username = '';
+	reviewedByUsername = '';
 	reviewedOn=new Date();
 	amount = 0;
 	narration = '';
@@ -41,6 +41,6 @@ export class Voucher implements IVoucher
 	approvedByEmployeeId=0;
 	approvedOn=new Date();
 	*/
-	voucherItems: VoucherItem[]=[];
+	voucherEntries: VoucherEntry[]=[];
 	voucherAttachments: IVoucherAttachment[]=[];
 }

@@ -12,19 +12,21 @@ namespace api.Interfaces.Admin
         Task<PagedList<ContractReviewDto>> GetContractReviews(ContractReviewParams cParams);
         Task<ContractReview> AddContractReview(ContractReview contractReview);
         Task<ContractReviewItem> AddContractReviewItem(int orderitemid);
-        Task<ContractReview> EditContractReview(ContractReview contractReview);
+        Task<bool> EditContractReview(ContractReview contractReview);
+        Task<bool> EditContractReviewItemTODELETE(ContractReviewItem contractReviewItem);
+        Task<ContractReviewItem> EditContractReviewItem(ContractReviewItem contractReviewItem, bool calledFromWithinThisModule);
         Task<ContractReview> GetOrGenerateContractReviewNOSAVE(int orderId, string Username);
         Task<ICollection<ContractReviewItem>> GetContractReviewItemsFromOrderId(int orderId);
         Task<ContractReview> GetContractReviewFromOrderId(int orderId);
-        Task<ContractReviewItemDto> GetContractReviewItem(int orderItemId, string username);
+        Task<ContractReviewItemDto> GetOrGenerateContractReviewItem(int orderItemId, string username);
         Task<ICollection<ContractReviewItem>> GetContractReviewItems (int orderid);
-        Task<bool> EditContractReviewItem(ContractReviewItem contractReviewItem);
+        
         
         Task<bool> DeleteContractReview(int orderid);
         Task<bool> DeleteContractReviewItem(int orderitemid);
         Task<bool> DeleteReviewQ(int id);
 
         Task<ICollection<ContractReviewItemStddQ>> GetReviewStddQs();
-        Task<bool> UpdateOrderReviewStatus(int orderId);
+        Task<bool> UpdateOrderReviewStatusWITHSAVE(int orderId, int orderItemId);
     }
 }

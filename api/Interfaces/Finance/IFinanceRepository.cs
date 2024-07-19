@@ -13,7 +13,7 @@ namespace api.Interfaces.Finance
         Task<COA> GetOrCreateCoaForCandidateWithNoSave(int applicationno, bool create);
         Task<COA> GetSalesRecruitmentCOA();
         Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams paginationParams);
-        Task<bool>UpdateCashAndBankDebitApprovals(ICollection<UpdatePaymentConfirmationDto> updateDto);
+        Task<bool>UpdateTransactionConfirmations(ICollection<PendingDebitApprovalDto> updateDto);
         Task<COA> GetCOA(COAParams coaParams);
         Task<string> GetAccountNameFromId(int Id);
         Task<COA> SaveNewCOA(COA COA);
@@ -21,17 +21,17 @@ namespace api.Interfaces.Finance
         Task<bool> DeleteCOA(int id);
 
         //
-        Task<PagedList<Voucher>> GetVouchers(VoucherParams voucherParams);
-        Task<Voucher> GetVoucher(int id);
+        Task<PagedList<FinanceVoucher>> GetVouchers(VoucherParams voucherParams);
+        Task<FinanceVoucher> GetVoucher(int id);
         Task<Voucher> AddNewVoucher(Voucher voucher, string Username);
-        Task<bool> EditVoucher(Voucher voucher);
+        Task<bool> EditVoucher(FinanceVoucher voucher);
         Task<bool> DeleteVoucher(int id);
         Task<int> GetNextVoucherNo();
         Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate);
         Task<long> GetClosingBalIncludingSuspense(int accountid);
         Task<ICollection<string>> GetMatchingCOANames(string testName);
         Task<string> AddVoucherAttachments(ICollection<VoucherAttachment> attachments);
-        Task<VoucherWithNewAttachmentDto> UpdateFinanceVoucherWithFileUploads(Voucher model);
+        Task<FinanceVoucher> UpdateFinanceVoucher(FinanceVoucher model);
        
     }
 }

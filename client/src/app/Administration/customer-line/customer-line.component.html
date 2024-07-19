@@ -6,16 +6,14 @@
         (click)="selectedClicked()" >
     
     <div class="stdd w75" style="margin-left: 35px !important;">{{dto.customerType}}</div>
-    <div class="stdd w200">{{dto.customerName}}</div>
+    <div class="stdd w200 cursorPointer" (click)="displayHistory()" >{{dto.customerName}}</div>
     <div class="stdd w75">{{dto.knownAs}}</div>
     <div class="stdd w100">{{dto.city}}</div>
     <div class="stdd w125">{{dto.country}}</div>
-    <button class="btn w35 fa fa-pencil" (click)="editClicked()"
-        title="edit this customer" ></button>
+    <button class="btn w35 fa fa-pencil" (click)="editClicked()" title="edit this customer" ></button>
     <button class="btn w35 fa-regular fa-face-angry" (click)="displayEvaluationClicked()"
-        title="display Evaluation of this customer" ><i class="fa fa-check-circle-o" style="color:green"></i></button>
-    <button class="btn w35 fa fa-list" (click)="feedbackFormClicked()" 
-        title="Feedback Form for this customer"></button>
-    <button class="btn w35 fa fa-trash red" (click)="deleteClicked()" 
-        title="delete this customer"></button>
+        title="display Evaluation of this customer" >
+        <i class="fa fa-check-circle-o" style="color:green"></i></button>
+    <button class="btn w35 fa fa-list" (click)="feedbackFormClicked()" title="Feedback Form for this customer"></button>
+    <button class="btn w35 fa fa-trash red" (click)="deleteClicked()" title="delete this customer"></button>
 </div>

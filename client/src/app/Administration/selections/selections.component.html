@@ -5,7 +5,7 @@
 <div *ngIf="selections && pagination" 
     class="d-flex justify-contents-between align-items-center"
     style="display: inline-block; margin-left: 15px; vertical-align: top;" >
-    <h6 class="mx-5">Selections based on parameters</h6>
+    <h4 class="mx-5">Selections based on parameters</h4>
     <pagination
          [totalItems]="pagination!.totalItems"
          [itemsPerPage]="pagination!.itemsPerPage"
@@ -19,12 +19,14 @@
 
     <div class="form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
-            class="stdd form-control w300" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
-        <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+            class="stdd form-control w200" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
+        <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
+        <button (click)="sendReminders()" [disabled]="selectionsSelected.length === 0" 
+            title="send Acceptance reminders to all selected candidates" class="btn fa fa-bell"></button>
     </div>
     
-    <button class="btn btn-outline-success mx-5" routerLink="/administration" >Close</button>
+    <button class="btn btn-outline-success fa fa-window-close fa-2x mx-5" routerLink="/administration" ></button>
     
 </div>
 
@@ -43,7 +45,8 @@
         (editEmploymentEvent)="displayEmploymentModal($event, item)"
         (deleteSelectionEvent)="deleteSelection($event)"
         (editSelectionEvent)="displaySelectionModal($event, item)"
-        (remindCandidateForDecisionEvent)="remindCandidateForDecision($event)"
+        (selectedEvent)="selectedClicked($event)"
+
     ></app-selection-line>
 </div>
 

@@ -59,8 +59,9 @@ namespace api.Helpers
             CreateMap<OrderItemToCreateDto, OrderItem>();
             CreateMap<Order, OrderDisplayWithItemsDto>();
             
-            CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>()
-                .ForMember(s=>s.OrderForwardCategoriesDto, o => o.MapFrom(x => x.OrderForwardCategories));
+            //CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>();
+            CreateMap<OrderForwardCategory, OrderForwardToAgentDto>();
+                //.ForMember(s=>s.OrderForwardCategoriesDto, o => o.MapFrom(x => x.OrderForwardCategories));
             CreateMap<OrderForwardCategoryOfficial, OrderForwardToOfficialDto>();
             
             CreateMap<OrderForwardCategory, OrderForwardCategoryDto>();
@@ -120,8 +121,9 @@ namespace api.Helpers
             CreateMap<CallRecord,CallRecordBriefDto>();
 
             //finance
-            CreateMap<COA, COA>();
-            CreateMap<Voucher, Voucher>();
+            //CreateMap<COA, COA>();
+            //CreateMap<Voucher, Voucher>();
+            CreateMap<PendingDebitApprovalDto, VoucherItem>();
                             
         }
 

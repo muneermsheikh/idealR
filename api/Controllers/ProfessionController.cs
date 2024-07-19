@@ -17,7 +17,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<Profession>>> GetProfessionPagedList(ProfessionParams professionParams)
+        public async Task<ActionResult<PagedList<Profession>>> GetProfessionPagedList([FromQuery]ProfessionParams professionParams)
         {
             var obj = await _profRepo.GetProfessions(professionParams);
 
@@ -40,12 +40,12 @@ namespace api.Controllers
         }
 
         [HttpPost("add/{professionName}")]
-        public async Task<ActionResult<bool>> AddANewProfession(string professionName)
+        public async Task<ActionResult<Profession>> AddANewProfession(string professionName)
         {
-            var errString = await _profRepo.AddProfession(professionName);
-            if(string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Failed to add the proession", errString));
+            var obj = await _profRepo.AddProfession(professionName);
+            if(obj==null) return BadRequest(new ApiException(400, "Failed to add the proession", "Failed to add the Profession"));
 
-            return Ok("the profession is added");
+            return Ok(obj);
 
         }
 

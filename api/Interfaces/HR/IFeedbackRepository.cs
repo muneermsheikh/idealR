@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin.Client;
 using api.Helpers;
@@ -8,7 +9,8 @@ namespace api.Interfaces.HR
     public interface IFeedbackRepository
     {
         Task<PagedList<FeedbackDto>> GetFeedbackList(FeedbackParams feedbackParams);
-        Task<CustomerFeedback> GenerateOrGetFeedbackFromSameMonth(int CustomerId);
+        Task<CustomerFeedback> GenerateOrGetFeedbackFromId(int feedbackId, int customerid);
+        Task<ICollection<FeedbackHistoryDto>> CustomerFeedbackHistory(int customerId);
         Task<CustomerFeedback> GetFeedbackWithItems(int feedbackId);
         Task<ICollection<FeedbackQ>> GetFeedbackStddQs();
         Task<string> EditFeedback(CustomerFeedback feedback);

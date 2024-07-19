@@ -3,7 +3,7 @@
     margin-left: 2px;
     margin-right: 1px;
     font-size: small;
-    word-wrap: normal !important;
+    word-wrap: break-word !important;
     vertical-align: top;
 }
 

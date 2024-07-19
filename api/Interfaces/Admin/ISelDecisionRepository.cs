@@ -21,6 +21,7 @@ namespace api.Interfaces.Admin
 
          Task<string> DeleteSelection(int selectionId);
          Task<PagedList<SelDecisionDto>> GetSelectionDecisions (SelDecisionParams selParams);
+         Task<string> ComposeAcceptanceReminderToCandidates(List<int> cvrefids, string Username);
          Task<ICollection<Message>> ComposeSelMessagesToCandidates(List<int> cvrefids, string Username);
          Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username);
          

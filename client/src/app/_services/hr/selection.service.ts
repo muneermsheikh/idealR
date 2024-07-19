@@ -125,4 +125,8 @@ export class SelectionService {
     return this.http.get<ISelectionDecision>(this.apiUrl + 'selection/selectionBySelDecisionId/' + selDecisionId);
   }
 
+  remindCandidatesForAcceptance(cvrefids: number[]) {
+    return this.http.post<string>(this.apiUrl + 'selection/acceptancereminders', cvrefids);
+  }
+
 }

@@ -318,6 +318,9 @@ export class DeployListingComponent implements OnInit{
   }
 
   selectionChanged(item: any) {
+
+    console.log('selection change:', item);
+    
     if(item === undefined) {
         return;
     }

@@ -1,4 +1,4 @@
-using api.Data.Migrations;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin.Client;
 using api.Helpers;
@@ -7,7 +7,6 @@ using api.Interfaces.HR;
 using api.Params;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Office2016.Presentation;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.HR
@@ -82,6 +81,10 @@ namespace api.Data.Repositories.HR
                         CustomerFeedbackId=existing.Id,
                         QuestionNo=newItem.QuestionNo,
                         Question = newItem.Question,
+                        Prompt1 = newItem.Prompt1,
+                        Prompt2 = newItem.Prompt2,
+                        Prompt3 = newItem.Prompt3,
+                        Prompt4 = newItem.Prompt4,
                         Response = newItem.Response,
                         Remarks = newItem.Remarks
                     };
@@ -97,38 +100,58 @@ namespace api.Data.Repositories.HR
 
         }
 
-        public async Task<CustomerFeedback> GenerateOrGetFeedbackFromSameMonth(int CustomerId)
+        public async Task<CustomerFeedback> GenerateOrGetFeedbackFromId(int FeedbackId, int CustomerId)
         {
             //check if any Feedback exists n the month of feedbackDAte given
-            var year = DateTime.Now.Year;
+            /*var year = DateTime.Now.Year;
             var month = DateTime.Now.Month;
 
             var fdbk = await _context.CustomerFeedbacks.Include(x => x.FeedbackItems.OrderBy(x => x.QuestionNo))
                 .Where(x => x.DateIssued.Month == month && x.DateIssued.Year == year && x.CustomerId==CustomerId)
                 .FirstOrDefaultAsync();
+            */
             
-            if(fdbk == null) {      //create new object
+            if(FeedbackId == 0) {   //generate new feedback for the customer
                 var inputQs = await _context.FeedbackQs.OrderBy(x => x.QuestionNo)
-                        .Select(x => new FeedbackItem {
-                            FeedbackGroup=x.FeedbackGroup,
-                            Question=x.Question, QuestionNo = x.QuestionNo,
-                            Response="", Prompt1=x.Prompt1, Prompt2=x.Prompt2, 
-                            Prompt3=x.Prompt3, Prompt4=x.Prompt4
-                        }).ToListAsync();
+                    .Select(x => new FeedbackItem {
+                        FeedbackGroup=x.FeedbackGroup,
+                        Question=x.Question, QuestionNo = x.QuestionNo,
+                        Response="", Prompt1=x.Prompt1, Prompt2=x.Prompt2, 
+                        Prompt3=x.Prompt3, Prompt4=x.Prompt4
+                    }).ToListAsync();
                 
-                fdbk = await (from cust in _context.Customers where cust.Id == CustomerId
-                        join off in _context.CustomerOfficials on cust.Id equals off.CustomerId 
-                        where off.Status == "Active" && off.Divn=="HR"
-                        orderby off.PriorityHR
-                        select new CustomerFeedback{
-                            CustomerId = CustomerId, CustomerName = cust.CustomerName, City=cust.City,
-                            OfficialName=off.OfficialName, Designation = off.Designation,
-                            Email = off.Email, PhoneNo = off.PhoneNo, DateIssued = DateTime.Now,
-                            FeedbackItems=inputQs}
-                    ).FirstOrDefaultAsync();
+                var fdbk = await (from cust in _context.Customers where cust.Id == CustomerId
+                    join off in _context.CustomerOfficials on cust.Id equals off.CustomerId 
+                    where off.Status == "Active" && off.Divn=="HR"
+                    orderby off.PriorityHR
+                    select new CustomerFeedback{
+                        CustomerId = CustomerId, CustomerName = cust.CustomerName, City=cust.City,
+                        OfficialName=off.OfficialName, Designation = off.Designation,
+                        Email = off.Email, PhoneNo = off.PhoneNo, DateIssued = DateOnly.FromDateTime(DateTime.Now),
+                        FeedbackItems=inputQs}
+                ).FirstOrDefaultAsync();
+
+                return fdbk;
+            } else {
+                var fdbk = await _context.CustomerFeedbacks.Where(x => x.Id == FeedbackId)
+                    .Include(x => x.FeedbackItems).FirstOrDefaultAsync();
+                return fdbk;
             }
+                
+        }
+
+        public async Task<ICollection<FeedbackHistoryDto>> CustomerFeedbackHistory(int customerId) {
             
-            return fdbk;
+            var hist = await _context.CustomerFeedbacks.Where(x => x.CustomerId==customerId)
+                .Select(x => new FeedbackHistoryDto{
+                    FeedbackId=x.Id, FeedbackIssueDate=x.DateIssued, 
+                    //FeedbackRecdDate= x.DateReceived
+                })
+                .OrderByDescending(x => x.FeedbackIssueDate)
+                .ToListAsync();
+            
+            return hist;
+            
         }
 
         public async Task<PagedList<FeedbackDto>> GetFeedbackList(FeedbackParams fParams)
@@ -138,12 +161,10 @@ namespace api.Data.Repositories.HR
             if(fParams.CustomerId > 0) query = query.Where(x => x.Id == fParams.CustomerId);
             
             if(fParams.DateIssued.Year > 2000) query = query.Where(x => 
-                DateOnly.FromDateTime(x.DateIssued) 
-                == DateOnly.FromDateTime(fParams.DateIssued));
+                x.DateIssued == fParams.DateIssued);
 
             if(fParams.DateReceived.Year > 2000) query = query.Where(x => 
-                    DateOnly.FromDateTime(Convert.ToDateTime(x.DateReceived)) 
-                        ==DateOnly.FromDateTime(fParams.DateIssued));
+                    x.DateReceived == fParams.DateIssued);
             if(!string.IsNullOrEmpty(fParams.Email)) query = query.Where(x => x.Email == fParams.Email);
             if(!string.IsNullOrEmpty(fParams.PhoneNo)) query = query.Where(x => x.PhoneNo == fParams.PhoneNo);
             
@@ -174,28 +195,33 @@ namespace api.Data.Repositories.HR
             return feedbkinput;
         }
 
+        private async Task<int> NewFeedbackNo() {
+            var newno = await _context.CustomerFeedbacks.MaxAsync(x => x.FeedbackNo);
+            if(newno==0) newno=1001;
+            return newno;
+        }
         public async Task<CustomerFeedback> SaveNewFeedback(FeedbackInput fInput)
         {
-            var responses = fInput
-                .FeedbackInputItems
-                .OrderBy(x => x.QuestionNo)
-                .ToList();
+            var responses = fInput.FeedbackInputItems;
+
             var items = new List<FeedbackItem>();
 
             foreach(var item in responses) {
                 var feedbackitem = new FeedbackItem{
                     FeedbackGroup = item.FeedbackGroup, QuestionNo=item.QuestionNo, Question=item.Question,
+                    Prompt1 = item.Prompt1, Prompt2=item.Prompt2, Prompt3=item.Prompt3, Prompt4=item.Prompt4,
                     Response=item.Response, Remarks=item.Remarks};
                 items.Add(feedbackitem);
             }
             
             var feedback = new CustomerFeedback{
+                FeedbackNo = await NewFeedbackNo(),
                 CustomerId=fInput.CustomerId, CustomerName = fInput.CustomerName,
                 City=fInput.City, OfficialName=fInput.OfficialName, 
                 GradeAssessedByClient=fInput.GradeAssessedByClient,
                 Designation = fInput.Designation, Email = fInput.Email,
-                PhoneNo = fInput.PhoneNo, DateIssued = fInput.DateIssued,
-                DateReceived = DateTime.Now,
+                PhoneNo = fInput.PhoneNo, DateIssued = DateOnly.FromDateTime(fInput.DateIssued),
+                DateReceived = DateOnly.FromDateTime(DateTime.Now),
                 CustomerSuggestion = fInput.CustomerSuggestion,
                 FeedbackItems = items
             };
@@ -203,8 +229,6 @@ namespace api.Data.Repositories.HR
             _context.CustomerFeedbacks.Add(feedback);
 
             return await _context.SaveChangesAsync() > 0 ? feedback : null;
-        
-
         }
 
         public async Task<string> SendFeedbackEmailToCustomer(int feedbackId, string Url, string username)

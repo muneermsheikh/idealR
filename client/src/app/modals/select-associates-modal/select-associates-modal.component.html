@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Select Associates</h4>
+    <button type="button" class="btn btn-success fa fa-check" style="margin-left: 50px;" (click)="Close()"></button>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    
+    <pagination *ngIf="pagination !== undefined"
+         class="stdd"
+         [totalItems]="pagination!.totalItems"
+         [itemsPerPage]="pagination!.itemsPerPage"
+         (pageChanged)="onPageChanged($event)"
+         [maxSize]="10"
+         previousText="&lsaquo;"
+         nextText="&rsaquo;"
+         firstText="&laquo;"
+         lastText="&raquo;">
+    ></pagination>
+    
+    <label class="lbl w250 b" style="margin-left: 60px;">Customer Name</label>
+    <label class="lbl w125 b">Official Name</label>
+    <label class="lbl w150 b">Email</label>
+    <label class="lbl w100 b">Phone No</label>
+    <div *ngIf="availableOfficials.length===0">
+        No Officials found on record
+    </div>
+    <form #form="ngForm" id="form" *ngIf="availableOfficials.length > 0">
+        <div class="form-check" *ngFor="let associate of availableOfficials">
+            <input type="checkbox"
+                class="lbl w15 form-check-input"
+                style="border-color: black;"
+                [checked]="selectedOfficials.includes(associate)"
+                value="associate"
+                (change)="updateChecked(associate)"
+                [disabled]="associate.customerIsBlacklisted || associate.email === undefined"
+            >
+            <label class="lbl w250">{{associate.customerName}}</label>
+            <label class="lbl w125">{{associate.officialName}}</label>
+            <label class="lbl w150">{{associate.email}}</label>
+            <label class="lbl w100">{{associate.phoneNo}}</label>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer"></div>

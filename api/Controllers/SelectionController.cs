@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace api.Controllers
 {
-    [Authorize(Policy = "SelectionPolicy")]
+    [Authorize(Policy = "SelectionPolicy")]     //RequireRole("Selection"));
     public class SelectionController : BaseApiController
     {
         private readonly ISelDecisionRepository _selRepo;
@@ -138,6 +138,16 @@ namespace api.Controllers
                 data.PageSize, data.TotalCount, data.TotalPages));
             
             return Ok(data);
+        }
+
+        [HttpPost("acceptancereminders")]
+        public async Task<ActionResult<string>> RemindCandidatesForOfferAcceptance(List<int> CVRefIds )
+        {
+            var status = await _selRepo.ComposeAcceptanceReminderToCandidates(CVRefIds, User.GetUsername());
+
+            if(string.IsNullOrEmpty(status)) return Ok("");
+            
+            return BadRequest(new ApiException(400, "Bad Request", status));
         }
     
         

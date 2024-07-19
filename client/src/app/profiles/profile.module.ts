@@ -9,7 +9,9 @@ import { ProfileListComponent } from './profile-list/profile-list.component';
 import { ProfileItemComponent } from './profile-item/profile-item.component';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { AvailableItemComponent } from './available-item/available-item.component';
-
+import { FileuploadComponent } from './fileupload/fileupload.component';
+import { AccordionComponent } from '../_accordion/accordion/accordion.component';
+import { AccordionModule } from '../_accordion/accordion.module';
 
 
 @NgModule({
@@ -21,12 +23,14 @@ import { AvailableItemComponent } from './available-item/available-item.componen
     ProfileItemComponent,
     ProfileMenuComponent,
     AvailableItemComponent,
+    FileuploadComponent,
    
   ],
   imports: [
     CommonModule,
     ProfileRoutingModule,
-    SharedModule
+    SharedModule,
+    //AccordionModule
   ]
 })
 export class ProfileModule { }

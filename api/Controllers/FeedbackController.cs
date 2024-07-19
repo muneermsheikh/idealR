@@ -1,10 +1,9 @@
+using api.DTOs.Admin;
 using api.DTOs.HR;
-using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
-using api.Interfaces;
 using api.Interfaces.HR;
 using api.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy ="CVRefPolicy")]
+    [Authorize(Policy ="FeedbackPolicy")]   //RequireRole("Candidate", "Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
     /*
         1. feedback question parameters are in table feedbackStddQs
         2. when a feedback question is to be sent to the customer, a questionnaire is created WITHOUT SAVING IN DATABASE
@@ -65,17 +64,26 @@ namespace api.Controllers
             return Ok("");
         }
 
-        [HttpGet("newfeedback/{customerId}")]
-        public async Task<CustomerFeedback> GenerateNewNewFeedbackObject(int customerId)
+        [HttpGet("newfeedback/{feedbackId}/{customerid}")]
+        public async Task<CustomerFeedback> GenerateNewNewFeedbackObject(int feedbackId, int customerid)
         {
-            var obj = await _repo.GenerateOrGetFeedbackFromSameMonth(customerId);
+            var obj = await _repo.GenerateOrGetFeedbackFromId(feedbackId, customerid);
             return obj;
         }
 
+        [HttpGet("history/{customerId}")]
+        public async Task<ActionResult<ICollection<FeedbackHistoryDto>>> GetFeedbackHistory(int customerId) {
+
+            var hist = await _repo.CustomerFeedbackHistory(customerId);
+            if(hist==null || hist.Count == 0) return BadRequest(new ApiException(400, "Not Found", "No feedback history available"));
+            return Ok(hist);
+        }
 
         [HttpPost("saveFeedback")]
         public async Task<CustomerFeedback> SaveFeedback(FeedbackInput feedbkInput)
         {
+            if(feedbkInput.FeedbackInputItems==null) return null;
+            
             return await _repo.SaveNewFeedback(feedbkInput);
         }
 
@@ -85,10 +93,10 @@ namespace api.Controllers
             return await _repo.GetFeedbackStddQs();
         }
 
-        [HttpGet("sendfeedback/{id}/{url}")]
-        public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id, string url)
+        [HttpGet("sendfeedback/{id}/{urlstring}")]
+        public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id, string urlstring)
         {
-            var err = await _repo.SendFeedbackEmailToCustomer(id, url, User.GetUsername());
+            var err = await _repo.SendFeedbackEmailToCustomer(id, urlstring, User.GetUsername());
 
             if(string.IsNullOrEmpty(err)) return Ok("");
 

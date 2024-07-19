@@ -10,18 +10,13 @@ export class SelectionsGuard implements CanActivate {
   
   constructor(private accountsService: AccountService) {}
 
-  canActivate(): Observable<boolean|false> {
+  canActivate(): Observable<boolean> {
     return this.accountsService.currentUser$.pipe(
       map(user => {
-        if(
-          user?.roles?.includes('Selection')
-          || user?.roles?.includes("Admin")
-          || user?.roles?.includes("HR Manager")
-          || user?.roles?.includes("HR Supervisor")
-        ) {
-          return true;
+        if (user?.roles?.includes('Selection')) {
+          return true
         } else {
-          return false;
+          return false
         }
       })
     )

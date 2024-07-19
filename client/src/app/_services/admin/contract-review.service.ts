@@ -45,7 +45,8 @@ export class ContractReviewService {
 
   updateContractReviewItem(model: IContractReviewItem) 
   {
-    return this.http.put<IContractReviewItemReturnValueDto>(this.apiUrl + 'ContractReview/reviewitem', model);
+    //return this.http.put<IContractReviewItemReturnValueDto>(this.apiUrl + 'ContractReview/reviewitem', model);
+    return this.http.put<boolean>(this.apiUrl + 'ContractReview/reviewitem', model);
   }
 
   getContractReviews(oParams: contractReviewParams) {
@@ -78,7 +79,7 @@ export class ContractReviewService {
     }
   
   updateContractReview(model: IContractReview) {
-    return this.http.put<IContractReview>(this.apiUrl + 'ContractReview/contractreview', model)
+    return this.http.put<boolean>(this.apiUrl + 'ContractReview/contractreview', model)
   }
 
 }

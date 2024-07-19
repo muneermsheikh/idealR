@@ -145,7 +145,7 @@ export class OrderEditComponent implements OnInit {
         this.customers = data['customers'];
         this.employees = data['employees'];
         this.categories = data['professions'];
-
+        
       })
 
         this.isAddMode = this.member?.id ===0;
@@ -173,6 +173,7 @@ export class OrderEditComponent implements OnInit {
           status: [ord.status], 
           forwardedToHRDeptOn: [ord.forwardedToHRDeptOn], 
           contractReviewStatus: [ord.contractReviewStatus],
+
           orderItems: this.fb.array(
             ord.orderItems.map(ph => (
               this.fb.group({
@@ -202,11 +203,10 @@ export class OrderEditComponent implements OnInit {
       var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x:any) => x.srNo))+1;
       var completebefore = this.isAddMode ? this.form.get('completeBy')?.value : '';
       return this.fb.group({
-        selected: [false],  
-        id: 0, orderId: 0, srNo: maxSrNo, 
-        professionId: [0,[Validators.required, Validators.min(1)]], 
-        ecnr: false, sourceFrom: 'India', quantity: [0, Validators.min(1)], 
-        completeBefore: [completebefore, Validators.required], 
+        selected: false,  id: 0, orderId: this.member?.id, 
+        srNo: maxSrNo, professionId: [0,Validators.required], 
+        ecnr: false, sourceFrom: 'India', quantity: [0, [Validators.required, Validators.min(1)]], 
+        minCV: 0, maxCVs: 0, completeBefore: [completebefore, Validators.required], 
         status: 'Not Started', reviewItemStatus: 'Not Reviewed'})
     }
 
@@ -362,7 +362,7 @@ export class OrderEditComponent implements OnInit {
     }
 
     
-    forwardOrderToAgents() {
+    /*forwardOrderToAgents() {
 
       if(this.isAddMode) {
         this.toastr.warning('Only an order that is contract reviewed can be sent to ASsociates');
@@ -428,7 +428,7 @@ export class OrderEditComponent implements OnInit {
             })
         }
           
-      }
+      }*/
   
     forwardOrderToHRDept() {
 

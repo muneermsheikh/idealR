@@ -41,7 +41,7 @@ namespace api.Data.Repositories.Admin
         public async Task<ICollection<Message>> ComposeSelectionStatusMessagesForCandidate(ICollection<SelectionMessageDto> selectionsDto, 
             string senderUsername)
           {  
-                 var senderObj = await _userManager.FindByNameAsync(senderUsername);
+                var senderObj = await _userManager.FindByNameAsync(senderUsername);
                 if(senderObj == null) return null;
                 var subject = "";
                 var subjectInBody = "";
@@ -92,6 +92,71 @@ namespace api.Data.Repositories.Admin
                return null;
           }
 
+
+        public async Task<MessageWithError> ComposeAcceptanceReminderToCandidates(ICollection<SelectionMessageDto> selectionsDto, string senderUsername)
+        {
+            var msgWithErr = new MessageWithError();
+            var senderObj = await _userManager.FindByNameAsync(senderUsername);
+            
+            var subject = "";
+            var subjectInBody = "";
+            var msgBody = "";
+            var msgs = new List<Message>();
+ 
+            foreach(var sel in selectionsDto)
+            {
+                var candidateAppUserId = await _context.GetAppUserIdOfCandidate(sel.CandidateId);
+                if(candidateAppUserId ==0) {
+                    msgWithErr.Notification += "Failed to get AppUserId of the Candidate " + sel.CandidateName + ".  This is required to define the recipient of message";
+                    continue;
+                }
+
+                var recipientUserNmAndEmail = await _userManager.AppUserEmailAndUsernameFromAppUserId(candidateAppUserId);
+                if(recipientUserNmAndEmail == null) {
+                    msgWithErr.Notification += "Failed to get Username and Email of Candidate " + sel.CandidateName + ".  This is required to define the recipient of message";
+                    continue;
+                }
+
+                var HRSupobj = await _userManager.FindByIdAsync(_confg["HRSupAppUserId"]); 
+
+                subject = "Your selection as " + sel.ProfessionName + " for " + sel.CustomerCity;
+                subjectInBody = "<b><u>Subject: </b>Your selection as " + sel.ProfessionName + " for " + 
+                    sel.CustomerName + "</u>";
+                msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + 
+                        sel.CandidateTitle + " " + sel.CandidateName + "email: " + sel.CandidateEmail ?? "" + "<br><br>" + 
+                        "copy: " + HRSupobj?.UserName?? "" + ", email: " + HRSupobj?.Email?? "" + "<br><br>Dear " + 
+                        sel.CandidateTitle + " " + sel.CandidateName + ":" + "<br><br>" + subject + "<br><br>";
+
+                msgBody += await GetEmailMessageBodyContents("acceptanceremindertocandidate", 
+                    sel.CandidateName, sel.ApplicationNo, sel.CustomerName, sel.ProfessionName, sel.Employment);
+                msgBody += "<br>Best Regards<br>HR Supervisor";
+                var recipientObj = await _userManager.AppUserEmailAndUsernameFromAppUserId(
+                    await _context.GetAppUserIdOfCandidate(sel.CandidateId));
+
+                var message = new Message
+                {
+                    SenderUsername=senderUsername,
+                    RecipientAppUserId=recipientObj.AppUserId,
+                    SenderAppUserId=senderObj.Id,
+                    SenderEmail=senderObj.Email ?? "",
+                    RecipientUsername = recipientObj.Username ?? "",
+                    RecipientEmail = recipientObj.Email ?? "",
+                    CCEmail = HRSupobj?.Email ?? "",
+                    Subject = subject,
+                    Content = msgBody,
+                    MessageType = "acceptanceremindertocandidate",
+                    MessageComposedOn = _today
+                };
+
+                msgs.Add(message);
+            }
+
+            msgWithErr.Messages=msgs;
+
+            return msgWithErr;
+        }
+
+ 
         private async Task<string> GetEmailMessageBodyContents(string messageType, string candidatename, int applicationno, 
             string customername, string categoryname, Employment employment)
         {
@@ -103,10 +168,18 @@ namespace api.Data.Repositories.Admin
             var mailbody="";
             foreach (var m in msgLines)
             {
+                    //if m.LineText equals "<tableofselectiondetails>", then it is a dynamic data, to be
+                    //retreived from SelectionDecision, else accept the static data m.LineText
                     switch(messageType) {
+                        case "acceptanceremindertocandidate" :
+                            if(employment != null) {
+                                mailbody += m.LineText == "<tableofselectiondetails>" 
+                                ? _commonMsg.GetSelectionDetails(candidatename, applicationno, 
+                                    customername, categoryname, employment)
+                                : m.LineText;
+                            }
+                            break;
                         case "selectionadvisetocandidate":
-                            //if m.LineText equals "<tableofselectiondetails>", then it is a dynamic data, to be
-                            //retreived from SelectionDecision, else accept the static data m.LineText
                             if(employment != null) {
                                 mailbody += m.LineText == "<tableofselectiondetails>" 
                                 ? _commonMsg.GetSelectionDetails(candidatename, applicationno, 
@@ -571,5 +644,5 @@ namespace api.Data.Repositories.Admin
             
             return msgWithErr;
         }
-    }
+   }
 }

@@ -18,11 +18,11 @@
          <button type="button" (click)="onSearch()" class="stdd btn btn-outline-primary mx-1">Search</button>
          <button type="button" (click)="onReset()" class="stdd mx-1 fa-arrows-rotate fa-2x" 
               style="font-size: small;">Reset</button>
-         <button type="button" class="stdd btn btn-outline-success fa fa-plus fa-2x"  
-              title="Add a new candidate" routerLink="/candidates/register/edit/0"></button>
-          <button class="stdd w40 mx-1 fa fa-rotate-right fa-2x" title="refers selected CVs to client"
+         <!--<button type="button" class="stdd btn btn-outline-success fa fa-plus fa-2x"  
+              title="Add a new candidate" routerLink="/candidates/register/edit/0"></button> -->
+          <button class="stdd w40 mx-1 fa fa-arrow-right fa-2x" title="refers selected CVs to client"
                (click)="referCVs()" ></button>
-          <button class="stdd w40 mx-1 fa fa-undo fa-2x" title="close this page"
+          <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
                (click)="close()" ></button>
     </div>
 
@@ -39,7 +39,7 @@
           <div class="lbl w50 mx-1">Grade</div>
           <div class="lbl w200 mx-1">Professions</div>
      </div>
-     <div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; color: darkblue;">
+     <div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; ">
           No candidates available to refer
      </div>
        <!--(msgEvent)="showDocumentViewerEvent($event)" -->    

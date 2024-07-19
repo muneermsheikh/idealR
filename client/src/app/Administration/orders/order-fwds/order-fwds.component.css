@@ -16,7 +16,7 @@
 
 .stddF {
     display: inline-block;
-    font-size: smaller;
+    font-size: small;
     vertical-align: top;
     margin-left: 2px;
     margin-right: 2px;
@@ -26,6 +26,8 @@
 .ml170 {margin-left: 174px;}
 
 .b {font-weight: bold;}
+.red {color: red;}
+.mL50 {margin-left: 50px;}
 
 .w50 {width: 50px;}
 .w70 {width: 70px;}

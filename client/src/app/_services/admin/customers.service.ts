@@ -16,6 +16,7 @@ import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialA
 import { customerParams } from 'src/app/_models/params/Admin/customerParams';
 import { getDateOffset } from 'ngx-bootstrap/chronos/units/offset';
 import { ICustomerReview } from 'src/app/_models/admin/customerReview';
+import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
 
 @Injectable({
   providedIn: 'root'
@@ -107,11 +108,6 @@ export class CustomersService {
     return this.http.get<IOfficialAndCustomerNameDto[]>(this.apiUrl + 'customers/officialidandcustomernames/customer');
   }
 
-  
-  getOfficialAndAgentName() {
-    return this.http.get<IOfficialAndCustomerNameDto[]>(this.apiUrl + 'customers/officialidandcustomernames/associate');
-  }
-
   getAgentIdAndNames() {
     return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames/associate');
   }
@@ -123,6 +119,10 @@ export class CustomersService {
   
   remindClientForSelections(customerId: number) {
     return this.http.get<boolean>(this.apiUrl + 'CVRef/selDecisionReminder/' + customerId);
+  }
+
+  getFeedbackHistory(customerId: number) {
+    return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + customerId);
   }
 
   

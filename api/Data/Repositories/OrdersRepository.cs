@@ -117,8 +117,8 @@ namespace api.Data.Repositories
         {
             var existingObject = _context.Orders
                 .Where(x => x.Id == newObject.Id)
-                .Include(x => x.OrderItems).ThenInclude (x => x.JobDescription)
-                .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
+                .Include(x => x.OrderItems) //.ThenInclude (x => x.JobDescription)
+                //.Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
                 .AsNoTracking()
                 .SingleOrDefault();
             
@@ -162,8 +162,8 @@ namespace api.Data.Repositories
                         Ecnr = newItem.Ecnr,
                         CompleteBefore = newItem.CompleteBefore,
                         Status = "Not Started",
-                        JobDescription = _jdandremunRepo.CreateNewJobDescription(newItem.JobDescription,0),
-                        Remuneration = _jdandremunRepo.CreateNewRemuneration(newItem.Remuneration, 0)
+                        //JobDescription = _jdandremunRepo.CreateNewJobDescription(newItem.JobDescription,0),
+                        //Remuneration = _jdandremunRepo.CreateNewRemuneration(newItem.Remuneration, 0)
                     };
 
                     existingObject.OrderItems.Add(itemToInsert);
@@ -171,6 +171,7 @@ namespace api.Data.Repositories
                 }
 
                 //jobdescription
+                /*
                 if(existingItem != null) {
                     if(existingItem.JobDescription != null) {
                         var existingSubItem = existingItem.JobDescription;
@@ -208,6 +209,7 @@ namespace api.Data.Repositories
                         }
                     }   
                 }
+                */
             }
             
             _context.Entry(existingObject).State = EntityState.Modified;
@@ -471,6 +473,7 @@ namespace api.Data.Repositories
                     from ackn in Acknowledge.DefaultIfEmpty()
                 join review in _context.ContractReviews on order.Id equals review.OrderId into contractRvw
                     from rvw in contractRvw.DefaultIfEmpty()
+                orderby order.OrderNo
                 select new OrderBriefDto {
                     CompleteBy = order.CompleteBy, CustomerName = order.Customer.CustomerName, 
                     ContractReviewedOn = rvw.ReviewedOn, OrderDate=order.OrderDate, OrderNo=order.OrderNo,
@@ -500,6 +503,7 @@ namespace api.Data.Repositories
         {
             var query = (from item in _context.OrderItems
                 join order in _context.Orders on item.OrderId equals order.Id 
+                orderby item.SrNo
                 select new OpenOrderItemCategoriesDto {
                     OrderItemId = item.Id, OrderDate = order.OrderDate,
                     CustomerName = order.Customer.CustomerName,

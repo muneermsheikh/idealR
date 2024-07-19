@@ -15,6 +15,8 @@ export class OrderfwdLineComponent {
   @Output() deleteEventCat = new EventEmitter<number>();
   @Output() deleteEventOff = new EventEmitter<number>();
 
+  hideCategory: boolean=false;
+
   editClicked() {
     this.editEvent.emit(this.fwd!.id);
   }

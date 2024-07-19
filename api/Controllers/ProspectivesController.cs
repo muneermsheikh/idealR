@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy ="HRMPolicy")]
+    [Authorize(Policy ="HRMPolicy")]    //RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
     public class ProspectivesController : BaseApiController
     {
         public IProspectiveCandidatesRepository _ProspectiveRepo { get;set; }

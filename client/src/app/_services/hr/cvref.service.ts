@@ -39,7 +39,7 @@ export class CvrefService {
 
   
     referCVs(cvassessmentids: number[]) {
-      return this.http.post<IMessagesDto>(this.apiUrl + 'CVRef', cvassessmentids);
+      return this.http.post<string>(this.apiUrl + 'CVRef', cvassessmentids);
     }
 
     referredCVs(oParams: CVRefParams) { 

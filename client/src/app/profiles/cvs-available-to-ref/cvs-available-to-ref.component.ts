@@ -287,8 +287,7 @@ export class CvsAvailableToRefComponent implements OnInit {
     var ids = this.selectedCVs.map(x => x.candAssessmentId);
 
     this.referService.referCVs(ids).subscribe({
-      next: (response: any) => {
-        console.log('returned from api, cv ref:', response);
+      next: response => {
 
         if(response === '') {
           this.toastr.success('selected CVs referred, and CV Referral message available in Messages section for edits', 'success');
@@ -297,10 +296,16 @@ export class CvsAvailableToRefComponent implements OnInit {
           })
           this.selectedCVs=[];
         } else {
-          this.toastr.warning('failed to refer the CVs', 'failed to refer CVs');
+          this.toastr.warning(response, 'failed to refer CVs');
         }
       },
-      error: (err: any) => this.toastr.error(err, 'Error in referring the CVs;')
+      error: (err: any) => {
+        if(err.length > 0) {
+          this.toastr.error(err.error.message, 'error in referring the CVs1')
+        } else {
+          this.toastr.error(err, 'Error in referring the CVs;')
+        }
+      }
     })
     
   }

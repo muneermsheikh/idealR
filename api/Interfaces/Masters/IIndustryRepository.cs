@@ -6,7 +6,7 @@ namespace api.Interfaces.Masters
 {
     public interface IIndustryRepository
     {
-        Task<string> AddIndustry(string IndustryName);
+        Task<Industry> AddIndustry(string IndustryName);
         Task<string> EditIndustry(Industry industry);
         Task<string> DeleteIndustry(string IndustryName);
         Task<string> DeleteIndustryById(int id);

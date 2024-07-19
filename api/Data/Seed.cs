@@ -42,6 +42,8 @@ namespace api.Data
                     new() {Name = "Document Controller-Admin"},
                     new() {Name = "Document Controller-Processing"},
                     new() {Name = "Processing Manager"},
+                    new() {Name = "Processing Supervisor"},
+                    new() {Name = "Processing Executive"},
                     new() {Name = "Admin Manager"},
                     new() {Name = "Receptionist"},
                     new() {Name = "Marketing Manager"},
@@ -54,7 +56,9 @@ namespace api.Data
                     new() {Name = "OrderForward"},
                     new() {Name = "OrderCreate"},
                     new() {Name = "Process Executive"},
-                    new() {Name = "Process Supervisor"}
+                    new() {Name = "Process Supervisor"},
+                    new() {Name = "Selection"},
+                    new() {Name = "CVRefer"}
                 };
 
                 foreach(var role in roles) {

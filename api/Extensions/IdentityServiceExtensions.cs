@@ -37,22 +37,21 @@ namespace api.Extensions
             services.AddAuthorization(opt => {
                 opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
                 opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
-                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
-                opt.AddPolicy("CustomePolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
+                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("CVRefer"));
+                opt.AddPolicy("SelectionPolicy", policy => policy.RequireRole("Selection"));
+                opt.AddPolicy("CustomerPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Admin", "Admin Manager", "Document Controller-Admin"));
                 opt.AddPolicy("HRSupPolicy", policy => policy.RequireRole("HR Supervisor", "HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("HRExecPolicy", policy => policy.RequireRole("HR Executive", "Asst HR Executive"));
                 opt.AddPolicy("AsstHRExecPolicy", policy => policy.RequireRole("Asst HR Executive"));
                 opt.AddPolicy("AdminManagerPolicy", policy => policy.RequireRole("Admin Manager"));
                 opt.AddPolicy("MarketingManagerPolicy", policy => policy.RequireRole("Marketing Manager"));
                 opt.AddPolicy("ContractReviewPolicy", policy => policy.RequireRole("Contract Review"));
-                opt.AddPolicy("CVRefPolicy", policy => policy.RequireRole("Admin Manager", "Document Controller-Admin"));
                 opt.AddPolicy("AccountsPolicy", policy => policy.RequireRole("Accountant", "Accounts Manager", "Finance Manager"));
                 opt.AddPolicy("CashierPolicy", policy => policy.RequireRole("Cashier"));
-                opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager"));
+                opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager", "Process Supervisor", "Admin"));
                 opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("Order Forward"));
                 opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
-                opt.AddPolicy("SelectionPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "Document Controller-Admin"));
-                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Document Controller-Admin"));
+                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
             });
 
             return services;

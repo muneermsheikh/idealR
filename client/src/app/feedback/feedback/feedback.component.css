@@ -1,11 +1,7 @@
 .lbl {
     display: inline-block;
-    margin-left: 1px;
-    margin-right: 1px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    margin: 0 1px 0 1px;
+    padding: 0px;
     font-weight: bold;
     vertical-align: top;
     word-wrap: normal;
@@ -13,14 +9,17 @@
 
 .stdd {
     display: inline-block;
-    margin-left: 1px;
-    margin-right: 1px;
+    margin: 0 1px 0 1px;
     vertical-align: top;
-    margin-top:0px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding: 0px;
     word-wrap: normal;
+}
+
+.hist {
+    display: inline-block;
+    cursor: pointer;
+    color: darkblue;
+    font-size: small;
 }
 
 .fSmall{font-size: small;}
@@ -33,15 +32,18 @@
 .mL600 {margin-left: 600px!important;}
 .mL50 {margin-left: 50px!important;}
 
+.cursorPointer{cursor:pointer; color: darkblue;}
+
 .radio {
     width: 30px;
     display: inline-block;
-    margin-left: 2px;
-    margin-right: 2px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    margin: 0 2px 0 2px;
+    padding: 0px;
+}
+
+md-content{
+    position: absolute;
+    height: 100px;
 }
 
 .prompt {
@@ -58,6 +60,8 @@
 .w50 {width: 50px;}
 .w75 {width: 75px;}
 .w80 {width: 80px;}
+.w100 {width: 100px;}
+.w120 {width: 120px;}
 .w150 {width: 150px;}
 .w200 {width: 200px;}
 .w250 {width: 250px;}

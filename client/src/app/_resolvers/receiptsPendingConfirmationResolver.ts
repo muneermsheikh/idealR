@@ -7,5 +7,6 @@ import { ParamsCOA } from "../_models/params/finance/paramsCOA";
 export const ReceiptsPendingConfirmtionResolver: ResolveFn<IPendingDebitApprovalDto[] | undefined | null> = (
   ) => {
       var oParams = new ParamsCOA();  
-      return inject(ConfirmReceiptsService).getDebitApprovalsPending(oParams);
+
+      return inject(ConfirmReceiptsService).getDebitApprovalsPending();
   };

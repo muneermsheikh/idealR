@@ -1,4 +1,9 @@
 export interface IQualification {
      id: number;
-     name: string;
+     qualificationName: string;
+}
+
+export class Qualification {
+     id = 0;
+     qualificationName = '';
 }

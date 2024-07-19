@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, map, of } from 'rxjs';
+import { Observable, ReplaySubject, map, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { IProfession } from '../_models/masters/profession';
@@ -36,19 +36,24 @@ export class CategoryService {
     return this.http.get<IVendorFacility[]>(this.apiUrl + 'masters/VendorFacilityList')
   }
 
-  getCategoriesPaged(mParams: professionParams) { 
+  getCategoriesPaged(mParams: professionParams, fromCache: boolean=true): Observable<any> { 
 
-        const response = this.cache.get(Object.values(mParams).join('-'));
-        if(response) return of(response);
+    if(!fromCache) {
+      this.cache = new Map();
+    } else {
+      const response = this.cache.get(Object.values(mParams).join('-'));
+      if(response) return of(response);
+    }
     
-        let params = getHttpParamsForProfession(mParams);
-        
-        return getPaginatedResult<IProfession[]>(this.apiUrl + 'Profession', params, this.http).pipe(
-          map(response => {
-            this.cache.set(Object.values(mParams).join('-'), response);
-            return response;
-          })
-        )
+      let params = getHttpParamsForProfession(mParams);
+      
+      return getPaginatedResult<IProfession[]>(this.apiUrl + 
+        'Profession', params, this.http).pipe(
+        map(response => {
+          this.cache.set(Object.values(mParams).join('-'), response);
+          return response;
+        })
+      )
   }
 
   
@@ -70,13 +75,14 @@ export class CategoryService {
   }
 
   updateCategory(id: number, name: string) {
-    var prof: IProfession = {id: id, name: name};
-    return this.http.put<IProfession>(this.apiUrl + 'Profession/edit', prof);
+    if(id===0) {
+        return this.http.post<IProfession>(this.apiUrl + 'Profession/add/' + name, {});
+    } else {
+      var prof: IProfession = {id: id, professionName: name};
+      return this.http.put<IProfession>(this.apiUrl + 'Profession/edit', prof);
+    }
   }
   
-    
-  
-
   setParams(params: professionParams) {
     this.mParams = params;
   }
