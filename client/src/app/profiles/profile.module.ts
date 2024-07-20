@@ -10,8 +10,8 @@ import { ProfileItemComponent } from './profile-item/profile-item.component';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { AvailableItemComponent } from './available-item/available-item.component';
 import { FileuploadComponent } from './fileupload/fileupload.component';
-import { AccordionComponent } from '../_accordion/accordion/accordion.component';
-import { AccordionModule } from '../_accordion/accordion.module';
+import { CvsreferredComponent } from './cvsreferred/cvsreferred.component';
+import { CvreferredLineComponent } from './cvreferred-line/cvreferred-line.component';
 
 
 @NgModule({
@@ -24,6 +24,8 @@ import { AccordionModule } from '../_accordion/accordion.module';
     ProfileMenuComponent,
     AvailableItemComponent,
     FileuploadComponent,
+    CvsreferredComponent,
+    CvreferredLineComponent,
    
   ],
   imports: [

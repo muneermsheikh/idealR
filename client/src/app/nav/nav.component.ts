@@ -18,6 +18,10 @@ export class NavComponent implements OnInit{
   model: any = {};
   stPhoneNo: string='';    //for callRecord search
   user?: User;
+  uploadExcel=false;
+
+  menuitems =  [{menuitem:'Select a menu'},{menuitem:'Candidate List'}, {menuitem: 'CVs ready for referrals'}, {menuitem:'import excel sheet into Prospective candidates'}];
+  menuItemSelected='';
 
   constructor(public accountService: AccountService, private router: Router, private service: CallRecordsService,
       private toastrService: ToastrService, private toastr: ToastrService, 
@@ -29,6 +33,9 @@ export class NavComponent implements OnInit{
     })
   }
 
+  Link1Clicked() {console.log('Link1 clicked', 'link clicked')};
+  Link2Clicked() {console.log('Link2 clicked', 'link clicked')};
+  Link3Clicked() {console.log('Link3 clicked', 'link clicked')};
 
   login() {
     this.accountService.login(this.model).subscribe({
@@ -96,6 +103,71 @@ export class NavComponent implements OnInit{
     this.accountService.logout();
     this.router.navigateByUrl('/');
   }
+
+  OpenAvailableCandidatesComponent() {
+    this.navigateByRoute(0, "/candidates/availableToRef", false);
+  }
+
+  OpenCandidatesListingComponent() {
+      this.navigateByRoute(0, "/candidates/listing", false);
+  }
+
+  OpenCallRecordMenu() {
+    this.navigateByRoute(0, "/callRecords/callRecordList", false);
+  }
+
+  navigateByRoute(id: number, routeString: string, editable: boolean) {
+    
+    let route = id===0 ? routeString : routeString + '/' + id;
+    
+    this.router.navigate(
+        [route], 
+        { state: 
+          { 
+            user: this.user, 
+            toedit: editable, 
+            returnUrl: '/administration/orders' 
+          } }
+      );
+  }
+  
+  importProspectiveExcel() {
+      this.uploadExcel = !this.uploadExcel;
+  }
+
+  OpenActiveProspectiveList() {
+    this.navigateByRoute(0, "/candidates/prospective", false);
+  }
+ 
+  onFileInputChange(event: Event) {
+      var formData = new FormData();
+      const target = event.target as HTMLInputElement;
+      const files = target.files as FileList;
+      const f = files[0];
+
+      if(f.size > 0) 
+      {
+          formData.append('file', f, f.name);
+          
+          this.accountService.copyProspectiveXLSFileToDB(formData).subscribe({
+            next: (response: string) => {
+              if(response === '') {
+                this.toastr.success(response + ' file(s) copied to database', 'success')
+                } else {
+                  this.toastr.warning(response, 'Failed to copy the excel data to database')
+                }
+            }
+            , error: (err: any) => {
+              console.log(err.error.text, 'Error encountered');
+              this.toastr.error(err.error.text, 'Error in copying the excel data to database');
+            }
+          })
+          
+          //make the FILE INPUT button invisible
+          this.uploadExcel=false;
+      }
+    }
+
 
 }
 

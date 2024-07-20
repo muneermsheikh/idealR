@@ -4,7 +4,6 @@ import { IDeployDto } from "./cvReferredDto";
 export interface ICVRefDto
 {
      id: number;
-
      checked: boolean;
      customerId: number;
      customerName: string;

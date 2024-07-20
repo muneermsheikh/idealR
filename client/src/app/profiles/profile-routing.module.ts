@@ -13,6 +13,7 @@ import { CvAssessModalComponent } from '../hr/cv-assess-modal/cv-assess-modal.co
 import { CandidateAssessmentDtoResolver } from '../_resolvers/hr/candidate-assessmentDtoResolver';
 import { ProspectiveListComponent } from '../Administration/Prospectives/prospective-list/prospective-list.component';
 import { FileuploadComponent } from './fileupload/fileupload.component';
+import { CvsreferredComponent } from './cvsreferred/cvsreferred.component';
 
 const routes = [
     {path: '', component: ProfileMenuComponent},
@@ -38,6 +39,8 @@ const routes = [
           agents: AgentsResolver
         }
     },
+
+    {path: 'cvsreferred', component: CvsreferredComponent},
 
     {path: 'candidateAssessmentDto/:id', component: CvAssessModalComponent,
         resolve: {

@@ -62,8 +62,7 @@ import { DateInputRangeModalComponent } from './modals/date-input-range-modal/da
     CvAssessModalComponent,
     SelectAssociatesModalComponent,
     InputModalComponent,
-    DateInputRangeModalComponent,
-    
+    DateInputRangeModalComponent,   
         
   ],
   imports: [
@@ -84,7 +83,7 @@ import { DateInputRangeModalComponent } from './modals/date-input-range-modal/da
     //FormsModule,
     //ReactiveFormsModule,
     SharedModule,
-    
+  
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

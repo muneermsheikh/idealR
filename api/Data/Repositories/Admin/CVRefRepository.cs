@@ -115,7 +115,7 @@ namespace api.Data.Repositories.Admin
          public async Task<PagedList<SelPendingDto>> GetCVReferralsPending(CVRefParams refParams)
         {
             var query = (from cvref in _context.CVRefs 
-                    where cvref.SelectionStatus == "" || cvref.SelectionStatus==null
+                    //where cvref.SelectionStatus == "" || cvref.SelectionStatus==null
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
                 join o in _context.Orders on item.OrderId equals o.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
@@ -124,15 +124,23 @@ namespace api.Data.Repositories.Admin
                     Id = cvref.Id,
                     Checked = false,
                     CvRefId = cvref.Id,
+                    OrderId = o.Id,
                     OrderItemId = item.Id,
                     CustomerName = o.Customer.CustomerName,
+                    CustomerId = o.CustomerId,
                     CategoryRefAndName = o.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName,
                     ApplicationNo = cv.ApplicationNo,
                     CandidateName = cv.FullName,
-                    ReferredOn = cvref.ReferredOn
+                    ReferredOn = cvref.ReferredOn,
+                    SelectionStatus = cvref.SelectionStatus,
+                    SelectionStatusDate = cvref.SelectionStatusDate
                 }).AsQueryable();
 
-    
+            if(refParams.OrderId > 0) query = query.Where(x => x.OrderId == refParams.OrderId);
+            if(refParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId==refParams.OrderItemId);
+            if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
+
+            var temp = await query.ToListAsync();
             var paged = await PagedList<SelPendingDto>.CreateAsync(
                 query.AsNoTracking()
                 //.ProjectTo<SelPendingDto>(_mapper.ConfigurationProvider)

@@ -1,0 +1,29 @@
+
+<div class="stdd row" style="margin-left: 75px; margin-top: 0px; margin-bottom: 0px;" *ngIf="cv!==null && cv!==undefined">
+
+     <input type="checkbox"
+          class="stdd form-check-input"
+          style="border-color: black ;"
+          [checked]="cv!.checked"
+          value="cv.id"
+          (change)="CVChecked()"
+     >
+     <div class="stdd fSmall w50 mx-1" title="click to edit" mouseover="style.cursor = 'pointer'" 
+          style="margin-left: 10px;" >{{cv.applicationNo}}</div>
+     
+     <div class="stdd fSmall w130 mx-1" routerLink = "/candidate/historyfromcvid/{{cv.candidateId}}" 
+          title="contact history of the candidate" >{{cv.candidateName}}</div> 
+
+     <div class="stdd fSmaller mx-1 w300" >{{cv.categoryRefAndName}}</div>
+     <div class="stdd fSmall mx-1 w100" >{{cv.referredOn | date: 'dd-MMM-yy'}}</div>
+     <div class="stdd fSmall mx-1 w150" >{{cv.selectionStatus}}</div>
+     <div class="stdd fSmall mx-1 w100" >{{cv.selectionStatusDate | date: 'dd-MMM-yy'}}</div>
+          
+     
+     <button (click)="download(cv.candidateId)" type="button" 
+          class="btn btn-outline-secondary fa fa-regular fa-download w30" type="button" 
+          title="download the CV">
+     </button>
+     
+</div>
+

@@ -3,13 +3,17 @@ export interface ISelPendingDto {
      checked: boolean;
      cvRefId: number;
      orderItemId: number;
+     orderId: number;
+     customerId: number;
      //orderNo: number;
      customerName: string;
      categoryRefAndName: string;
      applicationNo: number;
+     candidateId: number;
      candidateName: string;
      referredOn: Date;
+     selectionStatus: string;
      //refStatus: number;
-     //decisionDate: Date;
+     selectionStatusDate: Date;
      remarks: string;
 }

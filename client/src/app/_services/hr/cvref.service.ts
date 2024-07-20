@@ -11,6 +11,8 @@ import { Pagination } from 'src/app/_models/pagination';
 import { AccountService } from '../account.service';
 import { getPaginatedResult, getPaginationHeadersCVRefParams } from '../paginationHelper';
 import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
+import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
+import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 
 
 @Injectable({
@@ -42,14 +44,14 @@ export class CvrefService {
       return this.http.post<string>(this.apiUrl + 'CVRef', cvassessmentids);
     }
 
-    referredCVs(oParams: CVRefParams) { 
+    referredCVsPaginated(oParams: CVRefParams) { 
    
       const response = this.cacheReferred.get(Object.values(oParams).join('-'));
       if(response) return of(response);
   
       let params = getPaginationHeadersCVRefParams(oParams);
        
-      return getPaginatedResult<ICVRefDto[]>(this.apiUrl 
+      return getPaginatedResult<ISelPendingDto[]>(this.apiUrl 
         + 'cvref/cvsreferred', params, this.http).pipe(
       map(response => {
         this.cache.set(Object.values(oParams).join('-'), response);

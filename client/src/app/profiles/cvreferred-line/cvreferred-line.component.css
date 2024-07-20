@@ -1,0 +1,19 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+}
+.fSmall {font-size: small;}
+.fSmaller {font-size: smaller;}
+
+.cursorpointer {cursor:pointer; color: darkblue;}
+
+.b {font-weight: bold;}
+.red {color: red;}
+.w30 {width: 30px;}
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w130 {width: 130px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}
+
+.blue {color: darkblue;}

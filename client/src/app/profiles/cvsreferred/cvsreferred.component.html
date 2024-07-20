@@ -1,0 +1,54 @@
+
+
+<pagination *ngIf="pagination !== undefined"
+    class="stdd"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+
+<div class="stdd" *ngIf="cvs">
+    <input (keyup.enter)="onSearch()" type="text" title="enter name or app nos, separated by commma" 
+        class="stdd form-control w300" style="margin-left: 20px;" #search placeholder="Search">
+    <button type="button" (click)="onSearch()" class="stdd btn fa fa-find mx-1"></button>
+    <button type="button" (click)="onReset()" class="stdd mx-1 fa-arrows-rotate fa-2x" 
+        style="font-size: small;">Reset</button>
+    <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
+        (click)="close()" ></button>
+</div>
+
+<div style="margin-left: 70px;">
+    <div class="lbl w30 mx-1">Select</div>
+    <!-- <div class="stdd fSmall w10 mx-1"></div> -->
+    <div class="lbl w50 mx-1">App No</div>
+    <div class="lbl w130 mx-1">Candidate Name</div>
+    <div class="lbl w300 mx-1">Category Ref</div>
+    <div class="lbl w100 mx-1">Referred On</div>
+    <div class="lbl w150 mx-1">Selection Decision</div>
+    <div class="lbl w100 mx-1">Sel Decision Dt</div>
+</div>
+
+<div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; ">
+    No candidates available to refer
+</div>
+
+<!--(msgEvent)="showDocumentViewerEvent($event)" -->    
+<div *ngIf="cvs.length">
+ <div class="row" *ngFor="let cv of cvs" >
+       
+      <app-cvreferred-line
+           (downloadEvent)="downloadFileEvent($event)" 
+           (cvCheckedEvent)="cvCheckedEvent($event)"
+           (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
+           [cv]="cv" 
+      ></app-cvreferred-line>
+ </div>
+</div>
+
+
+

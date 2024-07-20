@@ -25,7 +25,6 @@ import { IdsModalComponent } from 'src/app/modals/ids-modal/ids-modal.component'
   styleUrls: ['./cvs-available-to-ref.component.css']
 })
 export class CvsAvailableToRefComponent implements OnInit {
-
   
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
   

@@ -216,7 +216,7 @@ export class OrdersListingComponent implements OnInit {
 
   cvsReferred(event: any)
   {
-    this.navigateByRoute(event, 'admin/cvreferred', false)
+    this.navigateByRoute(event, '/administration/cvreferred', false)
   }
 
   navigateByRoute(id: number, routeString: string, editable: boolean) {

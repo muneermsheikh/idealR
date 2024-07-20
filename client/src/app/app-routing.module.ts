@@ -51,7 +51,8 @@ const routes: Routes = [
           roles: RolesResolver
         }
         //, canActivate: [adminGuard]
-      }
+      },
+      
     ]
   },
   {path: 'errors', component: TestErrorComponent},

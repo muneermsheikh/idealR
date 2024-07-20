@@ -1,0 +1,21 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.lbl {
+    display: inline-block;
+    font-weight: bold;
+    font-size: small;
+    vertical-align: middle;
+}
+
+.fMedium {font-size: medium;}
+.fSmall {font-size: small;}
+
+.b {font-weight: bold;}
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w130 {width: 130px;}
+.w150 {width: 180px;}
+.w300 {width: 300px;}
