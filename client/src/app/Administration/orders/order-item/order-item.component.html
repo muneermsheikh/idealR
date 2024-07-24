@@ -38,11 +38,16 @@
 
           <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
                title="compose email message of acknowldgement to client" ></button>
+               
           <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
                title="CVs already referrED to clients for this Order"
                (click)="cvReferredClicked()"
           ></button>
-     
+
+          <button class="stdd w30" title="selections and rejections against this order" type="button"
+               (click)="selectionClicked()"
+          ><i class="material-icons" style="font-size: medium;">assignment_ind</i></button>
+
           <button class="stdd w15 fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
 
     </div>

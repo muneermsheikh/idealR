@@ -41,15 +41,19 @@ export class COAService {
   */
 
   
-  getCoas() {
+  getCoas(useCache: boolean=true) {
 
-      var oParams = this.getParams();  
-      const response = this.cache.get(Object.values(oParams).join('-'));
-      
-      if(response) return of(response);
-  
+    var oParams = this.sParams;  
+    console.log('sParams in coaservice', this.sParams);
+
+      if(useCache) {
+          const response = this.cache.get(Object.values(oParams).join('-'));
+          if(response) return of(response);
+      }
+
       let params = this.getHttpParamsForCOA(oParams);
-        
+      console.log('getting COAs from api');
+      
       return getPaginatedResult<ICOA[]>(this.apiUrl + 'Finance/coapagedlist', params, this.http).pipe(
         map(response => {
           this.cache.set(Object.values(oParams).join('-'), response);
@@ -61,7 +65,11 @@ export class COAService {
 
   editCOA(coa : ICOA | undefined)
   {
-      return this.http.put<ICOA>(this.apiUrl + 'finance/coa', coa);
+      if(coa!.id === 0) {
+        return this.http.post<ICOA>(this.apiUrl + 'finance/coa', coa)
+      } else {
+        return this.http.put<ICOA>(this.apiUrl + 'finance/coa', coa);
+      }
   }
 
   addNewCOA(coa: ICOA) {
@@ -106,9 +114,9 @@ export class COAService {
       if (oParams.search) params = params.append('search', oParams.search);
       if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
       if (oParams.sort !== '') params = params.append('sort', oParams.sort);
-      if (oParams.accountId !== 0) params = params.append('accountId', oParams.accountId.toString());
+      if (oParams.cOAId !== 0) params = params.append('cOAId', oParams.cOAId.toString());
       if (oParams.accountType !== '') params = params.append('accountType', oParams.accountType);
-      if (oParams.accountClass !== '') params = params.append('accountClass', oParams.accountClass);
+      if (oParams.divisionToExclude !== '') params = params.append('divisionToExclude', oParams.divisionToExclude);
       
     return params;
   }

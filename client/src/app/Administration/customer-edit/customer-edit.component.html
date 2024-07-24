@@ -5,65 +5,47 @@
     <div *ngIf="customer !== undefined">
         <form [formGroup]="form">
             <label class="lbl w100">Name:</label> 
-            <div class="stdd w300">
-                <app-text-input [label]="'Customer Name'" formControlName="customerName"></app-text-input>
-            </div>
+                <app-text-input [label]="'Customer Name'" formControlName="customerName" class="stdd w300"></app-text-input>
             <label class="lbl w80">Known As:</label> 
-            <div class="stdd w150">
-                <app-text-input [label]="'Known As'" formControlName="knownAs"></app-text-input>
-            </div>
-
+            <app-text-input [label]="'Known As'" formControlName="knownAs" class="stdd w150"></app-text-input>
+            <label class="lbl w80" style="text-align: right;" >Type:</label>
+            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="customer" class="w35 stdd">Customer
+            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="associate" class="w35 stdd">associate
+            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="vendor" class="w35 stdd">Vendor
+        
             <br><label class="lbl w100">Address:</label> 
-            <div class="stdd w250">
-                <app-text-input [label]="'Address'" formControlName="add" ></app-text-input>
-            </div>
-            
-             <div class="stdd w250" style="margin-left: 10px;">
-                <app-text-input [label]="'Address2'" formControlName="add2" ></app-text-input>
-            </div>
+            <app-text-input [label]="'Address'" formControlName="add" class="stdd w250" ></app-text-input>
+            <app-text-input [label]="'Address2'" formControlName="add2" class="stdd w250 ml-5" ></app-text-input>
 
             <br><label class="lbl w100">City:</label> 
-            <div class="stdd w100 fSmall">
-                <app-text-input [label]="'Pin'" formControlName="city"></app-text-input>
-            </div>
-
+            <app-text-input [label]="'City'" formControlName="city" class="stdd w100 fSmall"></app-text-input>
+            
             <label class="lbl w50" style="margin-left: 15px;">PIN:</label> 
-            <div class="stdd w75">
-                <app-text-input [label]="'Pin'" formControlName="pin" ></app-text-input>
-            </div>
-
+            <app-text-input [label]="'Pin'" formControlName="pin" class="stdd w75"></app-text-input>
+            
             <label class="lbl w75 fSmall" style="margin-left: 5px;">District:</label> 
-            <div class="stdd w100 fSmall">
-                <app-text-input [label]="'District'" formControlName="district" ></app-text-input>
-            </div>
+            <app-text-input [label]="'District'" formControlName="district" class="stdd w100 fSmall" ></app-text-input>
             <label class="lbl w75" style="margin-left: 5px;">Country:</label> 
             <div class="stdd w100 fSmall">
                 <app-text-input [label]="'Country'" formControlName="country" ></app-text-input>
             </div>
             
             <br><label class="lbl w100 fSmall">email:</label> 
-            <div class="stdd w250">
-                <app-text-input [label]="'Email'" formControlName="email" ></app-text-input>
-            </div>
+            <app-text-input [label]="'Email'" formControlName="email" class="stdd w250" ></app-text-input>
             <label class="lbl w75" style="margin-left: 10px;">Website:</label> 
-            <div class="stdd w200">
-                <app-text-input [label]="'Website'" formControlName="website" ></app-text-input>
-            </div>
+            <app-text-input [label]="'Website'" formControlName="website"  class="stdd w200"></app-text-input>
             
             <br><label class="lbl w100">Phone:</label> 
-            <div class="stdd w125">
-                <app-text-input [label]="'Phone'" formControlName="phone" ></app-text-input>
-            </div>
+            <app-text-input [label]="'Phone'" formControlName="phone" class="stdd w125" ></app-text-input>
             <label class="lbl w50 fSmall">Phone2:</label> 
-            <div class="stdd w125 fSmall">
-                <app-text-input [label]="'Phone'" formControlName="phone2"></app-text-input>
-            </div>
+            <app-text-input [label]="'Phone'" formControlName="phone2" class="stdd w125"></app-text-input>
             
             <br><label style="display: inline-block; vertical-align: top; width: 100px">Introduction:</label> 
             <textarea name="intro" id="intro" rows="2" cols="80" style="display: inline-block; margin-left: 10px;" formControlName="introduction"></textarea>
             <br><div class="b my-2">Officials</div>            
             <hr class="my-1">
             <label class="fSmaller w50">Title</label>
+            <label class="fSmaller w50">Gender</label>
             <label class="fSmaller w175">Official Name</label>
             <label class="fSmaller w100">Username</label>
             <label class="fSmaller w125">Known As</label>
@@ -79,34 +61,18 @@
             <div formArrayName="customerOfficials">
                 <div *ngFor="let off of customerOfficials.controls; let i=index">
                     <div [formGroupName]="i">
-                        <div class="stdd1px w60">
-                            <app-text-input [label]="'Title'" formControlName="title"></app-text-input>
-                        </div>
+
+                        <app-text-input [label]="'Title'" formControlName="title" class="stdd1px w50"></app-text-input>                        
+                        <app-text-input [label]="'Title'" formControlName="gender" class="stdd1px w50"></app-text-input>  
+                        <app-text-input [label]="'Official Name'" formControlName="officialName" class="stdd1px w175"></app-text-input>
+                        <app-text-input [label]="'User Name'" formControlName="userName" class="stdd1px w100"></app-text-input>
+                        <app-text-input [label]="'Known As'" formControlName="knownAs" class="stdd1px w125"></app-text-input>
+                        <app-text-input [label]="'Designation'" formControlName="designation" class="stdd1px w150" ></app-text-input>
+                        <app-text-input [label]="'Divn'" formControlName="divn" class="stdd1px w100"></app-text-input>
                         
-                        <div class="stdd1px w175">
-                            <app-text-input [label]="'Official Name'" formControlName="officialName"></app-text-input>
-                        </div>
-                        <div class="stdd1px w100">
-                            <app-text-input [label]="'User Name'" formControlName="userName"></app-text-input>
-                        </div>
-                        <div class="stdd1px w125">
-                            <app-text-input [label]="'Known As'" formControlName="knownAs"></app-text-input>
-                        </div>
-                        <div class="stdd1px w150">
-                            <app-text-input [label]="'Designation'" formControlName="designation"></app-text-input>
-                        </div>
-                        <div class="stdd1px w100">
-                            <app-text-input [label]="'Divn'" formControlName="divn"></app-text-input>
-                        </div>                                    
-                        <div class="stdd1px w125">
-                            <app-text-input [label]="'Phone'" formControlName="phoneNo" style="text-align: right;"></app-text-input>
-                        </div>
-                         <div class="stdd1px w125">
-                            <app-text-input [label]="'Phone'" formControlName="mobile"></app-text-input>
-                        </div>
-                        <div class="stdd1px w150 b">
-                            <app-text-input [label]="'Email'" formControlName="email"></app-text-input>
-                        </div>
+                        <app-text-input [label]="'Phone'" formControlName="phoneNo" style="text-align: right;" class="stdd1px w125"></app-text-input>
+                        <app-text-input [label]="'Phone'" formControlName="mobile" class="stdd1px w125" ></app-text-input>
+                        <app-text-input [label]="'Email'" formControlName="email" class="stdd1px w175 fSmaller"></app-text-input>
                         <button class="btn fa fa-trash red" (click)="removeCustomerOfficial(i)" ></button>
                     </div>
 

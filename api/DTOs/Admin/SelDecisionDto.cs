@@ -5,6 +5,7 @@ namespace api.DTOs.Admin
         public int Id { get; set; }  //
         public int CvRefId { get; set; }
         public int OrderItemId { get; set; }
+        public int OrderId { get; set; }
         public int CandidateId { get; set; }
         public int ProfessionId { get; set; }
         public string Gender { get; set; }

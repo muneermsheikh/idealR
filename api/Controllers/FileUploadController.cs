@@ -14,10 +14,12 @@ namespace api.Controllers
     public class FileUploadController : BaseApiController
     {
         private readonly ICandidateRepository _candRepo;
+        private readonly ICustomerRepository _custRepo;
         private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
-        public FileUploadController(ICandidateRepository candRepo)
+        public FileUploadController(ICandidateRepository candRepo, ICustomerRepository custRepo)
         {
             _candRepo = candRepo;
+            _custRepo = custRepo;
         }
 
         [HttpGet("downloadattachmentfile/{attachmentid:int}")]
@@ -112,7 +114,7 @@ namespace api.Controllers
                         if(string.IsNullOrEmpty(errString)) return Ok("");
 
                         return BadRequest(new ApiException(400, errString, "Failed to copy the file to database" ) );
-                     }
+                    }
                 
                 } catch (Exception ex) {
                     throw new Exception(ex.Message);
@@ -123,9 +125,7 @@ namespace api.Controllers
 
             return Ok("");
         }
-        
-       
-       
+               
         [HttpPost("customerXLS"), DisableRequestSizeLimit]
         public  async Task<ActionResult<string>> ConvertXLSToCustomerData()
         {
@@ -162,11 +162,11 @@ namespace api.Controllers
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
-                        var errString = await _candRepo.WriteProspectiveExcelToDB(fullPath, User.GetUsername());
+                        var recAffected = await _custRepo.WriteCustomerExcelToDB(fullPath, User.GetUsername());
 
-                        if(string.IsNullOrEmpty(errString)) return Ok("");
+                        if(recAffected > 0) return Ok("");
 
-                        return BadRequest(new ApiException(400, errString, "Failed to copy the file to database" ) );
+                        return BadRequest(new ApiException(400, "Error in copying the excel sheet to database", "Failed to copy the file to database" ) );
                      }
                 
                 } catch (Exception ex) {
@@ -179,6 +179,68 @@ namespace api.Controllers
             return Ok("");
         }
 
+        [HttpPost("candidateXLS"), DisableRequestSizeLimit]
+        public  async Task<ActionResult<string>> ConvertCandidateData()
+        {
+            //check for uploaded files
+            var files = Request.Form.Files;
+
+            string ErrorString="";
+       
+            if(files.Count > 0) 
+            {
+                try{
+                    var folderName = Path.Combine("Assets", "Images");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    foreach (var file in files)
+                    {
+                        if(file.Length == 0) continue;
+
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var FileExtn = Path.GetExtension(file.FileName);
+                        if(FileExtn != ".xlsx") return "Only '.xlsx' files are accepted";
+                        
+
+                        var filename=file.FileName[..9].ToLower();
+
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                        if (System.IO.File.Exists(fullPath)) {
+                            try{
+                                // Try to delete the file.
+                                System.IO.File.Delete(fullPath);
+                            }
+                            catch (IOException)
+                            {
+                                // We could not delete the file.
+                                ErrorString="Failed to delete the file [" + file.FileName + "] at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
+                                return ErrorString;
+
+                            }
+                        }
+
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        file.CopyTo(stream);
+
+                        var errString = await _candRepo.WriteCandidateExcelToDB(fullPath, User.GetUsername());
+
+                        if(string.IsNullOrEmpty(errString)) return Ok("");
+
+                        return BadRequest(new ApiException(400, "Failed to copy the file to database", errString ) );
+                    }
+                
+                } catch (Exception ex) {
+                    return BadRequest(new ApiException(400, "Error in UploadController", ex.Message));
+                } 
+            }
+            
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+
+            return Ok("");
+        }
+        
+       
         private static bool IsNumeric(string input) {
             return int.TryParse(input, out int test);
         }
@@ -240,7 +302,6 @@ namespace api.Controllers
             return Ok();
         }
 
-        
         private static string GetContentType(string path)
         {
             var provider = new FileExtensionContentTypeProvider();

@@ -544,9 +544,17 @@ namespace api.Data.Repositories
 
         public async Task<string> WriteProspectiveExcelToDB(string fileNameWithPath, string Username)
         {
-            var count = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
-            return count;
+            var strError = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
+            return strError;
         }
+
+        
+        public async Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string Username)
+        {
+            var strError = await _context.ReadCandidateDataExcelFile(fileNameWithPath, Username);
+            return strError;
+        }
+
 
         public async Task<int> GetNextApplicationNo() {
             var no = await _context.Candidates.MaxAsync(x => x.ApplicationNo);

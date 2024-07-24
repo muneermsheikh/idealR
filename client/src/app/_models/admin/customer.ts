@@ -21,7 +21,7 @@ export interface ICustomer {
      phone: string;
      phone2: string;
      logoUrl?: string;
-     customerStatus: number;
+     customerStatus: string;
      createdOn: Date;
      introduction: string;
      customerIndustries: ICustomerIndustry[];
@@ -48,7 +48,7 @@ export interface ICustomer {
     phone= '';
     phone2= '';
     logoUrl?= '';
-    customerStatus= 0;
+    customerStatus= 'Active';
     createdOn = new Date('1900-01-01');
 
     introduction= '';

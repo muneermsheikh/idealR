@@ -65,14 +65,13 @@ export class CustomersService {
     
     return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/clientidandnames/customer');
   }
-
   
- getCustomer(id: number) {
-    return this.http.get<ICustomer>(this.apiUrl + 'customers/byid/' + id);
+  getCustomer(id: number) {
+      return this.http.get<ICustomer>(this.apiUrl + 'customers/byid/' + id);
   }
 
   register(model: IRegisterCustomerDto) {
-    return this.http.post<ICustomer>(this.apiUrl + 'customers', model )
+    return this.http.post<boolean>(this.apiUrl + 'customers', model )
   }
   
   getCustomerCities(customerType: string) {

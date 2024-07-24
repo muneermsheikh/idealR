@@ -21,6 +21,9 @@
 }
 
 .green {color: darkgreen;}
+
+.cursorPointer{cursor:pointer; color: darkgreen;}
+
 .lbl {
     display: inline-block;
     margin: 0 2px 0 2px;

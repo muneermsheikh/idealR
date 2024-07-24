@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
@@ -14,7 +13,6 @@ import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
-import { IEmploymentDto } from 'src/app/_dtos/admin/employmentDto';
 
 @Injectable({
   providedIn: 'root'
@@ -47,11 +45,15 @@ export class SelectionService {
      return this.sParams;
   }
 
-  getPendingSelections(oParams: SelDecisionParams) {   //: Observable<IPagination<ISelPendingDto[]>> {
+  getPendingSelections(useCache: boolean=true) {   //: Observable<IPagination<ISelPendingDto[]>> {
 
-    const response = this.cache.get(Object.values(oParams).join('-'));
-    if(response) return of(response);
+    var oParams = this.sParams;
 
+    if(useCache) {
+      const response = this.cache.get(Object.values(oParams).join('-'));
+      if(response) return of(response);
+    }
+    console.log('params in service:', oParams);
     let params = getPaginationHeadersSelectionParams(oParams);
 
     return getPaginatedResult<ISelPendingDto[]>(this.apiUrl + 'CVRef/cvsreferred', params, this.http).pipe(
@@ -68,8 +70,10 @@ export class SelectionService {
     return this.http.post<number[]>(this.apiUrl + 'Selection', selDecisions);
   }
 
-  getSelectionRecords(sParams: SelDecisionParams)
-  {
+  getSelectionRecords(useCache: boolean=true)
+  { 
+    var sParams = this.sParams;
+
     const response = this.cacheSel.get(Object.values(sParams).join('-'));
     if(response) return of(response);
 

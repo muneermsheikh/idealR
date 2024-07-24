@@ -139,26 +139,30 @@ namespace api.Data.Repositories
         }
 
 
-        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams mParams, string loggedinUsername)
         {
             var qry = _context.Messages.OrderByDescending(x => x.MessageSentOn).AsQueryable();
 
-            qry = messageParams.Container switch
-            {
-                "Inbox" => qry = qry.Where(x => x.RecipientUsername == messageParams.Username && 
-                    x.RecipientDeleted == false),
-                "Outbox" => qry = qry.Where(x => x.SenderUsername == messageParams.Username && 
-                    x.SenderDeleted == false),
-                _ => qry = qry.Where(x => x.RecipientUsername == messageParams.Username && x.RecipientDeleted == false)
-            };
+            qry = mParams.Container switch
+                {
+                    "Inbox" => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && 
+                        x.RecipientDeleted == false),
+                    "Outbox" => qry = qry.Where(x => x.SenderUsername.ToLower() == loggedinUsername.ToLower() && 
+                        x.SenderDeleted == false),
+                    _ => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && x.RecipientDeleted == false)
+                };
 
-            qry = qry.Where(x => x.Id > 6 && x.Id < 13);
-
-            //var messages = qry.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-
-            var msgs = await PagedList<Message>.CreateAsync(qry, messageParams.PageNumber, messageParams.PageSize);
-
-            return msgs;
+            if(loggedinUsername.ToLower()=="admin") {       //only admin user can view messages of other users
+                if(mParams.CvRefId != 0) qry = qry.Where(x => x.CvRefId == mParams.CvRefId);
+                if(!string.IsNullOrEmpty(mParams.SenderEmail)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
+                if(!string.IsNullOrEmpty(mParams.RecipientEmail)) qry = qry.Where(x => x.RecipientEmail.ToLower() == mParams.RecipientEmail.ToLower());
+                //if(!string.IsNullOrEmpty(mParams.SenderUsername)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
+                //if(!string.IsNullOrEmpty(mParams.RecipientUsername)) qry = qry.Where(x => x.RecipientUsername.ToLower() == mParams.RecipientUsername.ToLower());
+            } 
+            
+            var paged = await PagedList<Message>.CreateAsync(qry.AsNoTracking(), mParams.PageNumber, mParams.PageSize);
+            
+            return paged;
         }
 
         public async Task<ICollection<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName)

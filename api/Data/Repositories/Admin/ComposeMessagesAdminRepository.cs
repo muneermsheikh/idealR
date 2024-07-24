@@ -5,6 +5,7 @@ using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Extensions;
+using api.Interfaces;
 using api.Interfaces.Admin;
 using api.Interfaces.Messages;
 using api.Params.Admin;
@@ -25,10 +26,12 @@ namespace api.Data.Repositories.Admin
         private readonly IConfiguration _confg;
         private readonly IQueryableRepository _queryRepo;
         private readonly DateTime _today = DateTime.UtcNow;
+        private readonly ICustomerRepository _custRepo;
         public ComposeMessagesAdminRepository(DataContext context, UserManager<AppUser> userManager, 
              IComposeMessagesForTypes commonMsg, IEmployeeRepository empRepo, IMapper mapper, 
-             IQueryableRepository queryRepo, IConfiguration confg)
+             IQueryableRepository queryRepo, IConfiguration confg, ICustomerRepository custRepo)
         {
+            _custRepo = custRepo;
             _queryRepo = queryRepo;
             _confg = confg;
             _mapper = mapper;
@@ -596,19 +599,42 @@ namespace api.Data.Repositories.Admin
         public async Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string Url, string username)
         {
             var msgWithErr = new MessageWithError();
+            AppUser senderObj, recipientObj;
 
             var fdbk = await _context.CustomerFeedbacks.Include(x => x.FeedbackItems)
                 .Where(x => x.Id == feedbackId).FirstOrDefaultAsync();
 
-            var senderObj = await _userManager.FindByIdAsync(_confg["DocControllerAdminAppUserId"]);
-            if (senderObj == null) {
-                msgWithErr.ErrorString = "Failed to get DocControllerAdmin AppUserId";
+            if(fdbk.OfficialAppUserId==0) {
+                var customerid=fdbk.CustomerId;
+                var officials = await _context.CustomerOfficials
+                    .Where(x => x.CustomerId == fdbk.CustomerId).ToListAsync();
+                var official = officials.Where(x => x.Divn.ToLower()=="admin").FirstOrDefault()
+                        ?? officials.Where(x => x.Divn.ToLower() == "hr" || x.Divn.ToLower()=="h.r.").FirstOrDefault()
+                        ?? officials.Where(x => x.Divn.ToLower()=="account" || x.Divn.ToLower()=="accounts").FirstOrDefault();
+                if(official==null) {
+                    msgWithErr.ErrorString="Failed to retrieve any official from divisions 'Admin', 'HR', or 'accounts'.  Cannot generate Identity User for the official";
+                    return msgWithErr;
+                } else {
+                    recipientObj = await _custRepo.CreateAppUserForCustomerOfficial(official);
+                }
+            } else {
+                recipientObj = await _userManager.FindByIdAsync(fdbk.OfficialAppUserId.ToString());
+            }
+
+            if(recipientObj==null) {
+                msgWithErr.ErrorString = "Failed to get Identity user of customer official";
                 return msgWithErr;
             }
 
-            var recipientObj = await _userManager.FindByIdAsync(fdbk.OfficialAppUserId.ToString());
-            if(recipientObj == null) {
-                msgWithErr.ErrorString = "Failed to get recipient Object";
+            var senderid=_confg["DocControllerAdminAppUserId"];
+            if(senderid=="" || senderid=="0") {
+                msgWithErr.ErrorString = "Failed to get DocControllerAdmin AppUserId from Environment variables";
+                return msgWithErr;
+            }
+            
+            senderObj = await _userManager.FindByIdAsync(senderid);
+            if(senderObj == null) {
+                msgWithErr.ErrorString = "Failed to get DocControllerAdmin Identity User";
                 return msgWithErr;
             }
 
@@ -644,5 +670,7 @@ namespace api.Data.Repositories.Admin
             
             return msgWithErr;
         }
+
+
    }
 }

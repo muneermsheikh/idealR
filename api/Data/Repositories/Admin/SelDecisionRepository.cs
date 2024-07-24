@@ -168,7 +168,6 @@ namespace api.Data.Repositories.Admin
 
         }
     
-
         private async Task<AppUser> AppUserFromEmployeeId(int EmployeeId, string email) {
             
             var empObj = EmployeeId == 0 
@@ -313,8 +312,9 @@ namespace api.Data.Repositories.Admin
             //4 = DELETE VOUCHERS
             if(offerAcceptedOn.Year > 2000) {
                 var voucher = await _context.FinanceVouchers
-                    .Where(x => x.COAId == coaRecruitmentSales
-                        &&  x.VoucherDated == DateOnly.FromDateTime(offerAcceptedOn)).FirstOrDefaultAsync();
+                    .Where(x => x.CoaId == coaRecruitmentSales
+                        &&  DateOnly.FromDateTime(x.VoucherDated) == DateOnly.FromDateTime(offerAcceptedOn))
+                    .FirstOrDefaultAsync();
                 if(voucher != null) {
                     _context.FinanceVouchers.Remove(voucher);
                     _context.Entry(voucher).State = EntityState.Deleted; 
@@ -365,6 +365,8 @@ namespace api.Data.Repositories.Admin
                     CvRefId = cvref.Id,
                     ApplicationNo = cv.ApplicationNo, 
                     ProfessionId = item.ProfessionId,
+                    OrderItemId = item.Id,
+                    OrderId = ord.Id,
                     CandidateId = cv.Id,
                     CandidateName = cv.FullName,
                     CategoryRef = ord.OrderNo + "-" + item.SrNo + "-" + sel.SelectedAs,
@@ -377,6 +379,7 @@ namespace api.Data.Repositories.Admin
 
             if(selParams.CVRefId > 0) query = query.Where(x => x.CvRefId == selParams.CVRefId);
             if(selParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId == selParams.OrderItemId);
+            if(selParams.OrderId > 0) query = query.Where(x => x.OrderId == selParams.OrderId);
             //if(selParams.ProfessionId > 0) query = query.Where(x => x.ProfessionId == selParams.ProfessionId);
             if(selParams.SelectedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(selParams.SelectedOn));
 

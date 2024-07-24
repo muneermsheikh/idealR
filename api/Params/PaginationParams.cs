@@ -6,7 +6,7 @@ namespace api.Params
         public int PageNumber { get; set; } = 1;
         private int _pageSize = 10;
         public string Search { get; set; }
-        public string Sort { get; set; }="categoryRef";
+        public string Sort { get; set; }
 
         public int PageSize
         {

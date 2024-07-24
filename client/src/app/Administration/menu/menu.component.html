@@ -1,13 +1,5 @@
 <div class="container d-flex justify-contents-between align-items-center mt-5">
-    <!--<div style="display: inline-block; font-size: bold;">Logged in user: {{user?.knownAs}}</div>
-    <div style="display: inline-block; font-size: bold;">
-        {{user?.roles?.flat()}} 
-    </div> -->
-    <br>
-    <!--<li *appHasRole="['HR Manager', 'HR Supervisor', 'Admin', 'Admin Manager', 'Document Controller-Admin']" class="nav-item">
-        <a routerLink="/administration/pendingSelections" 
-            routerLinkActive="active" class="nav-link">Pending Selections</a>
-    </li> -->
+
     <div title="selections awaiting from customers" class="nav-item menuStdd">
         <a routerLink="/administration/pendingSelections" class="nav-item menuStdd"
             routerLinkActive="active" >Pending Selections</a>
@@ -27,12 +19,7 @@
     <div class="nav-item menuStdd" 
         title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers" >
         <a routerLink="/candidates/availableToRef" routerLinkActive="active" >Refer CVs to clients</a>
-</div>
-
-    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Admin', 'Admin Manager', 'Document Controller-Admin']" class="nav-item">
-        <a routerLink="/administration/selections" title="displays CVs that are assessed and available to submit to customers; CVs can be selected to send to customers" 
-            routerLinkActive="active" class="nav-link">Selections made</a>
-    </li> -->
+    </div>
 
     <div 
         class="nav-item menuStdd" 
@@ -40,52 +27,30 @@
         <a routerLink="/administration/selections"  routerLinkActive="active" >Selections made</a>
     </div>
 
-    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Document Controller-Admin']" class="nav-item">
-        <a routerLink="/administration/selections" 
-            routerLinkActive="active" class="nav-link">Selections</a>
-    </li> -->
-
-    <!-- <li *appHasRole="['HR Manager', 'HR Supervisor', 'Document Controller-Admin']" class="nav-item"
-        title="employment details of selected candidates" >
-        <a routerLink="/administration/selections" routerLinkActive="active" class="nav-link">Employments</a>
-    </li> -->
 
     <div class="nav-item  menuStdd" title="messages concerning the logged-in User" 
         routerLink="/administration/messages" routerLinkActive="active" >
         Messages
     </div>
 
-    <!-- <li class="nav-item" *appHasRole="['Document Controller-Admin', 'Document Controller-Processing', 'Candidate', 'Client']" class="nav-item"
-        title="Feedbacks from customers/candidates" >
-        <a routerLink="/administration/feedback" routerLinkActive="active" class="nav-link">Feedback</a>
-    </li> -->
     
     <div title="Feedback from customers, vendors and candidates" class="nav-item  menuStdd"
-        routerLink="/administration/feedback" routerLinkActive="active" >
+        routerLink="/administration/feedbacklist" routerLinkActive="active" >
         Feedback
     </div>
-    <!--<li class="nav-item" class="nav-item" title="Feedbacks from customers/candidates" >
-        <a routerLink="/administration/feedback" routerLinkActive="active" class="nav-link">Feedback</a>
-    </li> -->
-    <!-- <li class="nav-item" *appHasRole="['Admin']" class="nav-item"
-        title="Authorities and Roles">
-        <a routerLink="/userroles" routerLinkActive="active" class="nav-link">authorities & roles</a>
-    </li> -->
+  
     <div class="nav-item menuStdd" title="Authorities and Roles">
         <a routerLink="/userroles" routerLinkActive="active" >authorities & roles</a>
     </div>
  
     <!-- *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" -->
-    <li  class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
-        <a  routerLinkActive="active" (click)="uploadExcel = !uploadExcel" class="nav-link">Import from Excel Sheet</a>
-    </li> 
-    <!-- <li class="nav-item" class="nav-item" title="import data from Excel Sheets - for Candidate, customer or Employees" >
-        <a  routerLinkActive="active" class="nav-link">Import from Excel Sheet</a>
-    </li> -->
-    <!-- <li class="nav-item" *appHasRole="['Admin']" class="nav-item" 
-        title="import data from Excel Sheets - for Candidate, customer or Employees" >
-        <a routerLink="/administration/customers" routerLinkActive="active" class="nav-link">Customers<br>Associates<br>Vendors</a>
-    </li> -->
+    <div  class="nav-item menuStdd" 
+        title="import data from Excel Sheets - for Prospectives, Candidates, customers, Emplyees Or orders" >
+        <a  routerLinkActive="active"  routerLink="/administration/excelConversion" class="nav-link">
+            Convert From Excel to DB
+        </a>
+    </div> 
+   
     <div  class="nav-link menuStdd" title="Customers, Vendors and Associates" >
         <a routerLink="/administration/customers" routerLinkActive="active" 
        >Customers<br>Associates<br>Vendors</a>
@@ -96,34 +61,15 @@
     </div>
     
     <div title="Qualifications" class="nav-item nav-link menuStdd" >
-        <a routerLink="/administration/qualifications" routerLinkActive="active">Quallifications</a>
+        <a routerLink="/administration/qualifications" routerLinkActive="active">Qualifications</a>
     </div>
     
     <div class="nav-item nav-link menuStdd" title="industry Types" >
         <a routerLink="/administration/industries" routerLinkActive="active" >Industry Types</a>
     </div>
     
-    <button class="stdd fa fa-undo" title="go back to home" (click)="close()"></button>
+    <button class="fa fa-undo" title="go back to home" (click)="close()"></button>
 
-</div>
-
-
-<div *ngIf="uploadExcel" class="my-10" >
-    
-    <div style="word-wrap: normal; width: 800px;">
-        <li>This option will upload your Customer Excel File, read the data and insert into the database.</li>
-        <li>This option needs following requirements to be met:</li>
-        <li>The Worksheet name must be named 'Sheet1'</li>
-        <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
-        <li>Data should begin from row 3rd row.</li>
-        
-    </div>
-    
-    <br><br>
-    <input class="stdd d-flex align-items-center" type="file" id="file" 
-        (change)="onFileInputChange($event)" >
-
-    <button class="stdd btn fa fa-window-close" style="margin-left: 100px;" (click)="importCustomerExcel()" ></button>
 </div>
 
 

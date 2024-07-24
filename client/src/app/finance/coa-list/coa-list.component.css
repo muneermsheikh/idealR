@@ -2,6 +2,7 @@
 	display: inline-block;
 }
 
+.w35 {width: 35px;}
 .w50 {width: 50px;}
 .w75 {width: 75px;}
 .w100 {width: 100px;}
@@ -9,6 +10,7 @@
 .w300 {width: 300px;}
 
 .b {font-weight: bold;}
+.green {color: darkgreen;}
 
 .rAlign {text-align: right;}
 

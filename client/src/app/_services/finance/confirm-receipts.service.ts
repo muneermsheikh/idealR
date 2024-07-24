@@ -8,6 +8,7 @@ import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
 import { getPaginatedResult } from '../paginationHelper';
 import { Pagination } from 'src/app/_models/pagination';
 import { IVoucher } from 'src/app/_models/finance/voucher';
+import { IVoucherEntry } from 'src/app/_models/finance/voucherEntry';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +44,8 @@ export class ConfirmReceiptsService {
     
   }
 
-  updatePaymentReceipts(confirmations: IPendingDebitApprovalDto[]) {
-    return this.http.put<boolean>(this.apiUrl + 'finance/updatePaymentConfirmation', confirmations);
+  updateVoucherEntries(confirmations: IVoucherEntry[]) {
+    return this.http.put<string>(this.apiUrl + 'finance/updateVoucherEntries', confirmations);
   }
 
   updateVoucher(voucher: IVoucher) {
@@ -73,9 +74,8 @@ export class ConfirmReceiptsService {
       if (oParams.search) params = params.append('search', oParams.search);
       if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
       if (oParams.sort !== '') params = params.append('sort', oParams.sort);
-      if (oParams.accountId !== 0) params = params.append('accountId', oParams.accountId.toString());
+      if (oParams.cOAId !== 0) params = params.append('cOAIDId', oParams.cOAId.toString());
       if (oParams.accountType !== '') params = params.append('accountType', oParams.accountType);
-      if (oParams.accountClass !== '') params = params.append('accountClass', oParams.accountClass);
       
     return params;
   }

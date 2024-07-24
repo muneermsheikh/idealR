@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -9,6 +9,7 @@ import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { Pagination } from 'src/app/_models/pagination';
 import { orderParams } from 'src/app/_models/params/Admin/orderParams';
+import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
@@ -16,6 +17,8 @@ import { OrderForwardService } from 'src/app/_services/admin/order-forward.servi
 import { OrderService } from 'src/app/_services/admin/order.service';
 import { TaskService } from 'src/app/_services/admin/task.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
+import { CvrefService } from 'src/app/_services/hr/cvref.service';
+import { SelectionService } from 'src/app/_services/hr/selection.service';
 import { SelectAssociatesModalComponent } from 'src/app/modals/select-associates-modal/select-associates-modal.component';
 
 @Component({
@@ -61,12 +64,12 @@ export class OrdersListingComponent implements OnInit {
 
   constructor(private service: OrderService, 
     //private mastersService: MastersService,
-    private accountsService: AccountService,
+    private accountsService: AccountService, private selService: SelectionService,
     private taskService: TaskService, private orderFwdService: OrderForwardService,
     private router: Router, private activatedRoute: ActivatedRoute,
     private toastr: ToastrService, private modalService: BsModalService,
     private customerService: CustomersService, private dlFwdService: OrderForwardService,
-    private confirmService: ConfirmService) {
+    private confirmService: ConfirmService, private cvrefService: CvrefService) {
       this.accountsService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
      }
 
@@ -214,13 +217,18 @@ export class OrdersListingComponent implements OnInit {
     });
   }
 
-  cvsReferred(event: any)
+  cvsReferred(event: any)   //event: order.id
   {
-    this.navigateByRoute(event, '/administration/cvreferred', false)
+    this.navigateByRoute(event, '/administration/cvsreferred', false)
+  }
+
+  selectionRejection(event: any) {    //event.order.id
+    this.navigateByRoute(event, "/administration/selections", false);
   }
 
   navigateByRoute(id: number, routeString: string, editable: boolean) {
-    let route =  routeString + '/' + id;
+    
+    let route = id===0 ? routeString :  routeString + '/' + id;
 
     this.router.navigate(
         [route], 

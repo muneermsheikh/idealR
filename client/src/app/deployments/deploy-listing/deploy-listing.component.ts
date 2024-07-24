@@ -20,6 +20,7 @@ import { IDepItemWithFlightDto } from 'src/app/_models/process/depItemsWithFligh
 import { ICandidateFlight } from 'src/app/_models/process/candidateFlight';
 import { FlightDetailModalComponent } from '../flight-detail-modal/flight-detail-modal.component';
 import { ICandidateFlightData } from 'src/app/_models/process/candidateFlightData';
+import { IDeploymentStatus } from 'src/app/_models/masters/deployStatus';
 
 @Component({
   selector: 'app-deploy-listing',
@@ -42,7 +43,7 @@ export class DeployListingComponent implements OnInit{
   routeId: string='';
   totalCount: number=0;
   
-  depStatuses: IDeployStage[]=[];
+  depStatuses: IDeploymentStatus[]=[];
   statusNameAndSeq: IDeployStatusAndName[]=[];
 
   sequenceSelected: number=0;
@@ -311,7 +312,7 @@ export class DeployListingComponent implements OnInit{
   getNextStageDateForNextTransaction(dep: IDeploymentPendingDto, nextSeq: number) {
     var lastDt: Date = new Date(dep.currentSeqDate);
     
-    var days = this.depStatuses.find(x => x.sequence==  nextSeq)?.estimatedDaysToCompleteThisStage;
+    var days = this.depStatuses.find(x => x.sequence==  nextSeq)?.workingDaysReqdForNextStage;
     
     return new Date(lastDt.setDate(lastDt.getDate() + days!));
 
@@ -428,7 +429,7 @@ export class DeployListingComponent implements OnInit{
     } else {
         this.service.InsertDepItems(depItemsToInsert).subscribe({
           next: (itemsAdded:IDeploymentPendingDto[]) => {
-            console.log('itemsAdded returned from api', itemsAdded);
+   
             if(itemsAdded === null) {      //returns DeploymentPendngDto[]
                 this.toastr.warning('Failed to insert', 'Failed to insert any dep Transaction');
                 this.sequenceSelected = -1;
@@ -446,6 +447,8 @@ export class DeployListingComponent implements OnInit{
                 }
                 this.toastr.success('Success', 'Inserted ' + itemsAdded + ' number of deployment transactions');
             }
+          }, error: (err: any) => {
+            this.toastr.error(err.error.details, 'Error encountered while adding deployment transaction')
           }
         })
         

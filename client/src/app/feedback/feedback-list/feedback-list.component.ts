@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { IFeedbackDto } from 'src/app/_dtos/hr/feedbackDto';
 import { Pagination } from 'src/app/_models/pagination';
@@ -130,7 +130,21 @@ export class FeedbackListComponent implements OnInit {
 
     emailClicked(event: any) {    //emits feedback.Id
     
-      this.service.sendFeedbackEmailToClient(event)
+      var id = event;
+      if(isNaN(id)) this.toastr.warning('event.id is NaN');
+      this.service.sendFeedbackMail(+id).subscribe({
+        next: (response:string) => {
+          console.log('response:', response);
+          if(response==='') {
+            this.toastr.success('the message was generated - it is available in the messages draft folder for you to edit and send')
+          } else {
+            this.toastr.warning(response, 'Failed to generate the message')
+          }
+        }, error: (err: any) => {
+          console.log('error:', err);
+          this.toastr.error(err.error.details, 'Error');
+        }
+      })
     }
   
 }

@@ -41,6 +41,7 @@ import { MessageComponent } from './message/message/messages.component';
 import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
 import { DLComponent } from './dl/dl.component';
 import { DLItemComponent } from './dl-item/dl-item.component';
+import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 
 
 @NgModule({
@@ -83,6 +84,7 @@ import { DLItemComponent } from './dl-item/dl-item.component';
     CategoryEditModalComponent,
     DLComponent,
     DLItemComponent,
+    ExcelConversionMenuComponent,
   ],
   imports: [
     CommonModule,

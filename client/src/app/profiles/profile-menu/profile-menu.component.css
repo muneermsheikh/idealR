@@ -1,2 +1,18 @@
 .stdd {font-size: smaller;
 display: inline-block;}
+
+
+.menuStdd {
+    display: inline-block;
+    width: 100px;
+    margin-right: 3px;
+    margin-left: 3px;
+    word-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
+    border:2px;
+    font-size: small;
+    cursor: pointer;
+    border-style: inset;
+    height: 5em;
+}

@@ -4,6 +4,7 @@
 	vertical-align: top;
 }
 
+.cursorPointer {cursor: pointer; color: darkblue;}
 .red {color: red;}
 
 .rAlign{text-align: right;}

@@ -10,6 +10,8 @@ import { SharedModule } from '../_modules/shared.module';
 import { DeploymentRoutingModule } from './deployment-routing.module';
 import { ChooseFlightModalComponent } from './choose-flight-modal/choose-flight-modal.component';
 import { FlightDetailModalComponent } from './flight-detail-modal/flight-detail-modal.component';
+import { DeployStatusListComponent } from './deploy-status-list/deploy-status-list.component';
+import { DepNextSeqNamePipe } from './dep-next-seq-name.pipe';
 
 
 
@@ -23,6 +25,8 @@ import { FlightDetailModalComponent } from './flight-detail-modal/flight-detail-
     DepNextSeqPipe,
     ChooseFlightModalComponent,
     FlightDetailModalComponent,
+    DeployStatusListComponent,
+    DepNextSeqNamePipe,
   ],
   imports: [
     CommonModule,

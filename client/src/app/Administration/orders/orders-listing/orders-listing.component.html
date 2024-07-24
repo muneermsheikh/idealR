@@ -13,12 +13,12 @@
      
      <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid w200" #search placeholder="Search">
      <button (click)="onSearch()" title="searches the database based upon criteria entered in the search box" 
-          class="stdd btn btn fa fa-search fa-2x"></button>
+          class="btn fa fa-search fa-2x"></button>
      <button (click)="onReset()" title="Resets the search criteria" 
-          class="stdd btn fa fa-refresh fa-2x"></button>
-     <button class="stdd btn fa fa-plus fa-2x" title="Add a new Order" routerLink="/administration/orders/edit/0" ></button>
+          class="btn fa fa-refresh fa-2x"></button>
+     <button class="btn fa fa-plus fa-2x" title="Add a new Order" routerLink="/administration/orders/edit/0" ></button>
 
-     <button class="stdd btn fa fa-window-close fa-2x" routerLink="/admin" ></button>
+     <button class="btn fa fa-window-close fa-2x" routerLink="/admin" ></button>
 </div>
           
 <div class="form-inline" >
@@ -44,6 +44,7 @@
                (acknowledgeToClientEvent)="acknowledgeToClient($event)"
                (cvreferredEvent)="cvsReferred($event)"
                (orderAssessmentItemEvent)="orderAssessmentItem($event)"
+               (selectionEvent)="selectionRejection($event)"
           ></app-order-item>
      </div>
      

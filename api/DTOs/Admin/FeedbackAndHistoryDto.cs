@@ -11,7 +11,7 @@ namespace api.DTOs.Admin
     public class FeedbackHistoryDto
     {
         public int FeedbackId { get; set; }
-        public DateOnly FeedbackIssueDate { get; set; }
+        public DateTime FeedbackIssueDate { get; set; }
         //public DateOnly? FeedbackRecdDate { get; set; }
     }
 }

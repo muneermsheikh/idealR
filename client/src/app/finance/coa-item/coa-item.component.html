@@ -3,19 +3,16 @@
  </div>
  <div *ngIf="t !== null && t !== undefined" >
  	<div class="stdd row mb-0 ">
-		<div class="stdd w100" title="view this account" (click)="viewCOA(t)" >{{t.divn}}</div>
-		<div class="stdd w300" (click)="updateCOA(t)" title="edit this account">{{t.accountName}}</div>
-		<div class="stdd w75 alignRight" title="click to display statement of account of this account" 
-			(click)="statementOfAccount(t.id)">{{t.accountType}}</div>
+		<div class="stdd w100 cursorPointer" title="view this account" (click)="viewCOA(t)" >{{t.divn}}</div>
+		<div class="stdd w300 cursorPointer" (click)="updateCOA(t)" title="edit this account">{{t.accountName}}</div>
+		<div class="stdd w75 alignRight"  (click)="statementOfAccount(t.id)">{{t.accountType}}</div>
 		<div class="stdd w100 rAlign" style="border:aqua" >{{t.opBalance.toLocaleString()}} </div>
 		
-		<div class="stdd w30 fa fa-table" title="statement of account" (click)="statementOfAccount(t.id)" ></div>
+		<div class="stdd w30 fa fa-table cursorPointer" title="statement of account" (click)="statementOfAccount(t.id)" ></div>
 		<div class="stdd w30 green fa fa-pencil" *ngIf="t.accountClass==='candidate'"
 			title="update accountname to include application number" (click)="updateCandidateAccountName()" 
 		></div>
-		<div class="stdd w30 fa fa-trash red" title="delete this account along with all its tranactions" 
-			(click)="deleteTransaction(t.id)" ></div>
-
+	
 	</div>
  </div>
  

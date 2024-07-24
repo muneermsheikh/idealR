@@ -1,0 +1,121 @@
+<div class="container">
+
+    <!-- *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" -->
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" >
+        <a  routerLinkActive="active" (click)="toggleProspectiveExcel()" class="nav-link">Prospective Excel Conversion</a>
+    </div> 
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for customer and Vendors" >
+        <a  routerLinkActive="active" (click)="toggleCustomerExcel()" class="nav-link">Customer Excel Conversion</a>
+    </div>
+    
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Candidate" >
+        <a  routerLinkActive="active" (click)="toggleCandidatesExcel()" class="nav-link">Conversion for Candidate</a>
+    </div> 
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Employees" >
+        <a  routerLinkActive="active" (click)="toggleEmployeesExcel()" class="nav-link">Conversion for Employees</a>
+    </div>
+
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Orders" >
+        <a  routerLinkActive="active" (click)="toggleOrdersExcel()" class="nav-link">Conversion for Orders</a>
+    </div>
+
+    <button class="fa fa-window-close" title="go back to home" routerLink="/administration"></button>
+
+    <div *ngIf="uploadExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Prospective Excel File, read the data and insert into the database.</li>
+            <li>About Excel Sheet formatting, this option has the following requirements:</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>Data should begin from row 3rd row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center" title="click to choose an excel file containing the prospective data" type="file" id="file" (change)="onProspectiveFileInputChange($event)" >
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file to database" (click)="exportProspectiveFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this prospective file input" (click)="closeProspectiveFileInput()" ></button>
+    </div>
+
+
+    <div *ngIf="uploadCandidateExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Candidate Excel File, read the data and insert into the database.</li>
+            <li>About Excel Sheet formatting, this option has the following requirements:</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>Data should begin from row 3rd row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onCandidateFileInputChange($event)"
+            title="click to choose an excel file containing the prospective data" >
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded Candidate file to database" (click)="exportCandidateFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this prospective file input" (click)="closeCandidateFileInput()" ></button>
+    </div>
+
+
+    <div *ngIf="uploadCustomerExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Customer Excel File, read the data and insert into the database.</li>
+            <li>This option needs following requirements to be met:</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>Data should begin from row 3rd row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center w450" type="file" id="file" (change)="onCustomerFileInputChange($event)" >
+        <button class="stdd btn fa fa-check green fa-2x" title="covert the uploaded customer excel file to database" (click)="exportCustomerFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this customer file input" (click)="closeCustomerFileInput()" ></button>
+    </div>
+
+    <div *ngIf="uploadEmployeeExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Employee Excel File, read the data and insert into the database.</li>
+            <li>This option needs following requirements to be met:</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>Data should begin from row 3rd row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center w450" type="file" id="file" 
+            (change)="onEmployeeFileInputChange($event)" >
+        <button class="stdd btn fa fa-check green fa-2x" title="covert the uploaded customer excel file to database" 
+            (click)="exportEmployeeFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this customer file input" 
+            (click)="closeEmployeeFileInput()" ></button>
+    </div>
+
+
+    <div *ngIf="uploadOrderExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Orders Excel File, read the data and insert into the database.</li>
+            <li>This option needs following requirements to be met:</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>Data should begin from row 3rd row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center w450" type="file" id="file" 
+            (change)="onOrderFileInputChange($event)" >
+        <button class="stdd btn fa fa-check green fa-2x" title="covert the uploaded customer excel file to database" 
+            (click)="exportOrderFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this customer file input" 
+            (click)="closeOrderFileInput()" ></button>
+    </div>
+
+</div>
+
+

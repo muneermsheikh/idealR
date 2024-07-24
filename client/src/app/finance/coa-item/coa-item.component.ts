@@ -48,7 +48,4 @@ export class CoaItemComponent {
     this.deleteEvent.emit(id);
   }
 
-  deleteTransaction(i: number) {
-    
-  }
 }

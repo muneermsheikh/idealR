@@ -1,7 +1,6 @@
-<h4>Chart of Account Listing</h4>
+<h4 class="stdd b">Chart of Account Listing</h4>
 
-
-<pagination class="stdd" *ngIf="pagination !== undefined"
+<pagination class="stdd mx-3" *ngIf="pagination !== undefined"
         [totalItems]="pagination!.totalItems"
         [itemsPerPage]="pagination!.itemsPerPage"
         (pageChanged)="onPageChanged($event)"
@@ -12,16 +11,16 @@
         lastText="&raquo;">
     ></pagination>
 
-    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" 
-        class="stdd btn fa-solid fa-search">Search</button>
-
-    <button (click)="onReset()" title="resets search parameters" 
-        class="btn btn-outline-success fa fa-refresh mx-1"></button>
-
-    <button (click)="returnToCaller()" title="close this page" 
-        class="btn btn-outline-success fa fa-window-close mx-1"></button>
-
+    <br><input (keyup.enter)="onSearch()" type="text" class="stdd w300" #search placeholder="Search">
+    <button (click)="onSearch()" title="search the text entered" class="stdd btn fa fa-filter fa-2x"></button>
+    <button (click)="addNewCOA()" title="Add a new Account" class="btn fa fa-plus fa-2x"></button>
+    <button (click)="onReset()" title="resets search parameters" class="btn fa fa-refresh fa-2x mx-1"></button>
+    
+    <label class="lbl w80" style="text-align: right;" >Exclude:</label>
+    <input type="radio" id="none" name="none" [(ngModel)]="sParams.divisionToExclude" value="" class="w35 stdd">None -->
+    <input type="radio" id="candidate" name="candidate" [(ngModel)]="sParams.divisionToExclude" value="Candidate" class="w35 stdd">Candidate
+    <button (click)="applyFilter()" title="Apply the filter" class="btn fa fa-check green fa-2x mx-1"></button>
+    <button (click)="returnToCaller()" title="close this page" class="btn fa fa-window-close fa-2x mx-3"></button>
     
 <hr>
 <div class="container">

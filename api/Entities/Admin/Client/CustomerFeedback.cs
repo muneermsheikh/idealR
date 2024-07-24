@@ -12,8 +12,8 @@ namespace api.Entities.Admin.Client
         public string Designation { get; set; }
         public string Email { get; set; }
         public string PhoneNo { get; set; }
-        public DateOnly DateIssued { get; set; }
-        public DateOnly DateReceived { get; set; }
+        public DateTime DateIssued { get; set; }
+        public DateTime DateReceived { get; set; }
         public string HowReceived { get; set; }
         public string GradeAssessedByClient { get; set; }
         public string CustomerSuggestion { get; set; }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { Message } from 'src/app/_models/message';
 import { Pagination } from 'src/app/_models/pagination';
+import { messageParams } from 'src/app/_models/params/Admin/messageParams';
 import { MessageService } from 'src/app/_services/message.service';
 
 @Component({
@@ -12,10 +13,9 @@ import { MessageService } from 'src/app/_services/message.service';
 export class MessageComponent implements OnInit {
 
   messages?: Message[] = [];
+  msgParams = new messageParams();
   pagination?: Pagination;
   container = "Inbox";
-  pageNumber = 1;
-  pageSize = 10;
   loading = false;
   messageSentOn: Date = new Date;
   iMessageId: number=0;
@@ -71,17 +71,19 @@ export class MessageComponent implements OnInit {
     ]
 };
 
-  constructor(private messageService: MessageService) { }
+  constructor(private service: MessageService) { }
 
   ngOnInit(): void {
-      this.loadMessages()
+      //this.loadMessages()
   }
 
-  loadMessages() {
+  loadMessages(useCache: boolean=true) {
     if(this.container == this.lastContainer) return;
 
     this.loading = true;
-    this.messageService.getMessages(this.pageNumber, this.pageSize, this.container).subscribe({
+    this.service.setParams(this.msgParams);
+
+    this.service.getMessages(useCache).subscribe({
       next: response => {
         this.messages = response.result;
         this.pagination = response.pagination;
@@ -93,14 +95,14 @@ export class MessageComponent implements OnInit {
   }
 
   deleteMessage(id: number) {
-    this.messageService.deleteMessage(id).subscribe({
+    this.service.deleteMessage(id).subscribe({
       next: _ => this.messages?.splice(this.messages.findIndex(m => m.id === id), 1)
     })
   }
 
   pageChanged(event: any) {
-    if (this.pageNumber !== event.page) {
-      this.pageNumber = event.page;
+    if (this.msgParams.pageNumber !== event.page) {
+      this.msgParams.pageNumber = event.page;
       this.loadMessages();
     }
   }

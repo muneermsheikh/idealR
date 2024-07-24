@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DeployListingComponent } from './deploy-listing/deploy-listing.component';
 import { RouterModule } from '@angular/router';
 import { DeployStatusAndSeqResolver } from '../_resolvers/deploys/deployStatusAndSeqResolver';
+import { DeployStatusListComponent } from './deploy-status-list/deploy-status-list.component';
+import { DeploymentStatusResolver } from '../_resolvers/deploys/deploymentStatusResolver';
 
 
 const routes = [
@@ -10,6 +12,12 @@ const routes = [
 
     resolve: {
       statusNameAndSeq: DeployStatusAndSeqResolver
+    }
+  },
+
+  {path: 'deployStatus', component: DeployStatusListComponent,
+      resolve: {
+        statuslist: DeploymentStatusResolver
     }
   }
 ]

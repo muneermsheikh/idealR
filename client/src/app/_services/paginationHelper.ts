@@ -23,9 +23,11 @@ import { ICallRecordParams } from "../_models/params/callRecordParams";
 import { CallRecordItemToCreateDto } from "../_dtos/hr/callRecordItemToCreateDto";
 import { FeedbackParams } from "../_models/params/hr/feedbackParams";
 import { customerParams } from "../_models/params/Admin/customerParams";
+import { HttpParamsWithStringDto } from "../_dtos/admin/HttpParamsWithStringDto";
+import { inject } from "@angular/core";
 
 export function getPaginatedResult<T>(url: string, params: HttpParams, http: HttpClient) {
-  
+ 
     const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>;
     return http.get<T>(url, { observe: 'response', params }).pipe(
       map((response:any) => {
@@ -142,37 +144,77 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
+  export function getParamsNamesOfCVRefParams(sParams: CVRefParams): string {
+
+    var st='';
+
+    st = "Page No:" + sParams.pageNumber;
+    st +=  ", Page Size:" + sParams.pageSize;
+
+    if (sParams.orderItemId !== 0) st += ", Order ItemId: " + sParams.orderItemId;
+    if (sParams.professionId !== 0) st += ", Order Item: " + sParams.professionId;      
+    if (sParams.orderId !== 0) st += ", Order Id: " + sParams.orderId;
+    if (sParams.applicationNo !== 0) st += ", Application No: " + sParams.applicationNo;
+    if (sParams.search) st += ", Search criteria: " + sParams.search;
+    st += ", Sort By:" + sParams.sort;
+    
+    return st;
+  }
   export function getPaginationHeadersSelectionParams(sParams: SelDecisionParams): HttpParams {
     
+    var dto = new HttpParamsWithStringDto();
+    var st='';
+
     let params = new HttpParams();
     params = params.append('pageSize', sParams.pageSize)
-
     params = params.append('pageNumber', sParams.pageNumber );
-   
-    if (sParams.orderItemId !== 0) 
+    st = "Page No:" + sParams.pageNumber;
+    st +=  ", Page Size:" + sParams.pageSize;
+
+    if (sParams.orderItemId !== 0) {
+      st += ", Order ItemId: " + sParams.orderItemId;
       params = params.append('orderItemId', sParams.orderItemId.toString());
-    
+    }
+
+    if (sParams.orderId !== 0) {
+      st += ", Order Id: " + sParams.orderId;
+      params = params.append('orderId', sParams.orderId.toString());
+    }
+
     if (sParams.professionId !== 0) 
+      st += ", Order Item: " + sParams.professionName;      
       params = params.append('categoryId', sParams.professionId.toString());
     if (sParams.professionName !== '') 
       params = params.append('categoryName', sParams.professionName);
-    if (sParams.orderId !== 0) 
+    if (sParams.orderId !== 0) {
       params = params.append('orderId', sParams.orderId!.toString());
-    if (sParams.orderNo !== 0) 
+      st += ", Order Id: " + sParams.orderId;
+    }
+    if (sParams.orderNo !== 0) {
       params = params.append('orderNo', sParams.orderNo!.toString());
+      st += ", Order No: " + sParams.orderNo;
+    }
     if (sParams.candidateId !== 0) 
       params = params.append('candidateId', sParams.candidateId!.toString());
-    if (sParams.applicationNo !== 0) 
+    if (sParams.applicationNo !== 0) {
       params = params.append('applicationNo', sParams.applicationNo!.toString());
+      st += ", Application No: " + sParams.applicationNo;
+    }
     if (sParams.cVRefId !== 0) 
       params = params.append('cVRefId', sParams.cVRefId!.toString());
-    if (sParams.includeEmployment === true) 
+    if (sParams.includeEmployment === true) {
       params = params.append('includeEmployment', "true");
-    if (sParams.search) 
+      st += ", Include Employment: " + sParams.includeEmployment;
+    }
+    if (sParams.search) {
       params = params.append('search', sParams.search);
+      st += ", Search criteria: " + sParams.search;
+    }
    
     params = params.append('sort', sParams.sort);
-   
+    
+    dto.params=params;
+    dto.stParams=st;
     return params;
   }
 
@@ -470,11 +512,22 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
   
   export function GetHttpParamsForFeedback(fParams:FeedbackParams) {
   
+    var returnPrams = new HttpParamsWithStringDto();
+    var st='';
+
     let params = new HttpParams();
 
-    if(fParams.email !== '') params = params.append('email', fParams.email);
-    if(fParams.phoneNo !== '') params = params.append('phoneNo', fParams.phoneNo);
-    
+    if(fParams.email !== '') {
+      st = 'Email: ' + fParams.email;
+      params = params.append('email', fParams.email);
+    }
+
+    if(fParams.phoneNo !== '') {
+        st += st ==='' ? fParams.phoneNo : ', ' + fParams.phoneNo;
+       params = params.append('phoneNo', fParams.phoneNo);
+    }
+    st += st ==='' ? fParams.pageNumber : ', ' + fParams.pageNumber;
+    st +=  ', ' + fParams.pageSize;
     params = params.append('pageNumber', fParams.pageNumber.toString());
     params = params.append('pageSize', fParams.pageSize.toString());
 

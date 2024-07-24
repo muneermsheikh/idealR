@@ -64,6 +64,20 @@ export class AccountService {
     return this.http.post<string>(this.baseUrl + 'FileUpload/customerXLS', model);
   }
 
+  copyCandidateXLSFileToDB(model: any) {
+    return this.http.post<string>(this.baseUrl + 'FileUpload/candidateXLS', model);
+  }
+
+  copyEmployeeXLSFileToDB(model: any) {
+    return this.http.post<string>(this.baseUrl + 'FileUpload/employeeXLS', model);
+  }
+
+  copyOrderXLSFileToDB(model: any) {
+    return this.http.post<string>(this.baseUrl + 'FileUpload/orderXLS', model);
+  }
+
+
+
   checkEmailExists(email: string) {
     return this.http.get(this.baseUrl + 'account/emailexists?email=' + email);
   }

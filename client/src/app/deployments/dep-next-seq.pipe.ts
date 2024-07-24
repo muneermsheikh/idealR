@@ -1,17 +1,18 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DeployService } from '../_services/deploy.service';
 import { IDeployStage } from '../_models/masters/deployStage';
+import { IDeploymentStatus } from '../_models/masters/deployStatus';
 
 @Pipe({
   name: 'depNextSeq'
 })
 export class DepNextSeqPipe implements PipeTransform {
 
-  statuses: IDeployStage[]=[];
+  statuses: IDeploymentStatus[]=[];
 
   constructor(private depService: DeployService){
     depService.getDeployStatuses().subscribe({
-      next: (response: IDeployStage[]) => this.statuses = response
+      next: (response: IDeploymentStatus[]) => this.statuses = response
     })
   }
 

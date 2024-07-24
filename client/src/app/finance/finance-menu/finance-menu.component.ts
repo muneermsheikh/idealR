@@ -27,9 +27,17 @@ export class FinanceMenuComponent {
     
   }
   
+  displayVoucherList() {
+    this.navigateByRoute(0, "/finance/voucherlist")
+  }
+
+  fundsConfirmation() {
+    this.navigateByRoute(0, "/finance/receiptspendingconfirmation")
+  }
   
   navigateByRoute(id: number, routeString: string) {
-    let route =  routeString + '/' + id;
+
+    let route = id===0 ? routeString : routeString + '/' + id;
 
     this.router.navigate(
         [route], 

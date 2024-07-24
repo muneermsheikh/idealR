@@ -22,7 +22,9 @@ label {font-weight: bold;
 .b {font-weight: bold;}
 
 .red {color: red;}
+.green {color: darkgreen;}
 
+.w50 {width: 50px;}
 .w60 {width: 60px;}
 
 .w75 {width: 75px;}

@@ -6,6 +6,7 @@ import { NgForm } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmService } from 'src/app/_services/confirm.service';
+import { IDeploymentStatus } from 'src/app/_models/masters/deployStatus';
 
 @Component({
   selector: 'app-deploy-add-modal',
@@ -27,7 +28,7 @@ export class DeployAddModalComponent {
   companyName = '';
   ecnr = false;
   
-  depStatuses: IDeployStage[]=[];
+  depStatuses: IDeploymentStatus[]=[];
   
   bsValue = new Date();
   bsRangeValue= new Date();
@@ -38,7 +39,7 @@ export class DeployAddModalComponent {
   constructor(public bsModalRef: BsModalRef, private toastr:ToastrService, 
     private confirmService: ConfirmService, private service: DeployService) {
       this.service.getDeployStatuses().subscribe({
-        next: (response:IDeployStage[]) => this.depStatuses = response
+        next: (response:IDeploymentStatus[]) => this.depStatuses = response
       })
 
     }

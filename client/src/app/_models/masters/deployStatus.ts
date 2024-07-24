@@ -1,9 +1,9 @@
 export interface IDeploymentStatus
 {
      id: number;
-     stageId: number;
+     sequence: number;
      statusName: string;
-     processName: string;
-     nextStageId: number;
      workingDaysReqdForNextStage: number;
+     nextSequence: number;
+     isOptional: boolean;
 }

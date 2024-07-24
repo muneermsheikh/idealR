@@ -4,6 +4,7 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { IPendingDebitApprovalDto } from 'src/app/_dtos/finance/pendingDebitApprovalDto';
 import { IUpdatePaymentConfirmationDto, UpdatePaymentConfirmationDto } from 'src/app/_dtos/finance/updatePaymentConfirmationDto';
+import { IVoucherEntry, VoucherEntry } from 'src/app/_models/finance/voucherEntry';
 import { Pagination } from 'src/app/_models/pagination';
 import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
 import { prospectiveSummaryParams } from 'src/app/_models/params/hr/prospectiveSummaryParams';
@@ -66,7 +67,6 @@ export class ConfirmFundReceiptComponent implements OnInit {
 
     this.pParams = new ParamsCOA();
     this.getPendings();
-
   }
 
   getPendings() {
@@ -79,42 +79,49 @@ export class ConfirmFundReceiptComponent implements OnInit {
           this.totalCount = response.count;
         }
       })
+
   }
 
   update() {
-    var selected = this.pending.filter(x => x.selected===true);
-    console.log('all selected', selected);
+    
+    var entries: IVoucherEntry[]=[];
 
-    if(this.pendingSelected.length > 0) {
-      this.service.updatePaymentReceipts(this.pendingSelected).subscribe(response => {
-        if(response) {
+    this.pendingSelected.forEach(x => {
+      
+      entries.push({id: x.voucherEntryId, financeVoucherId: x.id, transDate: new Date(), 
+        coaId: x.drAccountId, dr: x.drAmount, cr:0, accountName:'', narration: '',
+        drEntryApproved: x.drEntryApproved, drEntryApprovedByUsername: this.user!.userName,
+        drEntryApprovedOn: new Date()})
+    })
+
+    this.service.updateVoucherEntries(entries).subscribe(response => {
+        if(response ==='') {
           this.toastr.success('selected payments confirmed as received');
         } else {
-          this.toastr.warning('failed to register the payment confirmations');
+          this.toastr.warning(response, 'failed to register the payment confirmations');
           return;
         }
-      }, error => {
-        this.toastr.error('failed to register the payment confirmations');
+      }, err => {
+        this.toastr.error(err, 'failed to register the payment confirmations');
         return;
       })
-    }
+    
   }
     
   selectedClicked(item: IPendingDebitApprovalDto) {
     
     var index = this.pending.findIndex(x => x.id === item.id);
-    console.log('item:', item, 'index:', index);
-    
-    if(item.drEntryApproved===true) {
-      if(index ===-1) {
+    if(!item.drEntryApproved) {       //actually, index.drEnryApproved is true, but it is false here. so the logic is reversed. why?
+
         item.drEntryApprovedByUsername=this.user!.userName;
         item.drEntryApprovedOn=new Date();
+        
         this.pendingSelected.push(item);
-      }
-    } else {
+    } else if(item.drEntryApproved) {
       this.pendingSelected.splice(index,1);
+    } else {
+      console.log('drEntryapproved not reached:', item.drEntryApproved);
     }
-
   }
 
   PageChanged(event: any){
@@ -127,6 +134,10 @@ export class ConfirmFundReceiptComponent implements OnInit {
       }
     }
 
+    displayVoucher(voucherno:number) {
+      let route = '/finance/voucherEdit/' + voucherno;
+      this.router.navigate([route], { state: { toedit: false, returnUrl: '/finance/receiptspendingconfirmation', userObject: this.user } });
+    }
 
   close() {
     

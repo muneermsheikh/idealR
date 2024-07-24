@@ -1,18 +1,20 @@
-<div class="stdd col-4" style="vertical-align: top;">
+
+<div class="stdd col-4 my-0" style="vertical-align: top;">
     <div class="mb-4 d-flex">
-        <div class="btn-group" name="container">
+        <br><div class="btn-group" name="container">
             <button class="btn btn-primary"  title="Unread messages"
-                btnRadio="Unread" [(ngModel)]="container" (click)="loadMessages()">
+                btnRadio="Unread" [(ngModel)]="msgParams.container" 
+                (click)="loadMessages()" >
                 <i class="fa fa-envelope"></i>
             </button>
             <button class="btn btn-primary" 
                 btnRadio="Inbox" title="Inbox messages"
-                [(ngModel)]="container" (click)="loadMessages()">
+                [(ngModel)]="msgParams.container" (click)="loadMessages()">
                 <i class="fa fa-envelope-open"></i> 
             </button>
             <button class="btn btn-primary" title="sent messages"
                 btnRadio="Outbox"
-                [(ngModel)]="container" (click)="loadMessages()">
+                [(ngModel)]="msgParams.container" (click)="loadMessages()">
                 <i class="fa fa-paper-plane"></i>
             </button>
         </div>
@@ -38,9 +40,9 @@
     
     <div class="stdd row" *ngIf="messages && messages?.length !== 0" style="vertical-align: top;">
         <div *ngIf="container==='Inbox'">
-            <label class="lbl col-2" >Date</label>
-            <label class="lbl col-3" >From</label>
-            <label class="lbl col-4" >Subject</label>
+            <label class="lbl w80" >Date</label>
+            <label class="lbl w100" >From</label>
+            <label class="lbl w250" >Subject</label>
             <div *ngFor="let msg of messages">
                 <div class="stdd cursorPointer col-2" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn | date: 'dd-MMM-yy'}}</div>
                 <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.senderEmail}}</div>
@@ -50,23 +52,24 @@
         </div>
     
         <div class="stdd" *ngIf="container==='Outbox'">
-            <label class="lbl col-3" >Date</label>
-            <label class="lbl col-4" >To</label>
-            <label class="lbl col-4" >Subject</label>
+            <label class="lbl w80" >Date</label>
+            <label class="lbl w100" >To</label>
+            <label class="lbl w300" >Subject</label>
             <div *ngFor="let msg of messages">
-                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn}}</div>
-                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.recipientEmail}}</div>
-                <div class="stdd cursorPointer col-4" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.subject}}</div>
-                <button class="stdd btn col-1 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
+                <div class="stdd cursorPointer w80" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn | date: 'ddMMMyy'}}</div>
+                <div class="stdd cursorPointer w100" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.recipientEmail}}</div>
+                <div class="stdd cursorPointer w300" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.subject}}</div>
+                <button class="stdd btn w35 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="stdd col-7" style="vertical-align: top;">
+<div class="stdd col-7 my-0" style="vertical-align: top;">
     <div *ngIf="messageSentOn.getFullYear() < 2000" (click)="sendMessage()">Draft message</div>
     <angular-editor
         [(ngModel)]="msgToDisplay"
     ></angular-editor>
 </div>
+<button class="btn fa fa-window-close fa-2x" type="button" title="close this window" routerLink="/administration" ></button>

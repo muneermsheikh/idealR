@@ -43,15 +43,16 @@ export class SelectionPendingComponent implements OnInit{
       private toastr: ToastrService){}
 
   ngOnInit(): void {
-    this.getPendingSelectionsPaged(this.sParams);
+    
+    this.getPendingSelectionsPaged(false);
   }
 
-  getPendingSelectionsPaged(sParams: SelDecisionParams)
+  getPendingSelectionsPaged(useCache: boolean=true)
   {
     //this.sParams=sParams;
-    //this.service.setParams(sParams);
+    this.service.setParams(this.sParams);
 
-    this.service.getPendingSelections(sParams).subscribe({
+    this.service.getPendingSelections(useCache).subscribe({
       next: response => {
 
         if(response.result && response.pagination) {
@@ -128,10 +129,10 @@ export class SelectionPendingComponent implements OnInit{
   onPageChanged(event: any){
     const params = this.service.getParams();
 
-    if (params.pageNumber !== event) {
+    if (params.pageNumber !== event.page) {
         params.pageNumber = event.page;
         this.service.setParams(params);
-        this.getPendingSelectionsPaged(params);
+        this.getPendingSelectionsPaged(true);
     }
   }
 
@@ -143,7 +144,7 @@ export class SelectionPendingComponent implements OnInit{
     prms.pageNumber=1;
     prms.pageSize=10;
     this.service.setParams(prms);
-    this.getPendingSelectionsPaged(prms);
+    this.getPendingSelectionsPaged(true);
   }
 
   onSearch() {
@@ -151,14 +152,14 @@ export class SelectionPendingComponent implements OnInit{
     params.search = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
     this.service.setParams(params);
-    this.getPendingSelectionsPaged(params);
+    this.getPendingSelectionsPaged(true);
   }
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     this.sParams = new SelDecisionParams();
     this.service.setParams(this.sParams);
-    this.getPendingSelectionsPaged(this.sParams);
+    this.getPendingSelectionsPaged(true);
   }
 
   changeSelectionStatus(status: any)  {

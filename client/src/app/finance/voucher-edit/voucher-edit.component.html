@@ -1,9 +1,4 @@
 
-<div *ngIf="voucher===undefined || voucher===null">
-	voucher is not defined
-</div>
-
-
 <form [formGroup]="form" 
 	*ngIf="voucher" autocomplete="off">
 	
@@ -32,15 +27,18 @@
 		>
 		<br class="my-2">
 		<label class="lbl w100" style="margin-top: 2px;">Account:<b>CR</b></label>
-		<ng-select *ngIf="coas" class="stdd w250"  
+		<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
 			[items]="coas"
 			bindLabel="accountName"
 			bindValue="id"
-			labelForId="cOAId"
+			labelForId="coaId"
 			placeholder="Select Account"
 			clearAllText="Clear"
-			formControlName="cOAId">
+			formControlName="coaId">
 		</ng-select>
+		<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
+			Please enter the credit Account
+		</div>
 		<div class="stdd w30 fa fa-plus" disabled="isAddMode" (click)="addNewCOA()"></div>
 		<br>
 		<label class="stdd w100" style="margin-top: 2px;">Divn:</label>
@@ -69,11 +67,11 @@
 			<div class="stdd w75 mx-2" style="text-align:right">{{totalAmountCR}}</div>
 			<div class="stdd w150" style="text-align:right">Balance: {{diff}}</div>
 
-			<button (click)="uploadFileAndFormData()" 
+			<button (click)="updateVoucher()" 
 				[disabled]="!form.dirty || (voucherAmount !== 0 && (iDiff !==0 || voucherAmount !== totalAmountDR))" 
-				style="margin-left: 10px !important;" class="stdd mx-1 fa fa-save green" ></button>
-			<button class="btn btn-secondary fa fa-window-close" title="return" (click)="returnToCaller()" ></button>
-			<button class="stdd fa fa-trash red pull-right" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
+				style="margin-left: 10px !important;" class="btn fa fa-save fa-2x green mx-2" ></button>
+			<button type="button" class="btn fa fa-window-close fa-2x mx-2" title="return" (click)="returnToCaller()" ></button>
+			<button type="button" class="btn fa fa-trash red fa-2x mx-2" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
 		</div>
 		<br>				
 		<label class="stdd w90 b">Date</label>
@@ -82,11 +80,11 @@
 		<label class="stdd w75 b">Credit</label>
 		<label class="stdd w200 b">Narration</label>
 		
-		<button (click)="addVoucherEntry()" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
+		<button type="button" (click)="addVoucherEntry()" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
 
 		<br>
 		<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
-			<div *ngFor="let t of voucherEntries.controls; let i=index";>
+			<div *ngFor="let t of voucherEntries.controls; let i=index;">
 				<hr class="my=0">
 				<div [formGroupName]="i">
 					<input class="stdd w90" style="font-size: x-small;"
@@ -101,28 +99,30 @@
 							[items]="coas"
 							bindLabel="accountName"
 							bindValue="id"
-							labelForId="cOAId"
+							labelForId="coaId"
 							placeholder="Select Account"
 							clearAllText="Clear"
-							formControlName="cOAId">
+							formControlName="coaId">
 					</ng-select>
+					<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
+						Please enter the Account
+					</div>
 
 					<input class="stdd w75 tAlignRight"  type="number"(change)="recalculateTotal()" formControlName="dr">
 					<input class="stdd w75 tAlignRight" type="number"(change)="recalculateTotal()" formControlName="cr">
 					<input class="stdd w300" type="text" formControlName="narration">
-					<button class="stdd red ml-2 fa fa-trash" (click)="removeVoucherEntry(i)" ></button>
+					<button type="button" class="stdd red ml-2 fa fa-trash" (click)="removeVoucherEntry(i)" ></button>
 
-					<label class="stdd2 w75" style="margin-left: 400px;">Approved:</label>
+					<br><label class="stdd2 w60" style="margin-left: 5px;">Approved:</label>
 					<input type="checkbox" style="border-color: black;"
-						class="stdd2 form-check-input"
-						formControlName="drEntryApproved"
+						class="stdd2 form-check-input" formControlName="drEntryApproved"
 					>
 					
-					<label class="stdd2 w50 mx-2" >By:</label>
-					<input type="text" class="stdd2 w100" formControlName="drEntryApprovedByUsername">
+					<label class="stdd2 w50" style="text-align: right;" >By:</label>
+					<input type="text" class="stdd2 w75" formControlName="drEntryApprovedByUsername">
 			
-					<label class="stdd2 w100 mx-5" >On:</label>
-					<input class="stdd2 w100" 
+					<label class="stdd2 w50" style="text-align: right;" >On:</label>
+					<input class="stdd2 w75" 
 						type="text"
 						placeholder="Date"
 						formControlName="drEntryApprovedOn"
@@ -136,11 +136,11 @@
 				
 		<br>
 		<hr>
-	
+		<!--
 		<div formArrayName="voucherAttachments" class="my-1 px-0" >
 			<div *ngFor="let q of voucherAttachments.controls; let i=index"  [formGroupName]="i">
 				<input class="stdd w300" formControlName="fileName" >
-			
+			-->
 				<!--
 				<input class="stdd w50" formControlName="attachmentSizeInBytes">
 				<input class="stdd w100" formControlName="voucherId" >
@@ -149,19 +149,21 @@
 				<input class="stdd w100" formControlName="id" >
 				<input class="stdd w100" formControlName="url" >
 			-->
+			<!--
 				<button (click)="download(i)" class="stdd mx-3 fa fa-download"></button>
 				<button (click)="removeVoucherAttachment(i)" class="stdd red fa-trash"></button>
 			
 			</div>
 		</div>
-		<hr>		 
+		<hr>
+	-->		 
 		
 	</div> 
 
 </form>  
 
 		
-<div style="vertical-align: bottom; font-size: smaller;">
+<div style="vertical-align: bottom; font-size: smaller; margin-top: 10px;">
 	{{this.form.value | json}}
 </div>
      

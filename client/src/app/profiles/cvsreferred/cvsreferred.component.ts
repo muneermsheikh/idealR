@@ -1,15 +1,15 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Navigation, Route, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
-import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { Pagination } from 'src/app/_models/pagination';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
 import { User } from 'src/app/_models/user';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
 import { CvrefService } from 'src/app/_services/hr/cvref.service';
+import { getParamsNamesOfCVRefParams } from 'src/app/_services/paginationHelper';
 import { UploadDownloadService } from 'src/app/_services/upload-download.service';
 import { CvAssessModalComponent } from 'src/app/hr/cv-assess-modal/cv-assess-modal.component';
 
@@ -34,13 +34,20 @@ export class CvsreferredComponent implements OnInit{
   selectedCVs: ISelPendingDto[]=[];
 
   totalCount: number=0;
+
+  paramNames='';
+  id=0;
   
   constructor(private router: Router,
       private service: CvrefService, 
       private toastr: ToastrService, 
       private modalService: BsModalService, 
       private candAssessService: CandidateAssessmentService,
-      private downloadService: UploadDownloadService) {
+      private downloadService: UploadDownloadService,
+      private route: ActivatedRoute) {
+
+        var routeid = this.route.snapshot.paramMap.get('id') ?? '0';
+        this.id=+routeid;
 
         let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
@@ -52,13 +59,13 @@ export class CvsreferredComponent implements OnInit{
       }
 
   ngOnInit(): void {
-    
+    if(this.id!==0) this.cvParams.orderId=this.id;
     this.loadCVsReferred();
-    
+    if(this.cvs.length > 0) this.paramNames=getParamsNamesOfCVRefParams(this.cvParams);
   }
 
   loadCVsReferred() {
-    
+
       this.service.setCVRefParams(this.cvParams);
       this.service.referredCVsPaginated(this.cvParams).subscribe({
         next: response => {

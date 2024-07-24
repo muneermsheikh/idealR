@@ -8,13 +8,13 @@ namespace api.Interfaces.Finance
 {
     public interface IFinanceRepository
     {
-        Task<PagedList<COA>> GetCOAPagedList(COAParams coaParams);
-        Task<ICollection<COA>> GetCOAList(COAParams coaParams);
+        Task<PagedList<COA>> GetCOAPagedList(ParamsCOA coaParams);
+        Task<ICollection<COA>> GetCOAList(ParamsCOA coaParams);
         Task<COA> GetOrCreateCoaForCandidateWithNoSave(int applicationno, bool create);
         Task<COA> GetSalesRecruitmentCOA();
         Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams paginationParams);
-        Task<bool>UpdateTransactionConfirmations(ICollection<PendingDebitApprovalDto> updateDto);
-        Task<COA> GetCOA(COAParams coaParams);
+        Task<string>UpdateVoucherEntries(ICollection<VoucherEntry> entries);
+        Task<COA> GetCOA(ParamsCOA coaParams);
         Task<string> GetAccountNameFromId(int Id);
         Task<COA> SaveNewCOA(COA COA);
         Task<COA> EditCOA(COA COA);

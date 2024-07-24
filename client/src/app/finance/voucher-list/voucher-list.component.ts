@@ -132,7 +132,7 @@ export class VoucherListComponent implements OnInit{
   
   returnToCaller() {
     //console.log('return to caller:', this.returnUrl);
-    this.router.navigateByUrl(this.returnUrl || '' );
+    this.router.navigateByUrl(this.returnUrl || '/finance' );
   }
 
 }

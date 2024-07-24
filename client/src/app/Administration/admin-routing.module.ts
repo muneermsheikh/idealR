@@ -36,6 +36,8 @@ import { DLComponent } from './dl/dl.component';
 import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
 import { FeedbackComponent } from '../feedback/feedback/feedback.component';
 import { FeedbackHistoryResolver } from '../_resolvers/admin/feedbackHistoryResolver';
+import { CvsreferredComponent } from '../profiles/cvsreferred/cvsreferred.component';
+import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 
 
 const routes = [
@@ -92,8 +94,13 @@ const routes = [
       orderAssessment: OrderAssessmentResolver
     }
   },
+
+  {path: 'excelConversion', component: ExcelConversionMenuComponent},
+  
+  {path: 'cvsreferred/:id', component: CvsreferredComponent},
   
   {path: 'selections', component: SelectionsComponent },
+  {path: 'selections/:id', component: SelectionsComponent},
 
   {path: 'pendingSelections', component: SelectionPendingComponent},
 

@@ -78,7 +78,7 @@ namespace api.Controllers
         public async Task<ActionResult<ICollection<DeploymentPendingDto>>> AddDeploymentItems(ICollection<DepItemToAddDto> depItemsDto)
         {
             var dtos = await _depRepo.AddDeploymentItems(depItemsDto, User.GetUsername());
-            if(!string.IsNullOrEmpty(dtos.ErrorString)) return BadRequest(new ApiException(400, "Failed to add the deployment item", ""));
+            if(!string.IsNullOrEmpty(dtos.ErrorString)) return BadRequest(new ApiException(400, "Failed to add the deployment item", dtos.ErrorString));
 
             return Ok(dtos.deploymentPendingDtos);
         }

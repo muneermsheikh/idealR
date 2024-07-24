@@ -11,12 +11,12 @@
 		lastText="&raquo;">
 	</pagination>
 
-	<input (keyup.enter)="onSearch()" type="text" class="stdd w200" style="margin-left: 15px;" #search placeholder="Search">
-	<button (click)="onSearch()" title="search the text entered" class="stdd btn fa-solid fa-find mx-2"></button>
+	<input (keyup.enter)="onSearch()" type="text" class="stdd mx-5 w200" #search placeholder="Search">
+	<button (click)="onSearch()" title="search the text entered" class="btn fa fa-search fa-2x mx-2"></button>
 
-	<button class="btn mx-2 fa fa-plus mx-2" style="display:inline-block;" 
-		title="add a new Finance Voucher" (click)="addNewFinanceTransaction()" ></button>
-	<button title="return to calling program" class="btn mx-2 fa fa-window-close" 
+	<button class="btn fa fa-plus fa-2x mx-2" title="add a new Finance Voucher" 
+		(click)="addNewFinanceTransaction()" ></button>
+	<button title="return to calling program" class="btn mx-2 fa fa-window-close fa-2x" 
 		style="display:inline-block;" (click)="returnToCaller()" ></button>
 	
 

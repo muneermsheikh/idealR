@@ -1,4 +1,7 @@
-.stdd {display: inline-block;}
+.stdd {
+    display: inline-block;
+    margin: 2px 1px 1px 2px;
+}
 
 .w25 {width: 25px;}
 .w90 {width: 90px;}

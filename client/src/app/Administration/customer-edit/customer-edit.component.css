@@ -47,10 +47,6 @@
 .fSmall {font-size: small;}
 .fSmaller {
     font-size: smaller;
-    display: inline-block;
-    margin-left:1px;
-    margin-right:1px;
-    font-weight: bold;
 }
 
 

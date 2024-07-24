@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
 import { IFeedback } from 'src/app/_models/hr/feedback';
@@ -41,13 +41,20 @@ export class FeedbackComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.activatedRoute.data.subscribe(data => {
-      this.feedback = data['feedback'],
-      this.feedbackHistory = data['history'];
-
-      if(this.feedback) this.InitializeForm(this.feedback);
+    this.activatedRoute.data.subscribe({
+      next: data => {
+        this.feedback = data['feedback'],
+        this.feedbackHistory = data['history'];
+  
+        if(this.feedback) this.InitializeForm(this.feedback);
+      }, 
+      error: (err:any) => {
+        console.log('error:', err);
+        this.toastr.error(err.error.error.details, 'Error encountered')
+      }
     })
     
+
   }
 
   InitializeForm(feedbk: IFeedback) {
@@ -192,7 +199,7 @@ export class FeedbackComponent implements OnInit {
       return;
     }
 
-    this.service.sendFeedbackEmailToClient(this.feedback!.id);
+    this.service.sendFeedbackMail(this.feedback!.id);
   }
   
 }

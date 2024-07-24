@@ -1,90 +1,16 @@
 using System.Data;
 using System.Data.Common;
-using System.Text;
 using api.Data;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using SQLitePCL;
 
 namespace api.Extensions
 {
     public static class ReadExcelSheet
-    {
-        static void ReadExcelFile()
-        {
-            try
-            {
-                using SpreadsheetDocument doc = SpreadsheetDocument.Open("../Assets/1049_1_Fire_and_Safety_Engineer-02June2022-0-14.xlsx", false);
-                WorkbookPart workbookPart = doc.WorkbookPart;
-                Sheets thesheetcollection = workbookPart.Workbook.GetFirstChild<Sheets>();
-                StringBuilder excelResult = new();
-
-                // Iterate through each sheet
-                foreach (Sheet thesheet in thesheetcollection.Cast<Sheet>())
-                {
-                    excelResult.AppendLine("Excel Sheet Name: " + thesheet.Name);
-                    excelResult.AppendLine("-----------------------------------------------");
-
-                    // Get the worksheet object by using the sheet ID
-                    Worksheet theWorksheet = ((WorksheetPart)workbookPart.GetPartById(thesheet.Id)).Worksheet;
-                    SheetData thesheetdata = theWorksheet.GetFirstChild<SheetData>();
-
-                    // Iterate through rows and cells
-                    foreach (Row thecurrentrow in thesheetdata.Cast<Row>())
-                    {
-                        foreach (Cell thecurrentcell in thecurrentrow.Cast<Cell>())
-                        {                            
-                            // Take the cell value
-                            string currentcellvalue = string.Empty;
-                            if (thecurrentcell.DataType != null)
-                            {
-                                if (thecurrentcell.DataType == CellValues.SharedString)
-                                {
-                                    if (Int32.TryParse(thecurrentcell.InnerText, out int id))
-                                    {
-                                        SharedStringItem item = workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>().ElementAt(id);
-                                        if (item.Text != null)
-                                        {
-                                            // Code to take the string value
-                                            excelResult.Append(item.Text.Text + " ");
-                                        }
-                                        else if (item.InnerText != null)
-                                        {
-                                            currentcellvalue = item.InnerText;
-                                        }
-                                        else if (item.InnerXml != null)
-                                        {
-                                            currentcellvalue = item.InnerXml;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                excelResult.Append(Convert.ToInt16(thecurrentcell.InnerText) + " ");
-                            }
-                        }
-                        excelResult.AppendLine();
-                    }
-                    excelResult.Append("");
-                    Console.WriteLine(excelResult.ToString());
-                    Console.ReadLine();
-
-                }
-            }
-            catch (Exception)
-            {
-                // Handle exceptions
-            }
-        }
-
+    {   
         public static async Task<string> ReadProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
         {
             // var CategoryRef - label in row2, column1, data in row2, column 2
@@ -250,6 +176,8 @@ namespace api.Extensions
         {
             //column title in row 2, data starts from row 3
             //string filePath = "D:\\IdealR_/Ideal/api/CandidateExcelData.xlsx";
+            int rowTitle=2;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using (var package = new ExcelPackage(new System.IO.FileInfo(filePath)))
             {
@@ -272,7 +200,8 @@ namespace api.Extensions
                 int intCustomerStatus=0;
                 
                 for(int col=3; col <= columns; col++) {
-                    var colTitle = worksheet.Cells[5, col].Value.ToString();
+                    var colTitle = worksheet.Cells[rowTitle, col].Value.ToString();
+
                     switch (colTitle.ToLower()) {
                         case "customertype": case "customer type": intCustomerType=col;break;
                         case "customername": case "customer name": intCustomerName=col; break;
@@ -459,5 +388,6 @@ namespace api.Extensions
             var recAffected=await context.SaveChangesAsync();
             return recAffected;
         }
+        
     }
 }

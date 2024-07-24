@@ -32,5 +32,6 @@ namespace api.Interfaces
         Task<UserAttachment> GetUserAttachmentById (int attachmentId);
         Task<ICollection<UserAttachment>> GetUserAttachmentByCandidateId (int candidateid);
         Task<string> WriteProspectiveExcelToDB(string fileNameWithPath, string username);
+        Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string username);
     }
 }

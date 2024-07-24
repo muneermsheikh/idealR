@@ -7,7 +7,7 @@ export class FeedbackParams
     dateReceived=new Date();
     
     pageNumber=1;
-    pageSize=1;
+    pageSize=10;
     search='';
     sort='';
 }

@@ -22,6 +22,10 @@
         (click)="close()" ></button>
 </div>
 
+<div *ngIf="paramNames.length" class="my-1" >
+    "CVs referred based on following criteria: " + paramNames;
+</div>
+
 <div style="margin-left: 70px;">
     <div class="lbl w30 mx-1">Select</div>
     <!-- <div class="stdd fSmall w10 mx-1"></div> -->

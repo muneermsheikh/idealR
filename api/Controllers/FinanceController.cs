@@ -38,7 +38,7 @@ namespace api.Controllers
         }
 
         [HttpGet("coalist")]
-        public async Task<ActionResult<ICollection<COA>>> GetCOAList([FromQuery]COAParams coaParams)
+        public async Task<ActionResult<ICollection<COA>>> GetCOAList([FromQuery]ParamsCOA coaParams)
         {
             var obj = await _finRepo.GetCOAList(coaParams);
 
@@ -48,7 +48,7 @@ namespace api.Controllers
         }
 
         [HttpGet("coapagedlist")]
-        public async Task<ActionResult<PagedList<COA>>> GetCOAPagedList([FromQuery]COAParams coaParams)
+        public async Task<ActionResult<PagedList<COA>>> GetCOAPagedList([FromQuery]ParamsCOA coaParams)
         {
             var pagedList = await _finRepo.GetCOAPagedList(coaParams);
             if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
@@ -142,13 +142,13 @@ namespace api.Controllers
             return Ok(pagedList);
         }
 
-        [HttpPut("updatePaymentConfirmation")]
-        public async Task<ActionResult<bool>> UpdatePaymentConfirmation(ICollection<PendingDebitApprovalDto> pDtos)
+        [HttpPut("updateVoucherEntries")]
+        public async Task<ActionResult<string>> UpdatePaymentConfirmation(ICollection<VoucherEntry> entries)
         {
-            var updated = await _finRepo.UpdateTransactionConfirmations(pDtos);
-            if(!updated) return BadRequest(new ApiException(400, "Bad Request","Failed to update the payment confirmations"));
+            var errString = await _finRepo.UpdateVoucherEntries(entries);
+            if(!string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Bad Request",errString));
             
-            return Ok(updated);
+            return Ok("");
         }
 
         [HttpPut("voucher")]
@@ -233,7 +233,7 @@ namespace api.Controllers
                             AttachmentSizeInBytes = Convert.ToInt32(file.Length/1024), 
                             FileName=file.FileName, 
                             Url=fullPath, 
-                            DateUploaded=_today, 
+                            DateUploaded= DateTime.Now, 
                             UploadedByUsername=User.GetUsername()
                         };
                         Attachmentlist.Add(attachment);
@@ -254,56 +254,57 @@ namespace api.Controllers
           {
               int voucherid=0;
 
-               var voucherAttachmentlist = new List<VoucherAttachment>();
-
                try
                {
                     var modelData = JsonSerializer.Deserialize<FinanceVoucher>(Request.Form["data"],  
                          new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-                    
-                    var files = Request.Form.Files;                    
+                  
                     var voucherObject = await _finRepo.UpdateFinanceVoucher(modelData);
-                    
-                    if(voucherObject==null) return BadRequest(new ApiException(404, "Failed to update Finance Voucher object"));
-                    voucherid=voucherObject.Id;
-                    
-                    var folderName = Path.Combine("Assets", "Images");
-                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
 
-                    //var attachmentTypes = modelData.UserAttachments;
+                    var files = Request.Form.Files;  
+                    if (files.Count > 0) {
+                        var voucherAttachmentlist = new List<VoucherAttachment>();
 
-                    foreach (var file in files)     //files are new ones uploaded
-                    {
-                         if(file.Length == 0) continue;
-                         /* 
-                         1. files uploaded but not present in existing file attachments are the ones to be uploaded, 
-                            and hence also to be added in _context.VoucherAttachments Object
-                         2. The voucherAttachments collection  could already be having files uploaded earlier, and physical fils in the images folder, 
-                            those are to be ignored and not added to the _context.UserAttachments object
-                         */
-                         //if(modelData.VoucherAttachments.Any(x => x.FileName == file.FileName)) continue;   //no need to upload files that are NOT NEW
+                        if(voucherObject==null) return BadRequest(new ApiException(404, "Failed to update Finance Voucher object"));
+                        voucherid=voucherObject.Id;
+                        
+                        var folderName = Path.Combine("Assets", "Images");
+                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                        pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
 
-                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        //var attachmentTypes = modelData.UserAttachments;
 
-                         if(System.IO.File.Exists(pathToSave + @"\" + fileName)) continue;
-                         
-                         var fullPath = Path.Combine(pathToSave, fileName);
-                         var dbPath = Path.Combine(folderName, fileName);
-                         
-                         using (var stream = new FileStream(fullPath, FileMode.Create))
-                         {
-                              file.CopyTo(stream);
-                         }
+                        foreach (var file in files)     //files are new ones uploaded
+                        {
+                            if(file.Length == 0) continue;
+                            /* 
+                            1. files uploaded but not present in existing file attachments are the ones to be uploaded, 
+                                and hence also to be added in _context.VoucherAttachments Object
+                            2. The voucherAttachments collection  could already be having files uploaded earlier, and physical fils in the images folder, 
+                                those are to be ignored and not added to the _context.UserAttachments object
+                            */
+                            //if(modelData.VoucherAttachments.Any(x => x.FileName == file.FileName)) continue;   //no need to upload files that are NOT NEW
 
-                         /* newAttacments.Add(new VoucherAttachment{
-                             VoucherId=modelData.Id, 
-                             AttachmentSizeInBytes=Convert.ToInt32(file.Length/204),
-                             Url=fullPath, 
-                             FileName =@"'\" + folderName + @"\" + fileName + "'",
-                             DateUploaded=_today,
+                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+
+                            if(System.IO.File.Exists(pathToSave + @"\" + fileName)) continue;
+                            
+                            var fullPath = Path.Combine(pathToSave, fileName);
+                            var dbPath = Path.Combine(folderName, fileName);
+
+                            using var stream = new FileStream(fullPath, FileMode.Create);
+                            file.CopyTo(stream);
+
+                            /* newAttacments.Add(new VoucherAttachment{
+                                VoucherId=modelData.Id, 
+                                AttachmentSizeInBytes=Convert.ToInt32(file.Length/204),
+                                Url=fullPath, 
+                                FileName =@"'\" + folderName + @"\" + fileName + "'",
+                                DateUploaded=_today,
                             UploadedByUsername = User.GetUsername()                              
-                         }); */
+                            }); */
+                        }
+
 
                     }
 

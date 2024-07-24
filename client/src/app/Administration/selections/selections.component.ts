@@ -67,11 +67,18 @@ export class SelectionsComponent implements OnInit {
       private bsModalService: BsModalService) { }
 
   ngOnInit(): void {
-    this.getSelectionsPaged(this.sParams);
+    
+    var id=this.activatedRoute.snapshot.paramMap.get('id');
+    
+    if(id !=='' && id !== '0') this.sParams.orderId=+id!;
+
+    this.getSelectionsPaged(false);
+    
   }
 
-  getSelectionsPaged(oParams: SelDecisionParams) {
-    this.service.getSelectionRecords(oParams).subscribe({
+  getSelectionsPaged(useCache: boolean) {
+    this.service.setParams(this.sParams);
+    this.service.getSelectionRecords(useCache).subscribe({
       next: response => {
         if(response.result && response.pagination) {
           this.selections = response.result;
@@ -254,9 +261,10 @@ export class SelectionsComponent implements OnInit {
 
   onPageChanged(event: any){
     const params = this.service.getParams();
-    if (this.sParams.pageNumber !== event) {
+    if (this.sParams.pageNumber !== event.page) {
       this.sParams.pageNumber = event.page;
-      this.getSelectionsPaged(this.sParams);
+      this.service.setParams(this.sParams);
+      this.getSelectionsPaged(true);
     }
   }
 
@@ -268,7 +276,7 @@ export class SelectionsComponent implements OnInit {
     prms.pageNumber=1;
     prms.pageSize=10;
     this.service.setParams(prms);
-    this.getSelectionsPaged(prms);
+    this.getSelectionsPaged(true);
   }
 
   onSearch() {
@@ -276,13 +284,13 @@ export class SelectionsComponent implements OnInit {
     params.search = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
     this.service.setParams(params);
-    this.getSelectionsPaged(params);
+    this.getSelectionsPaged(true);
   }
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     this.sParams = new SelDecisionParams();
     this.service.setParams(this.sParams);
-    this.getSelectionsPaged(this.sParams);
+    this.getSelectionsPaged(true);
   }
 }

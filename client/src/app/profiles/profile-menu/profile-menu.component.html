@@ -1,12 +1,28 @@
 <div class="container d-flex justify-contents-between align-items-center mt-5">
-   
-    <button class="stdd" (click)="OpenAvailableCandidatesComponent()" title="Candidates reviewed and approved for sending to clients">Candidates available to refer</button>
-    <button class="stdd" routerLink="/candidates/cvsreferred" title="CVs referred to clients">CVs Referred to Clients</button>
-    <button class="stdd" (click)="OpenCandidatesListingComponent()" title="List of Candidates">List of Candidates</button>
-    <button class="stdd" (click)="OpenCallRecordMenu()" title="Candidate history">Call Record History</button>
-    <button class="stdd" (click)="OpenActiveProspectiveList()" title="displays active prospective candidates">Active Prospective Candidates List</button>
-    <button class="stdd" (click)="importProspectiveExcel()" title="Candidate history">import Prospective Candidates From Excel</button>
 
+    <div title="Candidates reviewed and approved for sending to clients" class="nav-item menuStdd">
+        <a class="nav-item menuStdd" (click)="OpenAvailableCandidatesComponent()"
+            routerLinkActive="active" >Candidates available to refer
+        </a>
+    </div>
+    <div title="CVs referred to clients" class="nav-item menuStdd">
+        <a routerLink="/candidates/cvsreferred"class="nav-item menuStdd"
+            routerLinkActive="active" >CVs Referred to Clients</a>
+    </div>
+
+    <div title="List of candidates" class="nav-item menuStdd">
+        <a (click)="OpenCandidatesListingComponent()" class="nav-item menuStdd"
+            routerLinkActive="active" >List of Candidates</a>
+    </div>
+    <div title="Call Record History" class="nav-item menuStdd">
+        <a (click)="OpenCallRecordMenu()" class="nav-item menuStdd"
+            routerLinkActive="active" >Call Record History</a>
+    </div>
+    <div title="displays active prospective candidates" class="nav-item menuStdd">
+        <a (click)="OpenActiveProspectiveList()" class="nav-item menuStdd"
+            routerLinkActive="active" >Active Prospective Candidates List</a>
+    </div>
+   
 </div>
 
 <div *ngIf="uploadExcel" class="my-10" >

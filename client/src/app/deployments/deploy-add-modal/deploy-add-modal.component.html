@@ -29,9 +29,9 @@
             <ng-select 
                     style="border: color(from color srgb r g b); font-size: smaller;"
                     [items]="depStatuses"
-                    bindLabel="status"
+                    bindLabel="statusName"
                     bindValue="depItem.sequence"
-                    labelForId="depItem.status"
+                    labelForId="depItem.statusName"
                     clearAllText="Clear"
                     [(ngModel)]="depItem.sequence"
             ></ng-select>
@@ -41,9 +41,9 @@
             <ng-select 
                     style="border: color(from color srgb r g b); font-size: smaller;"
                     [items]="depStatuses"
-                    bindLabel="status"
+                    bindLabel="statusName"
                     bindValue="depItem.nextSequence"
-                    labelForId="depItem.status"
+                    labelForId="depItem.statusName"
                     clearAllText="Clear"
                     [(ngModel)]="depItem.nextSequence"
             ></ng-select>

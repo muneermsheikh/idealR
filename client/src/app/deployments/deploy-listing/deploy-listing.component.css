@@ -19,7 +19,8 @@
 .w200 {width: 200px;}
 .w250 {width: 250px;}
 
-
+.b {font-weight: bold;}
+.green {color: darkgreen;}
   ::ng-deep .ng-select .ng-select-container , ::ng-deep .ng-select.ng-select-single .ng-select-container{
 	min-height: 25px;
 	font-size: 0.8em;

@@ -1,0 +1,18 @@
+<h4>Deployment Status with Sequence Numbers</h4>
+
+<label class="lbl w75">Sequence No</label>
+<label class="lbl w250">Deployment Status</label>
+<label class="lbl w100">Estimated days<br>for this Sequence</label>
+<label class="lbl w75">Optional</label>
+<label class="lbl w75">Next Sequence</label>
+<label class="lbl w250">Next Status Name</label>
+
+
+<div *ngFor="let st of status">
+    <div class="w75 tAlignRight">{{st.sequence}}</div>
+    <div class="stdd w250">{{st.statusName}}</div>
+    <div class="stdd w100">{{st.workingDaysReqdForNextStage}}</div>
+    <div class="stdd w75">{{st.isOptional ? 'Yes' : 'No'}}</div>
+    <div class="w75 tAlignRight">{{st.nextSequence}}</div>
+    <div class="stdd w250">{{getSeqNameFromSeq(st.nextSequence)}}</div>
+</div>

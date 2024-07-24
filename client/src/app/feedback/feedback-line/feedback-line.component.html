@@ -5,7 +5,11 @@
     <div class="stdd w100">{{fdbk.dateIssued | date: 'dd-MMM-yy'}}</div>
     <div class="stdd w100">{{fdbk.dateReceived | date: 'dd-MMM-yy'}}</div>
     <div class="stdd w75">{{fdbk.gradeAssessedByClient}}</div>
-    <button class="btn fa fa-pencil" (click)="editClicked(fdbk.id)" ></button>
-    <button class="btn fa fa-envelope" (click)="generateEmail(fdbk.id)" ></button>
-    <button class="btn fa fa-trash red" (click)="deleteClicked(fdbk.id)" ></button>
+    <button class="btn fa fa-pencil" 
+        title="Edit this Feedback.  It is not editable if the Feedback has already been forwarded to client" 
+        (click)="editClicked(fdbk.id)" ></button>
+    <button class="btn fa fa-envelope" title="send to the client a link to this feedback"
+        (click)="generateEmail(fdbk.id)" ></button>
+    <button class="btn fa fa-trash red" title="delete this feedback.  It cannot be deleted if it is already sent to the client" 
+        (click)="deleteClicked(fdbk.id)" ></button>
 </div>

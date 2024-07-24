@@ -33,6 +33,8 @@ export class CoaListComponent implements OnInit {
   bsModalRef?: BsModalRef;
   inputApplicationNo=0;
 
+  lastExclude='';
+
   sortOptions = [
     {name:'By Account Name Asc', value:'name'},
     {name:'By Account Name Desc', value:'namedesc'},
@@ -70,19 +72,17 @@ export class CoaListComponent implements OnInit {
     this.getCOAs();
   }
 
-  getCOAs() {
+  getCOAs(useCache: boolean=true) {
 
     this.service.setParams(this.sParams);
-
-    return this.service.getCoas().subscribe({
+    
+    return this.service.getCoas(useCache).subscribe({
       next:  response => {
         if(response !==null && response !==undefined) {
           this.coas = response.result;
           this.totalCount = response.count;
           this.pagination = response.pagination;
         }
-        console.log('coas', this.coas);
-
       },
       error: err => console.log(err)
     });
@@ -118,8 +118,21 @@ export class CoaListComponent implements OnInit {
   }
 
 
+  applyFilter() {
+
+    if(this.sParams.divisionToExclude !== this.lastExclude) {
+        this.getCOAs(false);
+        this.lastExclude = this.sParams.divisionToExclude;
+
+    }
+    
+  }
+
   addNewCOA() {
-    let route = '/finance/addaccount';
+
+    this.editCOAModal(null);
+
+    /*let route = '/finance/addaccount';
     this.router.navigate(
       [route], 
       { state: 
@@ -131,14 +144,14 @@ export class CoaListComponent implements OnInit {
         } 
       }
     );
-
+    */
   }
 
   editCOAModal(edit: ICOA | null) {
     if(edit===null) edit = new coa();
 
     const config = {
-      class: 'modal-dialog-centered modal-lg',
+      class: 'modal-dialog-centered modal-md',
       initialState: {
         title: 'edit Chart of account',
         coa: edit
@@ -151,8 +164,14 @@ export class CoaListComponent implements OnInit {
       switchMap((editedCOA: ICOA) => {
         return this.service.editCOA(editedCOA)
       })
-    ).subscribe((edited: boolean) => {
+    ).subscribe((edited: ICOA) => {
       if(edited) {
+        if(edit==null) {
+          this.coas.push(edited)
+        } else {
+          var index = this.coas.findIndex(x => x.id===edit?.id);
+          if(index !==-1) this.coas[index] = edited;
+        }
         this.toastr.success('COA was edited', 'Success')
       } else {
         this.toastr.warning('Failed to update the COA', 'Failure')
@@ -270,6 +289,6 @@ export class CoaListComponent implements OnInit {
 
   
   returnToCaller() {
-    this.router.navigateByUrl(this.returnUrl || '' );
+    this.router.navigateByUrl(this.returnUrl || '/finance' );
   }
 }

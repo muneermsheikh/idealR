@@ -1,4 +1,4 @@
-<h6 style="display: inline-block;">Call Records Listing</h6>
+<h4 style="display: inline-block; font-size: bold;">Call Records Listing</h4>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;" *ngIf="pagination !== undefined">
      <pagination style="display: inline-block;"
           [totalItems]="pagination!.totalItems"
@@ -14,11 +14,11 @@
      <input (keyup.enter)="onSearch()" type="text" 
           class="stdd form-control w300" #search placeholder="Search">
      <button (click)="onSearch()" title="search the records based upon search string entered"
-          class="btn btn-outline-primary mx-1 fa fa-search"></button>
+          class="btn fa fa-search fa-2x mx-1"></button>
      <button (click)="onReset()" title="clears all search parameters"
-          class="btn btn-outline-success mx-1 fa fa-refresh"></button>
-     <button class="btn btn-outline-success  form-inline fa fa-window-close" title="go back to Administration Menu"
-          routerLink="/administration" ></button>
+          class="btn fa fa-refresh fa-2x mx-1"></button>
+     <button class="btn fa fa-window-close fa-2x mx-1" title="go back to Administration Menu"
+          routerLink="/candidates" ></button>
 </div>
 
 <div class="form-inline" style="margin-left: 50px;">

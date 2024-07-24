@@ -127,7 +127,7 @@ namespace api.Data.Repositories.HR
                     select new CustomerFeedback{
                         CustomerId = CustomerId, CustomerName = cust.CustomerName, City=cust.City,
                         OfficialName=off.OfficialName, Designation = off.Designation,
-                        Email = off.Email, PhoneNo = off.PhoneNo, DateIssued = DateOnly.FromDateTime(DateTime.Now),
+                        Email = off.Email, PhoneNo = off.PhoneNo, DateIssued = DateTime.Now,
                         FeedbackItems=inputQs}
                 ).FirstOrDefaultAsync();
 
@@ -164,7 +164,7 @@ namespace api.Data.Repositories.HR
                 x.DateIssued == fParams.DateIssued);
 
             if(fParams.DateReceived.Year > 2000) query = query.Where(x => 
-                    x.DateReceived == fParams.DateIssued);
+                    DateOnly.FromDateTime(x.DateReceived) == DateOnly.FromDateTime(fParams.DateIssued));
             if(!string.IsNullOrEmpty(fParams.Email)) query = query.Where(x => x.Email == fParams.Email);
             if(!string.IsNullOrEmpty(fParams.PhoneNo)) query = query.Where(x => x.PhoneNo == fParams.PhoneNo);
             
@@ -220,8 +220,8 @@ namespace api.Data.Repositories.HR
                 City=fInput.City, OfficialName=fInput.OfficialName, 
                 GradeAssessedByClient=fInput.GradeAssessedByClient,
                 Designation = fInput.Designation, Email = fInput.Email,
-                PhoneNo = fInput.PhoneNo, DateIssued = DateOnly.FromDateTime(fInput.DateIssued),
-                DateReceived = DateOnly.FromDateTime(DateTime.Now),
+                PhoneNo = fInput.PhoneNo, DateIssued = fInput.DateIssued,
+                DateReceived = DateTime.Now,
                 CustomerSuggestion = fInput.CustomerSuggestion,
                 FeedbackItems = items
             };
@@ -236,13 +236,17 @@ namespace api.Data.Repositories.HR
             var strErr="";
 
             var msgWithErr = await _msgRep.ComposeFeedbackMailToCustomer(feedbackId, Url, username);
-            if(msgWithErr.Messages.Count > 0) {
-                _context.Messages.Add(msgWithErr.Messages.FirstOrDefault());
-                strErr = await _context.SaveChangesAsync() > 0 ? "" : msgWithErr.ErrorString;
-            } else {
+            
+            if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) {
                 strErr = msgWithErr.ErrorString;
+            } else if(msgWithErr.Messages != null && msgWithErr.Messages.Count > 0) {
+                foreach(var msg in msgWithErr.Messages) {
+                    _context.Messages.Add(msg);
+                }
+                
+                strErr = await _context.SaveChangesAsync() > 0 ? "" : msgWithErr.ErrorString;
             }
-
+           
             return strErr;
         }
     }

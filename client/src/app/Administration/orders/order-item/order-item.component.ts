@@ -1,3 +1,4 @@
+import { getMultipleValuesInSingleSelectionError } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { IOrderBriefDto } from 'src/app/_dtos/admin/orderBriefDto';
@@ -20,6 +21,7 @@ export class OrderItemComponent implements OnInit{
   @Output() acknowledgeToClientEvent = new EventEmitter<number>();
   @Output() cvreferredEvent = new EventEmitter<number>();
   @Output() orderAssessmentItemEvent = new EventEmitter<number>();
+  @Output() selectionEvent=new EventEmitter<number>();
 
   menuTopLeftPosition =  {x: 0, y: 0}
 
@@ -38,11 +40,13 @@ export class OrderItemComponent implements OnInit{
   }
 
   editClicked() {
-    console.log('order iin orderitem', this.order);
-    console.log('orderitem edit id emitted:', this.order?.id);
+
     this.editEvent.emit(this.order!.id);
   }
   
+  selectionClicked() {
+    this.selectionEvent.emit(this.order!.id);
+  }
 
   deleteClicked() {
     this.deleteEvent.emit(this.order?.id);

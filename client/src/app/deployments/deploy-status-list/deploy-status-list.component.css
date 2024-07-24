@@ -1,0 +1,25 @@
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w250 {width:250px;}
+
+.lbl {
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 2px;
+    vertical-align: middle;
+}
+
+.tAlignRight{
+    display: inline-block;
+    text-align: right; 
+    margin: 2px 6px 2px 2px;
+    padding-right: 4px;}
+    
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin: 2px;
+    vertical-align: top;
+}
+

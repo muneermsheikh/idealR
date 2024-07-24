@@ -96,7 +96,7 @@ namespace api.Data.Repositories
             return paged;
         }
 
-        public async Task<bool> InsertCustomer(CreateCustomerDto customer)
+        public async Task<bool> InsertCustomer(api.Entities.Admin.Client.Customer customer)
         {
             
             foreach(var official in customer.CustomerOfficials) {
@@ -260,11 +260,6 @@ namespace api.Data.Repositories
             return obj;
         }
 
-        public Task<bool> InsertCustomer(Entities.Admin.Client.Customer customer)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ICollection<CustomerAndOfficialsDto>> GetCustomerAndOfficials(string customerType)
         {
             var obj = await _context.Customers.Include(x => x.CustomerOfficials)
@@ -318,7 +313,7 @@ namespace api.Data.Repositories
 
         public async Task<int> WriteCustomerExcelToDB(string fileNameWithPath, string Username)
         {
-            var count = await _context.ReadCustomerDataExcelFile(fileNameWithPath, Username);
+            var count = await _context.ReadCustomerDataExcelFile(fileNameWithPath,Username);
             return count;
         }
 

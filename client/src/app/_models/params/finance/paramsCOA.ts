@@ -2,12 +2,13 @@ export class ParamsCOA
 {
     id=0;
     accountName = '';
-    accountId = 0;
+    cOAId = 0;
+    divn = '';
     accountType = "";
-    accountClass = '';
+    divisionToExclude='';
     
     pageNumber = 1;
-    pageSize = 10;
+    pageSize = 15;
     sort = 'accountName';
     search = '';
 }

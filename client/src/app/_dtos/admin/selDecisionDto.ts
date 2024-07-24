@@ -4,6 +4,7 @@ export interface ISelDecisionDto
     checked: boolean;
     cvRefId: number;
     orderItemId: number;
+    orderId: number;
     professionId: number;
     candidateId: number;
     candidateName: string;

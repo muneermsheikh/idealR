@@ -143,7 +143,8 @@ export class CustomerListComponent implements OnInit{
 
     }
 
-    editByModalClicked(event: any, item: ICustomerBriefDto)    //event:prospecive.id
+
+    /*editByModalClicked(event: any, item: ICustomerBriefDto)    //event:customer.id
     {
           if(event === null) {
             this.toastr.warning('No customer object returned from the modal form');
@@ -178,7 +179,12 @@ export class CustomerListComponent implements OnInit{
           })
               
     }
+    */
 
+    addClicked() {
+      this.navigateByRoute(0, '/administration/customerEdit');
+    }
+    
     editClicked(event: any) {
 
       this.navigateByRoute(event, '/administration/customerEdit');
@@ -248,7 +254,19 @@ export class CustomerListComponent implements OnInit{
     if(this.display) {
         if(this.customerIdSelected == customerId) return;
         this.service.getFeedbackHistory(customerId).subscribe({
-          next: response => this.history = response
+          next: (response: IFeedbackHistoryDto[]) => {
+            console.log('response', response);
+            if(response === null) {
+              this.toastr.warning('Failed to retrieve the history of the customer', 'No record count')
+            } else {
+              this.history = response
+            }
+          }, error: (err: any) => {
+            console.log('error:', err);
+            if(err.error.message) {
+              this.toastr.error(err.error.message, 'Error encountered')
+            }
+          }
         })
         this.customerIdSelected = customerId;
     }

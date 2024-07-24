@@ -61,9 +61,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<MessageDto>>> GetMessagesForUser([FromQuery]MessageParams msgParams)
         {
-            msgParams.Username = User.GetUsername();
-            
-            var messages = await _messageRepository.GetMessagesForUser(msgParams);
+            var messages = await _messageRepository.GetMessagesForUser(msgParams, User.GetUsername());
 
             Response.AddPaginationHeader(new PaginationHeader(messages.CurrentPage, messages.PageSize, 
                 messages.TotalCount, messages.TotalPages));

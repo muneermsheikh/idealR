@@ -5,7 +5,7 @@ namespace api.DTOs.Finance
         public int Id { get; set; }
         public int VoucherNo { get; set; }
         public DateOnly TransDate { get; set; }
-        public int COAId { get; set; }
+        public int CoaId { get; set; }
         public string AccountName { get; set; }
         public long Dr {get; set;}
 	    public long Cr {get; set;}

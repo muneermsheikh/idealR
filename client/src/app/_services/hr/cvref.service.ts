@@ -13,6 +13,7 @@ import { getPaginatedResult, getPaginationHeadersCVRefParams } from '../paginati
 import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
+import { ISelPendingDtoWithParamsNamesDto } from 'src/app/_dtos/admin/selPendingDtoWithParamsNames';
 
 
 @Injectable({
@@ -45,7 +46,8 @@ export class CvrefService {
     }
 
     referredCVsPaginated(oParams: CVRefParams) { 
-   
+      
+      //var paramsDto: ISelPendingDtoWithParamsNamesDto;
       const response = this.cacheReferred.get(Object.values(oParams).join('-'));
       if(response) return of(response);
   

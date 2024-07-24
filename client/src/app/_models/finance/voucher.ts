@@ -6,7 +6,7 @@ export interface IVoucher
 	partyName: string;
 	id: number;
 	divn: string;
-	cOAId: number;
+	coaId: number;
 	accountName: string;
 	voucherNo: number;
 	voucherDated: Date;
@@ -28,7 +28,7 @@ export class Voucher implements IVoucher
 	partyName='';
 	id=0;
 	divn = '';
-	cOAId = 0;
+	coaId = 0;
 	accountName='';
 	voucherNo = 0;
 	voucherDated = new Date();

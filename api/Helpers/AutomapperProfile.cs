@@ -123,7 +123,7 @@ namespace api.Helpers
             //finance
             //CreateMap<COA, COA>();
             //CreateMap<Voucher, Voucher>();
-            CreateMap<PendingDebitApprovalDto, VoucherItem>();
+            CreateMap<PendingDebitApprovalDto, VoucherEntry>();
                             
         }
 

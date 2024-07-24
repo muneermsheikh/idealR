@@ -3,9 +3,9 @@
 export interface IVoucherEntry{
 	
 	id: number;
-	voucherId: number;
+	financeVoucherId: number;
 	transDate: Date;
-	cOAId: number;
+	coaId: number;
 	dr: number;
 	cr: number;
 	accountName: string;
@@ -18,9 +18,9 @@ export interface IVoucherEntry{
 export class VoucherEntry implements IVoucherEntry
 {
 	id=0;
-	voucherId=0;
+	financeVoucherId=0;
 	transDate=new Date();
-	cOAId=0;
+	coaId=0;
 	accountName = '';
 	dr=0;
 	cr=0;

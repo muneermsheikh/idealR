@@ -16,13 +16,14 @@
      <div class="stdd" *ngIf="cvs">
           <input (keyup.enter)="onSearch()" type="text" title="enter name or app nos, separated by commma" 
                class="stdd form-control w300" style="margin-left: 20px;" #search placeholder="Search">
-          <button type="button" (click)="onSearch()" class="stdd btn btn-outline-primary mx-3">Search</button>
-          <button type="button" (click)="onReset()" class="stdd btn btn-outline-success mx-3" 
-               style="font-size: small;">Reset</button>
-          <button type="button" class="stdd btn btn-outline-success fa fa-plus"  
-               title="Add a new candidate" routerLink="/candidates/register/edit/0"></button>
-          <button type="button" class="stdd btn fa fa-window-close"  
-               title="return to calling program" routerLink="/"></button>
+          <button type="button" (click)="onSearch()" title="Press this button after you enter the search criteria" 
+               class="btn fa fa-search fa-2x mx-2"></button>
+          <button type="button" (click)="onReset()" title="reset the search criteria" 
+               class="btn fa fa-refresh fa-2x mx-2"></button>
+          <button type="button" class="btn fa fa-plus fa-2x mx-2 " title="Add a new candidate" 
+               routerLink="/candidates/register/edit/0"></button>
+          <button type="button" class="stdd btn fa fa-window-close fa-2x"  
+               title="return to calling program" routerLink="/candidates"></button>
      </div>
  
       <div style="margin-left: 75px;">

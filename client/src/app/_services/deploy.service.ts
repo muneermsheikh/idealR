@@ -17,6 +17,7 @@ import { IDep } from '../_models/process/dep';
 import { IDepItemWithFlightDto } from '../_models/process/depItemsWithFlight';
 import { IFlightdata } from '../_models/process/flightData';
 import { ICandidateFlight } from '../_models/process/candidateFlight';
+import { IDeploymentStatus } from '../_models/masters/deployStatus';
 
 
 @Injectable({
@@ -28,7 +29,7 @@ export class DeployService {
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  deployStages: IDeployStage[]=[];
+  deployStages: IDeploymentStatus[]=[];
   depSeqAndNames: IDeployStatusAndName[]=[];
 
   deploys: ICVRefAndDeployDto[]=[];
@@ -83,7 +84,7 @@ export class DeployService {
     
     if(this.deployStages.length > 0) return of(this.deployStages);
 
-    return this.http.get<IDeployStage[]>(this.apiUrl + 'Deployment/deployStatusData')
+    return this.http.get<IDeploymentStatus[]>(this.apiUrl + 'Deployment/deployStatusData')
       .pipe(
         map(response => {
           this.deployStages = response;
@@ -156,7 +157,7 @@ export class DeployService {
     return false;
   }
 
-  getDepStage(stageId: number): IDeployStage | null {
+  getDepStage(stageId: number): IDeploymentStatus | null {
 
     if(this.deployStages.length > 0) {
       return this.deployStages.filter(x => x.sequence == stageId)[0];
@@ -165,7 +166,7 @@ export class DeployService {
     return null;
   }
 
-  getNextStage(sequence: number, ecnr: boolean): IDeployStage | null {
+  getNextStage(sequence: number, ecnr: boolean): IDeploymentStatus | null {
 
     if(this.deployStages.length > 0) {
       var nextSequence = this.getNextSequence(sequence, ecnr);
@@ -177,7 +178,7 @@ export class DeployService {
   }
 
   getNextStageDate(stageId: number): Date {
-    var dayToCompleteStage = this.deployStages.find(x => x.id==stageId)?.estimatedDaysToCompleteThisStage;
+    var dayToCompleteStage = this.deployStages.find(x => x.id==stageId)?.workingDaysReqdForNextStage;
        
     if(dayToCompleteStage !== undefined) {
       return new Date(new Date().setDate(new Date().getDate()+ dayToCompleteStage));

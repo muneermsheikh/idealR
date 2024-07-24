@@ -71,12 +71,8 @@ export class FeedbackService {
     return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + customerId);
   }
 
-  sendFeedbackEmailToClient(id: number) {
-
-    var url ="sample string"; // "<a [routerLink]=[" + this.apiUrl + '/Feedback/' + id + "] >here</a>";
-    console.log('reached feedbackservice, URL', url);
-    //return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/' + url);
-    return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + id);
+  sendFeedbackMail(id: number) {
+    return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/emaillink');
   }
 
   setParams(params: FeedbackParams) {

@@ -43,6 +43,7 @@ export class CvsAvailableToRefComponent implements OnInit {
   cvParams: candidateParams = new candidateParams();
 
   totalCount: number=0;
+
   
   constructor(private router: Router, private activatedRoute: ActivatedRoute, 
       private service: CandidateService, 
@@ -74,7 +75,7 @@ export class CvsAvailableToRefComponent implements OnInit {
     )
 
     this.selectedCVs=[];
-
+    
   }
 
   loadCandidates(fromCache: boolean=true) {

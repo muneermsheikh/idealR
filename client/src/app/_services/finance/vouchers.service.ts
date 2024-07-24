@@ -58,7 +58,7 @@ export class VouchersService {
   }
 
   getVoucherFromId( id: number): any {
-    var voucher: IVoucher;
+
     if(id===0) return of(undefined);
     
     return this.http.get<IVoucher|undefined>(this.apiUrl + 'finance/voucher/' + id);
@@ -74,6 +74,10 @@ export class VouchersService {
       reportProgress: true,
       observe: 'events'
     });
+  }
+
+  updateVoucher(formdata: IVoucher) {
+    return this.http.put<IVoucher>(this.apiUrl + 'finance/voucher', formdata);
   }
 
   public updateWithFiles(formData: FormData) {

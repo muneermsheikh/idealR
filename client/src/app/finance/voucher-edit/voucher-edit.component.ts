@@ -2,12 +2,12 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap } from 'rxjs';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { coa, ICOA } from 'src/app/_models/finance/coa';
-import { IVoucher, Voucher } from 'src/app/_models/finance/voucher';
-import { IVoucherAttachment, VoucherAttachment } from 'src/app/_models/finance/voucherAttachment';
+import { IVoucher } from 'src/app/_models/finance/voucher';
+import { IVoucherAttachment } from 'src/app/_models/finance/voucherAttachment';
 import { IVoucherEntry } from 'src/app/_models/finance/voucherEntry';
 import { User } from 'src/app/_models/user';
 import { ConfirmService } from 'src/app/_services/confirm.service';
@@ -15,7 +15,7 @@ import { FileService } from 'src/app/_services/file.service';
 import { COAService } from 'src/app/_services/finance/coa.service';
 import { VouchersService } from 'src/app/_services/finance/vouchers.service';
 import { CoaEditModalComponent } from '../coa-edit-modal/coa-edit-modal.component';
-import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Pagination } from 'src/app/_models/pagination';
 
 @Component({
@@ -45,7 +45,7 @@ export class VoucherEditComponent implements OnInit{
   minTransDate = new Date();
   maxTransDate = new Date();
 
-  returnUrl: string='';
+  returnUrl: string='/finance';
   routeId: string='';
   routeResumeId: string='';
 
@@ -128,7 +128,7 @@ export class VoucherEditComponent implements OnInit{
       this.activatedRoute.data.subscribe(data => {
         this.coas = data['coas'];
         this.voucher = data['voucher'];
-        
+        console.log('oninit', this.voucher);
       })
 
       if(this.voucher !== undefined && this.voucher !== null) {
@@ -136,6 +136,7 @@ export class VoucherEditComponent implements OnInit{
         this.recalculateTotal();
       }
       
+      if(!this.isEditable)this.form.disable;
     }
 
     createForm(vch: IVoucher) {
@@ -145,7 +146,7 @@ export class VoucherEditComponent implements OnInit{
         divn: [vch.divn, Validators.maxLength(1)],
         voucherNo: [vch.voucherNo, Validators.required],
         voucherDated: [vch.voucherDated, Validators.required],
-        cOAId: [vch.cOAId, Validators.required],
+        coaId: [vch.coaId, Validators.required],
         amount: [vch.amount, [Validators.required, Validators.min(1)]],
         totalAmountDR: [this.totalAmountDR, this.matchValues('amount')],
         narration: vch.narration,
@@ -154,7 +155,7 @@ export class VoucherEditComponent implements OnInit{
         voucherEntries: this.fb.array(
           vch.voucherEntries.map(x => (
             this.fb.group({
-              id: x.id, financeVoucherId: x.voucherId, cOAId: x.cOAId, 
+              id: x.id, financeVoucherId: x.id, coaId: [x.coaId, Validators.required], 
               accountName: x.accountName, transDate: x.transDate, 
               dr: x.dr, cr: x.cr, narration: x.narration,
               drEntryApproved: x.drEntryApproved, drEntryApprovedOn: x.drEntryApprovedOn,
@@ -162,7 +163,7 @@ export class VoucherEditComponent implements OnInit{
             })
           )))
         
-        , voucherAttachments: this.fb.array(
+        /*, voucherAttachments: this.fb.array(
           vch.voucherAttachments.map(x => (
             this.fb.group({
               id: x.id,
@@ -174,7 +175,7 @@ export class VoucherEditComponent implements OnInit{
               attachmentSizeInBytes: x.attachmentSizeInBytes
             })
           ))
-        ) 
+        ) */
       });
       
       /*this.form.controls['amount'].valueChanges.subscribe({
@@ -220,7 +221,7 @@ export class VoucherEditComponent implements OnInit{
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 
         transDate: new Date(), 
-        cOAId: this.suggestedDefaultCoaIdDR, 
+        coaId: [this.suggestedDefaultCoaIdDR, Validators.required], 
         accountName:'', 
         dr: this.suggestedDefaultAmountDR, 
         cr: 0,
@@ -228,8 +229,8 @@ export class VoucherEditComponent implements OnInit{
         drEntryApproved: false,
         //approved: [false, {disabled:!this.user?.roles.includes('finance')}],
         drEntryApprovedOn: new Date(),
-        drEntryApprovedByUsername: this.user?.userName,
-        /*filePath: '',
+        drEntryApprovedByUsername: this.user?.userName
+        /*, filePath: '',
         fileName:'',
         fileType: '',
         fileSize:0*/
@@ -242,15 +243,15 @@ export class VoucherEditComponent implements OnInit{
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 
         transDate: new Date(), 
-        cOAId: craccountid ?? this.suggestedDefaultCoaIdCR, 
+        coaId: [craccountid ?? this.suggestedDefaultCoaIdCR, Validators.required], 
         accountName:'', 
         cr: this.suggestedDefaultAmountCR ,
         dr: 0,
         narration: '',
         drEntryApproved: false,
         drEntryApprovedOn: new Date(),
-        drEntryApprovedByUsername: this.user?.userName,
-        /*filePath: '',
+        drEntryApprovedByUsername: this.user?.userName
+        /*, filePath: '',
         fileName:'',
         fileType: '',
         fileSize:0*/
@@ -261,10 +262,12 @@ export class VoucherEditComponent implements OnInit{
       this.voucherEntries.removeAt(i);
       this.voucherEntries.markAsDirty();
       this.voucherEntries.markAsTouched();
+      this.recalculateTotal();
     } 
 
 //voucher attachments
-    newVoucherAttachment(): any {
+
+    /*newVoucherAttachment(): any {
       return this.fb.group({
         id: 0, 
         voucherId: this.voucher?.id ?? 0,
@@ -290,7 +293,7 @@ export class VoucherEditComponent implements OnInit{
       return this.form.get("voucherAttachments") as FormArray;
     }
     //end of attachments
-    
+    */
     recalculateTotal() {
       this.totalAmountDR = +this.voucherEntries.value.map((x: any) => x.dr).reduce((a:number,b:number) => a+b,0);
       this.totalAmountCR = +this.voucherEntries.value.map((x: any) => x.cr).reduce((a:number,b:number) => a+b,0);
@@ -298,6 +301,7 @@ export class VoucherEditComponent implements OnInit{
       this.diff = Math.abs(d).toString();
       this.diff += d > 0 ? ' DR' : ' CR';
       this.iDiff = Math.abs(d);
+      this.form.get('totalAmountDR')?.setValue(this.totalAmountDR);
     }
 
     updateVoucherAmount()
@@ -351,6 +355,7 @@ export class VoucherEditComponent implements OnInit{
       ).subscribe(response => {
         if(response) {
           this.toastr.success('Voucher deleted', 'deletion successful');
+          this.recalculateTotal();
         } else {
           this.toastr.error('Error in deleting the checklist', 'failed to delete')
         }
@@ -359,7 +364,7 @@ export class VoucherEditComponent implements OnInit{
     }
 
     returnToCaller() {
-      this.router.navigateByUrl(this.returnUrl || '');
+      this.router.navigateByUrl(this.returnUrl || '/finance');
     }
 
     addNewCOA() {
@@ -408,7 +413,7 @@ export class VoucherEditComponent implements OnInit{
         } 
     }
 
-    onFileInputChange(event: Event, voucherId: number) {
+    /*onFileInputChange(event: Event, voucherId: number) {
       const target = event.target as HTMLInputElement;
       const files = target.files as FileList;
       const f = files[0];
@@ -431,6 +436,26 @@ export class VoucherEditComponent implements OnInit{
       this.voucherAttachments.push(newFileAttachment);
 
     }
+      */
+
+    updateVoucher() {
+        if(this.form.invalid) {
+          this.toastr.warning("Invalid form");
+          return;  
+        }
+        
+      this.service.updateVoucher(this.form.value).subscribe({
+        next: (response: IVoucher) => {
+          if(response===null) {
+              this.toastr.warning('Failed to update the voucher', 'failure');
+          } else {
+              this.toastr.success('Voucher updated', 'success');
+              this.router.navigateByUrl(this.returnUrl);
+          }
+        }, error: err => this.toastr.error(err, 'Error encountered')
+      })
+    }
+    
 
     uploadFileAndFormData = () => {
       if(this.form.invalid) {
@@ -447,40 +472,13 @@ export class VoucherEditComponent implements OnInit{
         return;
       }
 
-      //console.log('upload file proceeded to api at ', nowDate, ', last time called: ', this.lastTimeCalled);
-
       this.lastTimeCalled=Date.now();
       
       const formData = new FormData();
-      const formValue = this.form.value;
 
-      /*const mData = JSON.stringify(this.form.value);
-      formData.append('data', mData); 
-      //console.log('formData with candidate object:', formData);
-      
-      if(this.voucherFiles.length > 0) {
-        this.voucherFiles.forEach( f => {
-          formData.append('file', f, f.name);     //files are downloaded separately at the API
-          //console.log('formData with candidate object + attachment:', formData);
-        })
-      }
-      */
+      formData.append('data', JSON.stringify(this.form.value));
 
-        /*var voucherentries: IVoucherEntry[] = this.voucherEntries.value;
-        var voucherattachments: IVoucherAttachment[]=this.voucherAttachments.value;
-
-        var newVoucher: IVoucher = {id: formValue.id, partyName: formValue.partyName, 
-            accountName:formValue.accountName, voucherNo: formValue.voucherNo, 
-            username: formValue.username, reviewedByUsername:formValue.reviewedByUsername,
-            divn: formValue.divn, voucherDated: this.form.controls['voucherDated'].value,
-            amount: formValue.amount, narration: formValue.narration, cOAId: this.form.controls['cOAId'].value,
-            reviewedOn: formValue.reviewedOn,
-            voucherEntries: voucherentries
-            , voucherAttachments: voucherattachments 
-          };
-        */
-        if(this.voucher!.id === 0) {   //insert new cv
-        formData.append('data', JSON.stringify(this.form.value));
+      if(this.voucher!.id === 0) {   //insert new cv
 
         this.service.insertVoucherWithUploads(formData).subscribe({
             next: (event: any) => 
@@ -490,11 +488,8 @@ export class VoucherEditComponent implements OnInit{
               else if (event.type === HttpEventType.Response) 
               {
                   this.message = 'Upload success.';
-                  console.log('event', event);
-
+          
                   this.form.get('voucherNo')?.setValue(event.body.returnInt);
-                  //console.log('response returned from api', event);
-                  //this.onUploadFinished.emit(event.body);
                   this.returnToCaller();
                   this.toastr.success('the Voucher is created, and assigned Voucher No. '+  event.body.returnInt);
               } 
@@ -503,8 +498,6 @@ export class VoucherEditComponent implements OnInit{
           });
 
       } else {
-
-          formData.append('data', JSON.stringify(this.form.value));
 
           this.service.updateWithFiles(formData).subscribe({
             next: (event: any) => {
@@ -515,6 +508,7 @@ export class VoucherEditComponent implements OnInit{
                 
                   this.toastr.success("Voucher Updated and Files uploaded");
                   this.onUploadFinished.emit(event.body);
+                  this.returnToCaller();
               }
             },
           error: (err: HttpErrorResponse) => console.log(err)
@@ -527,7 +521,7 @@ export class VoucherEditComponent implements OnInit{
       this.response = event; 
     }
 
-    download (i: number) {
+    /*download (i: number) {
       this.attachmentid = this.voucherAttachments.at(i).get('id')?.value;
       if(this.attachmentid===0) return;
   
@@ -554,4 +548,5 @@ export class VoucherEditComponent implements OnInit{
       a.click();
       document.body.removeChild(a);
     }
+      */
 }

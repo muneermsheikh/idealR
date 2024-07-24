@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, RouteConfigLoadEnd, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { valuesIn } from 'lodash-es';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { ICustomer } from 'src/app/_models/admin/customer';
 import { User } from 'src/app/_models/user';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
@@ -50,7 +51,7 @@ export class CustomerEditComponent implements OnInit {
   InitializeForm(cust: ICustomer) {
 
     this.form = this.fb.group({
-      id: cust.id,  customerName: [cust.customerName, Validators.required], knownAs: [cust.knownAs, Validators.required], 
+      id: cust.id,  customerName: [cust.customerName, Validators.required], knownAs: [cust.knownAs, [Validators.required, Validators.minLength(5)]], 
       customerType: [cust.customerType, Validators.required], add: cust.add, add2: cust.add2, city: [cust.city, Validators.required], 
       pin: cust.pin, district: cust.district, state: cust.state, country: cust.country, email: [cust.email, Validators.required], 
       website: cust.website, phone: cust.phone, phone2: cust.phone2, customerStatus: cust.customerStatus,
@@ -59,7 +60,7 @@ export class CustomerEditComponent implements OnInit {
       customerOfficials: this.fb.array(
         cust.customerOfficials.map(x => (
           this.fb.group({
-            id: x.id, appUserId: x.appUserId, customerId: x.customerId, gender: [x.gender, Validators.required], 
+            id: x.id, appUserId: x.appUserId, customerId: x.customerId, gender: [x.gender, [Validators.required, Validators.maxLength(1)]], 
             title: [x.title, Validators.required], officialName: [x.officialName, Validators.required], 
             designation: x.designation, divn: [x.divn, Validators.required], phoneNo: x.phoneNo, knownAs: x.knownAs,
             mobile: x.mobile, email: [x.email, Validators.required], status: x.status, priorityHR: x.priorityHR,
@@ -98,8 +99,8 @@ export class CustomerEditComponent implements OnInit {
       newCustomerOfficial(): FormGroup {
         return this.fb.group({
 
-            id: 0, appUserId: 0, customerId: this.customer?.id, gender: 'Male',
-            title: '', officialName: '', designation: '', knownAs: '',
+            id: 0, appUserId: 0, customerId: this.customer?.id, gender: ['M', [Validators.required, Validators.maxLength(1)]],
+            title: 'Mr.', officialName: ['', Validators.required], designation: '', knownAs: ['', Validators.required],
             divn: '', phoneNo: '',  mobile: '', email: '', status: 'Active', 
             priorityHR: 1, priorityAdmin: 1, priorityAccount: 1, userName: ''
         })
@@ -147,14 +148,27 @@ export class CustomerEditComponent implements OnInit {
 
   updateCustomer() {
     var formdata = this.form.value;
-    this.service.updateCustomer(formdata).subscribe({
-      next: response => {
-        if(response === '') {
-          this.toastr.success('The Customer is successfully updated', 'success');
-          this.close();
+    if(formdata.id > 0) {
+
+      this.service.updateCustomer(formdata).subscribe({
+        next: response => {
+          if(response === '') {
+            this.toastr.success('The Customer is successfully updated', 'success');
+            this.close();
+          }
         }
-      }
-    })
+      })
+  } else {
+      this.service.register(formdata).subscribe({
+        next: (response: boolean) => { 
+          if(!response) {
+            this.toastr.warning('Failed to insert the the entity','Failure' )
+          } else {
+            this.toastr.success('The entity was successfully inserted', 'Success')
+          }
+        }, error: (err: any) => this.toastr.error(err, 'Error in inserting the entity')
+      })
+    }
   }
 
   close() {
