@@ -18,6 +18,7 @@ namespace api.DTOs.Admin
         public DateTime ReferredOn { get; set; }
         public DateTime SelectedOn { get; set; }
         public string SelectionStatus { get; set; }
+        public int EmploymentId { get; set; }
         //public string RejectionReason { get; set; }
         
     }

@@ -23,7 +23,7 @@ namespace api.Data.Repositories
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IComposeMessagesHRRepository _hrMsgRepo;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public CandidatesRepository(DataContext context, UserManager<AppUser> userManager, 
             IMapper mapper, IComposeMessagesHRRepository hrMsgRepo)
         {

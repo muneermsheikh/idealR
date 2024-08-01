@@ -18,7 +18,7 @@ namespace api.Controllers
     public class FinanceController : BaseApiController
     {
         private readonly IFinanceRepository _finRepo;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public FinanceController(IFinanceRepository finRepo)
         {
             _finRepo = finRepo;

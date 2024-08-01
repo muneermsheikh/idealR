@@ -15,8 +15,8 @@ namespace api.Entities.HR
         public DateTime ReferredOn { get; set; } 
         public string HRExecUsername { get; set; }
         public string RefStatus { get; set; }// =Referred
-        public DateOnly RefStatusDate {get; set;}
-        public string SelectionStatus {get; set;}
+        public DateTime RefStatusDate {get; set;}
+        public string SelectionStatus {get; set;}="";
         public DateTime SelectionStatusDate {get; set;}
         public Process Process { get; set; }
         public ICollection<Candidate> Candidates {get; set;}

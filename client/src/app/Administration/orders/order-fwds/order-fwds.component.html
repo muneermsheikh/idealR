@@ -15,16 +15,15 @@
 
     <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" style="display: inline-block;" #search placeholder="Search">
     <button (click)="onReset()" class="btn btn-outline-success mx-2 fa fa-refresh fa-2x"></button>
-    <button class="btn btn-outline-success fa fa-plus fa-2x mx-2" routerLink="/administration/forwards/add" ></button>
     <button class="btn btn-outline-success mx-2 fa fa-window-close fa-2x" routerLink="/administration" ></button>   
 
 <div class="form-inline b">
     <label class="stdd w70 b">Order No</label>
     <label class="stdd w100 b">Order Dated</label>
     <label class="stdd w150 b">Customer Name</label>
-    <!-- <label class="stddC w100 b">Category Name</label>
+    <label class="stddC w100 b">Category Name</label>
     <label class="stddC w70 b">Charges</label>
-    <label class="stddF w150 b">Agent Name</label>
+    <!--<label class="stddF w150 b">Agent Name</label>
     <label class="stddF w150 b">Official Name</label>
     <label class="stddF w150 b">Date Forwarded</label>
     <label class="stddF w150 b">User Name</label>-->
@@ -42,4 +41,8 @@
             (deleteEventOff)="orderCatOfficialDelete($event)"
         ></app-orderfwd-line>
     </div>
+</div>
+
+<div style="font-size: smaller;">
+    {{form.value | json}}
 </div>

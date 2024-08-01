@@ -7,9 +7,9 @@ namespace api.Entities.Admin
         public string AirportOfDestination { get; set; }
         public string AirportVia { get; set; }
         public string FightNoVia { get; set; }
-        public TimeOnly ETD_Boarding { get; set; }
-        public TimeOnly ETA_Destination { get; set; }
-        public TimeOnly ETA_Via { get; set; }
-        public TimeOnly ETD_Via { get; set; }
+        public TimeSpan ETD_Boarding { get; set; }
+        public TimeSpan ETA_Destination { get; set; }
+        public TimeSpan ETA_Via { get; set; }
+        public TimeSpan ETD_Via { get; set; }
     }
 }

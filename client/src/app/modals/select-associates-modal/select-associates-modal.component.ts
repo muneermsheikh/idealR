@@ -50,7 +50,6 @@ export class SelectAssociatesModalComponent implements OnInit {
   }
 
   Close() {
-    console.log('select associate modal:', this.selectedOfficials);
     this.selectedOfficialsEvent.emit(this.selectedOfficials);
     this.bsModalRef.hide();
   }

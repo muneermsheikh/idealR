@@ -80,7 +80,7 @@
               </div>
           </div>
           
-          <button class="stdd btn btn-primary pull-right fa fa-2x fa-undo " (click)="close()"
+          <button class="stdd btn btn-primary pull-right fa fa-2x fa-window-close" (click)="close()"
               title="Return to calling procedure" ></button>
 
           <label class="stdd w100 b">Status</label>
@@ -92,8 +92,8 @@
           </button> 
           
           <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
-              
-              <button disabled="member.contractReviewStatusId===1 || member.contractReviewStatusId===2 " 
+              <div>{{member.contractReviewStatus}}</div>
+              <button disabled="member.contractReviewStatus.ToLower() !== 'accepted'" 
                    class="btn btn-primary stdd fa fa-users " (click)="assignTasksToHRExecs()" 
                    title="assign selected categories once Contract Review is done"
               > </button>
@@ -157,16 +157,15 @@
                               [bsValue]="bsValueDate"
                               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
                         >
-                        <input type="text" class="stdd w150" formControlName="reviewItemStatus" >
+                        <input type="text" class="stdd w150 cursorPointer" title="Contract Review for this category"
+                              (click)="openContractReviewItemModal(i)" formControlName="reviewItemStatus" >
 
                         <div *ngIf="!isAddMode" class="stdd">       
                              <button class="w10 btn fa fa-question-mark" 
                                    title="design Assessment Questions for this category" 
                                   (click)="assessItem(i)" 
                                   >Q</button>
-                              <button class="w10 btn fa fa-bars" title="Contract Review"
-                                   (click)="openContractReviewItemModal(i)"  ></button>
-
+   
                              <button class="w10 btn fa fa-list" title="Open Job Description"
                                   (click)="openJDModal(i)" ></button>
                              <button class="w10 btn fa fa-dollar" title="Open Remuneration"

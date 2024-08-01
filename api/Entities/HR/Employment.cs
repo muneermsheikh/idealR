@@ -26,11 +26,11 @@ namespace api.Entities.HR
         public int OtherAllowance { get; set; }
         public int LeavePerYearInDays { get; set; }
         public int LeaveAirfareEntitlementAfterMonths {get; set;}
-        public string OfferAccepted { get; set; }
+        public string OfferAccepted { get; set; }="";
         public DateTime OfferAcceptanceConcludedOn { get; set; }
-        public string OfferConclusionRegisteredByUsername { get; set; } 
-        public string OfferAttachmentUrl { get; set; }
-        public string OfferAcceptanceUrl { get; set; }
+        public string OfferConclusionRegisteredByUsername { get; set; } ="";
+        public string OfferAttachmentUrl { get; set; }="";
+        public string OfferAcceptanceUrl { get; set; }="";
         //[Timestamp]
         //public byte[] Version { get; set; }
        

@@ -1,6 +1,7 @@
 
 using api.DTOs;
 using api.Entities.Admin.Order;
+using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Errors;
 using api.Extensions;
@@ -11,6 +12,7 @@ using api.Interfaces.Orders;
 using api.Params;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -22,9 +24,11 @@ namespace api.Controllers
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
         private readonly IComposeMessagesHRRepository _msgHRRepo;
-        public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository, 
+        private readonly UserManager<AppUser> _userManager;
+        public MessagesController(IUserRepository userRepository, IMessageRepository messageRepository, UserManager<AppUser> userManager,
             IComposeMessagesHRRepository msgHRRepo, IMapper mapper)
         {
+            _userManager = userManager;
             _msgHRRepo = msgHRRepo;
             _mapper = mapper;
             _messageRepository = messageRepository;
@@ -32,23 +36,29 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
+        public async Task<ActionResult<MessageDto>> CreateMessage(Message msgModel)
         {
             var username = User.GetUsername();
 
-            if(createMessageDto.RecipientUsername.ToLower() == username) return BadRequest("You cannot send message to yourself");
+            if(msgModel.RecipientUsername.ToLower() == username) return BadRequest("You cannot send message to yourself");
 
-            var sender = await _userRepository.GetUserByUserNameAsync(username);
-            var recipient = await _userRepository.GetUserByUserNameAsync(createMessageDto.RecipientUsername);
+            var senderObj = await _userManager.FindByNameAsync(User.GetUsername());
+            var recipientObj = await _userManager.FindByNameAsync(msgModel.RecipientUsername);
 
-            if(recipient == null) return NotFound("recipient not on record");
+            if(recipientObj == null) return NotFound(new ApiException(400, "Not Found", "recipient not on found in identity object"));
+            if(senderObj == null) return NotFound(new ApiException(400, "Not Found", "Sender Username not found in Identity object"));
 
             var message = new Message{
-                Sender = sender,
-                Recipient = recipient,
-                SenderUsername = sender.UserName,
-                RecipientUsername = recipient.UserName,
-                Content = createMessageDto.Content
+                Sender = senderObj,
+                Recipient = recipientObj,
+                SenderUsername = senderObj.UserName,
+                RecipientUsername = recipientObj.UserName,
+                Content = msgModel.Content,
+                //SenderId = senderObj.Id,
+                SenderEmail = senderObj.Email,
+                //RecipientId = recipientObj.Id,
+                RecipientEmail = recipientObj.Email,
+                MessageType = msgModel.MessageType,
             };
 
             _messageRepository.AddMessage(message);
@@ -72,31 +82,24 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id)
         {
-            var username = User.GetUsername();
 
-            var message = await _messageRepository.GetMessage(id);
+            var strErr = await _messageRepository.DeleteMessage(id, User.GetUsername());
 
-            if (message.SenderUsername != username && message.RecipientUsername != username) 
-                return Unauthorized();
-
-            if (message.SenderUsername == username) message.SenderDeleted = true;
-
-            if (message.RecipientUsername == username) message.RecipientDeleted = true;
-
-            if (message.SenderDeleted && message.RecipientDeleted)
-            {
-                _messageRepository.DeleteMessage(message);
+            switch (strErr.ToLower()) {
+                case "unauthorized": 
+                    return BadRequest(new ApiException(400, "Unauthorized", "The message can only be deleted by the sender or the Recipient"));
+                case null: case "deleted": case "marked as deleted":
+                    return Ok("");
+                default:
+                    return BadRequest(new ApiException(400, "Bad Request", strErr));
             }
-
-            if (await _messageRepository.SaveAllAsync()) return Ok();
-
-            return BadRequest("Problem deleting the message");
         }
             
         public async Task<ActionResult<string>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categoryForwards)
         {
-            var officials = (ICollection<OrderForwardCategoryOfficial>)categoryForwards.Select(x => x.OrderForwardCategoryOfficials).ToList();        
-            var msg= await _msgHRRepo.ComposeMsgsToForwardOrdersToAgents(categoryForwards, officials, User.GetUsername());
+            var officialids = categoryForwards.Select(x => x.OrderForwardCategoryOfficials.Select(x => x.CustomerOfficialId)).ToList();        
+            
+            var msg= await _msgHRRepo.ComposeMsgsToForwardOrdersToAgents(categoryForwards, (ICollection<int>)officialids, User.GetUsername());
 
             if(msg==null) return BadRequest(new ApiException(400,"Bad Request", "failed to compose message for the Order Forwards"));
 

@@ -2,7 +2,7 @@
     {
         "ApplicationNo": 10100,"AssociateId": 2, 
         "UserProfessions": [{"ProfessionId": 2, "IndustryId": 2, "IsMain": true}],
-        "FirstName": "Lisa", "FamilyName": "Anderson", "UserName": "Lisa",  "Gender": "female", 
+        "FirstName": "Lisa", "FamilyName": "Anderson", "UserName": "Lisa",  "Gender": "f", 
         "DOB": "1956-07-22", "KnownAs": "Lisa", "Created": "2020-06-24", "LastActive": "2020-06-21",
         "City": "Greenbush", "Country": "Martinique",
         "PhotoUrl": "https://randomuser.me/api/portraits/women/54.jpg"

@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { filter, switchMap } from 'rxjs';
+import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { Pagination } from 'src/app/_models/pagination';
@@ -25,7 +25,7 @@ export class SelectionsComponent implements OnInit {
   
   @ViewChild('search', {static: false}) searchTerm: ElementRef | undefined;
   selections: ISelDecisionDto[]=[];
-  selectionsSelected: ISelDecisionDto[]=[];
+  //selectionsSelected: ISelDecisionDto[]=[];
    
   pagination: Pagination | undefined;
   user?: User;
@@ -124,17 +124,58 @@ export class SelectionsComponent implements OnInit {
   }
 
   deleteSelection(id: any) {
-    return this.service.deleteSelectionDecision(id).subscribe(response => {
-      this.toastr.success('the chosen selection deleted');
-    }, error => {
-      this.toastr.error(error);
-    })
-  }
+
+      var candidatesToDelete = this.selections.filter(x => x.id == id).map(x => x.candidateName);
+
+      const observableInner = this.service.deleteSelectionDecisions(id);
+      
+      var messagePrompt = 'This will delete selection records of ' + candidatesToDelete + '. along with all related records like ' +
+        'Employments and all deployment records.  Or, depending upon settings, the deletion might fail ' +
+        'if there are related records';
+      const observableOuter = this.confirmService.confirm('Confirm Delete', messagePrompt);
+
+      observableOuter.pipe(
+        filter((confirmed: boolean) => 
+            confirmed===true
+        ),
+          switchMap(confirmed => observableInner.pipe(
+            catchError(err => {
+              this.toastr.error(err.error.details, 'Error in deleting the selection record');
+              console.log('Error in deleting the Selection', err);
+              return of();
+            }),
+            tap(res => {
+              this.toastr.success('deleted Selection records', 'Success');
+              //cvrefids.forEach(n => {
+                var index = this.selections.findIndex(x => x.id === id);
+                if(index === -1) {
+                  this.toastr.warning('cannot find index of the selection record just deleted')
+                } else {
+                  this.selections.splice(index, 1);
+                }
+              //})
+            }
+            ),
+          )),
+          catchError(err => {
+            this.toastr.error(err.error.details, 'Error in deleting the selection');
+            return of();
+          })
+        ).subscribe(
+            () => {
+              console.log('delete succeeded');
+              this.toastr.success('Selection record deleted');
+            },
+            (err: any) => {
+              console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
+          })
+    }
+    
 
  displayEmploymentModal(employment: any, empItem: ISelDecisionDto){
 
     if(employment === null) {
-      this.toastr.warning('No Employment object available for the candidate');
+      this.toastr.warning('No Employment data could be retrieved from the database');
       return;
     }  
 
@@ -168,13 +209,13 @@ export class SelectionsComponent implements OnInit {
             //bvz inexplicably, the date on reaching api is preponed by 8:30 hours, thereby making it a previous day
           return this.service.updateEmployment(response)    //the modal form emits edited IEmployment object
         })
-      ).subscribe((response: boolean) => {
+      ).subscribe((strError: string) => {
   
-        if(response) {
+        if(strError==='') {
           this.toastr.success('Employment updated', 'Success');
   
         } else {
-          this.toastr.warning('Failed to update the Employment Object', 'Failure');
+          this.toastr.warning(strError, 'Failure');
         }
         
       })
@@ -224,31 +265,20 @@ export class SelectionsComponent implements OnInit {
   }
  
   
-  selectedClicked(item: any) {
+  sendReminders(event: any) {     //selection.id
 
-    var index = this.selectionsSelected.findIndex(x => x.id === item.id);
-    if(index === -1) {
-      this.selectionsSelected.push(item)
-    } else {
-      if(item.checked)   {
-        this.selectionsSelected[index].checked=true
-      } else {
-        this.selectionsSelected.splice(index,1,item)
-      }
-    }
-    console.log(this.selectionsSelected);
-  }
+      var cvrefids: number[]=[];
+      cvrefids.push(event);
 
-  sendReminders() {
-      var cvrefids = this.selectionsSelected.map(x => x.cvRefId);
       this.service.remindCandidatesForAcceptance(cvrefids).subscribe({
-        next: response => {
-          if(response ==='' || response === null) {
-            this.selections.map(x => x.checked=false);
+        next: (response: string) => {
+
+          if(response ==='' || response === null ) {
             this.toastr.success('Acceptance reminder email messages composed.  You can view/edit these messages in the MESSAGES section', 'success')
           } else {
             this.toastr.warning(response, 'Failed to compose reminder acceptance email messages')
           }
+
         }, error : err => {
           if(err?.error?.error) {
             this.toastr.error(err?.error?.error, 'Error encountered')
@@ -293,4 +323,21 @@ export class SelectionsComponent implements OnInit {
     this.service.setParams(this.sParams);
     this.getSelectionsPaged(true);
   }
+
+  DoHousekeeping() {
+    this.service.Housekeeping().subscribe({
+      next: (response: string) => {
+        console.log('response housekeeping', response);
+        
+        if(response==='') {
+          this.toastr.success('houskeeping done for processes CVRef and Selections', 'success')
+        } else {
+          this.toastr.warning(response, 'failed to do housekeeping')
+        }
+      }, error: (err: any) => {
+        this.toastr.error(err, "Failed to carry out the housekeeping for CVRef and Selections")
+      }
+    })
+  }
+  
 }

@@ -44,7 +44,8 @@ export class ExcelConversionMenuComponent {
   exportProspectiveFile() {
     this.accountService.copyProspectiveXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
-        if(response === '') {
+        console.log('exportprospective: response:', response);
+        if(response === '' || response === null) {
           this.toastr.success(response + ' Prospective file(s) copied to database', 'success');
           this.uploadCustomerExcel=false;
           } else {
@@ -53,7 +54,7 @@ export class ExcelConversionMenuComponent {
       }
       , error: (err: any) => {
         console.log(err.error.text, 'Error encountered');
-        this.toastr.error(err.error.details, 'Error in copying the excel data to database');
+        this.toastr.error(err.error.text, 'Error in copying the excel data to database');
       }
     })
   }
@@ -63,6 +64,7 @@ export class ExcelConversionMenuComponent {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
+    this.formData = new FormData();
 
     if(f.size > 0) this.formData.append('file', f, f.name);
         
@@ -163,6 +165,8 @@ export class ExcelConversionMenuComponent {
   }
 
   exportEmployeeFile() {
+    console.log('formdata:', this.formData);
+    
     this.accountService.copyEmployeeXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
         if(response === '') {

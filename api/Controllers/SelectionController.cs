@@ -4,6 +4,7 @@ using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
+using api.Interfaces.Messages;
 using api.Params.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,16 +54,13 @@ namespace api.Controllers
             return Ok(sel);
         }
         [HttpPost]
-        public async Task<ActionResult<ICollection<int>>> RegisterSelections(ICollection<CreateSelDecisionDto> dtos)
+        public async Task<ActionResult<MessageWithError>> RegisterSelections(ICollection<CreateSelDecisionDto> dtos)
         {
             if(dtos.Count == 0) return BadRequest(new ApiException(404, "Bad Request", "Blank array"));
             
             var msgWithErr = await _selRepo.RegisterSelections(dtos, User.GetUsername());
 
-            if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) 
-                return BadRequest(new ApiException(400, "Failed to register the selections", msgWithErr.ErrorString));
-
-            return Ok(msgWithErr.CVRefIdsInserted);
+            return Ok(msgWithErr);
         }
      
         [HttpPut]
@@ -89,7 +87,7 @@ namespace api.Controllers
 
             if(!string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Failed to delete the Selection", errString));
 
-            return Ok("Selection Decision deleted successfully");
+            return Ok(true);
             
         }
 
@@ -117,16 +115,6 @@ namespace api.Controllers
         }
 
 
-        [HttpGet("employmentfromSelId/{selDecId}")]
-        public async Task<ActionResult<Employment>> GetEmploymentFromSelId (int selDecId)
-        {
-            var emp = await _selRepo.GetEmploymentFromSelDecId(selDecId);
-
-            if(emp == null) return BadRequest("Failed to get the employment data");
-
-            return Ok(emp);
-        }
-
         [HttpGet("offeracceptancespending")]
         public async Task<ActionResult<EmploymentsNotConcludedDto>> OfferAcceptancesPending(EmploymentParams empParams)
         {
@@ -150,6 +138,14 @@ namespace api.Controllers
             return BadRequest(new ApiException(400, "Bad Request", status));
         }
     
+        [HttpGet("housekeepingcvrefandsel")]
+        public async Task<ActionResult<string>> DoHouseKeeping() {
+            var err = await _selRepo.HousekeepingCVRefAndSelDeecisions();
+
+            if(!string.IsNullOrEmpty(err)) return BadRequest(new ApiException(400, "Failed to do the housekeeping", err));
+
+            return Ok("");
+        }
         
     }
 }

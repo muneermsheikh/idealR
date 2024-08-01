@@ -9,7 +9,6 @@ import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { Pagination } from 'src/app/_models/pagination';
 import { orderParams } from 'src/app/_models/params/Admin/orderParams';
-import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
@@ -189,14 +188,21 @@ export class OrdersListingComponent implements OnInit {
         var orderid = event;
         return this.orderFwdService.forwardOrderToSelectedAgents(response, orderid)
       })
-    ).subscribe(
+    /*).subscribe(
       () => {
         this.toastr.success('requirement forwarded', 'Success');
       },
       (err: any) => {
         console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
       }
-    )
+    )*/
+  ).subscribe({
+    next: () => this.toastr.success('Requirement forwarded', 'Success')
+    , error: (err: any) => {
+      console.log(err);
+      this.toastr.error(err.error.details, 'Error encountered');
+    }
+  })
   }
 
   orderForwardedToAssociates(event: any) {

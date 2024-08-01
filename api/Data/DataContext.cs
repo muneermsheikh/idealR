@@ -26,7 +26,7 @@ namespace api.Data
         //Admin
         public DbSet<Employee> Employees {get; set;}
         public DbSet<Message> Messages {get; set;}
-        public DbSet<UserLike> UserLikes {get; set;}
+        //public DbSet<UserLike> UserLikes {get; set;}
         public DbSet<ContactResult> contactResults {get; set;}  
 
         public DbSet<CustomerFeedback> CustomerFeedbacks {get; set;}
@@ -100,7 +100,7 @@ namespace api.Data
         public DbSet<CategoryAssessmentQBank> CategoryAssessmentQBanks {get;set;}
         public DbSet<ChecklistHRData> ChecklistHRDatas {get; set;}
         public DbSet<Industry> Industries{get; set;}
-        public DbSet<UserLike> Likes {get; set;}
+        //public DbSet<UserLike> Likes {get; set;}
         public DbSet<Profession> Professions {get; set;}
         public DbSet<Qualification> Qualifications {get; set;}  
         public DbSet<SkillData> SkillDatas {get; set;}
@@ -167,9 +167,11 @@ namespace api.Data
                 .HasForeignKey<JobDescription>(x => x.OrderItemId);
             builder.Entity<OrderItem>().HasOne(x => x.Remuneration).WithOne()
                 .HasForeignKey<Remuneration>(x => x.OrderItemId);
+            builder.Entity<OrderItem>().HasOne(x => x.ContractReviewItem).WithOne()
+            .OnDelete(DeleteBehavior.NoAction);
             
-            builder.Entity<OrderItem>().HasOne(x => x.ContractReviewItem)
-                .WithOne().HasForeignKey<ContractReviewItem>(x => x.OrderItemId).OnDelete(DeleteBehavior.Cascade);
+            /*builder.Entity<OrderItem>().HasOne(x => x.ContractReviewItem)
+                .WithOne().HasForeignKey<ContractReviewItem>(x => x.OrderItemId).OnDelete(DeleteBehavior.Cascade);*/
             
             builder.Entity<ContractReviewItem>().HasIndex(x => x.OrderItemId).IsUnique();
             
@@ -244,7 +246,7 @@ namespace api.Data
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
                 
-            builder.Entity<UserLike>()
+            /*builder.Entity<UserLike>()
                 .HasKey(k => new {k.SourceUserId, k.TargetUserId});
             
             builder.Entity<UserLike>()
@@ -258,13 +260,13 @@ namespace api.Data
                 .WithMany(l => l.LikedByUsers)
                 .HasForeignKey(s => s.TargetUserId)
                 .OnDelete(DeleteBehavior.NoAction);
-            
+            */
             builder.Entity<OrderForwardToAgent>().HasIndex(x => x.OrderId).IsUnique();
             //builder.Entity<OrderForwardToAgent>().HasMany(x => x.OrderForwardCategories).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderForwardCategory>().HasMany(x => x.OrderForwardCategoryOfficials).WithOne().OnDelete(DeleteBehavior.Cascade);    
             builder.Entity<OrderForwardCategory>().HasIndex(x => x.OrderItemId).IsUnique();
-            builder.Entity<OrderForwardCategoryOfficial>().HasIndex(x => new {x.OrderForwardCategoryId, 
-                    x.DateForwarded, x.CustomerOfficialId}).IsUnique();
+            builder.Entity<OrderForwardCategoryOfficial>().HasIndex(x => new 
+                {x.OrderForwardCategoryId, x.CustomerOfficialId}).IsUnique();
             
             builder.Entity<Help>().HasMany(x => x.HelpItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Help>().HasIndex(x => x.Topic).IsUnique();

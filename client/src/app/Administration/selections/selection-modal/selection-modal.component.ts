@@ -84,7 +84,10 @@ export class SelectionModalComponent {
   deleteSel() {
     if(this.sel) 
     {
-        const observableInner = this.service.deleteSelectionDecision(this.sel.id);
+      //var ids:number[]=[];
+      //ids.push(this.sel.id);
+
+      const observableInner = this.service.deleteSelectionDecisions(this.sel.id);
         
         var messagePrompt = 'This will delete this selection record, along with all related records like ' +
           'Employments and all deployment records.  Or, depending upon settings, the deletion might fail ' +

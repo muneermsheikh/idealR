@@ -9,6 +9,7 @@ import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
 import { environment } from 'src/environments/environment.development';
 import { getPaginatedResult } from '../paginationHelper';
 import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
+import { IOrderForwardCategory } from 'src/app/_models/orders/orderForwardCategory';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class OrderForwardService {
 
     let params = getHttpParamsForOrders(oParams);
 
-    return getPaginatedResult<IOrderForwardToAgentDto[]>(this.apiUrl + 
+    return getPaginatedResult<IOrderForwardCategory[]>(this.apiUrl + 
         'OrderForward/pagedlist', params, this.http).pipe(
           map(response => {
             this.cache.set(Object.values(oParams).join('-'), response);

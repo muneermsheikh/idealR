@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { IContractReview } from 'src/app/_models/admin/contractReview';
 import { User } from 'src/app/_models/user';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 
 @Component({
   selector: 'app-contract-rvw',
@@ -29,13 +30,17 @@ export class ContractRvwComponent implements OnInit {
   bsValueDate = new Date();
   user?: User;
 
+  ReviewChanged=false;
+
+
   reviewStatuses= [
     {status: 'Not Reviewed'},{status: 'Accepted'}, {status: 'Accepted with regrets'}, 
     {status: 'Regretted'}
   ]
   
   constructor(private router: Router, private activatedRouter: ActivatedRoute,
-      private service: ContractReviewService, private toastr: ToastrService) { }
+      private service: ContractReviewService, private toastr: ToastrService,
+      private confirm: ConfirmService) { }
 
   ngOnInit(): void {
 
@@ -66,10 +71,24 @@ export class ContractRvwComponent implements OnInit {
       var index = this.review?.contractReviewItems.findIndex(x => x.orderItemId == event.orderItemId);
       if(index !== -1 && this.review !== undefined) {
         this.review.contractReviewItems[index!]=event;
+        this.ReviewChanged=true;
       }
   }
 
   close() {
+    if(this.ReviewChanged) {
+      this.confirm.confirm("Confirm Update", "This form has changes that are not saved.  Press OK to save it, No to abort changes")
+        .subscribe({
+          next: confirmed => {
+            if(confirmed) {
+              this.updateClicked();
+              this.toastr.success('changes updated', 'Success');
+            } else {
+              this.toastr.warning('Aborted by user', 'Abort');
+            }
+          }
+        })
+    }
     this.router.navigateByUrl('/administration/orders')
   }
 }

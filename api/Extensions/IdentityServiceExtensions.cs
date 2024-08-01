@@ -49,7 +49,7 @@ namespace api.Extensions
                 opt.AddPolicy("AccountsPolicy", policy => policy.RequireRole("Accountant", "Accounts Manager", "Finance Manager"));
                 opt.AddPolicy("CashierPolicy", policy => policy.RequireRole("Cashier"));
                 opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager", "Process Supervisor", "Admin"));
-                opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("Order Forward"));
+                opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("OrderForward"));
                 opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
                 opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
             });

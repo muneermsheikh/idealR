@@ -45,9 +45,9 @@
             <label class="lbl w250" >Subject</label>
             <div *ngFor="let msg of messages">
                 <div class="stdd cursorPointer col-2" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn | date: 'dd-MMM-yy'}}</div>
-                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.senderEmail}}</div>
+                <div class="stdd cursorPointer col-3" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.senderUsername}} [{{msg.senderEmail}}]</div>
                 <div class="stdd cursorPointer col-4" (click)="msgClicked(msg.id, msg.content, msg.messageSent)" >{{msg.subject}}</div>
-                <button class="stdd btn col-1 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
+                <button class="stdd btn col-1 fa fa-trash red " (click)="removeMessage(msg.id)"  ></button>
             </div>
         </div>
     
@@ -59,7 +59,7 @@
                 <div class="stdd cursorPointer w80" (click)="msgClicked(msg.id, msg.content, msg.messageSent)">{{msg.messageComposedOn | date: 'ddMMMyy'}}</div>
                 <div class="stdd cursorPointer w100" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.recipientEmail}}</div>
                 <div class="stdd cursorPointer w300" (click)="msgClicked(msg.id,msg.content, msg.messageSent)" >{{msg.subject}}</div>
-                <button class="stdd btn w35 fa fa-trash red " (click)="removeMessage(msg)"  ></button>
+                <button class="stdd btn w35 fa fa-trash red " (click)="removeMessage(msg.id)"  ></button>
             </div>
         </div>
     </div>
@@ -67,6 +67,14 @@
 
 
 <div class="stdd col-7 my-0" style="vertical-align: top;">
+    <input (keyup.enter)="onSearchInUsernames()" [disabled]="messages?.length === 0" type="text" class="stdd fa-solid fa-find fa-2x w200" #search placeholder="Search in Username">
+    <button (click)="onSearchInUsernames()"  [disabled]="messages?.length === 0" 
+        title="search the text in message Usernames" class="btn fa fa-find fa-2x mx-2"></button>
+ 
+    <input (keyup.enter)="onSearchInContents()" [disabled]="messages?.length === 0"  type="text" class="stdd fa-solid fa-find fa-2x w200" #searchInContents placeholder="Search in message contnts">
+    <button (click)="onSearchInContents()" [disabled]="messages?.length === 0" 
+        title="search in Message Contents" class="btn fa fa-find fa-2x mx-2"></button>
+
     <div *ngIf="messageSentOn.getFullYear() < 2000" (click)="sendMessage()">Draft message</div>
     <angular-editor
         [(ngModel)]="msgToDisplay"

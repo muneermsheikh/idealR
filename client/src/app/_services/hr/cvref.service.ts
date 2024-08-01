@@ -4,16 +4,15 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { ICVRefWithDepDto } from 'src/app/_dtos/admin/cvReferredDto';
-import { IMessagesDto } from 'src/app/_dtos/admin/messagesDto';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
 import { User } from 'src/app/_models/user';
 import { Pagination } from 'src/app/_models/pagination';
 import { AccountService } from '../account.service';
 import { getPaginatedResult, getPaginationHeadersCVRefParams } from '../paginationHelper';
 import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
-import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
-import { ISelPendingDtoWithParamsNamesDto } from 'src/app/_dtos/admin/selPendingDtoWithParamsNames';
+import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
+import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
 
 
 @Injectable({
@@ -45,18 +44,20 @@ export class CvrefService {
       return this.http.post<string>(this.apiUrl + 'CVRef', cvassessmentids);
     }
 
-    referredCVsPaginated(oParams: CVRefParams) { 
+    referredCVsPaginated(useCache: boolean = false) { 
       
       //var paramsDto: ISelPendingDtoWithParamsNamesDto;
-      const response = this.cacheReferred.get(Object.values(oParams).join('-'));
-      if(response) return of(response);
-  
-      let params = getPaginationHeadersCVRefParams(oParams);
+      if(!useCache) {
+        const response = this.cacheReferred.get(Object.values(this.cvRefParams).join('-'));
+        if(response) return of(response);
+      }
+
+      let params = getPaginationHeadersCVRefParams(this.cvRefParams);
        
       return getPaginatedResult<ISelPendingDto[]>(this.apiUrl 
         + 'cvref/cvsreferred', params, this.http).pipe(
       map(response => {
-        this.cache.set(Object.values(oParams).join('-'), response);
+        this.cache.set(Object.values(this.cvRefParams).join('-'), response);
         return response;
       })
     )
@@ -71,10 +72,15 @@ export class CvrefService {
     return this.http.get<ICVRefDto>(this.apiUrl + 'CVRef/cvref/' + cvrefid);
   }
 
-  setCVRefParams(params: CVRefParams) {
+  
+  registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
+    return this.http.post<messageWithError>(this.apiUrl + 'Selection', selDecisions);
+  }
+
+  setParams(params: CVRefParams) {
     this.cvRefParams = params;
   }
-  getCVRefParams() {
+  getParams() {
     return this.cvRefParams;
   }
     

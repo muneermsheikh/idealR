@@ -24,7 +24,7 @@ namespace api.Controllers
         }
 
         [HttpGet("pagedlist")]
-        public async Task<ActionResult<PagedList<OrderForwardToAgentDto>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
+        public async Task<ActionResult<PagedList<OrderForwardCategory>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
         {
             var fwds = await _orderFwdRepo.GetPagedList(fParams);
 
@@ -56,9 +56,9 @@ namespace api.Controllers
         }
 
         [HttpPost("forwardToAgents/{orderid}")]
-        public async Task<ActionResult<bool>> ForwardOrderToAgents(int orderid, ICollection<OfficialAndCustomerNameDto> dtos)
+        public async Task<ActionResult<bool>> ForwardOrderToAgents(int orderid, ICollection<OfficialAndCustomerNameDto> offsandCustNamedtos)
         {
-            var stErr = await _orderFwdRepo.InsertOrderForwardCategories(dtos, orderid, User.GetUsername());
+            var stErr = await _orderFwdRepo.InsertOrUpdateOrderForwardToAgents(offsandCustNamedtos, orderid, User.GetUsername());
 
             if(string.IsNullOrEmpty(stErr)) return Ok("");
 
@@ -68,7 +68,7 @@ namespace api.Controllers
         [HttpPut("updateOrderFwdToAgent")]
         public async Task<ActionResult<string>> UpdateOrderForwardedToAgent(ICollection<OrderForwardCategory> fwd)
         {
-            var errorString = await _orderFwdRepo.UpdateOrderForwardCategories (fwd, User.GetUsername());
+            var errorString = await _orderFwdRepo.EditOrderForwardCategories (fwd, User.GetUsername());
             
             if(string.IsNullOrEmpty(errorString)) return Ok();
             
@@ -85,9 +85,9 @@ namespace api.Controllers
             return Ok(forwarded);
         }
             
-        [HttpDelete("deleteOrderFwd/{orderid}")]
-        public async Task<ActionResult<bool>> DeleteOrderForward(int orderid) {
-            var succeeded = await _orderFwdRepo.DeleteOrderForward(orderid);
+        [HttpDelete("deleteOrderFwd/{orderforwardcategoryid}")]
+        public async Task<ActionResult<bool>> DeleteOrderForward(int orderforwardcategoryid) {
+            var succeeded = await _orderFwdRepo.DeleteOrderForwardCategory(orderforwardcategoryid);
             return succeeded;
         }
 

@@ -1,47 +1,54 @@
 [
-    {"CVRefId": 1, "TransactionDate": "2023-06-16T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-18T00:00:00"},
-    {"CVRefId": 1, "TransactionDate": "2023-06-20T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-18T00:00:00"},
-    {"CVRefId": 2, "TransactionDate": "2023-06-16T00:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-24T00:00:00"},
-    {"CVRefId": 2, "TransactionDate": "2023-06-24T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-26T00:00:00"},
-    {"CVRefId": 3, "TransactionDate": "2023-06-21T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-23T00:00:00"},
-    {"CVRefId": 3, "TransactionDate": "2023-05-23T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-24T00:00:00"},
-    {"CVRefId": 3, "TransactionDate": "2023-06-24T20:42:00", "Sequence": 400, 
-        "NextSequence": 600, "NextSequenceDate": "2023-06-26T00:00:00"},
-    {"CVRefId": 3, "TransactionDate": "2023-06-26T20:42:00", "Sequence": 600, 
-        "NextSequence": 700, "NextSequenceDate": "2023-06-27T00:00:00"},
-    {"CVRefId": 4, "TransactionDate": "2023-06-21T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-22T00:00:00"},
-    {"CVRefId": 4, "TransactionDate": "2023-06-22T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-24T00:00:00"},
-    {"CVRefId": 5, "TransactionDate": "2023-06-21T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-22T00:00:00"},
-    {"CVRefId": 5, "TransactionDate": "2023-06-22T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-23T00:00:00"},
-    {"CVRefId": 5, "TransactionDate": "2023-06-23T20:42:00", "Sequence": 400, 
-        "NextSequence": 600, "NextSequenceDate": "2023-06-24T00:00:00"},
-    {"CVRefId": 5, "TransactionDate": "2023-06-26T20:42:00", "Sequence": 600, 
-        "NextSequence": 700, "NextSequenceDate": "2023-06-27T00:00:00"},
-    {"CVRefId": 5, "TransactionDate": "2023-06-26T20:42:00", "Sequence": 700, 
-        "NextSequence": 900, "NextSequenceDate": "2023-06-27T00:00:00"},
-    {"CVRefId": 6, "TransactionDate": "2023-06-25T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-27T00:00:00"},
-    {"CVRefId": 6, "TransactionDate": "2023-06-24T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-26T00:00:00"},
-    {"CVRefId": 6, "TransactionDate": "2023-06-23T20:42:00", "Sequence": 400, 
-        "NextSequence": 600, "NextSequenceDate": "2023-06-25T00:00:00"},
-    {"CVRefId": 6, "TransactionDate": "2023-06-23T20:42:00", "Sequence": 600, 
-        "NextSequence": 700, "NextSequenceDate": "2023-06-25T00:00:00"},
-    {"CVRefId": 7, "TransactionDate": "2023-06-20T20:42:00", "Sequence": 100, 
-        "NextSequence": 300, "NextSequenceDate": "2023-06-22T00:00:00"},
-    {"CVRefId": 7, "TransactionDate": "2023-06-20T20:42:00", "Sequence": 300, 
-        "NextSequence": 400, "NextSequenceDate": "2023-06-22T00:00:00"},
-    {"CVRefId": 7, "TransactionDate": "2023-06-28T20:42:00", "Sequence": 400, 
-        "NextSequence": 600, "NextSequenceDate": "2023-06-30T00:00:00"}
-
+    {"CvRefId": 4, "OrderItemId":2, "CustomerId":48, "CustomerName": "Reliance Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2020-01-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2020-01-05T00:00",
+        "DepItems": [
+            {"TransactionDate": "2020-01-05T20:42:00", "Sequence": 100, 
+            "NextSequence": 300, "NextSequenceDate": "2023-06-18T00:00:00"}]
+    },
+    
+    {"CvRefId": 5, "OrderItemId":2, "CustomerId":48, "CustomerName": "Reliance Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2023-02-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2023-02-05T00:00",
+        "DepItems": [{
+            "TransactionDate": "2023-02-05T20:42:00", "Sequence": 300, 
+            "NextSequence": 400, "NextSequenceDate": "2023-02-05T00:00:00"
+        }]
+    },
+    
+    {"CvRefId": 8, "OrderItemId":3, "CustomerId":48, "CustomerName": "Reliance Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2023-01-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2023-01-05T00:00",
+        "DepItems": [{
+            "TransactionDate": "2023-01-05T00:42:00", "Sequence": 100, 
+            "NextSequence": 300, "NextSequenceDate": "2023-06-24T00:00:00"
+        }]
+    },
+    
+    {"CvRefId": 9, "OrderItemId":3, "CustomerId":48, "CustomerName": "Reliance Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2023-02-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2023-02-05T00:00",
+        "DepItems": [{
+            "TransactionDate": "2023-02-05T20:42:00", "Sequence": 300, 
+            "NextSequence": 400, "NextSequenceDate": "2023-06-26T00:00:00"
+        }]
+    },
+    
+    {"CvRefId": 11, "OrderItemId":5, "CustomerId":49, "CustomerName": "Saudi Gulf Heavy Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2023-02-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2023-02-05T00:00",
+        "DepItems": [{
+            "TransactionDate": "2023-02-05T20:42:00", "Sequence": 100, 
+            "NextSequence": 300, "NextSequenceDate": "2023-02-23T00:00:00"
+        }]
+    
+    },
+    {"CvRefId": 12,  "OrderItemId":5, "CustomerId":49, "CustomerName": "Saudi Gulf Heavy Industries Ltd.",
+        "CityOfWorking": "Jeddah", "SelectedOn": "2023-02-05T00:00:00",
+        "CurrentStatus": "Selected", "CurrentStatusDate": "2023-02-05T00:00",
+        "DepItems": [{
+            "TransactionDate": "2023-02-05T20:42:00", "Sequence": 300, 
+            "NextSequence": 400, "NextSequenceDate": "2023-02-05T00:00:00"
+         }]
+    }
 ]

@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using api.Data.Migrations;
 using api.DTOs;
 using api.DTOs.HR;
 using api.Entities.HR;

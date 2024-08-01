@@ -17,14 +17,13 @@ import { IProfession } from 'src/app/_models/masters/profession';
 import { User } from 'src/app/_models/user';
 import { OrderService } from 'src/app/_services/admin/order.service';
 //import { ConfirmService } from 'src/app/_services/confirm.service';
-import { ChooseAgentsModalComponent } from '../../choose-agents-modal/choose-agents-modal.component';
 import { OrderForwardService } from 'src/app/_services/admin/order-forward.service';
-import { IOfficialIdsAndOrderItemIdsDto } from 'src/app/_dtos/admin/officialIdsAndOrderItemIdsDto';
 import { TaskService } from 'src/app/_services/admin/task.service';
 import { JdModalComponent } from '../jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../remuneration-modal/remuneration-modal.component';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
 import { OrderItemReviewComponent } from '../order-item-review/order-item-review.component';
+import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
 
 @Component({
   selector: 'app-order-edit',
@@ -488,19 +487,20 @@ export class OrderEditComponent implements OnInit {
                 }}
       
                 this.bsModalRef = this.modalService.show(OrderItemReviewComponent, config);
-      
-                this.bsModalRef.content.updateModalReview.subscribe((response: string) => {
-                    if(response !== '') {
+
+                this.bsModalRef.content.updateModalReview.subscribe({
+                  next: (response: IContractReviewItem) => {
+                    if(response === null) {
                       this.toastr.warning("Failed to update the Checklist object -" + response);
                     } else {
                       this.toastr.success('Updated the checklist object');
+                      this.orderItems.at(index).get('reviewItemStatus')?.setValue(response.reviewItemStatus);
                     }
+                  },
+                  error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
                 })
-            } else {
-              this.toastr.warning('Failed to get the contract review item object from api')
-            }
-          }
-        )
+              }
+            })
     }
   
     openAssessmentModal(orderitemid: number) {

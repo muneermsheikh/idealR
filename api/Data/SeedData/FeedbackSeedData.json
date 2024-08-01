@@ -3,7 +3,7 @@
         "CustomerId": 1, "CustomerName": "Saudi Gulf Heavy Industries", "dateIssued": "2020-11-15T12:00:00",
         "City": "Dammam", "OfficialName": "Rahamatullah", "Designation": "HR Manager",
         "Email": "rahamatullah@ssgf.com", "PhoneNo":"00966-2-359340234",
-        "DateReceived": null, "HowReceived": null, "FeedbackInputs": [
+        "DateReceived": "2010-01-01T00:00:00", "HowReceived": null, "FeedbackInputs": [
             {"FeedbackGroup": "documentation", "Question": 1, 
                 "Parameter": "How satisfied you are with our documentations",
                 "Response": "Excellent"

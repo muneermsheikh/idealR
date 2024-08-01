@@ -4,6 +4,7 @@ using api.Data;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
@@ -13,13 +14,13 @@ namespace api.Extensions
     {   
         public static async Task<string> ReadProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
         {
-            // var CategoryRef - label in row2, column1, data in row2, column 2
-            // var OrderItemId = label in row3, col1, data in row3, col2 ;
-            // var professionId = label in row2, col3; data in row2, col4
-            //var ProfessionName = label in row2, col 5, data in row2, col6
+            // var CategoryRef - label in row2, column1, data in row2, column 2  //this is redendent
+            // var OrderItemId = label in row2, col1, data in row3, col2 ;
+            // var professionId = label in row2, col3; data in row2, col4       //this is redendent
+            //var ProfessionName = label in row2, col 5, data in row2, col6     //this is redendent
             //column titles in row 4, data starts from row 5
             var strError="";
-            int rowTitle=5;
+            int rowTitle=4;     //data starts from this row
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var package = new ExcelPackage(new System.IO.FileInfo(filePath)))
             {
@@ -36,14 +37,20 @@ namespace api.Extensions
                     return strError;
                 }
                 
-                string CategoryRef="", ProfessionName="";
+                string CategoryRef="", ProfessionName=""; 
+                var Source="";
                 int OrderItemId = 0, ProfessionId = 0;
-
-                for(int col=1; col <= 2; col++){
+                int intOrderItemIdRow=2;
+                for(int col=1; col <= 3; col++){
                     try {
-                        var colTitle = worksheet.Cells[3, col].Value.ToString();
+                        var colTitle = worksheet.Cells[intOrderItemIdRow, col].Value.ToString();
                         switch (colTitle.ToLower()) {
-                            case "orderitemid": case "order item id": case "orderitem id": OrderItemId=Convert.ToInt32((worksheet.Cells[3, col+1].Value ?? "0").ToString()); break;
+                            case "orderitemid": case "order item id": case "orderitem id": 
+                                OrderItemId=Convert.ToInt32((worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "0").ToString()); 
+                                break;
+                            case "source":
+                                Source = (worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "Times Job").ToString(); 
+                                break;
                             default:break;
                         }
                     } catch (Exception ex) {
@@ -57,14 +64,14 @@ namespace api.Extensions
                         join order in context.Orders on item.OrderId equals order.Id
                         join cat in context.Professions on item.ProfessionId equals cat.Id
                         select new {ProfessionId=item.ProfessionId, 
-                        CategoryRef=order.OrderNo + "-" + item.SrNo + cat.ProfessionName,
+                        CategoryRef=order.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
                         ProfessionName=cat.ProfessionName}
                 ).FirstOrDefaultAsync();
 
                 if(query==null) return "Invalid Order Item Id";
 
                 ProfessionName = query.ProfessionName;
-                CategoryRef = query.CategoryRef;
+                CategoryRef = query.CategoryRef[25..];
                 ProfessionId = query.ProfessionId;
                 
                 //DataTable dataTable = new();
@@ -73,18 +80,17 @@ namespace api.Extensions
                 int intMobileNo=0, intAlternateNo=0, intResumeTitle=0, intKeySkills=0, intWorkExp=0, intCurrentLocation=0;
                 int intEducation=0, intGender=0, intAge=0, intAddress=0, intResumeId=0,intDesignation=0;
     
-                var Source = "TimesJobs";
                 var DateRegistered = DateTime.Now;
                 for(int col=1; col <= columns; col++) {
-                    var colTitle = worksheet.Cells[rowTitle, col].Value.ToString();
-                    switch (colTitle.ToLower()) {
+                    var colTitle = worksheet.Cells[rowTitle, col].Value?.ToString();
+                    switch (colTitle?.ToLower()) {
                         case "candidatename" :case "name": intCandidateName=col; break;
                         case "emailid": case "email id": intEmail=col;break;
-                        case "alternateemailid": case "alternate email": case "alternte emailid": intAlternateEmail=col;break;
+                        case "alternateemailid": case "alternate email": case "alternte emailid": case "alternate email id": intAlternateEmail=col;break;
                         case "alternatephone": intAlternatePhone=col;break;
-                        case "dob": intDob=col;break;
+                        case "dob": case "date of birth": intDob=col;break;
                         case "mobileno": case "mobile no": case "mobile no.": intMobileNo=col;break;
-                        case "alternatenumber": intAlternateNo=col;break;
+                        case "alternatenumber": case "alternate number": case "alternate contact no.": case "alternate contact no": intAlternateNo=col;break;
                         case "resumetitle": intResumeTitle=col;break;
                         case "keyskills": intKeySkills=col;break;
                         case "workexp": case "work experience": intWorkExp=col;break;
@@ -125,12 +131,6 @@ namespace api.Extensions
                     ResumeId = intResumeId == 0 ? "" : worksheet.Cells[row, intResumeId].Value.ToString() ?? "";
                     Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value.ToString() ?? "";
                     
-                    if (!DateTime.TryParse(DOB, out DateTime dob))
-                    {
-                        dob = new DateTime();
-                        if(dob.Year < 1900) dob = DateTime.Now.AddYears(-Convert.ToInt32(Age[..2]));
-                    }
-                
                     var newProspectiveCandidate = new ProspectiveCandidate
                     {
                         CategoryRef = CategoryRef,
@@ -139,7 +139,7 @@ namespace api.Extensions
                         CandidateName = CandidateName ,
                         PersonId = ResumeId,
                         Source = Source,
-                        DateOfBirth = dob,
+                        //DateOfBirth = dob,
                         Age = Age,
                         Address = Address,
                         PhoneNo = MobileNo,
@@ -155,6 +155,13 @@ namespace api.Extensions
                         WorkExperience = WorkExp,
                         Username=Username
                     };
+
+                    if ( DOB != "" && Age != "" && !DateTime.TryParse(DOB, out DateTime dob))
+                    {
+                        dob = new DateTime();
+                        if(dob.Year < 1900) dob = DateTime.Now.AddYears(-Convert.ToInt32(Age[..2]));
+                        newProspectiveCandidate.DateOfBirth = dob;
+                    }
 
                     context.Entry(newProspectiveCandidate).State = EntityState.Added;
                 }

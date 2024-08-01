@@ -12,12 +12,12 @@ namespace api.Data.Repositories
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        private readonly DateOnly _todaydate;
+        private readonly DateTime _todaydate;
         public OrderAssessmentRepository(DataContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
-            _todaydate = DateOnly.FromDateTime(DateTime.UtcNow);
+            _todaydate = DateTime.UtcNow;
         }
 
         public async Task<OrderAssessment> SaveNewOrderAssessment(OrderAssessment orderAssessment)

@@ -12,15 +12,14 @@ namespace api.Interfaces.Admin
     {
         //Task<OrderForwardToAgent> GenerateOrderForwardToAgent(int orderid);
         Task<OrderForwardToHR> GenerateObjToForwardOrderToHR(int orderid);
-        Task<string> InsertOrderForwardCategories(ICollection<OfficialAndCustomerNameDto> officialIds, int orderid, string username);
+        Task<string> InsertOrUpdateOrderForwardToAgents(ICollection<OfficialAndCustomerNameDto> officialIds, int orderid, string username);
         //Task<string> UpdateOrderForwardedToAgents(OrderForwardToAgent orderForward, string username);
         Task<string> UpdateForwardOrderToHR (int orderid, string Username);
-        Task<string> UpdateOrderForwardCategories(ICollection<OrderForwardCategory> models, string username);
+        Task<string> EditOrderForwardCategories(ICollection<OrderForwardCategory> models, string username);
         //Task<OrderForwardToAgent> OrderFowardsOfAnOrder(int orderid);
         Task<ICollection<OrderForwardCategoryDto>> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username);
-        Task<PagedList<OrderForwardToAgentDto>> GetPagedList(OrderFwdParams fParams);
-        Task<bool> DeleteOrderForward(int orderid);
-        Task<bool> DeleteOrderForwardCategory(int orderitemid);
+        Task<PagedList<OrderForwardCategory>> GetPagedList(OrderFwdParams fParams);
+        Task<bool> DeleteOrderForwardCategory(int orderforwardcategoryid);
         Task<bool> DeleteOrderForwardCategoryOfficial(int orderFwdOfficialId);
     }
 }

@@ -50,7 +50,7 @@ export class ProfileMenuComponent {
           { 
             user: this.user, 
             toedit: editable, 
-            returnUrl: '/administration/orders' 
+            returnUrl: '/candidates' 
           } }
       );
   }

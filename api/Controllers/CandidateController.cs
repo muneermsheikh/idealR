@@ -27,7 +27,7 @@ namespace api.Controllers
         private readonly ITokenService _tokenService;
         private readonly ILogger<CandidateController> _logger;
 
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public CandidateController(ICandidateRepository candidateRepo, UserManager<AppUser> userManager, 
             IMapper mapper, ITokenService tokenService, ILogger<CandidateController> logger)
         {

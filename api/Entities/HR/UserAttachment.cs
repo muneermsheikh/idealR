@@ -9,6 +9,6 @@ namespace api.Entities.HR
         public string Name { get; set; }
         public string UploadedLocation { get; set; }
         public string UploadedbyUserName { get; set; }
-        public DateOnly UploadedOn { get; set; }
+        public DateTime UploadedOn { get; set; }
     }
 }

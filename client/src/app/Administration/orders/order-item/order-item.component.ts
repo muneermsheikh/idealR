@@ -65,7 +65,7 @@ export class OrderItemComponent implements OnInit{
               this.toastr.warning('failed to forward the Order to HR Dept', 'failure')
             }
           },
-          error: (error: any) => this.toastr.error(error, 'error encountered')
+          error: (err: any) => this.toastr.error(err.error.details, 'error encountered')
         });
     }
     

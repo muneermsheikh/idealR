@@ -34,12 +34,18 @@ namespace api.Data.Repositories.Admin
             _RAName = _config["RAName"];
         }
 
-        public async Task<string> ComposeEmailMsgForDLForwardToHRHead(ICollection<OrderItemBriefDto> OrderItems, 
+        public async Task<MessageWithError> ComposeEmailMsgForDLForwardToHRHead(ICollection<OrderItemBriefDto> OrderItems, 
             string senderUsername, string recipientUsername)
         {
+            var dtoErr = new MessageWithError();
+
             var dto = OrderItems.Select(x => new {x.CustomerName, x.AboutEmployer, x.OrderNo, x.OrderDate}).FirstOrDefault();
             var senderObject = await _userManager.FindByNameAsync(senderUsername);
             var recipientObject = await _userManager.FindByNameAsync(recipientUsername);
+            if( recipientObject == null) {
+                dtoErr.ErrorString = "Recipient Object is not defined";
+                return dtoErr;
+            }
 
             string AboutEmployer = dto!.AboutEmployer;
             string CustomerName = dto.CustomerName;
@@ -66,9 +72,11 @@ namespace api.Data.Repositories.Admin
                 RecipientUsername = recipientObject.UserName, Subject = Subject, Content = msgBody};
             
             _context.Messages.Add(msg);
+            dtoErr.Messages.Add(msg);
             //_context.Entry(msg).State = EntityState.Added;
 
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the email message to database";
+            return dtoErr;
+            //return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the email message to database";
             
         }
 
@@ -82,8 +90,9 @@ namespace api.Data.Repositories.Admin
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, ICollection<OrderForwardCategoryOfficial> fwdOfficials, string Username)
+        public async Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, ICollection<int> officialIds, string Username)
         {
+            
             var msgData = new List<OrderItemBriefDtoWithOfficialIdsDto>();
             var orderid = categories.Select(x => x.OrderId).FirstOrDefault();
 
@@ -94,15 +103,13 @@ namespace api.Data.Repositories.Admin
                 .Where(x => x.Id == orderid)
                 .FirstOrDefaultAsync();
 
-            var projManagerId = order.ProjectManagerId;
+            var projManagerId = order.ProjectManagerId == 0 ? Convert.ToInt32(_config["DocControllerAdminAppUserId"]) : order.ProjectManagerId;
             
             if(projManagerId == 0) return null;
             var projManagerAppUserId =  await _context.GetAppUserIdOfEmployee(projManagerId);
             if(projManagerAppUserId == 0) projManagerAppUserId = Convert.ToInt32(_config["HRSupAppuserId"] ?? "0");
            
             var msgs = new List<Message>();
-
-            fwdOfficials = fwdOfficials.Distinct().ToList();
 
             var distinctOrderItemIds = categories.Select(x => x.OrderItemId).Distinct().ToList();
             //queries that has to use expressions at client level - like distinctOrderItemIds.contains(xx) - 
@@ -128,14 +135,12 @@ namespace api.Data.Repositories.Admin
                 if(string.IsNullOrEmpty(itm.CustomerName)) itm.CustomerName = await _context.CustomerNameFromId(itm.CustomerId);
                 if(string.IsNullOrEmpty(itm.ProfessionName)) itm.ProfessionName = await _context.GetProfessionNameFromId(itm.ProfessionId);
             }
-
-            var OfficialIdsForEmails = fwdOfficials.Where(x => !string.IsNullOrEmpty(x.EmailIdForwardedTo))
-                .Select(x => x.CustomerOfficialId).ToList();
+            
             
             string subject = "Requirements under Order No.: " + order.OrderNo + " dated " + 
                     order.OrderDate + order.Customer.City;
 
-            msgs = (List<Message>)await ComposeEmailMsgForOrderForwards(ItemBriefDtos, subject, fwdOfficials, Username);
+            msgs = (List<Message>)await ComposeEmailMsgForOrderForwards(ItemBriefDtos, subject, officialIds, Username);
 
             return msgs;
            
@@ -198,27 +203,63 @@ namespace api.Data.Repositories.Admin
         }
 
         private async Task<ICollection<Message>> ComposeEmailMsgForOrderForwards(ICollection<OrderItemBriefDto> OrderItems, 
-            string subject, ICollection<OrderForwardCategoryOfficial> fwdOfficials, string SenderUsername)
+            string subject, ICollection<int> officialids, string SenderUsername)
         {
-            
+
             var TableBody = ComposeCategoryTableForEmail(OrderItems);
 
             var msgs = new List<Message>();
             string IntroductoryBody = "We have following requirements.  If you have friends interested in the opportunity, please ask them to submit their profiles " + 
                 "to us along with copies of certificates and testimonials. <br><br><b>Country of requirement</b>:";
 
-            _ = fwdOfficials.OrderBy(x => x.CustomerOfficialId).Distinct();
+            //_ = fwdOfficials.OrderBy(x => x.CustomerOfficialId).Distinct();
 
             var senderObj = await _userManager.FindByNameAsync(SenderUsername);
             if(senderObj == null) return null;
+                        
+            var fwdOfficials =await(from off in _context.CustomerOfficials where officialids.Contains(off.Id)
+                join cust in _context.Customers on off.CustomerId equals cust.Id
+                select  new OrderForwardCategoryOfficial {
+                    AgentName = cust.CustomerName, 
+                    CustomerOfficialId = off.Id,
+                    OfficialName = off.OfficialName,
+                    DateForwarded = DateTime.Now,
+                    EmailIdForwardedTo = off.Email,
+                    PhoneNoForwardedTo = off.PhoneNo, Username = SenderUsername
+                }).ToListAsync();
 
             foreach(var fwd in fwdOfficials)
             {
                 var off = await _custRepo.GetCustomerOfficialDto(fwd.CustomerOfficialId);
                 if(off == null) continue;
-                var recipientAppUserId = await _context.OfficialAppUserIdFromOfficialId(off.OfficialId);
-                if(recipientAppUserId == 0) continue;
-                var recipientObj = await _userManager.FindByIdAsync(recipientAppUserId.ToString());
+                var recipientObj=new AppUser();
+                var recipientAppUserId = 0;
+                recipientObj = await _userManager.FindByNameAsync(off.OfficialEmailId);
+                if(recipientObj != null) {
+                    recipientAppUserId = recipientObj.Id;
+                } else {
+                    recipientAppUserId = await _context.OfficialAppUserIdFromOfficialId(off.OfficialId);
+                    if(recipientAppUserId == 0) {
+                        recipientObj = await _userManager.FindByEmailAsync(off.OfficialEmailId);
+                        if(recipientObj == null) {
+                            var user = new AppUser{UserName=off.OfficialEmailId, Gender = off.Gender, KnownAs=off.OfficialName[..10], 
+                                PhoneNumber=off.MobileNo, Position = off.Designation, Email=off.OfficialEmailId};
+                            var result = await _userManager.CreateAsync(user);
+                            if(result.Succeeded) {
+                                var roleAdded = await _userManager.AddToRoleAsync(user, "Client");
+                                if(roleAdded.Succeeded) {
+                                    recipientAppUserId = user.Id;
+                                    recipientObj = user;
+                                }
+                                var official = await _context.CustomerOfficials.FindAsync(fwd.CustomerOfficialId);
+                                official.AppUserId=user.Id;
+                                _context.Entry(official).State=EntityState.Modified;
+                            }
+                        }
+                    }  else {
+                        recipientObj = await _userManager.FindByIdAsync(recipientAppUserId.ToString());
+                    }
+                }
 
                 var msgBody = _dateToday + "<br><br>" + off.OfficialName + ", " + 
                     off.CustomerName + "<br>" + off.City + "<br>eMail: " + off.OfficialEmailId +
@@ -233,8 +274,8 @@ namespace api.Data.Repositories.Admin
                 
                 msgs.Add(new Message{MessageType = "forwardToAssociate", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
-                    RecipientAppUserId = recipientObj.Id, RecipientEmail = recipientObj.Email, SenderAppUserId = senderObj.Id,
-                        SenderUsername = senderObj.UserName, Subject = subject});
+                    RecipientAppUserId = recipientObj.Id, RecipientEmail = recipientObj.Email ?? "", 
+                    SenderAppUserId = senderObj.Id, SenderUsername = senderObj.UserName, Subject = subject});
             }
             
             return msgs;
@@ -266,7 +307,7 @@ namespace api.Data.Repositories.Admin
         private static string ComposeCategoryTableForEmail(ICollection<OrderItemBriefDto> orderItems)
         {
             int srno = 0;
-            string TableBody = "<Table><TH>Sr No</TH><TH width='75'>Cat Ref</TH><TH width='300'>Category Name</TH><TH width='40'>Quantity</TH><TH width='350'>Job Description</TH><TH width='350'>Remuneration</TH><TH width='150'>Remarks</TH>";
+            string TableBody = "<Table><TH width='25'>Sr<br>No</TH><TH width='300'>Cat Ref</TH><TH width='40'>Quantity</TH><TH width='250'>Job Description</TH><TH width='250'>Remuneration</TH><TH width='150'>Remarks</TH>";
             string jd = "";
             string remun = "";
             foreach (var item in orderItems)
@@ -301,7 +342,7 @@ namespace api.Data.Repositories.Admin
 
                 }
                 TableBody += "<TR><TD>" + ++srno + "</TD><TD>" + item.OrderNo + "-" + item.SrNo + "-" + 
-                    item.ProfessionName + "</TD><TD>" + item.ProfessionName + "</TD><TD>" + item.Quantity + "</TD>" +
+                    item.ProfessionName + "</TD><TD>" + item.Quantity + "</TD>" +
                     "<TD></TD><TD></TD></TR>";
             }
 
@@ -310,7 +351,7 @@ namespace api.Data.Repositories.Admin
             return TableBody;
         }
 
-        private async Task<ICollection<Message>> ComposeHTMLForwardsToAgents(OrderItemsAndAgentsToFwdDto itemsAndAgents, 
+        private async Task<ICollection<Message>> ComposeHTMLForwardsddToAgents(OrderItemsAndAgentsToFwdDto itemsAndAgents, 
             string recipientUsername, string Username)
         {
             

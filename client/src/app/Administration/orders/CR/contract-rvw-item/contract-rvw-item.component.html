@@ -33,7 +33,7 @@
         [(ngModel)]="item.reviewItemStatus"
     ></ng-select>
     
-    <button class="btn fa fa-arrow-right green fa-2x" style="margin-left: 15px;"
+    <button class="btn fa fa-save fa-2x green" style="margin-left: 15px;"
         title="copy the edited item to to the Contract Review Object.  You will need to save the object for the changes to take effect."
         (click)="update()" ></button>
     <br><label class="stdd w35 b" style="margin-left: 25px;" >Sr#</label>
@@ -45,8 +45,11 @@
     <div *ngFor="let q of item.contractReviewItemQs">
         <input type="text" class="stdd w35" style="margin-left: 25px !important;" 
             [(ngModel)]="q.srNo" placeholder="SrNo">
-        <input type="checkbox" style="margin-left: 18px; margin-right: 18px;" class="stdd w35 form-check-input checkbox" [(ngModel)]="q.isMandatoryTrue"  >
-        <textarea rows="1" cols="75" class="stdd" [(ngModel)]="q.reviewParameter" placeholder="Parameter" ></textarea>
+        <input type="checkbox" style="margin-left: 18px; margin-right: 18px;" [disabled]="true"
+            class="stdd w35 form-check-input checkbox" [(ngModel)]="q.isMandatoryTrue"  >
+        <textarea rows="1" cols="75" class="stdd" placeholder="Parameter" [disabled]="true" >
+            {{q.reviewParameter}}
+        </textarea>
         <input type="checkbox" style="margin-left: 20px; margin-right: 25px;" 
             class="form-check-input checkbox" [(ngModel)]="q.response">
         <textarea cols="50" rows="1" class="stdd" (change)="responseChanged(q)" [(ngModel)]="q.remarks" ></textarea>

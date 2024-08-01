@@ -1,9 +1,9 @@
 <div class="modal-header my-0" *ngIf="emp" >
-    <h6>Employment details</h6>
+    <h4>Employment details</h4>
     
     <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
         title="edit emp data" (click)="updateEmployment()" ></button>
-    <button class="btn fa fa-close pull-right" title="Close" (click)="close()" ></button>
+    <button class="btn fa fa-close fa-2x pull-right" title="Close" (click)="close()" ></button>
 </div>
 
 <div class="modal-body my-0" *ngIf="emp">
@@ -44,7 +44,7 @@
                 formControlName="salaryCurrency">
             <input type="number" class="stdd w75" title="salary" 
                 formControlName="salary">
-        <hr>
+        <hr class="my-0">
         <label class="stdd w150 b">Perks</label> 
         <label class="stdd w100 b">Allowance</label> 
         <label class="stdd w100 b">Provided Free</label> 
@@ -87,8 +87,19 @@
         <br><label for="otherAllowance" class="stdd w150" >Other Allowance</label>
         <input type="number" class="stdd w75" 
             title="Other allowance" formControlName="otherAllowance">
-    
         
+        <br><label class="stdd w150">Contract Period</label>
+        <input type="number" class="stdd w50" 
+            title="Contract Period n months" formControlName="contractPeriodInMonths">
+        <label class="stdd w50">Months</label>
+        <br><label class="stdd w150">Annual Leave</label>
+        <input type="number" class="stdd w50" 
+            title="Number of days leave in a year" formControlName="leavePerYearInDays">
+        <label class="stdd w75">days, after</label>
+        <input type="number" class="stdd w50" 
+            title="after months of employment" formControlName="leaveAirfareEntitlementAfterMonths">
+        <label class="stdd w100">months of employment</label>
+
     </form>
 </div>
 

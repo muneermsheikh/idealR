@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
@@ -15,6 +15,7 @@ import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { ICallRecordParams } from 'src/app/_models/params/callRecordParams';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCreateDto';
+import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 
 
 @Injectable({
@@ -52,11 +53,9 @@ export class ProspectiveService {
     }
   
     
-  getOrAddCallRecord(callRecord: CallRecordItemToCreateDto) {
+  getOrAddCallRecord(personType: string, personId: string) {
     
-    var params = GetHttpParamsForCallItemCreate(callRecord);
-
-    return this.http.get<ICallRecord>(this.apiUrl + 'CallRecord/getOrAddHistoryWithItems', {params});
+    return this.http.get<ICallRecord>(this.apiUrl + 'CallRecord/getOrAddHistoryWithItems/' + personType + '/' + personId);
   }
   
   
@@ -143,11 +142,13 @@ export class ProspectiveService {
     return this.http.put(this.apiUrl + 'Prospectives/prospectivelistedit', model);
   }
 
-  updateCallRecord(model: any) {
-    return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord', model);
+  updateCallRecord(model: ICallRecord) {
+    return this.http.put<CallRecordStatusReturnDto>(this.apiUrl + 'CallRecord', model);
   }
 
   deleteProspectiveRecord(prospectiveId: number) {
     return this.http.delete<boolean>(this.apiUrl + 'Prospectives/delete/' + prospectiveId);
   }
+
+  
 }

@@ -14,9 +14,8 @@ namespace api.Interfaces.Orders
         Task<SMSMessage> ComposeMsgToAckToCandidateBySMS(Candidate candidate);
         Task<Message> ComposeHTMLToPublish_CVReadiedToForwardToClient(ICollection<CommonDataDto> commonDataDtos, string Username, int recipientAppUserId);
         //Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(OrderForwardToAgentDto dlforward, string Username);
-        Task<string> ComposeEmailMsgForDLForwardToHRHead(ICollection<OrderItemBriefDto> OrderItems, string senderUsername, string recipientUsername);
-        Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, 
-            ICollection<OrderForwardCategoryOfficial> officials, string Username);
+        Task<MessageWithError> ComposeEmailMsgForDLForwardToHRHead(ICollection<OrderItemBriefDto> OrderItems, string senderUsername, string recipientUsername);
+        Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, ICollection<int> officialids, string Username);
 
         Task<MessageWithError> ComposeEmailToDesignOrderItemAssessmentQs(int orderId, string Username);    
         Task<MessageWithError> ComposeMessagesToHRExecToSourceCVs(ICollection<OrderItemIdAndHRExecEmpNoDto> hrassignments, string Username);

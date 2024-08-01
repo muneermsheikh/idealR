@@ -139,8 +139,15 @@ namespace api.Data.Repositories.Admin
             if(refParams.OrderId > 0) query = query.Where(x => x.OrderId == refParams.OrderId);
             if(refParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId==refParams.OrderItemId);
             if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
-
-            var temp = await query.ToListAsync();
+            if(!string.IsNullOrEmpty(refParams.RefStatus) ) {
+                if(refParams.SelectionStatus == null) {
+                    query = query.Where(x => x.SelectionStatus == null || x.SelectionStatus == "");
+                } else {
+                    query = query.Where(x => x.SelectionStatus == refParams.SelectionStatus);
+                }
+            }
+           
+            
             var paged = await PagedList<SelPendingDto>.CreateAsync(
                 query.AsNoTracking()
                 //.ProjectTo<SelPendingDto>(_mapper.ConfigurationProvider)
@@ -322,7 +329,7 @@ namespace api.Data.Repositories.Admin
                     OrderItemId=q.OrderItemId, CandidateId = q.CandidateId, 
                     CustomerId =  q.CustomerId, ReferredOn = dateTimeNow, 
                     HRExecUsername = q.HRExecUsername, RefStatus = "Referred",
-                    RefStatusDate = DateOnly.FromDateTime(DateTime.UtcNow)
+                    RefStatusDate = DateTime.UtcNow
                 };
                 
                 _context.Entry(cvref).State= EntityState.Added;

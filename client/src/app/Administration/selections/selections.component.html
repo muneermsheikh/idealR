@@ -5,7 +5,7 @@
 <div *ngIf="selections && pagination" 
     class="d-flex justify-contents-between align-items-center"
     style="display: inline-block; margin-left: 15px; vertical-align: top;" >
-    <h4 class="mx-5">Selections based on parameters</h4>
+    <h4 class="mx-5" style="display: inline-block; font-weight: bold;">Selections based on parameters</h4>
     <pagination
          [totalItems]="pagination!.totalItems"
          [itemsPerPage]="pagination!.itemsPerPage"
@@ -22,11 +22,12 @@
             class="stdd form-control w200" #search placeholder="Search">
         <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
         <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
-        <button (click)="sendReminders()" [disabled]="selectionsSelected.length === 0" 
-            title="send Acceptance reminders to all selected candidates" class="btn fa fa-bell"></button>
+        <!-- <button (click)="sendReminders()" [disabled]="selectionsSelected.length === 0" 
+            title="send Acceptance reminders to all selected candidates" class="btn fa fa-bell"></button> -->
     </div>
     
-    <button class="btn fa fa-window-close fa-2x mx-5" routerLink="/administration" ></button>
+    <button class="btn fa fa-house fa-2x mx-2" (click)="DoHousekeeping()">HK</button>
+    <button class="btn fa fa-window-close fa-2x mx-2" routerLink="/administration" ></button>
     
 </div>
 
@@ -38,6 +39,7 @@
 <label class="stdd w100">Referred On</label>
 <label class="stdd w150">Selection Status</label>
 <label class="stdd w100">Sel/Rej<br>Date</label>
+<label class="stdd w50">Employmt<br>available</label>
 
 <div class="row" *ngFor="let item of selections">
     <app-selection-line
@@ -45,8 +47,7 @@
         (editEmploymentEvent)="displayEmploymentModal($event, item)"
         (deleteSelectionEvent)="deleteSelection($event)"
         (editSelectionEvent)="displaySelectionModal($event, item)"
-        (selectedEvent)="selectedClicked($event)"
-
+        (remindCandidateForDecisionEvent)="sendReminders($event)"
     ></app-selection-line>
 </div>
 

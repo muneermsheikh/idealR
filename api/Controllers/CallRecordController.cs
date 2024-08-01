@@ -17,25 +17,7 @@ namespace api.Controllers
         {
             _histRepo = histRepo;
         }
-
-        [HttpGet("getOrAddHistoryWithItems")]
-        public async Task<ActionResult<CallRecord>> GetUserHistorByParams([FromQuery]CallRecordItemToCreateDto histParams)
-        {
-            var data = await _histRepo.GetOrAddCallRecordWithItemsByParams(histParams, User.GetUsername());
-
-            if (data == null) return NotFound(new ApiException(400, "Not Found","No record found with given parameters"));
-            
-            return Ok(data);
-        }
-
-        [HttpGet("callRecordFromPhoneNo/{phoneno}")]
-        public async Task<ActionResult<CallRecord>> GetCallRecordFromPhoneNo(string phoneno)
-        {
-            var data = await _histRepo.GetCallRecordWithItemsFromPhoneNo(phoneno, User.GetUsername());
-            return Ok(data);
-        }
-
-
+   
         [HttpGet("dto")]
         public async Task<ActionResult<CallRecordDto>> GetCallRecordDto(CallRecordParams histParams)
         {
@@ -80,12 +62,15 @@ namespace api.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CallRecord>> UpdateCallRecord(CallRecord CallRecord)
+        public async Task<ActionResult<CallRecordStatusReturnDto>> UpdateCallRecord(CallRecord CallRecord)
         {
     
-            var returnDto = await _histRepo.EditCallRecord(CallRecord, User.GetUsername());
+            var returnDto = await _histRepo.EditOrAddNewCallRecord(CallRecord, User.GetUsername());
 
-            return Ok(returnDto.CallRecord); 
+            if(!string.IsNullOrEmpty(returnDto.strError)) 
+                return BadRequest(new ApiException(400, "Bad Request", returnDto.strError));
+            
+            return Ok(returnDto); 
 
         }
 
@@ -97,18 +82,10 @@ namespace api.Controllers
             return Ok(returnDto.CallRecord);
         }
 
-        [HttpPost("CallRecorditem")]
-        public async Task<ActionResult<CallRecordItem>> InsertCallRecordItem(CallRecordItem CallRecorditem) {
-            
-            var item = await _histRepo.AddNewHistoryItem(CallRecorditem, User.GetUsername());
-            return item;
-        }
-        
-        [HttpGet("callRecordWithItems/{callRecordId}/{personType}/{personId}/{categoryRef}")]
-        public async Task<ActionResult<CallRecord>> GetCallRecordWithItems(int callRecordId, string personType, string personId,
-            string categoryRef )
+        [HttpGet("callRecordWithItems/{personType}/{personId}")]
+        public async Task<ActionResult<CallRecord>> GetCallRecordWithItems(string personType, string personId)
         {
-            var obj = await _histRepo.GetCallRecordWithItems(callRecordId, personType, personId, categoryRef, User.GetUsername());
+            var obj = await _histRepo.GetOrGenerateCallRecord(personType, personId, User.GetUsername());
 
             if(obj == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to get the Call Record"));
             

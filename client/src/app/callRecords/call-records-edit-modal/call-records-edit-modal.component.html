@@ -1,6 +1,6 @@
 <div class="modal-header my-0">
-    <h6>Edit Call Record</h6>
-    <button class="btn btn-success w35 fa fa-save" 
+    <h4 style="font-size: bold;">Edit Call Record</h4>
+    <button class="btn btn-success w30 fa fa-save" 
         style="margin-left: 400px;" (click)="updateCallRecord()" ></button>
     <button class="btn fa fa-window-close fa-2x pull-right" (click)="close()" ></button>
 </div>
@@ -22,11 +22,11 @@
             
             <label class="lbl w80">Date</label>
             <label class="lbl w30">In/<br>Out</label>
-            <label class="lbl w125">Result</label>
             <label class="lbl w80">Phone</label>
             <label class="lbl w125">Gist of discussions</label>
-            <label class="lbl w125">Next action</label>
-            <label class="lbl w100">On</label>
+            <label class="lbl w175">Result</label>
+            <label class="lbl w150">Next action</label>
+            <label class="lbl w75">On</label>
             <button class="btn w25 fa fa-plus" (click)="addCallRecordItem()" ></button>
             <hr class="my-0">
 
@@ -41,9 +41,14 @@
                         
                         <input type="text" class="stdd fSmaller w30" formControlName="incomingOutgoing" >
                       
+                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
+                        
+                        <textarea formControlName="gistOfDiscussions" cols="15" rows="2" 
+                            class="stdd  fSmaller"></textarea>
+                      
                         <ng-select
-                            class="select w125"
-                            style="border-color: black;"
+                            class="select"
+                            style="border-color: black; width: 175px;"
                             [items]="contactResults"
                             bindLabel="status"
                             bindValue="status"
@@ -51,16 +56,10 @@
                             formControlName="contactResult"
                         ></ng-select>
 
-                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
-                        
-                        <textarea formControlName="gistOfDiscussions" cols="15" rows="2" 
-                            class="stdd  fSmaller"></textarea>
-                        
-
                         <ng-select
                             class="select w125"
                             style="border-color: black;"
-                            [items]="contactResults"
+                            [items]="nextAction"
                             bindLabel="status"
                             bindValue="status"
                             labelForId="status"
@@ -82,3 +81,7 @@
 </div>
 
 <div class="modal-footer"></div>
+
+<div style="font-size: smaller;">
+    {{form.value | json}}
+</div>

@@ -63,7 +63,7 @@
             >
                     {{order.contractReviewStatus}}
             </div>  
-            <label class="lbl w150">Forwarded to HR On</label>
+            <label class="lbl w150 mx-3">Forwarded to HR On</label>
             <div *ngIf="order.forwardedToHRDeptOn !==null && order.forwardedToHRDeptOn !== undefined "  
                     id="forwardedToHRDeptOn" class="stdd w110" style="border:btn-primary;">
                     {{order.forwardedToHRDeptOn | date}}
@@ -75,7 +75,7 @@
             </div>
         </div>
        
-        <button class="stdd btn btn-primary pull-right fa fa-2x fa-undo " (click)="close()"
+        <button class="stdd btn btn-primary pull-right fa fa-2x fa-window-close fa-2x " (click)="close()"
             title="Return to calling procedure" ></button>
 
         <label class="lbl w100">Status</label>
@@ -110,7 +110,7 @@
                 </label>
                 <label class="lbl w50">Review<br>Status</label>
 
-                <button  type="button" (click)="addItem()" class="stdd w30 fa fa-plus fa-2x blue"></button>
+                <button  type="button" (click)="addItem()" class="stdd w30 fa fa-plus fa-2x blue" style="margin-left: 20px;"></button>
             </div>
 
             <div *ngFor="let item of orderItems.controls; let i=index">
@@ -152,15 +152,14 @@
                         [bsValue]="bsValueDate"
                         [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
                     >
-                    <input type="text" class="stdd w150" formControlName="reviewItemStatus" >
+                    <input type="text" class="stdd w150 cursorpointer" title="contract review of this category"
+                        (click)="openContractReviewItemModal(i)" formControlName="reviewItemStatus" >
 
                     <div *ngIf="!isAddMode" class="stdd">       
                         <button class="w10 btn fa fa-question-mark" 
                                 title="design Assessment Questions for this category" 
                                 (click)="assessItem(i)" 
                                 >Q</button>
-                            <button class="w10 btn fa fa-bars" title="Contract Review"
-                                (click)="openContractReviewItemModal(i)"  ></button>
 
                         <button class="w10 btn fa fa-list" title="Open Job Description"
                                 (click)="openJDModal(i)" ></button>

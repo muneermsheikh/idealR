@@ -125,7 +125,7 @@ namespace api.Data.Repositories.Admin
                 subject = "Your selection as " + sel.ProfessionName + " for " + sel.CustomerCity;
                 subjectInBody = "<b><u>Subject: </b>Your selection as " + sel.ProfessionName + " for " + 
                     sel.CustomerName + "</u>";
-                msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + 
+                msgBody = string.Format("{0: dd-MMMM-yyyy-hh:nn}", _today) + "<br><br>" + 
                         sel.CandidateTitle + " " + sel.CandidateName + "email: " + sel.CandidateEmail ?? "" + "<br><br>" + 
                         "copy: " + HRSupobj?.UserName?? "" + ", email: " + HRSupobj?.Email?? "" + "<br><br>Dear " + 
                         sel.CandidateTitle + " " + sel.CandidateName + ":" + "<br><br>" + subject + "<br><br>";
@@ -133,16 +133,18 @@ namespace api.Data.Repositories.Admin
                 msgBody += await GetEmailMessageBodyContents("acceptanceremindertocandidate", 
                     sel.CandidateName, sel.ApplicationNo, sel.CustomerName, sel.ProfessionName, sel.Employment);
                 msgBody += "<br>Best Regards<br>HR Supervisor";
-                var recipientObj = await _userManager.AppUserEmailAndUsernameFromAppUserId(
-                    await _context.GetAppUserIdOfCandidate(sel.CandidateId));
+                var recipientAppUserId = Convert.ToString(await _context.GetAppUserIdOfCandidate(sel.CandidateId));
+                var recipientObj = await _userManager.FindByIdAsync(recipientAppUserId);
 
                 var message = new Message
                 {
-                    SenderUsername=senderUsername,
-                    RecipientAppUserId=recipientObj.AppUserId,
+                    Sender = senderObj,
+                    Recipient = recipientObj,
+                    SenderUsername=senderObj.UserName,
+                    RecipientUsername = recipientObj.UserName ?? "",
+                    RecipientAppUserId=recipientObj.Id,
                     SenderAppUserId=senderObj.Id,
                     SenderEmail=senderObj.Email ?? "",
-                    RecipientUsername = recipientObj.Username ?? "",
                     RecipientEmail = recipientObj.Email ?? "",
                     CCEmail = HRSupobj?.Email ?? "",
                     Subject = subject,
@@ -278,10 +280,12 @@ namespace api.Data.Repositories.Admin
 
                     var emailMessage = new Message
                     {
-                        SenderUsername=senderUsername,
+                        Sender = senderObj,
+                        Recipient = recipientObj,
+                        SenderUsername=senderObj.UserName,
                         SenderEmail=senderObj.Email,
                         RecipientUsername = recipientObj.UserName,
-                        RecipientEmail = rej.HRExecEmail ,       //TODO - HRExecEmail included in Recipient, as CC and BCC not working
+                        RecipientEmail = recipientObj.Email,       //TODO - HRExecEmail included in Recipient, as CC and BCC not working
                         MessageComposedOn = _today,
                         Subject = subject,
                         Content = msgBody,
@@ -398,6 +402,8 @@ namespace api.Data.Repositories.Admin
             
             var emailMessage = new Message
             {
+                //Sender = senderObj,
+                //Recipient = recipientObj,
                 MessageComposedOn = _today,
                 SenderEmail = senderObj.AppUserEmail,
                 SenderUsername = senderObj.Username,

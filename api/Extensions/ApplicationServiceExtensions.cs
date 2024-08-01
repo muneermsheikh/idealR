@@ -29,7 +29,7 @@ namespace api.Extensions
         {
             services.AddDbContext<DataContext>(opt =>
             {
-                opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
             services.AddCors();
@@ -40,7 +40,6 @@ namespace api.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //photo sservice and cloudinary services not added here pending creation of photos
             services.AddScoped<LogUserActivity>();
-            services.AddScoped<ILikesRepository, LIkesRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICandidateRepository, CandidatesRepository>();

@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using api.DTOs.Admin;
 using api.DTOs.Order;
 using api.Entities.Admin.Order;
@@ -34,10 +35,10 @@ namespace api.Controllers
         }
 
         [HttpPut("reviewitem")]
-        public async Task<ActionResult<bool>> UpdateReviewItem(ContractReviewItem reviewitem)
+        public async Task<ActionResult<ContractReviewItem>> UpdateReviewItem(ContractReviewItem reviewitem)
         {
             var item = await _repo.EditContractReviewItem(reviewitem, false);   //the false flag causes updates to be written to DB
-            return item != null;
+            return item;
         }
 
         [HttpPost("contractreview")]

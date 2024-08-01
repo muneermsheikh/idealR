@@ -10,6 +10,7 @@ import { ICallRecordItem } from '../_models/admin/callRecordItem';
 import { ICallRecordDto } from '../_dtos/admin/callRecordDto';
 import { ICallRecord } from '../_models/admin/callRecord';
 import { ICallRecordResult } from '../_dtos/admin/callRecordResult';
+import { CallRecordStatusReturnDto } from '../_dtos/admin/callRecordStatusReturnDto';
 
 @Injectable({
   providedIn: 'root'
@@ -47,22 +48,23 @@ export class CallRecordsService {
           )
     }
 
-  getCallRecordWithItems(callRecordId: number, personType: string, personid: string, categoryRef: string) {
+  getCallRecordWithItems(personType: string, personid: string) {
     
     return this.http.get<ICallRecord>(this.apiUrl + 
-        'CallRecord/callRecordWithItems/' + callRecordId + '/' + personType + '/' + personid + '/' + categoryRef);
+        'CallRecord/callRecordWithItems/' +  personType  + '/' + personid ) ;
   }
 
   getCallRecordStatus () {
       return this.callRecordStatus
   }
 
-
   updateHistoryItem(item: ICallRecordItem) {
     return this.http.post<ICallRecordItem>(this.apiUrl + 'userHistory/userhistoryitem', item);
   }
   
- 
+  insertNewCallRecordItem(item: ICallRecordItem) {
+    return this.http.post<CallRecordStatusReturnDto>(this.apiUrl + 'CallRecord/CallRecorditem', item);
+  }
   setParams(params: CallRecordParams) {
     this.hParams = params;
   }
@@ -72,7 +74,7 @@ export class CallRecordsService {
   }
 
   updateCallRecord(model: ICallRecord) {
-    return this.http.put<boolean>(this.apiUrl + 'CallRecord', model);
+    return this.http.put<CallRecordStatusReturnDto>(this.apiUrl + 'CallRecord', model);
   }
 
   updateCallRecordObject(model: any) {

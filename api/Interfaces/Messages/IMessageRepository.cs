@@ -13,7 +13,7 @@ namespace api.Interfaces.Messages
         Task<MessageWithError> GenerateMessageForCVForward(ICollection<CandidatesAssessedButNotRefDto> candidatesNotRefDto,
             string messageType, string Username);
         void AddMessage(Message message);
-        void DeleteMessage(Message message);
+        Task<string> DeleteMessage(int id, string username);
         Task<Message> GetMessage(int id);
         Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams, string username);
         Task<ICollection<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName);

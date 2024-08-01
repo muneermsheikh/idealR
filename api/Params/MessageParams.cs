@@ -8,6 +8,7 @@ namespace api.Params
         public string RecipientEmail { get; set; }
         public string SenderUsername { get; set; }
         public string RecipientUsername { get; set; }
+        public string SearchInContents { get; set; }   
     }
 
 }

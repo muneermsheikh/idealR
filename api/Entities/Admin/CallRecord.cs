@@ -6,7 +6,7 @@ namespace api.Entities.Admin
         public string PersonType { get; set; }
         public string PersonId { get; set; }
         public string PersonName { get; set; }
-        public string Source { get; set; }
+        public string Source { get; set; } = "Unknown";
         public string Subject { get; set; }
         public string PhoneNo {get; set;}
         public string Email { get; set; }

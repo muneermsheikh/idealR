@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
-import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCreateDto';
+import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { Pagination } from 'src/app/_models/pagination';
@@ -12,7 +12,6 @@ import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiv
 import { User } from 'src/app/_models/user';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { ProspectiveService } from 'src/app/_services/hr/prospective.service';
-import { CallRecordAddModalComponent } from 'src/app/callRecords/call-record-add-modal/call-record-add-modal.component';
 import { CallRecordsEditModalComponent } from 'src/app/callRecords/call-records-edit-modal/call-records-edit-modal.component';
 
 @Component({
@@ -111,49 +110,6 @@ export class ProspectiveListComponent implements OnInit {
     this.statusSelected=status;
   }
 
-  applyTransactions() {
-
-    if(this.statusSelected === '') {
-      this.toastr.warning('Status not selected', 'Please select the status you want to apply');
-      return;
-    }
-    
-    if(this.prospectiveSelected) {
-
-        var newCallRecordItem: CallRecordItemToCreateDto = {
-          id:0, phoneNo:this.prospectiveSelected.phoneNo ?? "", subject: "Acceptance Followup", callRecordId:0, 
-          personName:this.prospectiveSelected.candidateName, categoryRef: this.prospectiveSelected.categoryRef, 
-          personType: this.prospectiveSelected.personType, personId: this.prospectiveSelected!.personId,
-          status: this.statusSelected, email: this.prospectiveSelected.email };
-        
-          const observableOuter = this.service.getOrAddCallRecord(newCallRecordItem);
-          
-          observableOuter.pipe(
-            filter(response => response !==null && response !==undefined),
-            switchMap(response => {
-              const config = {
-                class: 'modal-dialog-centered modal-lg',
-                initialState: {
-                  callRecord: response,
-                  contactResult: this.statusSelected,
-                  contactResults: this.callRecordStatus
-                  //username: this.user?.userName
-                }
-              }
-
-              this.bsModalRef = this.modalService.show(CallRecordAddModalComponent, config);
-              const observableInner = this.bsModalRef.content.callRecordAddEvent;
-
-              return observableInner
-            })
-          ).subscribe(response => {
-              console.log('inner response', response)
-
-          })
-
-      }
-  }
-
   deleteProspectiveClicked(event: any)  //event:prospectiveId
   {
     var id=event;
@@ -180,44 +136,47 @@ export class ProspectiveListComponent implements OnInit {
 
   }
 
-  editProspectiveClicked(event: any, item: IProspectiveBriefDto)    //event:prospecive.id
-  {
-        if(event === null) {
-          this.toastr.warning('No Call Record object returned from the modal form');
-          return;
-        }  
+  editCallRecord(event: any, item: IProspectiveBriefDto) {
 
-        const config = {
-            class: 'modal-dialog-centered modal-lg',
-            initialState: {
-              callRecord: event,
-              contactResults: this.callRecordStatus,
-              candidateName: item.candidateName,
-            }
-          }
+    {if(event === null) {
+        this.toastr.warning('No Call Record object returned from the modal form');
+        return;
+      }  
 
-          this.bsModalRef = this.modalService.show(CallRecordsEditModalComponent, config);
-
-          const observableOuter =  this.bsModalRef.content.updateCallRecordEvent;
+      const config = {
+        class: 'modal-dialog-centered modal-lg',
+        initialState: {
+          callRecord: event,
+          contactResults: this.callRecordStatus,
+          candidateName: item.candidateName,
+        }
+      }
           
-          observableOuter.pipe(
-            filter((response: ICallRecord) => response !==null),
-            switchMap((response: ICallRecord) =>  {
-              return this.service.updateCallRecord(response)
-            })
-          ).subscribe((response: string) => {
       
-            if(response==='') {
-              this.toastr.success('Deployment updated', 'Success');
+      this.bsModalRef = this.modalService.show(CallRecordsEditModalComponent, config);
+      const observableOuter = this.bsModalRef.content.passCallRecordEvent;
       
-            } else {
-              this.toastr.warning(response, 'Failure');
-            }
-            
+      observableOuter.pipe(
+          filter((obj: ICallRecord) => obj !== null),
+          switchMap((obj: ICallRecord) => {
+            return this.service.updateCallRecord(obj)
           })
-            
+      ).subscribe((response: CallRecordStatusReturnDto) => {
+        if(response) {
+          this.toastr.success('Call Record updated', 'Update successful');
+          var index = this.prospectives.findIndex(x => x.id === item.id);
+          if(index !== -1) {
+            item.status = response.status;
+            this.prospectives[index]=item;
+          }
+        } else {
+          this.toastr.error('Error in deleting the checklist', 'failed to delete')
+        }
+        
+      });
+    }
   }
-
+    
   convertProspectiveToCandidate(event: number) {
     var id=event;
 
@@ -273,6 +232,5 @@ export class ProspectiveListComponent implements OnInit {
     this.service.setParams(this.pParams);
     this.loadProspectives();
   }
-
 
 }

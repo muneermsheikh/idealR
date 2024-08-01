@@ -5,6 +5,7 @@ import { Message } from '../_models/message';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { messageParams } from '../_models/params/Admin/messageParams';
 import { of } from 'rxjs';
+import { IMessage } from '../_models/admin/message';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class MessageService {
 
   constructor(private http: HttpClient) { }
 
+  
   
   getMessages(useCache: boolean=true) {
 
@@ -58,7 +60,7 @@ export class MessageService {
   }
 
   deleteMessage(id: number) {
-    return this.http.delete(this.baseUrl + 'messages/' + id);
+    return this.http.delete<string>(this.baseUrl + 'messages/' + id);
   }
 
   setParams(sParams: messageParams) {

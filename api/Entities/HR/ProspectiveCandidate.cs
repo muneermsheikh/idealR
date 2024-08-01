@@ -8,7 +8,7 @@ namespace api.Entities.HR
         [MaxLength(12)]
         public string Source { get; set; }
         public DateTime? DateRegistered { get; set; }
-        [MaxLength(9)]
+        [MaxLength(35)]
         public string CategoryRef {get; set;}
         public int OrderItemId {get; set;}
         public int ProfessionId { get; set; }

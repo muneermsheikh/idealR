@@ -15,15 +15,14 @@ namespace api.Interfaces.Admin
          Task<PagedList<EmploymentDto>> GetEmploymentsPaged (EmploymentParams empParams);
          Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams);
          Task<Employment> GetEmployment(int employmentId);
-         Task<Employment> GetEmploymentFromSelDecId(int selDecisionId);
          Task<bool> EditSelection(SelectionDecision selDecision);
          //Task<bool> EditEmployment (Employment employment, string Username);
 
-         Task<string> DeleteSelection(int selectionId);
+         Task<string> DeleteSelection(int selectionsId);
          Task<PagedList<SelDecisionDto>> GetSelectionDecisions (SelDecisionParams selParams);
          Task<string> ComposeAcceptanceReminderToCandidates(List<int> cvrefids, string Username);
          Task<ICollection<Message>> ComposeSelMessagesToCandidates(List<int> cvrefids, string Username);
          Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username);
-         
+         Task<string> HousekeepingCVRefAndSelDeecisions();
     }
 }

@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastRef, ToastrService } from 'ngx-toastr';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
+import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { User } from 'src/app/_models/user';
 import { CallRecordsService } from 'src/app/_services/call-records.service';
@@ -15,7 +16,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 })
 export class CallRecordsEditModalComponent implements OnInit {
 
-  @Output() updateCallRecordEvent = new EventEmitter<boolean>();
+  @Output() passCallRecordEvent = new EventEmitter<ICallRecord | null>();
   
   callRecord: ICallRecord | undefined;
   candidatName='';
@@ -27,6 +28,7 @@ export class CallRecordsEditModalComponent implements OnInit {
   form: FormGroup = new FormGroup({});
 
   contactResults: ICallRecordResult[] = [];
+  nextAction: ICallRecordResult[]=[{status:"Call again"}, {"status":"correct phone no"}, {status: "supervisor to advise"}, {status: "conclude"}];
   advisoriesBy: ICallRecordResult[]=[{status: "Mail"}, {status: "SMS"}, {status: "Both"}];
   inOutList: ICallRecordResult[]=[{status: "In"}, {status: "Out"}];
 
@@ -89,17 +91,13 @@ export class CallRecordsEditModalComponent implements OnInit {
   }
 
   updateCallRecord() {
-    var formdata = this.form.value;
-    this.service.updateCallRecord(formdata).subscribe({
-      next: succeeded => {
-        this.updateCallRecordEvent.emit(succeeded);
-        if(succeeded) this.bsModalRef.hide();
-      }
-    })
+        var formdata = this.form.value;
+        this.passCallRecordEvent.emit(formdata);
+        this.bsModalRef.hide();
+    }
   
-  }
-
   close() {
+    this.passCallRecordEvent.emit(null);
     this.bsModalRef.hide();
   }
 }

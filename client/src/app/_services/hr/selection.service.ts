@@ -13,6 +13,7 @@ import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
+import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
 
 @Injectable({
   providedIn: 'root'
@@ -66,9 +67,10 @@ export class SelectionService {
   }
 
 
-  registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
-    return this.http.post<number[]>(this.apiUrl + 'Selection', selDecisions);
+ /* registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
+    return this.http.post<messageWithError>(this.apiUrl + 'Selection', selDecisions);
   }
+*/
 
   getSelectionRecords(useCache: boolean=true)
   { 
@@ -92,8 +94,8 @@ export class SelectionService {
     return this.http.put<boolean>(this.apiUrl + 'selection', seldecision);
   }
 
-  deleteSelectionDecision(id: number) {
-    return this.http.delete<boolean>(this.apiUrl + 'selection/' + id);
+  deleteSelectionDecisions(id: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'selection/'+ id);
   }
 
   getEmployment(cvrefid: number) {
@@ -109,12 +111,17 @@ export class SelectionService {
     return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
   }
 
-   getEmploymentFromSelectionId(id: number) {
-    return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
+   getorGenerateEmploymentFromSelDecisionId(id: number) {
+    return this.http.get<IEmployment>(this.apiUrl + 'employment/employmentfromSelId/' + id);
   }
 
   updateEmployment(emp: IEmployment) {
-    return this.http.put<boolean>(this.apiUrl + 'employment/employment', emp);
+    if(emp.id===0) {
+      return this.http.post<string>(this.apiUrl + 'employment/employment', emp);
+    } else {
+      return this.http.put<string>(this.apiUrl + 'employment/employment', emp);
+    }
+    
   }
 
   getSelectionDtoByOrderNo(orderno: number) {
@@ -131,6 +138,10 @@ export class SelectionService {
 
   remindCandidatesForAcceptance(cvrefids: number[]) {
     return this.http.post<string>(this.apiUrl + 'selection/acceptancereminders', cvrefids);
+  }
+
+  Housekeeping() {
+    return this.http.get<string>(this.apiUrl + 'selection/housekeepingcvrefandsel');
   }
 
 }

@@ -1,4 +1,5 @@
 //using System.Diagnostics;
+using System.Collections.Immutable;
 using System.Data.Common;
 using api.DTOs.Admin;
 using api.Entities.Deployments;
@@ -40,28 +41,22 @@ namespace api.Data.Repositories.Admin
             _tempPassword = _config["tempPassword"];
         }
 
-        public async Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username)
-        {
-            var msgErr = new MessageWithError();
+        private async Task<ICollection<SelectionMessageDto>> GetSelectionMessageWithoutEmpDtos(List<int> cvrefids, string selectionStatus) {
 
-            if(cvrefids.Count == 0) return null;
-
-            var rejectedDetails = await (from cvref in _context.CVRefs 
-                where cvrefids.Contains(cvref.Id) 
-                join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId 
+            var msgDtos = (from sel in _context.SelectionDecisions where cvrefids.Contains(sel.CvRefId)
                     where sel.SelectionStatus.Contains("Rejected")  
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
-                join rvwitem in _context.ContractReviewItems on item.Id equals rvwitem.OrderItemId
+                join item in _context.OrderItems on sel.OrderItemId equals item.Id 
                 join order in _context.Orders on item.OrderId equals order.Id
-                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
-                
+                join cv in _context.Candidates on sel.CandidateId equals cv.Id
+                join reviewitems in _context.ContractReviewItems on sel.OrderItemId equals reviewitems.OrderItemId into rvwitems
+                    from rvwitem in rvwitems.DefaultIfEmpty()
+
                 select new SelectionMessageDto {
                     CustomerName = order.Customer.CustomerName,
                     CustomerCity = order.Customer.City,
                     OrderNo = order.OrderNo,
                     ProfessionName = item.Profession.ProfessionName,
                     SelectionStatus = sel.SelectionStatus,
-                    //RejectionReason = sel.RejectionReason,
                     ApplicationNo = cv.ApplicationNo,
                     CandidateId = cv.Id,
                     CandidateTitle = cv.Gender == "M" ? "Mr." : "Ms.",
@@ -71,10 +66,52 @@ namespace api.Data.Repositories.Admin
 
                     HrExecUsername = rvwitem.HrExecUsername
                     
-                }).ToListAsync();
+                }).AsQueryable();
 
-            string ErrorString="";
-            ErrorString = await VerifyDataAvailableForSelMessages(rejectedDetails);
+                if(!string.IsNullOrEmpty(selectionStatus)) msgDtos = msgDtos.Where(x => x.SelectionStatus.ToLower().Contains(selectionStatus.ToLower()));
+
+                return await msgDtos.ToListAsync();
+        }
+
+        //returns selectionMessagesDtos with employments present.  All selections are accompanied with employment details.  So this will return all selection candidates
+        private async Task<ICollection<SelectionMessageDto>> GetSelectionMessageWithEmpDtos(List<int> cvrefids) {
+            
+            var dtos = await (from sel in _context.SelectionDecisions where cvrefids.Contains(sel.CvRefId)
+                join item in _context.OrderItems on sel.OrderItemId equals item.Id 
+                join order in _context.Orders on item.OrderId equals order.Id
+                join cv in _context.Candidates on sel.CandidateId equals cv.Id
+                join emp in _context.Employments on sel.CvRefId equals emp.CvRefId
+                /*join employmt in _context.Employments on sel.CvRefId equals employmt.CvRefId into employments
+                from emp in employments.DefaultIfEmpty() */
+                select new SelectionMessageDto {
+                    CustomerName = order.Customer.CustomerName,
+                    CustomerCity = order.Customer.City,
+                    OrderNo = order.OrderNo,
+                    ProfessionName = item.Profession.ProfessionName,
+                    SelectionStatus = sel.SelectionStatus,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateId = cv.Id,
+                    CandidateTitle = cv.Gender == "M" ? "Mr." : "Ms.",
+                    CandidateName = cv.FullName,
+                    CandidateGender = cv.Gender,
+                    CandidateAppUserId = cv.AppUserId,
+                    Employment = emp
+            }).ToListAsync();
+
+            if(dtos.Count == 0) return null;
+
+            return dtos;
+        }
+
+        public async Task<MessageWithError> ComposeRejMessagesToCandidates(List<int> cvrefids, string Username)
+        {
+            var msgErr = new MessageWithError();
+
+            if(cvrefids.Count == 0) return null;
+
+            var rejectedDetails = await GetSelectionMessageWithoutEmpDtos(cvrefids, "Rejected");
+
+            var ErrorString = await VerifyAppUserAvailableForCandidates(rejectedDetails);
             if(!string.IsNullOrEmpty(ErrorString)) {
                 msgErr.ErrorString = ErrorString;
                 return msgErr;
@@ -90,31 +127,11 @@ namespace api.Data.Repositories.Admin
         {
             if(cvrefids.Count == 0) return null;
 
-            var selectedDetails = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
-                join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId 
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
-                join order in _context.Orders on item.OrderId equals order.Id
-                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
-                join emp in _context.Employments on sel.CvRefId equals emp.CvRefId
-                
-                select new SelectionMessageDto {
-                    CustomerName = order.Customer.CustomerName,
-                    CustomerCity = order.Customer.City,
-                    OrderNo = order.OrderNo,
-                    ProfessionName = item.Profession.ProfessionName,
-                    SelectionStatus = sel.SelectionStatus,
-                    //RejectionReason = sel.RejectionReason,
-                    ApplicationNo = cv.ApplicationNo,
-                    CandidateId = cv.Id,
-                    CandidateTitle = cv.Gender == "M" ? "Mr." : "Ms.",
-                    CandidateName = cv.FullName,
-                    CandidateGender = cv.Gender,
-                    CandidateAppUserId = cv.AppUserId,
-                    Employment = emp
-            }).ToListAsync();;
+            var selectedDetails = await GetSelectionMessageWithEmpDtos(cvrefids);
             
-            string ErrorString="";
-            ErrorString = await VerifyDataAvailableForSelMessages(selectedDetails);
+            if(selectedDetails.Count == 0) throw new Exception ("Failed to retrieve any records from database.  For Selection Messages to be composed, the relevant Employment data must be defined");
+
+            var ErrorString = await VerifyAppUserAvailableForCandidates(selectedDetails);
             if(!string.IsNullOrEmpty(ErrorString)) throw new Exception(ErrorString) ;
 
             var msgs = await _msgAdmRepo.ComposeSelectionStatusMessagesForCandidate(selectedDetails, Username);
@@ -127,31 +144,12 @@ namespace api.Data.Repositories.Admin
         {
             if(cvrefids.Count == 0) return null;
 
-            var selectedDetails = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
-                join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId 
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
-                join order in _context.Orders on item.OrderId equals order.Id
-                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
-                join emp in _context.Employments on sel.CvRefId equals emp.CvRefId
-                
-                select new SelectionMessageDto {
-                    CustomerName = order.Customer.CustomerName,
-                    CustomerCity = order.Customer.City,
-                    OrderNo = order.OrderNo,
-                    ProfessionName = item.Profession.ProfessionName,
-                    SelectionStatus = sel.SelectionStatus,
-                    //RejectionReason = sel.RejectionReason,
-                    ApplicationNo = cv.ApplicationNo,
-                    CandidateId = cv.Id,
-                    CandidateTitle = cv.Gender == "M" ? "Mr." : "Ms.",
-                    CandidateName = cv.FullName,
-                    CandidateGender = cv.Gender,
-                    CandidateAppUserId = cv.AppUserId,
-                    Employment = emp
-            }).ToListAsync();
+            var selectedDetails = await GetSelectionMessageWithEmpDtos(cvrefids);
+
+            if(selectedDetails == null || selectedDetails.Count == 0) return "For acceptance reminder messages, the relevant employment record must be defined. Cannot retrieve selection details for the candidates selected";
             
             string ErrorString="";
-            ErrorString = await VerifyDataAvailableForSelMessages(selectedDetails);
+            ErrorString = await VerifyAppUserAvailableForCandidates(selectedDetails);
             if(!string.IsNullOrEmpty(ErrorString)) throw new Exception(ErrorString) ;
 
             var msgErr = await _msgAdmRepo.ComposeAcceptanceReminderToCandidates(selectedDetails, Username);
@@ -167,40 +165,6 @@ namespace api.Data.Repositories.Admin
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save messages";
 
         }
-    
-        private async Task<AppUser> AppUserFromEmployeeId(int EmployeeId, string email) {
-            
-            var empObj = EmployeeId == 0 
-                ? string.IsNullOrEmpty(email) ? null : await _context.Employees.Where(x => x.OfficialEmail == email).FirstOrDefaultAsync()
-                : await _context.Employees.FindAsync(EmployeeId);
-
-            if(empObj == null) return null;
-
-            if (empObj.AppUserId  != 0) return await _userManager.FindByIdAsync(empObj.AppUserId.ToString());
-            
-            AppUser newAppUser;
-            newAppUser = await _userManager.FindByNameAsync(empObj.UserName);
-
-            if(newAppUser == null) {
-                newAppUser = new AppUser{
-                    Gender = empObj.Gender, KnownAs=empObj.KnownAs,
-                    DateOfBirth= empObj.DateOfBirth,
-                    Created = _today,
-                    City = empObj.City, Country = empObj.Country
-                };
-                
-                await _userManager.CreateAsync(newAppUser, _tempPassword);
-            }
-
-            if(newAppUser != null) {
-                empObj.AppUserId = newAppUser.Id;
-                _context.Entry(empObj).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            return newAppUser;
-
-        }
-
         private async Task<AppUser> AppUserFromCandidateId(int CandidateId) {
             var candidateObj = await _context.Candidates.FindAsync(CandidateId);
             if(candidateObj == null) return null;
@@ -243,7 +207,7 @@ namespace api.Data.Repositories.Admin
 
         }
 
-        private async Task<string> VerifyDataAvailableForSelMessages(ICollection<SelectionMessageDto> selMessages)
+        private async Task<string> VerifyAppUserAvailableForCandidates(ICollection<SelectionMessageDto> selMessages)
         {
             string ErrString="";
             //check if senderObj and RecipientObj have valid data
@@ -262,21 +226,16 @@ namespace api.Data.Repositories.Admin
 
         public async Task<string> DeleteSelection(int selectionId)
         {
-            var selections = await _context.SelectionDecisions.ToListAsync();
-            var employments = await _context.Employments.ToListAsync();
-            var vouchers = await _context.FinanceVouchers.ToListAsync();
-            var deps = await _context.Deps.ToListAsync();
+            string ErrString = "";
 
             //Deletebehavior.Cascade for Selections and other related tables cd not be set, so all related
             //records are deleted manually
             var obj = await _context.SelectionDecisions.FindAsync(selectionId);
             if(obj == null) return "no selection object by that Selection Id";
             var cvrefid = obj.CvRefId;
-            DateTime offerAcceptedOn;
+            DateTime offerAcceptedOn=new();
             int coaRecruitmentSales=11;
             int appno=0;
-
-            string ErrString = "";
 
             _context.SelectionDecisions.Remove(obj);
             _context.Entry(obj).State = EntityState.Deleted;
@@ -289,25 +248,28 @@ namespace api.Data.Repositories.Admin
 
             //1 . delete employment
             var emp = await _context.Employments.Where(x => x.CvRefId==cvrefid).FirstOrDefaultAsync();
-            if (emp==null) return "Failed to retrieve Employment record.  Cannot proceed with the deletion of selection";
-            _context.Employments.Remove(emp);
-            _context.Entry(emp).State = EntityState.Deleted;
-        
+            if (emp!=null) {
+                _context.Employments.Remove(emp);
+                _context.Entry(emp).State = EntityState.Deleted;
+                offerAcceptedOn = emp.OfferAcceptanceConcludedOn;
+            }
+            
             //2 - update CVRef.SelectionStatus
             var CVREF = await _context.CVRefs.FindAsync(cvrefid);
             if(CVREF == null) return "Failed to retrieve CVRef record.  Cannot proceed with the deletion of selection";
 
             CVREF.SelectionStatus  = "";
             var candidateId = CVREF.CandidateId;
-            offerAcceptedOn = emp.OfferAcceptanceConcludedOn;
             appno = await _context.GetApplicationNoFromCandidateId(candidateId);
         
             _context.Entry(CVREF).State = EntityState.Modified;
 
             //3 - Delete Deployments
             var dep = await _context.Deps.Where(x => x.CvRefId == cvrefid).Include(x => x.DepItems).FirstOrDefaultAsync();
-            _context.Deps.Remove(dep);
-            _context.Entry(dep).State = EntityState.Deleted;
+            if(dep != null) {
+                _context.Deps.Remove(dep);
+                _context.Entry(dep).State = EntityState.Deleted;
+            }
             
             //4 = DELETE VOUCHERS
             if(offerAcceptedOn.Year > 2000) {
@@ -361,6 +323,8 @@ namespace api.Data.Repositories.Admin
                 join ord in _context.Orders on item.OrderId equals ord.Id
                 join cvref in _context.CVRefs on sel.CvRefId equals cvref.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id
+                join employmt in _context.Employments on sel.Id equals employmt.SelectionDecisionId into employments
+                    from emp in employments.DefaultIfEmpty()
                 select new SelDecisionDto {
                     CvRefId = cvref.Id,
                     ApplicationNo = cv.ApplicationNo, 
@@ -374,8 +338,10 @@ namespace api.Data.Repositories.Admin
                     ReferredOn = cvref.ReferredOn,
                     Id = sel.Id,
                     SelectedOn = sel.SelectedOn, 
-                    SelectionStatus = sel.SelectionStatus
-                }).AsQueryable();
+                    SelectionStatus = sel.SelectionStatus,
+                    EmploymentId = emp==null ? 0 : emp.Id
+                }).OrderBy(x => x.OrderItemId).ThenBy(x => x.SelectionStatus)
+                .AsQueryable();
 
             if(selParams.CVRefId > 0) query = query.Where(x => x.CvRefId == selParams.CVRefId);
             if(selParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId == selParams.OrderItemId);
@@ -390,7 +356,6 @@ namespace api.Data.Repositories.Admin
 
         }
         
-
         public async Task<MessageWithError> RegisterSelections(ICollection<CreateSelDecisionDto> selDtos, string Username)
         {
             //1 - saves selection/rejections to SelectionDecision table
@@ -402,8 +367,8 @@ namespace api.Data.Repositories.Admin
             
             var cvrefids = selDtos.Select(x => x.CVRefId).ToList();
             //verify the CVRefIds are not already selected
-            var excludeCVRefsAlreadySelected = await _context.CVRefs
-                .Where(x => cvrefids.Contains(x.Id) && x.SelectionStatus == "Selected").Select(x => x.Id).ToListAsync();
+            var excludeCVRefsAlreadySelected = await _context.SelectionDecisions
+                .Where(x => cvrefids.Contains(x.CvRefId) && x.SelectionStatus == "Selected").Select(x => x.Id).ToListAsync();
             //exclude already selected records from cvrefids
             if(excludeCVRefsAlreadySelected.Count > 0) cvrefids = cvrefids
                 .Where(x => !excludeCVRefsAlreadySelected.Contains(x)).ToList();
@@ -436,7 +401,6 @@ namespace api.Data.Repositories.Admin
                     CandidateId = cvref.CandidateId,
                     ApplicationNo = cv.ApplicationNo,
                     Gender = cv.Gender,
-                    //Remarks = dtos.Remarks,
                     CVRef = cvref
                 }).ToListAsync();
 
@@ -445,8 +409,8 @@ namespace api.Data.Repositories.Admin
                 return dtoToReturn;
             }
 
-            //above query does not exclude selDtos, as that wd cause error at client processing; once the query is
-            //retrieved, update selectedOn and selectionStatus
+            //selectedOn and Selection Status were not part of the abve query, to avoid Client Processing
+            //once the query is retrieved, update selectedOn and selectionStatus
             foreach(var sel in selDetails) {
                     
                 sel.SelectedOn = selDtos.Where(x => x.CVRefId == sel.CvRefId).Select(x => Convert.ToDateTime(x.DecisionDate)).FirstOrDefault();
@@ -460,18 +424,23 @@ namespace api.Data.Repositories.Admin
                 sel.CVRef.SelectionStatusDate = DateTime.UtcNow;
                 _context.Entry(sel.CVRef).State = EntityState.Modified;
 
-                var depItems = new List<DepItem>();
-                var depItem = new DepItem{TransactionDate=_today, Sequence=100,NextSequence=300, NextSequenceDate=_today.AddDays(3)};
-                depItems.Add(depItem);
+                if(sel.SelectionStatus=="Selected") {
+                    var depCVRefId = await _context.Deps.Where(x => x.CvRefId==sel.CvRefId).FirstOrDefaultAsync();
+                    if(depCVRefId != null) continue;    //deps contais CVRefIdvalue, which is unique
 
-                //create deployment record
-                var dep = new Dep
-                { CvRefId = sel.CvRefId, OrderItemId = sel.OrderItemId, CustomerId = sel.CustomerId,
-                    SelectedOn = sel.SelectedOn, CurrentStatus = "Selected", CurrentStatusDate = _today,
-                    CustomerName = sel.CustomerName, CityOfWorking = sel.CityOfWorking, DepItems=depItems
-                };
-                
-                _context.Deps.Add(dep);
+                    var depItems = new List<DepItem>();
+                    var depItem = new DepItem{TransactionDate=_today, Sequence=100,NextSequence=300, NextSequenceDate=_today.AddDays(3)};
+                    depItems.Add(depItem);
+
+                    //create deployment record
+                    var dep = new Dep
+                    { CvRefId = sel.CvRefId, OrderItemId = sel.OrderItemId, CustomerId = sel.CustomerId,
+                        SelectedOn = sel.SelectedOn, CurrentStatus = "Selected", CurrentStatusDate = _today,
+                        CustomerName = sel.CustomerName, CityOfWorking = sel.CityOfWorking, DepItems=depItems
+                    };
+                    
+                    _context.Deps.Add(dep);
+                }
              }
          
             try {
@@ -595,6 +564,35 @@ namespace api.Data.Repositories.Admin
 
         }
 
+        public async Task<string> HousekeepingCVRefAndSelDeecisions() {
+
+            var cvrefs = await _context.CVRefs.Where(x => x.SelectionStatus==null || x.SelectionStatus=="").ToListAsync();
+            var selectedCVs = await _context.SelectionDecisions.Where(x => cvrefs.Select(x => x.Id).Contains(x.CvRefId))
+                .Select(x => new{x.CvRefId, x.SelectionStatus, x.SelectedOn}).ToListAsync();
+            if(selectedCVs.Count > 0) {
+                foreach(var cvref in cvrefs) {
+                    var found = selectedCVs.Where(x => x.CvRefId == cvref.Id).FirstOrDefault();
+                    if(found !=null) {
+                        cvref.SelectionStatus=found.SelectionStatus;
+                        cvref.SelectionStatusDate=found.SelectedOn;
+                        _context.Entry(cvref).State=EntityState.Modified;
+                    }
+                }
+
+                if(_context.ChangeTracker.HasChanges()) {
+                    try {
+                        await _context.SaveChangesAsync();
+                    } catch (DbException ex) {
+                        return ex.Message;
+                    } catch (Exception ex) {
+                        return ex.Message;
+                    }
+                }
+
+            }
+
+            return "";
+        }
         public async Task<PagedList<EmploymentDto>> GetEmploymentsPaged(EmploymentParams empParams)
         {
             var query = _context.Employments.AsQueryable();
@@ -622,40 +620,6 @@ namespace api.Data.Repositories.Admin
 
             return employment;
         }
-        
-        public async Task<Employment> GetEmploymentFromSelDecId(int selDecisionId)
-        {
-            var query = await (from emp in _context.Employments where emp.SelectionDecisionId == selDecisionId
-                join cvref in _context.CVRefs on emp.CvRefId equals cvref.Id
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id
-                join cat in _context.Professions on item.ProfessionId equals cat.Id
-                join order in _context.Orders on item.OrderId equals order.Id
-                join cand in _context.Candidates on cvref.CandidateId equals cand.Id
-                join chklst in _context.ChecklistHRs 
-                    on new {cvref.CandidateId, cvref.OrderItemId} equals new {chklst.CandidateId, chklst.OrderItemId}
-                select new Employment {
-                    Id = emp.Id, SelectionDecisionId = selDecisionId, CvRefId = cvref.Id,
-                    //ApplicationNo = cand.ApplicationNo, CandidateName=cand.FullName, 
-                    //CompanyName=order.Customer.CustomerName, 
-                    Charges=chklst.ChargesAgreed, 
-                    ChargesFixed=chklst.Charges, 
-                    ContractPeriodInMonths=emp.ContractPeriodInMonths, FoodAllowance=emp.FoodAllowance, 
-                    FoodNotProvided=emp.FoodNotProvided, FoodProvidedFree=emp.FoodProvidedFree,
-                    HousingAllowance=emp.HousingAllowance, HousingNotProvided=emp.HousingNotProvided,
-                    HousingProvidedFree=emp.HousingProvidedFree, LeavePerYearInDays=emp.LeavePerYearInDays,
-                    LeaveAirfareEntitlementAfterMonths=emp.LeaveAirfareEntitlementAfterMonths,
-                    OfferAccepted=emp.OfferAccepted, 
-                    OfferAcceptanceConcludedOn=emp.OfferAcceptanceConcludedOn,
-                    OtherAllowance=emp.OtherAllowance, 
-                    //ProfessionName=cat.ProfessionName,
-                    Salary=emp.Salary, SalaryCurrency=emp.SalaryCurrency, SelectedOn=emp.SelectedOn,
-                    TransportAllowance=emp.TransportAllowance,
-                    TransportProvidedFree = emp.TransportProvidedFree, WeeklyHours = emp.WeeklyHours
-                }).FirstOrDefaultAsync();
-
-            return query;
-        }
-
         public async Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams)
         {
              var query = _context.Employments.Where(x => x.OfferAccepted == null || x.OfferAccepted == "").AsQueryable();

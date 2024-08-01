@@ -12,6 +12,8 @@
     margin: 0 2px 0 2px;
 }
 
+.cursorpointer {cursor: pointer; color: darkblue; font-weight: bold;}
+
 .w15 {width: 15px;}
 .w30 {width: 30px;}
 .w50 {width: 50px;}

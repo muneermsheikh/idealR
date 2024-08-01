@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
-import { IEmployment } from 'src/app/_models/admin/employment';
+import { Employment, IEmployment } from 'src/app/_models/admin/employment';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { SelectionService } from 'src/app/_services/hr/selection.service';
 
@@ -18,12 +18,12 @@ export class SelectionLineComponent {
   @Output() deleteSelectionEvent = new EventEmitter<number>();
   @Output() editSelectionEvent = new EventEmitter<ISelectionDecision>();
   @Output() remindCandidateForDecisionEvent = new EventEmitter<number>();
-  @Output() selectedEvent = new EventEmitter<ISelDecisionDto>();
+  //@Output() selectedEvent = new EventEmitter<ISelDecisionDto>();
 
-  constructor(private service: SelectionService){}
+  constructor(private service: SelectionService, private toastr: ToastrService){}
 
   displayEmployment() {
-    this.service.getEmploymentFromSelectionId(this.selection!.id).subscribe({
+    this.service.getorGenerateEmploymentFromSelDecisionId(this.selection!.id).subscribe({
         next: (response) => {
           if(response !==null) {
             this.editEmploymentEvent.emit(response);
@@ -51,15 +51,13 @@ export class SelectionLineComponent {
 
   remindCandidateForDecision() {
     if(this.selection?.selectionStatus !== 'Selected') {
-      inject(ToastrService).warning('This candidate has conveyed his decision on his selection - (' + 
+      this.toastr.warning('This candidate has conveyed his decision on his selection - (' + 
         this.selection?.selectionStatus + '). No reminder to the candidate need be given', 'No reminder feasible');
+    } else if(this.selection.employmentId === 0) {
+        this.toastr.warning('For reminders to be issued to a candidate, the employment remuneration data must be set.  This candidate does not have his remuneration data set', 'remuneration not set');
     } else {
-      if(this.selection) this.remindCandidateForDecisionEvent.emit(this.selection.id);
+      this.remindCandidateForDecisionEvent.emit(this.selection.id);
     }
-  }
-
-  selectedClicked() {
-    this.selectedEvent.emit(this.selection);
   }
 
 }

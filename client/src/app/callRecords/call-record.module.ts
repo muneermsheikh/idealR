@@ -6,7 +6,6 @@ import { CallRecordsListComponent } from './call-records-list/call-records-list.
 import { SharedModule } from '../_modules/shared.module';
 import { CallRecordRoutingModule } from './call-record-routing.module';
 import { CallRecordMenuComponent } from './call-record-menu/call-record-menu.component';
-import { CallRecordAddModalComponent } from './call-record-add-modal/call-record-add-modal.component';
 
 
 @NgModule({
@@ -15,8 +14,7 @@ import { CallRecordAddModalComponent } from './call-record-add-modal/call-record
     CallRecordsEditModalComponent,
     CallRecordsListComponent,
     CallRecordMenuComponent,
-    CallRecordAddModalComponent,
-    
+   
   ],
   imports: [
     CommonModule,

@@ -1,7 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
+import { IOrderForwardCategory } from 'src/app/_models/orders/orderForwardCategory';
 import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 import { Pagination } from 'src/app/_models/pagination';
 import { OrderFwdParams } from 'src/app/_models/params/orders/orderFwdParams';
@@ -20,7 +21,7 @@ export class OrderFwdsComponent {
   
   data: IOrderForwardToAgent[]=[];
 
-  fwdsToAgent: IOrderForwardToAgent[]=[];
+  fwdsToAgent: IOrderForwardCategory[]=[];
 
   fwdToAgent: IOrderForwardToAgent | undefined;
   fwdParams = new OrderFwdParams();
@@ -48,7 +49,6 @@ export class OrderFwdsComponent {
               this.fwdsToAgent = response.result;
               this.pagination = response.pagination;
               this.totalCount = response.count;
-              console.log('orderfwds loadfwdrecords:', this.fwdsToAgent);
           }
         },
         error: (error: any) => console.log(error)
@@ -85,10 +85,18 @@ export class OrderFwdsComponent {
 
   }
 
+
+
   orderFwdDelete(event: any) {
     this.service.deleteForward(event).subscribe({
       next: succeeded => {
-        this.toastr.success('Deleted', 'The Order Forward along with its related records was deleted');
+        if(succeeded) {
+          this.toastr.success('Deleted', 'The Order Forward along with its related records was deleted');
+          var index = this.fwdsToAgent.findIndex(x => x.id === event.id);
+          if(index !== -1) this.fwdsToAgent.splice(index, 1);
+        } else {
+          this.toastr.warning('Failed to delete the Order forward', 'Failure')
+        }
       }
     })
   }

@@ -31,7 +31,7 @@
      <label class="lbl w100">Status</label>
 
      <div *ngIf="!callRecords || callRecords.length === 0" class="my-2">
-          <h6>No call records on record as per parameters given</h6>
+          <h4 class="red">No call records on record as per parameters given</h4>
      </div>
      <div *ngIf="callRecords">
           <div *ngFor="let rec of callRecords">
@@ -39,7 +39,6 @@
                     [hist]="rec"
                     (editEvent)="editCallRecord($event, rec)"
                     (deleteEvent)="deleteCallRecord($event)"
-                    (callRecordAddEvent)="addNewCallRecord($event, rec)"  
                ></app-call-records-item>
      
           </div>

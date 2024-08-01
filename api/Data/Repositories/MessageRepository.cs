@@ -1,3 +1,4 @@
+using System.Data.Common;
 using api.DTOs;
 using api.DTOs.Admin;
 using api.Entities.Admin.Client;
@@ -128,9 +129,34 @@ namespace api.Data.Repositories
             _context.Messages.Add(message);
         }
 
-        public void DeleteMessage(Message message)
+        public async Task<string> DeleteMessage(int id, string username)
         {
-            _context.Messages.Remove(message);
+            var strErr="";
+            var msg = await _context.Messages.FindAsync(id);
+            username = username.ToLower();
+
+            if(msg==null) return "Message Not Found";
+
+            if (msg.SenderUsername.ToLower() != username && msg.RecipientUsername != username) return "Unauthorized";
+
+            if (msg.SenderUsername.ToLower() == username) msg.SenderDeleted = true;
+
+            if (msg.RecipientUsername == username) msg.RecipientDeleted = true;
+
+            if (msg.SenderDeleted && msg.RecipientDeleted) _context.Messages.Remove(msg);
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                strErr = ex.Message;
+            } catch (Exception ex) {
+                strErr = ex.Message;
+            }
+
+            if(strErr=="") strErr = msg.SenderDeleted && msg.RecipientDeleted ? "Deleted" : "Marked as Deleted";
+
+            return strErr;
+           
         }
 
         public async Task<Message> GetMessage(int id)
@@ -154,12 +180,20 @@ namespace api.Data.Repositories
 
             if(loggedinUsername.ToLower()=="admin") {       //only admin user can view messages of other users
                 if(mParams.CvRefId != 0) qry = qry.Where(x => x.CvRefId == mParams.CvRefId);
-                if(!string.IsNullOrEmpty(mParams.SenderEmail)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
-                if(!string.IsNullOrEmpty(mParams.RecipientEmail)) qry = qry.Where(x => x.RecipientEmail.ToLower() == mParams.RecipientEmail.ToLower());
+                //if(!string.IsNullOrEmpty(mParams.SenderEmail)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
+                //if(!string.IsNullOrEmpty(mParams.RecipientEmail)) qry = qry.Where(x => x.RecipientEmail.ToLower() == mParams.RecipientEmail.ToLower());
                 //if(!string.IsNullOrEmpty(mParams.SenderUsername)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
                 //if(!string.IsNullOrEmpty(mParams.RecipientUsername)) qry = qry.Where(x => x.RecipientUsername.ToLower() == mParams.RecipientUsername.ToLower());
             } 
-            
+
+            if(!string.IsNullOrEmpty(mParams.Search)) qry = qry
+                .Where(x => x.SenderUsername.ToLower().Contains(mParams.Search) || x.RecipientUsername.ToLower().Contains(mParams.Search) );
+            if(!string.IsNullOrEmpty(mParams.SearchInContents)) qry = qry
+                .Where(x => x.Content.Contains(mParams.SearchInContents));
+            qry = mParams.Container == "Outbox" 
+                ? qry.OrderByDescending(x => x.MessageComposedOn) 
+                : qry.OrderByDescending(x => x.MessageSentOn);
+
             var paged = await PagedList<Message>.CreateAsync(qry.AsNoTracking(), mParams.PageNumber, mParams.PageSize);
             
             return paged;

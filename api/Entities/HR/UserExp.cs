@@ -12,7 +12,7 @@ namespace api.Entities.HR
         public string SalaryCurrency { get; set; }
         public int? MonthlySalaryDrawn { get; set; }
         [Required]
-        public DateOnly? WorkedFrom { get; set; }
-        public DateOnly? WorkedUpto {get; set;}
+        public DateTime? WorkedFrom { get; set; }
+        public DateTime? WorkedUpto {get; set;}
     }
 }

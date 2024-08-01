@@ -1,12 +1,54 @@
 [
-    {"CVRefId": 1, "SelectionDecisionId": 1, "SelectedOn": "2020-01-01T10:10:00", "SalaryCurrency": "SAR", 
-         "Salary": 2500, "ContractPeriodInMonths": 24, "HousingProvidedFree": false, "HousingAllowance": 500, 
-         "FoodProvidedFree": false, "FoodAllowance": 0, "TransportProvidedFree": false, "TransportAllowance": 500,
-         "Charges": 25000
+    {"CVRefId": 4, "SelectionDecisionId": 3, "SelectedOn": "2020-01-05T10:10:00", 
+          "ChargesFixed": 25000, "Charges": 25000, "SalaryCurrency": "SAR", 
+          "Salary": 2500, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": false, "TransportAllowance": 500, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
     }, 
-    {"CVRefId": 2, "SelectionDecisionId": 1, "SelectedOn": "2020-01-02T10:10:00", "SalaryCurrency": "SAR", 
-         "Salary": 2600, "ContractPeriodInMonths": 24, "HousingProvidedFree": false, "HousingAllowance": 500, 
-         "FoodProvidedFree": false, "FoodAllowance": 0, "TransportProvidedFree": false, "TransportAllowance": 500,
-         "Charges": 45000
-    }
+    {"CVRefId": 5, "SelectionDecisionId": 4, "SelectedOn": "2020-02-05T10:10:00", 
+          "ChargesFixed": 45000, "Charges": 45000, "SalaryCurrency": "SAR", 
+          "Salary": 2600, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": false, "TransportAllowance": 500, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
+    },
+
+    {"CVRefId": 8, "SelectionDecisionId": 8, "SelectedOn": "2020-01-05T10:10:00", 
+          "ChargesFixed": 45000, "Charges": 45000, "SalaryCurrency": "SAR", 
+          "Salary": 2600, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
+    },
+
+    {"CVRefId": 9, "SelectionDecisionId": 8, "SelectedOn": "2020-02-05T10:10:00", 
+          "ChargesFixed": 45000, "Charges": 45000, "SalaryCurrency": "SAR", 
+          "Salary": 2800, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
+     },
+
+     {"CVRefId": 11, "SelectionDecisionId": 10, "SelectedOn": "2020-02-05T10:10:00", 
+          "ChargesFixed": 45000, "Charges": 45000, "SalaryCurrency": "SAR", 
+          "Salary": 3000, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
+     },
+
+     {"CVRefId": 12, "SelectionDecisionId": 11, "SelectedOn": "2020-02-05T10:10:00", 
+          "ChargesFixed": 45000, "Charges": 45000, "SalaryCurrency": "SAR", 
+          "Salary": 3500, "ContractPeriodInMonths": 24, "WeeklyHours": 48, 
+          "HousingProvidedFree": false, "HousingNotProvided": false, "HousingAllowance": 500, 
+          "FoodProvidedFree": false, "FoodAllowance": 0, "FoodNotProvided":false, 
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided": false,
+          "OtherAllowance":0, "LeavePerYearInDays":21, "LeaveAirFareEntitlementAfterMonths":24
+     }
 ]

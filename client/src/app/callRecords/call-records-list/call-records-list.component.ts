@@ -9,9 +9,9 @@ import { UserHistoryService } from 'src/app/_services/admin/user-history.service
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CallRecordsEditModalComponent } from '../call-records-edit-modal/call-records-edit-modal.component';
 import { IContactResult } from 'src/app/_models/admin/contactResult';
-import { CallRecordAddModalComponent } from '../call-record-add-modal/call-record-add-modal.component';
 import { CallRecordParams, ICallRecordParams } from 'src/app/_models/params/callRecordParams';
 import { ICallRecordItem } from 'src/app/_models/admin/callRecordItem';
+import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 
 @Component({
   selector: 'app-call-records-list',
@@ -92,7 +92,7 @@ export class CallRecordsListComponent implements OnInit{
       })
   }
 
-  addNewCallRecord(event: any, item: IUserHistoryBriefDto) {    //emitted from modal: IUserHistoryItem
+  /*addNewCallRecord(event: any, item: IUserHistoryBriefDto) {    //emitted from modal: IUserHistoryItem
 
     var callRecordItem = event;
 
@@ -147,12 +147,15 @@ export class CallRecordsListComponent implements OnInit{
         }
     )
   }
-
+*/
   editCallRecord(callRecord: any, item: IUserHistoryBriefDto) {
+
     if(callRecord === null) {
-      this.toastr.warning('No Call Record object returned by modal form');
+      this.toastr.warning('No Call Record object returned by call record item');
       return;
     }  
+
+    console.log('call record edit:', callRecord);
 
     const config = {
         class: 'modal-dialog-centered modal-lg',
@@ -168,8 +171,11 @@ export class CallRecordsListComponent implements OnInit{
       const observableOuter =  this.bsModalRef.content.updateCallRecordEvent;
       
       observableOuter.subscribe({
-        next: (succeeded: boolean) => {
-          if(succeeded) {
+        next: (callRecReturn: CallRecordStatusReturnDto) => {
+          if(callRecReturn.strError === '') {
+              item.status=callRecReturn.status;
+              var index = this.callRecords.findIndex(x => x.id == item.id);
+              if(index >= 0) this.callRecords[index]=item;
               this.toastr.success('The Call Record was updated', 'success')
           } else {
             this.toastr.warning('Failed to update the call Record', 'Failed')

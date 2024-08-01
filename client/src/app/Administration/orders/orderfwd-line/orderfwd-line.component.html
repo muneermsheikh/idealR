@@ -7,32 +7,32 @@
         <div class="stdd w50 mx-2" >{{fwd.orderNo}}</div>
         <div class="stdd w100 mx-2" >{{fwd.orderDate | date: 'dd-MMM-yy'}}</div>
         <div class="stdd w250 mx-2">{{fwd.customerName}}</div>
+        <div class="stdd w250 mx-2">{{fwd.professionName}}</div>
+        <div class="stdd w250 mx-2">{{fwd.charges}}</div>
         <button class="btn btn-sm fa fa-trash red" style="margin-left: 250px;" title="delete order forwarded to agent"
             (click)="deleteOrder(fwd.id)"></button>
-        <button (click)="hideCategory=!hideCategory" style="display: inline-block; font-size: large; font-weight: bold;" >{{hideCategory ? '-':'+'}}</button>
+        <button (click)="hideCategory=!hideCategory" 
+            style="display: inline-block; font-size: large; font-weight: bold;"  >{{hideCategory ? '-':'+'}}</button>
             <br>
-            <div *ngFor="let item of fwd.orderForwardCategories">
-                <div class="row" style="margin-left: 75px;">
-                    <div class="stddS w250">Category: {{item.professionName}}</div>
-                    <div class="stddS w125">Charges: {{item.charges}}</div>
-                    <button class="btn btn-sm fa fa-trash red"  title="delete catgory"
-                        style="margin-left: 5px;" (click)="deleteCat(item.orderItemId)" ></button>
-                    <hr class="my-0">
-                    <label class="stddM w100" style="margin-left: 50px;">Date</label>
+            <div *ngIf="hideCategory" style="margin-left: 75px;">
+                <div class="row" >
+                    <label class="stddM w100">Date Forwarded</label>
                     <label class="stddM w250">Associate</label>
+                    <label class="stddM w250">Associate Name</label>
                     <label class="stddM w200">Email Forwarded to</label>
                     <label class="stddM w100">Phone No</label>
-                    <div *ngFor="let off of item.orderForwardCategoryOfficials" >
-                        <div class="stddM w100">{{off.dateForwarded | date:'dd-MMM-yy'}}</div>
-                        <div class="stddM w250">{{off.agentName}}</div>
-                        <div class="stddM w200">{{off.emailIdForwardedTo}}</div>
-                        <div class="stddM w100">{{off.phoneNoForwardedTo}}</div>
-                        <button class="btn btn-sm fa fa-trash" style="margin-left: 17px;"
-                            title="delete official"
-                         (click)="deleteOff(off.id)"></button>
-                    </div>
+                    <label class="stddM w100">Total Count: {{fwd.orderForwardCategoryOfficials.length}}</label>
+                </div>
+                <div *ngFor="let item of fwd.orderForwardCategoryOfficials">
+                    <div class="stddM w100">{{item.dateForwarded | date:'dd-MMM-yy'}}</div>
+                    <div class="stddM w250">{{item.agentName}}</div>
+                    <div class="stddM w250">{{item.officialName}}</div>
+                    <div class="stddM w200">{{item.emailIdForwardedTo}}</div>
+                    <div class="stddM w100">{{item.phoneNoForwardedTo}}</div>
+                    <button class="btn btn-sm fa fa-trash red" style="margin-left: 17px;"
+                        title="delete official" (click)="deleteOff(item.id)"></button>
                 </div>
             </div>
-
+        </div>
     </div>
-</div>
+            

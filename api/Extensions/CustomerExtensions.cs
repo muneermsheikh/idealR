@@ -41,12 +41,8 @@ namespace api.Extensions
 
         public async static Task<int> OfficialAppUserIdFromOfficialId(this DataContext dataContext, int customerOfficialId)
         {
-            var appuserid = await dataContext.CustomerOfficials
-                .Where(x => x.Id == customerOfficialId)
-                .Select(x => x.AppUserId)
-                .FirstOrDefaultAsync();
-
-            return appuserid;               
+            return await dataContext.CustomerOfficials.Where(x => x.Id == customerOfficialId).Select(x => x.AppUserId).FirstOrDefaultAsync();
+            
         }
     }
 }

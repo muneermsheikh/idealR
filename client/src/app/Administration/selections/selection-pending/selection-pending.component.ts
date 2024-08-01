@@ -1,11 +1,13 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
+import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { Pagination } from 'src/app/_models/pagination';
-import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
+import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
 import { User } from 'src/app/_models/user';
-import { SelectionService } from 'src/app/_services/hr/selection.service';
+import { CvrefService } from 'src/app/_services/hr/cvref.service';
 
 
 @Component({
@@ -26,10 +28,12 @@ export class SelectionPendingComponent implements OnInit{
   user?: User;
   
   cvsSelected: ISelPendingDto[]=[];
-  sParams = new SelDecisionParams();
+  sParams = new CVRefParams();  // new SelDecisionParams();
 
   pageIndex=1;
   totalCount=0;
+
+  title='Selections pending';
 
   todayDate = new Date(Date.now());
 
@@ -39,8 +43,15 @@ export class SelectionPendingComponent implements OnInit{
   ]
 
 
-  constructor(private service: SelectionService,
-      private toastr: ToastrService){}
+  constructor(private service: CvrefService, private toastr: ToastrService, private router: Router){
+    let nav: Navigation|null = this.router.getCurrentNavigation() ;
+
+    if (nav?.extras && nav.extras.state) {
+        if(nav.extras.state['title']) this.title=nav.extras.state['title'] as string;
+
+        if( nav.extras.state['user']) this.user = nav.extras.state['user'] as User;
+    }
+  }
 
   ngOnInit(): void {
     
@@ -50,9 +61,10 @@ export class SelectionPendingComponent implements OnInit{
   getPendingSelectionsPaged(useCache: boolean=true)
   {
     //this.sParams=sParams;
+    this.sParams.selectionStatus="";
     this.service.setParams(this.sParams);
 
-    this.service.getPendingSelections(useCache).subscribe({
+    this.service.referredCVsPaginated().subscribe({
       next: response => {
 
         if(response.result && response.pagination) {
@@ -104,13 +116,13 @@ export class SelectionPendingComponent implements OnInit{
       var dtos =  this.convertSelDecisionToDto(this.pendingSelectionsSelected);
        
         return this.service.registerSelectionDecisions(dtos).subscribe({
-          next: (response: any) => {
-            this.toastr.success('selection decisions registered');
+          next: (response: messageWithError) => {
+            console.log('selectionpending.ts, response:', response);
 
-            var cvRefIdsInserted=response;
-            if (cvRefIdsInserted.length === 0) return;
-
-            cvRefIdsInserted.forEach((i: number) =>{
+            this.toastr.success('Selections Registered.  The employment details can be viewed/edited from Selections Page', 'selection decisions registered');
+            
+            if(response.errortring == null || response.errortring === '') {
+              response.cvRefIdsInserted.forEach((i: number) =>{
                 var index = this.selectionsPending.findIndex(x => x.cvRefId===i);
                 if (index >=0) {
                   this.selectionsPending.splice(index,1);
@@ -118,10 +130,21 @@ export class SelectionPendingComponent implements OnInit{
                   if(selIndex >=0) this.pendingSelectionsSelected.splice(selIndex,1);
                 }
               })
-          },
+            } else if(response.notification !== '') {
+              this.toastr.info(response.notification, 'Failed to register the selection decisions');
+            } else if(response.errortring !=='') {
+              this.toastr.warning(response.errortring, 'Failed to register the selection decisions')
+            } else {
+              
+            }
+          } ,
           error: (err: any) => {
             console.log('error:', err);
-          this.toastr.error(err.details, err.message);
+            if(err.error.details) {
+              this.toastr.error(err.error.details, 'Error in registering the selections');
+            } else {
+              this.toastr.error(err.details, 'Error in registering the selections');
+            }
           }
         })
   }
@@ -157,7 +180,7 @@ export class SelectionPendingComponent implements OnInit{
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
-    this.sParams = new SelDecisionParams();
+    this.sParams = new CVRefParams();
     this.service.setParams(this.sParams);
     this.getPendingSelectionsPaged(true);
   }

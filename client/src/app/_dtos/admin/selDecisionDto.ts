@@ -15,6 +15,7 @@ export interface ISelDecisionDto
     referredOn: Date;
     selectedOn: Date;
     selectionStatus: string;
+    employmentId: number;
     //rejectionReason: string;
     
 }

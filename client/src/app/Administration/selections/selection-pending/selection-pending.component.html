@@ -1,9 +1,11 @@
 
+<h4 style="display: inline-block; font-weight: bold;">Selections Pending as on date</h4>
 <div *ngIf="selectionsPending && pagination" 
     class="d-flex justify-contents-between align-items-center"
     style="display: inline-block; margin-left: 15px; vertical-align: top;" >
     
     <pagination
+        style="display: inline-block;"
          [totalItems]="pagination!.totalItems"
          [itemsPerPage]="pagination!.itemsPerPage"
          (pageChanged)="onPageChanged($event)"
@@ -37,7 +39,7 @@
     <button class="btn btn-outline-success fa fa-check mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
         title="update the selections/rejections" (click)="UpdateSelections()" >
     </button>
-    <button class="btn btn-outline-close fa fa-undo mx-5" routerLink="/administration" title="return to Administration Menu" ></button>
+    <button class="btn btn-outline-close fa fa-window-close fa-2x mx-5" routerLink="/administration" title="return to Administration Menu" ></button>
 
 </div>
 

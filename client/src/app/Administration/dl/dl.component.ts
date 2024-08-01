@@ -17,6 +17,7 @@ import { JdModalComponent } from '../orders/jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../orders/remuneration-modal/remuneration-modal.component';
 import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { filter, switchMap } from 'rxjs';
+import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
 
 @Component({
   selector: 'app-dl',
@@ -74,8 +75,6 @@ ngOnInit(): void {
     this.categories = data['professions'];
     
   })
-
-  console.log('customers:', this.customers);
 
     this.isAddMode = this.order?.id ===0;
 
@@ -272,7 +271,6 @@ ngOnInit(): void {
       observableOuter.pipe(
         filter((response) => response !==undefined && response !== null),
         switchMap((response) => {
-          //console.log('contractrvwitemmodal response:', response);
           const config = {
             class: 'modal-dialog-centered modal-lg',
             initialState: {
@@ -283,9 +281,10 @@ ngOnInit(): void {
           const observableInner = this.bsModalRef.content.updateModalReview;
           return observableInner
         })
-      ).subscribe((succeeded) => {       //the modal form updates the content
-          if(succeeded)   {
-            this.toastr.success('Updated the contract review item', 'Success')
+      ).subscribe((response: any) => {       //the modal form updates the content
+          if(response !== null)   {
+            this.toastr.success('Updated the contract review item', 'Success');
+            this.orderItems.at(index).get('reviewItemStatus')?.setValue(response.reviewItemStatus);
           } else {
             this.toastr.warning('Failed to update the contract review', 'Failed')
           }

@@ -9,9 +9,6 @@ import { customerParams } from 'src/app/_models/params/Admin/customerParams';
 import { User } from 'src/app/_models/user';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
-import { CustomerEditModalComponent } from '../customer-edit-modal/customer-edit-modal.component';
-import { ICustomer } from 'src/app/_models/admin/customer';
-import { CustomerReviewService } from 'src/app/_services/admin/customer-review.service';
 import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
 
 @Component({

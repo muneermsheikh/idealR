@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
+import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { User } from 'src/app/_models/user';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
@@ -16,7 +17,7 @@ import { EmployeeService } from 'src/app/_services/admin/employee.service';
 export class OrderItemReviewComponent {
 
   //called by order-edit
-  @Output() updateModalReview = new EventEmitter<boolean>();
+  @Output() updateModalReview = new EventEmitter<IContractReviewItem>();
   
   reviewItem?: IContractReviewItemDto;
   

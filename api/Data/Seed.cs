@@ -9,6 +9,7 @@ using api.Entities.Identity;
 using api.Entities.Master;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace api.Data
 {
@@ -122,6 +123,18 @@ namespace api.Data
                 }
             }
 
+            if(!await context.ChecklistHRs.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/ChecklistSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<ChecklistHR>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.ChecklistHRs.Add(item);
+                }
+            }
+        
+
             if (!await context.Qualifications.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/QualificationSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -212,6 +225,16 @@ namespace api.Data
             }
             
 
+            if(!await context.ContractReviews.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/ContractReviewSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<ContractReview>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.ContractReviews.Add(item);
+                }
+            }
+            
             if(!await context.Industries.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/IndustrySeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -241,6 +264,29 @@ namespace api.Data
                 {
                     context.Orders.Add(item);
                 }
+            }
+            
+              
+             if(!await context.Remunerations.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/RemunerationSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Remuneration>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.Remunerations.Add(item);
+                }
+                await context.SaveChangesAsync();
+            }
+              
+             if(!await context.JobDescriptions.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/JobDescriptionSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<JobDescription>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.JobDescriptions.Add(item);
+                }
+                await context.SaveChangesAsync();
             }
 
             if(!await context.Candidates.AnyAsync()) {
@@ -272,9 +318,10 @@ namespace api.Data
                 {
                     context.DeployStatuses.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
 
-            /*
+            
             if(!await context.CVRefs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/CVRefSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -283,10 +330,11 @@ namespace api.Data
                 {
                     context.CVRefs.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
-            */
+        
             
-            /* if(!await context.SelectionDecisions.AnyAsync()) {
+            if(!await context.SelectionDecisions.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/SelectionDecisionSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var dbData = JsonSerializer.Deserialize<List<SelectionDecision>>(data);
@@ -294,9 +342,9 @@ namespace api.Data
                 {
                     context.SelectionDecisions.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
-            */
-
+            
             if(!await context.FeedbackQs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/FeedbackStddQSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -305,6 +353,7 @@ namespace api.Data
                 {
                     context.FeedbackQs.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
 
 
@@ -316,21 +365,22 @@ namespace api.Data
                 {
                     context.CustomerFeedbacks.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
 
-            /* 
-            if(!await context.Processes.AnyAsync()) {
+            
+            if(!await context.Deps.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/DeploySeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<Process>>(data);
+                var dbData = JsonSerializer.Deserialize<List<Dep>>(data);
                 foreach(var item in dbData) 
                 {
-                    context.Processes.Add(item);
+                    context.Deps.Add(item);
                 }
+                await context.SaveChangesAsync();
             }
-            */
-
-            if(context.ChangeTracker.HasChanges())  await context.SaveChangesAsync();
+            
+            //if(context.ChangeTracker.HasChanges())  await context.SaveChangesAsync();
 
             foreach(var user in UserListCandidates) {
                 var result=await userManager.CreateAsync(user, "Pa$$w0rd");

@@ -10,7 +10,7 @@ namespace api.Entities.HR
         public int OrderNo { get; set; }
         public bool RequireCandidateAssessment { get; set; }=false;
         public string AssessmentRef { get; set; }
-        public DateOnly DateDesigned { get; set; }
+        public DateTime DateDesigned { get; set; }
         public string DesignedBy { get; set; }
         public string ApprovedBy { get; set; }
         public ICollection<OrderItemAssessmentQ> OrderItemAssessmentQs { get; set; }

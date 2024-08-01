@@ -465,9 +465,10 @@ namespace api.Data.Repositories
         }
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
-            
+
             var query = (from order in _context.Orders 
-                join hrforwd in _context.OrderForwardToHRs on order.Id equals hrforwd.OrderId into hrforward 
+                join cust in _context.Customers on order.CustomerId equals cust.Id
+                join hrforwd in _context.OrderForwardToHRs on order.Id equals hrforwd.OrderId into hrforward
                     from hrfwd in hrforward.DefaultIfEmpty()
                 join acknlj in _context.AckanowledgeToClients on order.Id equals acknlj.OrderId into Acknowledge
                     from ackn in Acknowledge.DefaultIfEmpty()
@@ -475,11 +476,12 @@ namespace api.Data.Repositories
                     from rvw in contractRvw.DefaultIfEmpty()
                 orderby order.OrderNo
                 select new OrderBriefDto {
-                    CompleteBy = order.CompleteBy, CustomerName = order.Customer.CustomerName, 
+                    CompleteBy = order.CompleteBy, CustomerName = cust.CustomerName, 
                     ContractReviewedOn = rvw.ReviewedOn, OrderDate=order.OrderDate, OrderNo=order.OrderNo,
                     Status = order.Status, Id=order.Id, CityOfWorking = order.CityOfWorking,
                     ContractReviewStatus = order.ContractReviewStatus ?? "Not Reviewed", 
-                    ForwardedToHRDeptOn = hrfwd.DateOnlyForwarded, ContractReviewId=rvw.Id, CustomerId=order.CustomerId,
+                    ForwardedToHRDeptOn = hrfwd.DateOnlyForwarded, 
+                    ContractReviewId=rvw.Id, CustomerId=order.CustomerId,
                     AcknowledgedToClientOn = ackn.DateAcknowledged
                     
                 }).AsQueryable();
@@ -492,6 +494,8 @@ namespace api.Data.Repositories
                 if(orderParams.CustomerId > 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
             }
 
+            var temp=await query.ToListAsync();
+            
             var paged = await PagedList<OrderBriefDto>.CreateAsync(query.AsNoTracking()
                 //.ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)
                 , orderParams.PageNumber, orderParams.PageSize);

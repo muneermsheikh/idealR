@@ -15,7 +15,7 @@ namespace api.Controllers
     {
         private readonly ICandidateRepository _candRepo;
         private readonly ICustomerRepository _custRepo;
-        private readonly DateOnly _today = DateOnly.FromDateTime(DateTime.UtcNow);
+        private readonly DateTime _today = DateTime.UtcNow;
         public FileUploadController(ICandidateRepository candRepo, ICustomerRepository custRepo)
         {
             _candRepo = candRepo;
@@ -88,7 +88,7 @@ namespace api.Controllers
                     var folderName = Path.Combine("Assets", "Images");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                     foreach (var file in files)
-                    {
+                    { 
                         if(file.Length == 0) continue;
 
                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -102,8 +102,9 @@ namespace api.Controllers
                         var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
 
                         if (System.IO.File.Exists(fullPath)) {
-                            ErrorString="The file [" + file.FileName + "] already exists at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
-                            return ErrorString;
+                            System.IO.File.Delete(fullPath);
+                            //ErrorString="The file [" + file.FileName + "] already exists at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
+                            //return ErrorString;
                         }
 
                         using var stream = new FileStream(fullPath, FileMode.Create);

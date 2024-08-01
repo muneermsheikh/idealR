@@ -10,6 +10,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using api.Extensions;
 using api.Entities.Deployments;
+using System.Data.Common;
 
 namespace api.Data.Repositories.Admin
 {
@@ -23,6 +24,37 @@ namespace api.Data.Repositories.Admin
             _finRepo = finRepo;
             _mapper = mapper;
             _context = context;
+        }
+
+
+        public async Task<Employment> GetOrGenerateEmploymentFromSelDecId(int selDecisionId)
+        {
+            var employmt = await _context.Employments.Where(x => x.SelectionDecisionId==selDecisionId).FirstOrDefaultAsync();
+
+            if (employmt != null) return employmt;
+
+            var query = await (from sel in _context.SelectionDecisions 
+                    where sel.Id==selDecisionId
+                join remun in _context.Remunerations on sel.OrderItemId equals remun.OrderItemId
+                join chklst in _context.ChecklistHRs 
+                    on new {sel.CandidateId, sel.OrderItemId} equals 
+                    new {chklst.CandidateId, chklst.OrderItemId}
+                select new Employment {
+                    SelectionDecisionId = selDecisionId, CvRefId = sel.CvRefId,
+                    Charges=chklst.ChargesAgreed, 
+                    ChargesFixed=chklst.Charges, 
+                    ContractPeriodInMonths=remun.ContractPeriodInMonths, FoodAllowance=remun.FoodAllowance, 
+                    FoodNotProvided=remun.FoodNotProvided, FoodProvidedFree=remun.FoodProvidedFree,
+                    HousingAllowance=remun.HousingAllowance, HousingNotProvided=remun.HousingNotProvided,
+                    HousingProvidedFree=remun.HousingProvidedFree, LeavePerYearInDays=remun.LeavePerYearInDays,
+                    LeaveAirfareEntitlementAfterMonths=remun.LeaveAirfareEntitlementAfterMonths,
+                    OtherAllowance=remun.OtherAllowance, 
+                    Salary=remun.SalaryMin, SalaryCurrency=remun.SalaryCurrency, SelectedOn=sel.SelectedOn,
+                    TransportAllowance=remun.TransportAllowance,
+                    TransportProvidedFree = remun.TransportProvidedFree, WeeklyHours = remun.WorkHours * 6
+                }).FirstOrDefaultAsync();
+
+            return query;
         }
 
 
@@ -212,7 +244,7 @@ namespace api.Data.Repositories.Admin
         }
 
 
-        private static string VerifyEmploymentObject(EmploymentDto emp)
+        private static string VerifyEmploymentObject(Employment emp)
         {
             string ErrString = "";
 
@@ -231,45 +263,7 @@ namespace api.Data.Repositories.Admin
 
             
         }
-
-        public async Task<Employment> GenerateEmploymentObject(int selectionId)
-        {
-            var obj = await _context.Employments.Where(x => x.SelectionDecisionId == selectionId).FirstOrDefaultAsync();
-            if(obj != null)  return null;
-
-            var query = await (from sel in _context.SelectionDecisions where sel.Id == selectionId
-                join cvref in _context.CVRefs on sel.CvRefId equals cvref.Id
-                join item in _context.OrderItems on sel.OrderItemId equals item.Id
-                join checklist in _context.ChecklistHRs on 
-                    new {cvref.OrderItemId, cvref.CandidateId} equals 
-                    new {checklist.OrderItemId, checklist.CandidateId}
-                join itemAssess in _context.orderItemAssessments on item.Id equals itemAssess.OrderItemId
-                    select new Employment {
-                        SalaryCurrency = item.Remuneration.SalaryCurrency,
-                        Salary = item.Remuneration.SalaryMin, SelectedOn = sel.SelectedOn,
-                        SelectionDecisionId = sel.Id,
-                        ContractPeriodInMonths = item.Remuneration.ContractPeriodInMonths,
-                        WeeklyHours = item.Remuneration.WorkHours,
-                        HousingAllowance=item.Remuneration.HousingAllowance,
-                        HousingProvidedFree = item.Remuneration.HousingProvidedFree,
-                        HousingNotProvided = item.Remuneration.HousingNotProvided,
-                        FoodProvidedFree = item.Remuneration.FoodProvidedFree,
-                        FoodAllowance = item.Remuneration.FoodAllowance,
-                        FoodNotProvided = item.Remuneration.FoodNotProvided,
-                        TransportAllowance = item.Remuneration.TransportAllowance,
-                        TransportProvidedFree = item.Remuneration.TransportProvidedFree,
-                        TransportNotProvided = item.Remuneration.TransportNotProvided,
-                        OtherAllowance = item.Remuneration.OtherAllowance,
-                        LeavePerYearInDays = item.Remuneration.LeavePerYearInDays,
-                        LeaveAirfareEntitlementAfterMonths = item.Remuneration.LeaveAirfareEntitlementAfterMonths,
-                        Charges = checklist.ChargesAgreed, ChargesFixed = checklist.Charges,
-                        CvRefId = cvref.Id
-                    }).FirstOrDefaultAsync();
-            
-            return query;
-                
-        }  
-
+        
         public async Task<PagedList<Employment>> GetEmployments(EmploymentParams empParams)
         {
             var query = _context.Employments.AsQueryable();
@@ -286,17 +280,22 @@ namespace api.Data.Repositories.Admin
             return paged;
         }
 
-        public async Task<string> SaveNewEmployment(Employment employment)
+        public async Task<string> SaveNewEmployment(Employment newObject)
         {
-            var emp = _mapper.Map<EmploymentDto>(employment);
-            var strError = VerifyEmploymentObject(emp);
+            var emp = await _context.Employments.Where(x => x.SelectionDecisionId==newObject.SelectionDecisionId).FirstOrDefaultAsync();
+
+            if(emp != null) return "Employment Object for selection decision Id already exists";
+
+            var strError = VerifyEmploymentObject(newObject);
 
             if(!string.IsNullOrEmpty(strError)) return strError;
 
-            _context.Entry(emp).State = EntityState.Modified;
+            _context.Employments.Add(newObject);
 
             try {
                 await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                strError = ex.Message;
             } catch (Exception ex) {
                 strError = ex.Message;
             }

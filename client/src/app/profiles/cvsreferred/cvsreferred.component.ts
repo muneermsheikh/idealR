@@ -60,14 +60,15 @@ export class CvsreferredComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.id!==0) this.cvParams.orderId=this.id;
+    if(this.id! !== 0) this.cvParams.cVRefStatus='';
     this.loadCVsReferred();
     if(this.cvs.length > 0) this.paramNames=getParamsNamesOfCVRefParams(this.cvParams);
   }
 
   loadCVsReferred() {
 
-      this.service.setCVRefParams(this.cvParams);
-      this.service.referredCVsPaginated(this.cvParams).subscribe({
+      this.service.setParams(this.cvParams);
+      this.service.referredCVsPaginated(true).subscribe({
         next: response => {
           if(response.result && response.pagination) {
             this.cvs = response.result;
@@ -81,18 +82,18 @@ export class CvsreferredComponent implements OnInit{
  
   
   onSearch() {
-    const params = this.service.getCVRefParams() ?? new CVRefParams();
+    const params = this.service.getParams() ?? new CVRefParams();
     
     params.search = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
-    this.service.setCVRefParams(params);
+    this.service.setParams(params);
     this.loadCVsReferred();
   }
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     this.cvParams = new CVRefParams();
-    this.service.setCVRefParams(this.cvParams);
+    this.service.setParams(this.cvParams);
     this.loadCVsReferred();
   }
   
@@ -102,7 +103,7 @@ export class CvsreferredComponent implements OnInit{
 
       if(this.cvParams.pageNumber !== event.page) {
         this.cvParams.pageNumber = event.page;
-        this.service.setCVRefParams(this.cvParams);
+        this.service.setParams(this.cvParams);
         this.loadCVsReferred();
       }
     }
@@ -176,6 +177,6 @@ export class CvsreferredComponent implements OnInit{
   }
 
   close() {
-    this.router.navigateByUrl(this.returnUrl);
+    this.router.navigateByUrl(this.returnUrl || '/candidates');
   }
 }

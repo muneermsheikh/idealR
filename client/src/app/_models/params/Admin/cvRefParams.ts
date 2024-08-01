@@ -9,6 +9,7 @@ export class CVRefParams{
 	orderId=0;
 	orderItemId=0;
 	cVRefStatus = '';
+	selectionStatus = '';
 	
 	sort = "name";
 	pageNumber = 1;

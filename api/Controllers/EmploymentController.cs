@@ -34,25 +34,38 @@ namespace api.Controllers
 
         }
 
-        [HttpGet("generate/{selDecisionId}")]
-        public async Task<ActionResult<Employment>> GenerateEmployment(int SelDecisionId)
+        [HttpGet("employmentfromSelId/{selDecId}")]
+        public async Task<ActionResult<Employment>> GetEmploymentFromSelId (int selDecId)
         {
-            var sel = await _employmentRepo.GenerateEmploymentObject(SelDecisionId);
+            var emp = await _employmentRepo.GetOrGenerateEmploymentFromSelDecId(selDecId);
 
-            if (sel == null) return BadRequest(new ApiException(400, "Error", "Failed to generate employment object"));
+            if(emp == null) return BadRequest("Failed to get the employment data");
 
-            return Ok(sel);
+            return Ok(emp);
         }
 
+
+        [HttpPost("employment")]
+        public async Task<ActionResult<string>> InsertNewEmployment(Employment dto)
+        {
+            var strErr = await _employmentRepo.SaveNewEmployment(dto);
+
+            if(!string.IsNullOrEmpty(strErr)) 
+                return BadRequest(new ApiException(400, "Failed to update the employment", strErr));
+            
+            return Ok("");
+        }
+
+
         [HttpPut("employment")]
-        public async Task<ActionResult<bool>> UpdateEmployment(Employment dto)
+        public async Task<ActionResult<string>> UpdateEmployment(Employment dto)
         {
             var strErr = await _employmentRepo.EditEmployment(dto, User.GetUsername());
 
             if(!string.IsNullOrEmpty(strErr)) 
                 return BadRequest(new ApiException(400, "Failed to update the employment", strErr));
             
-            return Ok(true);
+            return Ok("");
         }
 
         [HttpDelete("{employmentid}")]
