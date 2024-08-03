@@ -38,7 +38,7 @@ namespace api.Data.Repositories.Admin
             var query = _context.Tasks.AsQueryable();
             
             if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.TaskOwnerUsername)) query = query.Where(x => x.TaskOwnerUsername.ToLower() == taskParams.TaskOwnerUsername.ToLower());
+            if(!string.IsNullOrEmpty(taskParams.AssignedByUsername)) query = query.Where(x => x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
             if(!string.IsNullOrEmpty(taskParams.TaskStatus)) query = query.Where(x => x.TaskStatus.ToLower() == taskParams.TaskStatus.ToLower());
             if(!string.IsNullOrEmpty(taskParams.TaskType)) query = query.Where(x => x.TaskType.ToLower() == taskParams.TaskType.ToLower());
             if(!string.IsNullOrEmpty(taskParams.ResumeId)) query = query.Where(x => x.ResumeId == taskParams.ResumeId);
@@ -84,7 +84,7 @@ namespace api.Data.Repositories.Admin
                 TaskType = taskType,
                 CandidateAssessmentId = candidateAssessmentId,
                 TaskDate = taskDate,
-                TaskOwnerUsername = taskOwnername,
+                AssignedByUsername = taskOwnername,
                 AssignedToUsername = assignedToUserName,
                 OrderId = orderId, OrderNo = orderNo,
                 OrderItemId = orderItemId,
@@ -129,7 +129,7 @@ namespace api.Data.Repositories.Admin
                 "through the system";
             var t = new AppTask{
                 TaskType="OrderFwdToHR", TaskDate = _today, AssignedToUsername = _config["HRSupUsername"] ?? "admin",
-                TaskOwnerUsername = Username, OrderId = orderid, OrderNo = oBriefItems[0].OrderNo, 
+                AssignedByUsername = Username, OrderId = orderid, OrderNo = oBriefItems[0].OrderNo, 
                 TaskDescription = taskDesc, CompleteBy = _today.AddDays(7), 
                 PostTaskAction = "OnlyComposeEmailAndSMSMessages" };
             
@@ -169,25 +169,34 @@ namespace api.Data.Repositories.Admin
             var assignments = await (from item in _context.OrderItems where orderItemIds.Contains(item.Id)
                 join order in _context.Orders on item.OrderId equals order.Id
                 join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId
-                select new OrderAssignmentDto
+                join jobDescription in _context.JobDescriptions on item.Id equals jobDescription.OrderItemId into jobDes
+                    from jd in jobDes.DefaultIfEmpty()
+                join remuneration in _context.Remunerations on item.Id equals remuneration.OrderItemId into remunern
+                    from remun in remunern.DefaultIfEmpty()
+                select new OrderItemBriefDto
                 {
-                    CategoryRef = order.OrderNo + "-" + item.SrNo + "-" + item.Profession.ProfessionName,
-                    CityOfWorking = order.CityOfWorking, CompleteBy = item.CompleteBefore, 
-                    CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
-                    HrExecUsername = rvw.HrExecUsername, OrderDate = order.OrderDate, OrderId = order.Id,
-                    OrderItemId = item.Id, OrderNo = order.OrderNo, ProfessionId = item.ProfessionId,
-                    ProfessionName = item.Profession.ProfessionName, ProjectManagerId = order.ProjectManagerId,
-                    Quantity = item.Quantity
+                    OrderId = order.Id, CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
+                    AboutEmployer = order.Customer.Introduction, OrderNo = order.OrderNo,
+                    OrderDate = order.OrderDate, OrderItemId = item.Id, RequireInternalReview = rvw.RequireAssess,
+                    SrNo = item.SrNo, ProfessionId = item.ProfessionId,
+                    ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity, Ecnr = item.Ecnr,
+                    CompleteBefore = item.CompleteBefore, Status = item.Status, 
+                    HrExecUsername = rvw.HrExecUsername, JobDescription=jd, Remuneration = remun
+                    
                 }).ToListAsync();    
+            
+            if(assignments.Count==0) return "Failed to retrieve any records";
 
+               //create task in the name of HRExecUsername
+               
                var tasks = new List<AppTask>();
                var task = new AppTask();
 
                 foreach(var t in assignments)
                 {
                     var recipientObj= await _userManager.FindByNameAsync(t.HrExecUsername);
-                    
-                    if (t.CompleteBy.Year < 2000) t.CompleteBy = _today.AddDays(7);
+                    if(recipientObj == null) continue;
+                    if (t.CompleteBefore.Year < 2000) t.CompleteBefore = _today.AddDays(7);
                     var taskitems = new List<TaskItem>
                     {
                         new() {
@@ -200,14 +209,15 @@ namespace api.Data.Repositories.Admin
 
                     var apptask = new AppTask{TaskDate=_today, AssignedToUsername = recipientObj.UserName,
                         CompleteBy=_today.AddDays(4), OrderId=t.OrderId, OrderItemId=t.OrderItemId,
-                        TaskDescription="Assignment to source suitable CVs: Category Ref: " + t.CategoryRef +
-                        " for " + t.CustomerName, TaskOwnerUsername = recipientObj.UserName, TaskStatus = "Not started",
+                        TaskDescription="Assignment to source suitable CVs: Category Ref: " + 
+                        t.OrderNo + "-" + t.SrNo + "-" + t.ProfessionName +
+                        " for " + t.CustomerName, AssignedByUsername = recipientObj.UserName, TaskStatus = "Not started",
                         TaskItems = taskitems, TaskType = "AssignTaskToHRExec"};
 
                     _context.Entry(apptask).State = EntityState.Added;
                 }
                 
-                var msgs = await _msgHRRepo.ComposeMessagesToHRExecToSourceCVs((ICollection<OrderItemIdAndHRExecEmpNoDto>)assignments, Username);
+                var msgs = await _msgHRRepo.ComposeMessagesToHRExecToSourceCVs(assignments, Username);
 
                 foreach(var msg in msgs.Messages) {
                     _context.Entry(msg).State = EntityState.Added;
@@ -259,15 +269,22 @@ namespace api.Data.Repositories.Admin
         {
             var query = _context.Tasks.AsQueryable();
 
-            if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.TaskOwnerUsername)) query = query.Where(x => x.TaskOwnerUsername.ToLower() == taskParams.TaskOwnerUsername.ToLower());
+            if(!string.IsNullOrEmpty(taskParams.AssignedToUserName) 
+                && !string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
+                    query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower() 
+                        || x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
+            } else if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) {
+                query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
+            } else if(!string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
+                query = query.Where(x => x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
+            }
+                
             if(!string.IsNullOrEmpty(taskParams.TaskStatus)) query = query.Where(x => x.TaskStatus.ToLower() == taskParams.TaskStatus.ToLower());
             if(!string.IsNullOrEmpty(taskParams.TaskType)) query = query.Where(x => x.TaskType.ToLower() == taskParams.TaskType.ToLower());
             if(!string.IsNullOrEmpty(taskParams.ResumeId)) query = query.Where(x => x.ResumeId == taskParams.ResumeId);
             if(taskParams.ApplicationNo !=0) query = query.Where(x => x.ApplicationNo == taskParams.ApplicationNo);
             if(taskParams.candidateId != 0) query = query.Where(x => x.CandidateId == taskParams.candidateId);
             if(taskParams.TaskDate.Year > 2000) query = query.Where(x => x.TaskDate == taskParams.TaskDate);
-
             
             var paged = await PagedList<TaskInBriefDto>.CreateAsync(query.AsNoTracking()
                 .ProjectTo<TaskInBriefDto>(_mapper.ConfigurationProvider),
@@ -300,7 +317,7 @@ namespace api.Data.Repositories.Admin
             task ??= new AppTask{
                     TaskDate = _today,
                     AssignedToUsername = assignedToUsername,
-                    TaskOwnerUsername = username,
+                    AssignedByUsername = username,
                     TaskDescription = "Conclude interest and availability of this Resume",
                     ResumeId = resumeId, TaskType = "PortalTask", TaskStatus = "Not Started",
                     CompleteBy = _today.AddDays(2)

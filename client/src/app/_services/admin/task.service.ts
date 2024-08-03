@@ -10,6 +10,7 @@ import { IApplicationTaskInBrief } from 'src/app/_models/admin/applicationTaskIn
 import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { getHttpParamsForTask, getPaginatedResult } from '../paginationHelper';
 import { IOrderItemIdAndHRExecEmpNoDto } from 'src/app/_dtos/admin/orderItemIdAndHRExecEmpNoDto';
+import { AccountService } from '../account.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +25,14 @@ export class TaskService {
   pagination: Pagination | undefined;
   tasks: IApplicationTaskInBrief[]=[];
   cache = new Map();
+  user?: User;
   cacheTasks = new Map();
 
-  constructor(private http: HttpClient, private toastr:ToastrService) { }
+  constructor(private http: HttpClient, private toastr:ToastrService, private accountService: AccountService) {
+    accountService.currentUser$.subscribe({
+      next: response => this.user = response!
+    })
+   }
 
   createOrderAssignmentTasks(orderItemIds: number[]) {
     return this.http.post<string>(this.apiUrl + 'Task/assignToHRExecs', orderItemIds);
@@ -37,17 +43,19 @@ export class TaskService {
     return this.http.post<IApplicationTask>(this.apiUrl + 'Task', task);
   }
 
-  getTasks(oParams: TaskParams): any {     //returns IPaginationAppTask
+  getPaginatedTasks(): any {     //returns IPaginationAppTask
     
-    const response = this.cache.get(Object.values(oParams).join('-'));
+    var hparams=this.oParams;
+
+    const response = this.cache.get(Object.values(hparams).join('-'));
     if(response) return of(response);
 
-    let params = getHttpParamsForTask(oParams);
+    let params = getHttpParamsForTask(hparams);
 
     return getPaginatedResult<IApplicationTaskInBrief[]>(this.apiUrl + 
       'Task/pagedTasks', params, this.http).pipe(
       map(response => {
-        this.cache.set(Object.values(oParams).join('-'), response);
+        this.cache.set(Object.values(hparams).join('-'), response);
         return response;
       })
     )
@@ -118,16 +126,18 @@ export class TaskService {
     var taskParams = new TaskParams();
     taskParams.pageNumber=1;
     taskParams.pageSize=15;
+    taskParams.assignedByUsername = this.user?.userName!;
+    taskParams.assignedToUsername = this.user?.userName!;
     this.oParams = taskParams;
 
-    return this.getTasks(taskParams);
+    return this.getPaginatedTasks();
   }
 
-  setOParams(params: TaskParams) {
+  setParams(params: TaskParams) {
     this.oParams = params;
   }
   
-  getOParams() {
+  getParams() {
     return this.oParams;
   }
 }

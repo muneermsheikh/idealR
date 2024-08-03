@@ -7,11 +7,11 @@ namespace api.Interfaces
     {
         //order assessment
         Task<OrderAssessment> SaveNewOrderAssessment(OrderAssessment orderAssessment);
-        Task<OrderAssessment> GetOrderAssessment (int orderId);
+        Task<OrderAssessment> GetOrderAssessment (int orderId, string Username);
         
         //orderitem assessment
-        Task<OrderAssessmentItem> GetOrderAssessmentItem(int orderItemId);
-        Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedinUsername);
+        Task<OrderAssessmentItem> GetOrCreateOrderAssessmentItem(int orderItemId, string username);
+        //Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedinUsername);
         Task<OrderAssessmentItem> SaveOrderAssessmentItem(OrderAssessmentItem orderItemAssessment);
         Task<bool> EditOrderAssessment(OrderAssessment orderAssessment, string Username);
         Task<bool> EditOrderAssessmentItem(OrderAssessmentItem orderAssessmentItem);

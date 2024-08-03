@@ -6,7 +6,7 @@ export class TaskParams {
      applicationNo: number=0;
      resumeId: string='';
      assignedToUsername = "";
-     taskOwnerUsername = "";
+     assignedByUsername = "";
      taskStatus ='';
      orderId = 0;
      

@@ -10,7 +10,6 @@ import { QualificationsComponent } from './qualifications/qualifications.compone
 import { OrdersListingComponent } from './orders/orders-listing/orders-listing.component';
 import { OrderItemComponent } from './orders/order-item/order-item.component';
 import { ReviewStatusNamePipe } from './review-status-name.pipe';
-import { OrderEditComponent } from './orders/order-edit/order-edit.component';
 import { ChooseAgentsModalComponent } from './choose-agents-modal/choose-agents-modal.component';
 import { JdModalComponent } from './orders/jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from './orders/remuneration-modal/remuneration-modal.component';
@@ -40,7 +39,6 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MessageComponent } from './message/message/messages.component';
 import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
 import { DLComponent } from './dl/dl.component';
-import { DLItemComponent } from './dl-item/dl-item.component';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 
 
@@ -54,7 +52,6 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
     OrdersListingComponent,
     OrderItemComponent,
     ReviewStatusNamePipe,
-    OrderEditComponent,
     ChooseAgentsModalComponent,
     JdModalComponent,
     RemunerationModalComponent,
@@ -83,7 +80,6 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
     MessageComponent,
     CategoryEditModalComponent,
     DLComponent,
-    DLItemComponent,
     ExcelConversionMenuComponent,
   ],
   imports: [

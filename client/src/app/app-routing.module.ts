@@ -37,7 +37,9 @@ const routes: Routes = [
       {path: 'administration', loadChildren:() => import('./Administration/administration.module')
         .then(mod => mod.AdministrationModule), 
       },
-
+      
+      {path: 'tasks', loadChildren: () => import('./tasks/task.module').then(mod => mod.TaskModule)},
+      
       {path: 'finance', loadChildren:() => import('./finance/finance.module').then(mod => mod.FinanceModule) },
       
       {path: 'callRecords', loadChildren: () => import('./callRecords/call-record.module').then(mod => mod.CallRecordModule)},

@@ -73,7 +73,7 @@ const routes = [
 
   {path: 'orderassessmentitem/:id', component: OrderAssessmentItemComponent,
     resolve: {
-      assessmentItem: OrderAssessmentItemResolver,
+      assessmentItem: OrderAssessmentItemResolver
     }
   },
 

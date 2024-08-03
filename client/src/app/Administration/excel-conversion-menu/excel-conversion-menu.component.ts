@@ -26,7 +26,7 @@ export class ExcelConversionMenuComponent {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) this.user = user;
-        console.log('user', this.user);
+        //console.log('user', this.user);
       }
     })
   }
@@ -44,7 +44,7 @@ export class ExcelConversionMenuComponent {
   exportProspectiveFile() {
     this.accountService.copyProspectiveXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
-        console.log('exportprospective: response:', response);
+        //console.log('exportprospective: response:', response);
         if(response === '' || response === null) {
           this.toastr.success(response + ' Prospective file(s) copied to database', 'success');
           this.uploadCustomerExcel=false;

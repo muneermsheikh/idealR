@@ -155,7 +155,7 @@ namespace api.Data.Repositories.HR
 
             //create task for DoCntrollerAdmin for refer the CVs to the client
             var taskObj = new AppTask{TaskType="CVFwdToCustomer", CVRefId=0,
-                CandidateAssessmentId=model.Id, TaskOwnerUsername = Username,
+                CandidateAssessmentId=model.Id, AssignedByUsername = Username,
                 AssignedToUsername=_docControllerAdminAppUsername, 
                 OrderItemId=model.OrderItemId,
                 OrderNo = await _context.GetOrderNoFromOrderItemId(model.OrderItemId),

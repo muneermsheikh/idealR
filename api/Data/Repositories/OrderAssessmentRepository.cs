@@ -1,3 +1,5 @@
+using api.DTOs.Admin;
+using api.DTOs.Admin.Orders;
 using api.DTOs.Orders;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
@@ -217,16 +219,74 @@ namespace api.Data.Repositories
             return true;
         }
 
-        public async Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedInUserName)
+        private async Task<OrderAssessment> GenerateOrderAssessmentFromOrderId(int orderId, string username) {
+            
+            var orderassessment = await _context.OrderAssessments
+                .Include(x => x.OrderAssessmentItems)
+                .ThenInclude(x => x.OrderAssessmentItemQs)
+                .Where(x => x.OrderId == orderId)
+                .FirstOrDefaultAsync();
+            
+            if(orderassessment != null) return orderassessment;
+
+            //since order assessment is not present, create one.
+            
+            var order = await _context.Orders.Include(x => x.OrderItems).Include(x => x.Customer).FirstOrDefaultAsync();
+           
+            var stddQs = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
+
+            var assessmentItemQs =new List<OrderAssessmentItemQ>();     //part of OrderAssessmentItem
+            foreach (var q in stddQs)
+            {
+                assessmentItemQs.Add(new OrderAssessmentItemQ{
+                    QuestionNo = q.QuestionNo,
+                    Question=q.Question,
+                    Subject=q.Subject,
+                    MaxPoints = q.MaxPoints,
+                    IsMandatory=q.IsMandatory
+                });
+            }
+
+            var assessmentItems = new List<OrderAssessmentItem>();
+
+            foreach(var item in order.OrderItems) {
+
+                var newAssessmentItem = new OrderAssessmentItem{
+                    OrderItemId = item.Id,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderNo = order.OrderNo,
+                    AssessmentRef = order.OrderNo + "-" + item.SrNo,
+                    DateDesigned = _todaydate,
+                    DesignedBy = username,
+                    OrderAssessmentItemQs = assessmentItemQs
+                };
+                assessmentItems.Add(newAssessmentItem);
+            }
+
+            orderassessment = new OrderAssessment{
+                    OrderId = order.Id,
+                    OrderNo = order.OrderNo,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderDate = order.OrderDate,
+                    DesignedByUsername = username,
+                    OrderAssessmentItems = assessmentItems
+                };
+                
+            _context.OrderAssessments.Add(orderassessment);
+
+            return await _context.SaveChangesAsync() > 0 ? orderassessment : null;
+        }
+        private async Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedInUserName)
         {   
             //verify orderItemId is valid
             var exists = await _context.OrderItems.FindAsync(orderItemId);
             if (exists == null) return null;
             
-            var OrderNumber = await _context.GetOrderNoFromOrderItemId(orderItemId);
+            var order = await _context.Orders.FindAsync(exists.OrderId);
+           
             var stdd = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
 
-            var ListQ=new List<OrderAssessmentItemQ>();
+            var ListQ =new List<OrderAssessmentItemQ>();
             foreach (var q in stdd)
             {
                 ListQ.Add(new OrderAssessmentItemQ{
@@ -238,17 +298,30 @@ namespace api.Data.Repositories
                 });
             }
 
+
             var newAssessment = new OrderAssessmentItem{
                 OrderItemId = orderItemId,
                 CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemId),
-                OrderNo = OrderNumber,
-                AssessmentRef = OrderNumber + "-" + _context.GetSrNoFromOrderItemId(orderItemId),
+                OrderNo = order.OrderNo,
+                AssessmentRef = order.OrderNo + "-" + _context.GetSrNoFromOrderItemId(orderItemId),
                 DateDesigned = _todaydate,
                 DesignedBy = loggedInUserName,
                 OrderAssessmentItemQs = ListQ
             };
 
-            return newAssessment;
+            var orderassessment = await _context.OrderAssessments.FindAsync(exists.OrderId) 
+                ?? new OrderAssessment{
+                    OrderId = order.Id,
+                    OrderDate = order.OrderDate,
+                    DesignedByUsername = loggedInUserName,
+                    OrderAssessmentItems = new List<OrderAssessmentItem>{newAssessment}
+                };
+                
+            _context.OrderAssessments.Add(orderassessment);
+
+            if(await _context.SaveChangesAsync() > 0) {
+                return orderassessment.OrderAssessmentItems.FirstOrDefault();
+            } else {return null;}
         }
 
         public async Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQStdds()
@@ -274,26 +347,25 @@ namespace api.Data.Repositories
             return mapped;
             
         }
-        public async Task<OrderAssessment> GetOrderAssessment(int orderId)
+        public async Task<OrderAssessment> GetOrderAssessment(int orderId, string username)
         {
             var assessment = await _context.OrderAssessments
                 .Include(x => x.OrderAssessmentItems.OrderBy(x => x.OrderItemId))
                 .ThenInclude(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
                 .Where(x => x.OrderId == orderId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync() ?? await GenerateOrderAssessmentFromOrderId(orderId, username);
             
             return assessment;
         }
     
-        public async Task<OrderAssessmentItem> GetOrderAssessmentItem(int orderItemId)
+        public async Task<OrderAssessmentItem> GetOrCreateOrderAssessmentItem(int orderItemId, string loggedInUserName)
         {
                 
             var assessmt = await _context.OrderAssessmentItems
-
                 .Include(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
                 .Where(x => x.OrderItemId == orderItemId)
-                .FirstOrDefaultAsync();
-            
+                .FirstOrDefaultAsync() ?? await GenerateOrderAssessmentItemFromStddQ(orderItemId, loggedInUserName);
+
             return assessmt;
         }
 

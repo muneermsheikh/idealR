@@ -1,0 +1,20 @@
+.lbl {
+    display: inline-block;
+    font-size: smaller;
+    font-weight: bold;
+    margin: 0 2px 0 2px;
+    vertical-align: middle;
+}
+
+.stdd {
+    display: inline-block;
+    font-size: smaller;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.w125 {width: 125px;}
+.w300 {width: 300px;}
+
+.cursorpointer {cursor: pointer; color: blue;}

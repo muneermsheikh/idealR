@@ -230,6 +230,13 @@ ngOnInit(): void {
     this.navigateByRoute('/administration/orderassessmentitem/' + orderitemid, null, true);
   }
 
+  OpenOrderAssessment() {
+    var orderid = this.form.get('id')?.value;
+    if(orderid === 0) return;
+
+    this.navigateByRoute('/administration/orderassessment/' + orderid, null, true);
+  }
+
   assignTasksToHRExecs() {
     if(this.isAddMode) return;
    
@@ -244,17 +251,21 @@ ngOnInit(): void {
     }
 
     let f = this.form.value;
-    
-    var itemids = f.orderItems.filter((x:any) => x.checked===true).map((x:IOrderItem) => x.id);
-    
+    var itemids = f.orderItems.filter((x:any) => x.selected===true).map((x:IOrderItem) => x.id);   
+    if (itemids.length === 0) {
+      this.toastr.error('No Order Items selected');
+      return;
+    }
+ 
     return this.taskService.createOrderAssignmentTasks(itemids).subscribe((response: string) => {
-      if(response === '') {
+
+      if(response === '' || response === null) {
         this.toastr.success('tasks created for the chosen order items', "Success");
       } else {
-        this.toastr.warning('failed to create the tasks', 'Failure');
+        this.toastr.warning(response, 'Failure');
       }
     }, error => {
-      this.toastr.error(error, 'failed to create tasks for the chosen order items');
+      this.toastr.error(error.error.details, 'failed to create tasks for the chosen order items');
     })
 
     

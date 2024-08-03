@@ -13,5 +13,6 @@ namespace api.Interfaces.Admin
          Task<PagedList<EmployeeBriefDto>> GetEmployeePaginated(EmployeeParams empParams);
          Task<Employee> GetEmployeeFromEmpId (int empId);
          Task<ICollection<EmployeeIdAndKnownAsDto>> GetEmployeeIdAndKnownAs ();
+         Task<string> WriteEmployeeExcelToDB(string fileNameWithPath, string Username);
     }
 }

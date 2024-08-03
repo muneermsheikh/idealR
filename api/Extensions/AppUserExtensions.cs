@@ -4,8 +4,6 @@ using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Identity;
-using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

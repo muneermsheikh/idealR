@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../_services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,10 +13,10 @@ export class HomeComponent implements OnInit{
   
   registerMode = false;
 
-  constructor(){}
+  constructor(public accountService: AccountService, private router: Router){}
 
   ngOnInit(): void {
-    
+    this.router.navigateByUrl('/tasks');
   }
 
   registerToggle() {

@@ -87,10 +87,14 @@
         </button> 
        
         <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
-            <button disabled="member.contractReviewStatusId===1 || member.contractReviewStatusId===2 " 
+            <button [disabled]="order.contractReviewStatus !== 'Accepted'" 
                 class="btn btn-primary stdd fa fa-users " (click)="assignTasksToHRExecs()" 
                 title="assign selected categories once Contract Review is done"
             > </button>
+            <button [disabled]="order.contractReviewStatus !== 'Accepted'" 
+                class="btn btn-primary stdd fa fa-balance " (click)="OpenOrderAssessment()" 
+                title="assign selected categories once Contract Review is done"
+            >Assess </button>
         </div>
         <hr style="margin: 0px; padding: 0px;">
 
@@ -115,12 +119,11 @@
 
             <div *ngFor="let item of orderItems.controls; let i=index">
                 <div [formGroupName]="i">
-                    <input type="checkbox" formControlName="srNo" 
+                    <input type="checkbox" formControlName="selected" 
                         style="display: inline-block; width: 15px; margin-left: 8px; margin-right: 8px;">
 
-                    <div class="stdd w30">
-                        <app-text-input formControlName="srNo"></app-text-input>
-                    </div>
+                    <app-text-input class="stdd w30" [label]="''" formControlName="srNo"></app-text-input>
+                    
                     <ng-select  class="stdd w240" *ngIf="categories" 
                         [items]="categories"
                         bindLabel="professionName"
@@ -130,19 +133,11 @@
                         formControlName="professionId">
                     </ng-select>
 
-                    <input type="checkbox" formControlName="ecnr" class="chk  w30" >
-                    <div class="stdd w110">
-                            <app-text-input [label]="'Source From'" formControlName="sourceFrom"></app-text-input>
-                    </div>
-                    <div class="stdd w50">
-                            <app-text-input [label]="'quantity'" formControlName="quantity" ></app-text-input>
-                    </div>
-                    <div class="stdd w50">
-                            <app-text-input [label]="'Min CVs'" formControlName="minCVs" ></app-text-input>
-                    </div>
-                    <div class="stdd w50">
-                            <app-text-input [label]="'max CVs'" formControlName="maxCVs" ></app-text-input>
-                    </div>
+                    <input type="checkbox" formControlName="ecnr" class="chk w30" >
+                    <app-text-input class="stdd w110" [label]="'Source From'" formControlName="sourceFrom"></app-text-input>
+                    <app-text-input class="stdd w50" [label]="'quantity'" formControlName="quantity" ></app-text-input>
+                    <app-text-input class="stdd w50" [label]="'Min CVs'" formControlName="minCVs" ></app-text-input>
+                    <app-text-input class="stdd w50" [label]="'max CVs'" formControlName="maxCVs" ></app-text-input>
                     
                     <input type="text"
                         class="stdd w110"
@@ -166,7 +161,7 @@
                         <button class="w10 btn fa fa-dollar" title="Open Remuneration"
                                 (click)="openRemunerationModal(i)" ></button>
                     </div>
-                    <button (click)="removeItem(i)" class="w10 btn fa fa-trash fa-sm" 
+                    <button (click)="removeItem(i)" class="w10 btn fa fa-trash red" 
                         title="remove this item"
                     ></button>
                 </div>

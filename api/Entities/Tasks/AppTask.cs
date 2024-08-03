@@ -13,7 +13,7 @@ namespace api.Entities.Tasks
         public int? CandidateAssessmentId { get; set; }
         public DateTime TaskDate { get; set; } =DateTime.UtcNow;
         [Required]
-        public string TaskOwnerUsername {get; set;}
+        public string AssignedByUsername {get; set;}
         [Required]
         public string AssignedToUsername {get; set;}
         public int? OrderId {get; set;}

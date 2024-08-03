@@ -45,7 +45,7 @@ namespace api.Controllers
         [HttpGet("orderassessmentitem/{orderItemId}")]
         public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessment(int orderItemId)
         {
-            var assessment = await _repo.GetOrderAssessmentItem(orderItemId);
+            var assessment = await _repo.GetOrCreateOrderAssessmentItem(orderItemId, User.GetUsername());
             if(assessment==null) return NotFound();
             return Ok(assessment);
         }
@@ -53,20 +53,11 @@ namespace api.Controllers
         [HttpGet("orderAssessment/{orderId}")]
         public async Task<ActionResult<OrderAssessment>> GetOrderAssessment(int orderId)
         {
-            var assessment = await _repo.GetOrderAssessment(orderId);
+            var assessment = await _repo.GetOrderAssessment(orderId, User.GetUsername());
             if(assessment==null) return NotFound(new ApiException(404, "The Order Assessment Record not found", "Not Found Error"));
             return Ok(assessment);
         }
 
-                
-        [HttpGet("generateAssessment/{orderItemId}")]
-        public async Task<ActionResult<OrderItemAssessment>> GenerateOrderItemAssessment(int orderItemId)
-        {
-            var assessment = await _repo.GenerateOrderAssessmentItemFromStddQ(orderItemId, User.GetUsername());
-            if(assessment == null) return BadRequest("Failed to generate the assessment object for the Order Item");
-
-            return Ok(assessment);
-        }
 
         [HttpPost("assessment")]
         public async Task<ActionResult<OrderAssessment>> CreateOrderAssessment (OrderAssessment orderAssessment)

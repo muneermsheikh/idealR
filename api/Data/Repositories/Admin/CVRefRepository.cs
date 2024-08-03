@@ -440,7 +440,7 @@ namespace api.Data.Repositories.Admin
                     TaskDate=DateTime.UtcNow, 
                     CVRefId = cvrefid,
                     AssignedToUsername=_docControllerAdminAppUsername, 
-                    TaskOwnerUsername = Username, 
+                    AssignedByUsername = Username, 
                     CompleteBy=DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Forward CV to customer through the system - " + categoryDescription, 
                     TaskType="CVFwdTask", 
@@ -457,7 +457,7 @@ namespace api.Data.Repositories.Admin
                 //4 - create task to Doc Controller to send the email to the client
                 var cvrefTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername,
-                    TaskOwnerUsername = Username, CompleteBy=DateTime.UtcNow.AddDays(5), 
+                    AssignedByUsername = Username, CompleteBy=DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Send CVs to clients by email -" + categoryDescription, 
                     CandidateAssessmentId = item.CandidateAssessment.Id,CVRefId=cvrefid,
                     TaskType="CVRefByMail", TaskStatus="Not Started", ApplicationNo=item.ApplicationNo,
@@ -471,7 +471,7 @@ namespace api.Data.Repositories.Admin
                  //5 - create selectionTasks
                   var selTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername, CVRefId = cvrefid,
-                    TaskOwnerUsername = Username, CompleteBy= DateTime.UtcNow.AddDays(5), 
+                    AssignedByUsername = Username, CompleteBy= DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Follow up with clients for selection-" + categoryDescription, 
                     CandidateAssessmentId = item.CandidateAssessment.Id, OrderId = item.OrderId,
                     TaskType="SelectionFollowupWithClient", TaskStatus="Not Started", 

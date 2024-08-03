@@ -378,51 +378,25 @@ namespace api.Data.Repositories.Admin
             return msgs;
         }
 
-        public Task<MessageWithError> ComposeMsgToHRExecForTaskAssignment(ICollection<OrderAssignmentDto> hrassignments, string Username)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<MessageWithError> ComposeMessagesToHRExecToSourceCVs(ICollection<OrderItemIdAndHRExecEmpNoDto> ItemAndHRExecIds, string Username)
+        public async Task<MessageWithError> ComposeMessagesToHRExecToSourceCVs(ICollection<OrderItemBriefDto> assignmentDtos, string Username)
         {
             var msgWithErr = new MessageWithError();
             var msgs = new List<Message>();
 
-            var dtos = await (from o in _context.Orders 
-                join item in _context.OrderItems on o.Id equals item.OrderId
-                    where ItemAndHRExecIds.Select(x => x.OrderItemId).ToList().Contains(item.Id)
-                select new OrderItemBriefDto{
-                    OrderNo = o.OrderNo, OrderDate = o.OrderDate, CustomerName = o.Customer.CustomerName,
-                    AboutEmployer = o.Customer.Introduction, CustomerId = o.CustomerId, SrNo = item.SrNo,
-                     CompleteBefore = item.CompleteBefore, ProfessionId = item.ProfessionId,
-                     ProfessionName = item.Profession.ProfessionName, Ecnr = item.Ecnr, OrderId = o.Id,
-                     OrderItemId = item.Id, Quantity = item.Quantity
-                }).ToListAsync();
-            
-            var empIds = ItemAndHRExecIds.Select(x => x.HrExecEmpId).ToList();
-
-            var emps = await _context.Employees.Where(x => empIds.Contains(x.Id))
-                .Select(x => new {EmployeeId=x.Id, AppUserId=x.AppUserId}).ToListAsync();
-
-            var assignmenDtos = _mapper.Map<ICollection<OrderItemAssignmentDto>>(dtos);
-
-            foreach(var dto in  assignmenDtos) {
-                var empId = ItemAndHRExecIds.Where(x => x.OrderItemId == dto.OrderItemId).Select(x => x.HrExecEmpId).FirstOrDefault();
-                var appUserId = await _context.GetAppUserIdOfEmployee(empId);
-                var appUser = await _userManager.FindByIdAsync(appUserId.ToString());
-
-                dto.AssignedToAppUserId = appUser.Id;
-                dto.AssignedToEmpId=empId;
-                dto.AssignedToUsername = appUser.UserName;
-            }
-            
-            var itemAssignmentDtos = assignmenDtos.OrderBy(x => x.AssignedToEmpId).ThenBy(x => x.OrderItemId).ToList();
-
-            var distinctEmpIds = ItemAndHRExecIds.Select(x => x.HrExecEmpId).Distinct().ToList();
             var msgBody="";
-            foreach(var empId in distinctEmpIds) {
-                var appuserid = emps.Where(x => x.EmployeeId == empId).Select(x => x.AppUserId).FirstOrDefault();
-                var recipientObj = await _userManager.FindByIdAsync(appuserid.ToString());
+
+            var senderObject = await _userManager.FindByIdAsync(_config["DocControllerAdminAppUserId"]);
+            if(senderObject == null) {
+                msgWithErr.ErrorString = "Failed to get user object of sender - DocController Admin";
+                return msgWithErr;
+            }
+
+            var HrExecUsernameDistinct = assignmentDtos.Select(x => x.HrExecUsername).Distinct().ToList();
+
+            foreach(var hrexecuser in HrExecUsernameDistinct) {
+                var orderitemsAssignedToHRExec = assignmentDtos.Where(x => x.HrExecUsername.ToLower() == hrexecuser).OrderBy(x => x.OrderItemId).ToList();
+                var orderItemTable = ComposeCategoryTableForEmail(orderitemsAssignedToHRExec);
+                var recipientObj = await _userManager.FindByNameAsync(Username);
                 if(recipientObj==null) continue;
 
                 msgBody = _dateToday + "<br><br>" + recipientObj.Gender == "Male" ? "Mr." : "Ms.";
@@ -432,13 +406,8 @@ namespace api.Data.Repositories.Admin
                     "<br><br><b>Details of the Order Categories</b><br><br>:" +
                     "<b>Order No.</b>: " + 
                     "<br><b>Order Categories</b><br>:";
-                
-                var orderitems = assignmenDtos.Where(x => x.AssignedToEmpId == empId).ToList();
-                var orderitemsBriefDto = _mapper.Map<ICollection<OrderItemBriefDto>>(orderitems);
-                var orderitemTable = ComposeCategoryTableForEmail(orderitemsBriefDto);
-
-                var senderObject = await _userManager.FindByIdAsync(_config["DocControllerAppUserId"]);
-                msgBody += orderitemTable + ".  Best regards<br><br>"  + senderObject.KnownAs + ", " + senderObject.Position;
+                                
+                msgBody += orderItemTable + ".  Best regards<br><br>"  + senderObject.KnownAs + ", " + senderObject.Position;
 
                 var msg = new Message{MessageType = "DesignOrderItemAssessmentQ", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
@@ -448,9 +417,13 @@ namespace api.Data.Repositories.Admin
                 msgs.Add(msg);
             }
 
+            
             msgWithErr.Messages = msgs;
 
             return msgWithErr;
+            
         }
+
     }
+   
 }

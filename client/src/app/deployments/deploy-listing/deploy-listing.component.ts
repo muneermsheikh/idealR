@@ -3,14 +3,14 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { IDeploymentPendingDto } from 'src/app/_dtos/process/deploymentPendingDto';
-import { IDeployStage, IDeployStatusAndName } from 'src/app/_models/masters/deployStage';
+import { IDeployStatusAndName } from 'src/app/_models/masters/deployStage';
 import { Pagination } from 'src/app/_models/pagination';
 import { deployParams } from 'src/app/_models/params/process/deployParams';
 import { IDep } from 'src/app/_models/process/dep';
 import { User } from 'src/app/_models/user';
 import { DeployService } from 'src/app/_services/deploy.service';
 import { DeployEditModalComponent } from '../deploy-edit-modal/deploy-edit-modal.component';
-import { Subject, catchError, filter, of, switchMap, tap } from 'rxjs';
+import { Subject, catchError, distinct, filter, from, of, switchMap, tap } from 'rxjs';
 import { DeployAddModalComponent } from '../deploy-add-modal/deploy-add-modal.component';
 import { IDepItem } from 'src/app/_models/process/depItem';
 import { ConfirmService } from 'src/app/_services/confirm.service';
@@ -81,6 +81,7 @@ export class DeployListingComponent implements OnInit{
       , private service: DeployService, 
       private router: Router) 
     { 
+      
       let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
         if (nav?.extras && nav.extras.state) {
@@ -145,7 +146,6 @@ export class DeployListingComponent implements OnInit{
   close() {
     this.currentCVRefId=0;    //closes the app-deployments selector
   }
-
   
   deleteDeployment(event: any) {
     
@@ -175,8 +175,7 @@ export class DeployListingComponent implements OnInit{
       () => this.toastr.success('deployment deleted', 'success')
     )
   }
-  
-    
+      
   onSearch() {
     const params = this.service.getParams();
     params.search = this.searchTerm!.nativeElement.value;
@@ -185,15 +184,12 @@ export class DeployListingComponent implements OnInit{
     this.getDeployments();
   }
 
-
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     this.dParams = new deployParams();
     this.service.setParams(this.dParams);
     this.getDeployments();
   }
-  
-
   
  editDeploymentModal(dep: any, item: IDeploymentPendingDto){
 
@@ -235,7 +231,7 @@ export class DeployListingComponent implements OnInit{
         
   }
   
-  addNewDeployment(dto: IDeploymentPendingDto)
+  adddNewDeployment(dto: IDeploymentPendingDto)
   {
       const config = {
           class:'modal-dialog-centered modal-lg',
@@ -267,9 +263,19 @@ export class DeployListingComponent implements OnInit{
         }
         
       })
-    
+  }
 
-  
+
+  verifyNextSequence(existingSeq: number, nextSeqProposed: number, ecnr: boolean): string {
+    
+    var thisStage = this.depStatuses.filter(x => x.sequence == existingSeq)[0];
+    var nextStageProposed = this.depStatuses.filter(x => x.sequence == nextSeqProposed)[0];
+    if(thisStage.nextSequence === nextStageProposed.sequence) return '';
+    console.log('thisStage:', thisStage, 'nextStage:', nextStageProposed);
+    if(ecnr && thisStage.sequence === 700 && nextSeqProposed === 1300) return '';
+    
+    return "Deployment Stage '" + thisStage.statusName + "' should follow with '" + 
+      this.depStatuses.filter(x => x.sequence==thisStage.nextSequence).map(x => x.statusName) + "'";
   }
 
   navigateByRoute(id: number, routeString: string, editable: boolean, obj: any[]) {
@@ -347,7 +353,27 @@ export class DeployListingComponent implements OnInit{
       this.toastr.warning('Deployment items not selected', 'Please select the items that you want to apply the transactions');
       return;
     }
-   
+    //verify items selected carry same deployment sequence
+    const distinctCurrentSeqs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
+    if(distinctCurrentSeqs.length > 1) {
+      this.toastr.warning("You can apply a common next sequence to items having same current sequence", "error in selections");
+      return of(null);
+    }
+
+    const distinctCurrentECNRs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
+    if(distinctCurrentECNRs.length > 1) {
+        this.toastr.warning("You may not select items having different values of ECNR - if an item has ECNR = true, then there are different yard stick available for next sequence applicability", "Error");
+        return of(null);
+    }
+
+    //verify sequence selected is valid - there is a specific order of sequences allowed in table deploysselected;
+    var err = this.verifyNextSequence(distinctCurrentSeqs[0], this.sequenceSelected, this.deploysSelected[0].ecnr);
+    if(err !== ''){
+      this.toastr.warning(err, 'Invalid next transaction selected');
+      return of(null);
+    }
+
+    //all checks done, now call api.  the Api will further verify if nextSequence applied is valid.  it is not supposed to trust the client
     let depItemsToInsert: IDepItemToAddDto[]=[];
 
     this.deploysSelected.forEach(x => {
@@ -356,7 +382,7 @@ export class DeployListingComponent implements OnInit{
           sequence : this.sequenceSelected, nextSequence: 0};
 
         depItemsToInsert.push(depitem);
-       })
+    })
     
     if(this.sequenceSelected === 1300) {    //tkt booked
         
@@ -383,7 +409,6 @@ export class DeployListingComponent implements OnInit{
 
         observableOuter.pipe(
           filter((response: ICandidateFlightData) => response !== undefined),
-          
           switchMap((response: ICandidateFlightData) => {
             //console.log('response in listing:', response);
             if(response !==undefined) {
@@ -422,7 +447,9 @@ export class DeployListingComponent implements OnInit{
                 this.newSequence.next(x.deploySequence);
             }
             this.toastr.success('Success', 'Inserted ' + response.length + ' number of deployment transactions');
-
+            return;
+            } else {
+              return;
             }
         })
       //updateFlight: IFlightdata
@@ -430,7 +457,7 @@ export class DeployListingComponent implements OnInit{
         this.service.InsertDepItems(depItemsToInsert).subscribe({
           next: (itemsAdded:IDeploymentPendingDto[]) => {
    
-            if(itemsAdded === null) {      //returns DeploymentPendngDto[]
+            if(itemsAdded === null || itemsAdded.length === 0) {      //returns DeploymentPendngDto[]
                 this.toastr.warning('Failed to insert', 'Failed to insert any dep Transaction');
                 this.sequenceSelected = -1;
                 depItemsToInsert=[];
@@ -438,22 +465,26 @@ export class DeployListingComponent implements OnInit{
                 this.deploys.forEach(element => {
                   element.checked===false;
                 }); 
-    
+                
             } else {
                 for(const x of itemsAdded) {
-                    var index = this.deploys.findIndex(x => x.depId == x.depId);
-                    this.deploys[index] = x;  // Object.assign({}, x);
-                    this.newSequence.next(x.deploySequence);
+                    var index = this.deploys.findIndex(y => y.depId == x.depId);
+                    if(index !==-1) {
+                      this.deploys[index] = x;  // Object.assign({}, x);
+                      this.newSequence.next(x.deploySequence);
+                      x.checked=false;
+                    }
                 }
                 this.toastr.success('Success', 'Inserted ' + itemsAdded + ' number of deployment transactions');
             }
           }, error: (err: any) => {
             this.toastr.error(err.error.details, 'Error encountered while adding deployment transaction')
           }
+          
         })
-        
     }
     
+    return of(null);
   }
 
   selected(value:any):void {

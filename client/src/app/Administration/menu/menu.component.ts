@@ -22,7 +22,6 @@ export class MenuComponent {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) this.user = user;
-        console.log('user', this.user);
       }
     })
   }

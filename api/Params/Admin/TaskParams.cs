@@ -9,7 +9,7 @@ namespace api.Params.Admin
         public int ApplicationNo { get; set; }
         public string ResumeId { get; set; }   
         public string AssignedToUserName { get; set; }
-        public string TaskOwnerUsername { get; set; }
+        public string AssignedByUsername { get; set; }
         public string TaskStatus { get; set; }
         public int OrderId { get; set; }
 

@@ -3,7 +3,7 @@ export interface IApplicationTaskInBrief {
      taskType: string;
 
      taskDate: Date;
-     taskOwnerUsername: string;
+     assignedByUsername: string;
      assignedToUsername: string;
      
      orderNo: number;
@@ -19,7 +19,7 @@ export class ApplicationTaskInBrief implements IApplicationTaskInBrief {
      id=0;
      taskType="";
      taskDate=new Date();
-     taskOwnerUsername="";
+     assignedByUsername="";
      assignedToUsername="";
      orderNo=0;
      orderItemId=0;

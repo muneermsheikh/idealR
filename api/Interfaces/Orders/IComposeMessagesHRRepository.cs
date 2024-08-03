@@ -18,7 +18,7 @@ namespace api.Interfaces.Orders
         Task<ICollection<Message>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categories, ICollection<int> officialids, string Username);
 
         Task<MessageWithError> ComposeEmailToDesignOrderItemAssessmentQs(int orderId, string Username);    
-        Task<MessageWithError> ComposeMessagesToHRExecToSourceCVs(ICollection<OrderItemIdAndHRExecEmpNoDto> hrassignments, string Username);
+        Task<MessageWithError> ComposeMessagesToHRExecToSourceCVs(ICollection<OrderItemBriefDto> hrassignments, string Username);
 
     }
 }

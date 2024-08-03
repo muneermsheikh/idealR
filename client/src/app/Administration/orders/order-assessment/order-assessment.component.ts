@@ -17,6 +17,8 @@ export class OrderAssessmentComponent implements OnInit {
     user?: User;
     returnUrl='';
 
+    //displayItem:boolean[]=[];
+
     orderAssessment: IOrderAssessment | undefined;
     
     constructor(private fb: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute,
@@ -79,6 +81,8 @@ export class OrderAssessmentComponent implements OnInit {
                 ))
               )
           })
+
+          
         }
 
       get orderAssessmentItems(): FormArray {
@@ -141,5 +145,8 @@ export class OrderAssessmentComponent implements OnInit {
         })
       }
 
+      close() {
+        
+      }
   }
 

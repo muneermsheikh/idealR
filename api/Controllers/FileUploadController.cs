@@ -4,6 +4,7 @@ using api.Entities.HR;
 using api.Errors;
 using api.Extensions;
 using api.Interfaces;
+using api.Interfaces.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -13,13 +14,15 @@ namespace api.Controllers
     [Authorize(Policy ="HRMPolicy")]
     public class FileUploadController : BaseApiController
     {
+        private readonly DateTime _today = DateTime.UtcNow;
+        private readonly IEmployeeRepository _empRepo;
         private readonly ICandidateRepository _candRepo;
         private readonly ICustomerRepository _custRepo;
-        private readonly DateTime _today = DateTime.UtcNow;
-        public FileUploadController(ICandidateRepository candRepo, ICustomerRepository custRepo)
+        public FileUploadController(IEmployeeRepository empRepo, ICandidateRepository candRepo, ICustomerRepository custRepo)
         {
-            _candRepo = candRepo;
             _custRepo = custRepo;
+            _candRepo = candRepo;
+            _empRepo = empRepo;
         }
 
         [HttpGet("downloadattachmentfile/{attachmentid:int}")]
@@ -58,7 +61,7 @@ namespace api.Controllers
         }
 
      
-        [HttpGet("downloadprospectivefile/{prospectiveid:int}")]
+        /*[HttpGet("downloadprospectivefile/{prospectiveid:int}")]
         public async Task<ActionResult> DownloadProspectiveFile(int prospectiveid)
         {
             var FileName = "D:\\User Profile\\My Documents\\comments on emigration act 2021.docx";
@@ -73,6 +76,7 @@ namespace api.Controllers
             var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
             return File(bytes, contentType, Path.GetFileName(FileName));
         }
+        */
 
         [HttpPost("prospectiveXLS"), DisableRequestSizeLimit]
         public  async Task<ActionResult<string>> ConvertProspectiveData()
@@ -241,7 +245,56 @@ namespace api.Controllers
             return Ok("");
         }
         
+        [HttpPost("employeeXLS"), DisableRequestSizeLimit]
+        public  async Task<ActionResult<string>> ConvertEmployeeData()
+        {
+            //check for uploaded files
+            var files = Request.Form.Files;
+
+            string ErrorString="";
        
+            if(files.Count > 0) 
+            {
+                try{
+                    var folderName = Path.Combine("Assets", "Images");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    foreach (var file in files)
+                    { 
+                        if(file.Length == 0) continue;
+
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var FileExtn = Path.GetExtension(file.FileName);
+                        if(FileExtn != ".xlsx") return "Only '.xlsx' files are accepted";
+                        
+
+                        var filename=file.FileName[..9].ToLower();
+
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                        if (System.IO.File.Exists(fullPath)) {
+                            System.IO.File.Delete(fullPath);
+                         }
+
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        file.CopyTo(stream);
+
+                        var errString = await _empRepo.WriteEmployeeExcelToDB(fullPath, User.GetUsername());
+
+                        if(string.IsNullOrEmpty(errString)) return Ok("");
+
+                        return BadRequest(new ApiException(400, errString, "Failed to copy the file to database" ) );
+                    }
+                
+                } catch (Exception ex) {
+                    throw new Exception(ex.Message);
+                } 
+            }
+            
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+
+            return Ok("");
+        }
         private static bool IsNumeric(string input) {
             return int.TryParse(input, out int test);
         }

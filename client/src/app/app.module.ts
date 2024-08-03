@@ -62,7 +62,8 @@ import { DateInputRangeModalComponent } from './modals/date-input-range-modal/da
     CvAssessModalComponent,
     SelectAssociatesModalComponent,
     InputModalComponent,
-    DateInputRangeModalComponent,   
+    DateInputRangeModalComponent,
+  
         
   ],
   imports: [

@@ -4,10 +4,8 @@ export interface IApplicationTask {
      id: number;
      taskTypeId: number;
      taskDate: Date;
-     taskOwnerId: number;
-     taskOwnerName: string;
-     assignedToId: number;
-     assignedToName: string;
+     assignedToUsername: string;
+     assignedByUsername: string;
      taskDescription: string;
      completeBy: Date;
      taskStatus: string;
@@ -23,14 +21,12 @@ export interface IApplicationTask {
      resumeId: string;
      taskItems: ITaskItem[];
 }
-export class ApplicationTask {
+export class ApplicationTask implements IApplicationTask {
      id= 0;
      taskTypeId= 0;
      taskDate= new Date();
-     taskOwnerId= 0;
-     taskOwnerName= '';
-     assignedToId= 0;
-     assignedToName= '';
+     assignedToUsername='';
+     assignedByUsername='';
      taskDescription= '';
      completeBy=new Date();
      taskStatus= '';
