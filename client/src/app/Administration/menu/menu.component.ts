@@ -26,9 +26,5 @@ export class MenuComponent {
     })
   }
 
-    close() {
-      
-    }
-
 
 }

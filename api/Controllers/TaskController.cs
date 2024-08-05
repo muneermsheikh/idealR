@@ -47,11 +47,11 @@ namespace api.Controllers
 
 
         [HttpGet("pagedTasks")]
-        public async Task<ActionResult<PagedList<TaskInBriefDto>>> OpenOrderItemCategories(TaskParams taskParams)
+        public async Task<ActionResult<PagedList<TaskInBriefDto>>> OpenOrderItemCategories([FromQuery]TaskParams taskParams)
         {
             var pagedList = await _taskRepo.GetPagedList(taskParams);
 
-            if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
+            if(pagedList.Count ==0) return BadRequest("No Task on record matching the criteria");
 
             Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
                 pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
@@ -114,11 +114,13 @@ namespace api.Controllers
         }
 
         [HttpPut("task")]
-        public async Task<ActionResult<string>> EditTask(AppTask task)
+        public async Task<ActionResult<AppTask>> EditTask(AppTask task)
         {
-            var err = await _taskRepo.EditTask(task);
+            var obj = await _taskRepo.EditTask(task);
 
-            return err;
+            if(obj==null) return BadRequest(new ApiException(400, "Failure", "Failed to update the task"));
+            
+            return Ok(obj);
         }
 
         [HttpPut("completeTask/{id}")]

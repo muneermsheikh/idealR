@@ -33,10 +33,6 @@ export class NavComponent implements OnInit{
     })
   }
 
-  Link1Clicked() {console.log('Link1 clicked', 'link clicked')};
-  Link2Clicked() {console.log('Link2 clicked', 'link clicked')};
-  Link3Clicked() {console.log('Link3 clicked', 'link clicked')};
-
   login() {
     this.accountService.login(this.model).subscribe({
       next: response => {

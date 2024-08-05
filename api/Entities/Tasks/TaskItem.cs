@@ -9,6 +9,8 @@ namespace api.Entities.Tasks
         [Required]
         public DateTime TransactionDate { get; set; }
         [Required]
+        public string TaskStatus { get; set; }
+        [Required]
         public string TaskItemDescription {get; set;}
         [Required]
         public string UserName {get; set;}

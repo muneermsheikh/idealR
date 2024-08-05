@@ -1,0 +1,15 @@
+
+<div *ngIf="task">
+    <div class="stdd w100">{{task.taskDate | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w125">{{task.assignedByUsername}}</div>
+    <div class="stdd w125">{{task.assignedToUsername}}</div>
+    <div class="stdd w300" >{{task.taskDescription}}</div>
+    <div class="stdd w125">{{task.completeBy | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w125">{{task.taskStatus}}</div>
+    <button class="btn fa fa-pencil" 
+        (click)="editClicked()" title="edit this task item"></button>
+    <button class="btn fa fa-check green" 
+        (click)="completedClicked()" title="mark as completed"></button>
+    <button class="btn fa fa-trash red" 
+        (click)="deleteClicked()" title="Delete this task"></button>
+</div>

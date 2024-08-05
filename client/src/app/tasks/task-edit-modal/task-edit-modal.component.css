@@ -2,8 +2,8 @@
     display: inline-block;
     font-size: smaller;
     font-weight: bold;
-    margin: 0 2px 0 2px;
     vertical-align: middle;
+    margin: 0 2px 0 2px;
 }
 
 .stdd {
@@ -11,12 +11,13 @@
     font-size: smaller;
     margin: 0 2px 0 2px;
     vertical-align: top;
-    word-wrap: break-word;
 }
 
+.w15 {width: 15px;}
+.w80 {width: 80px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
-.w200 {width: 200px;}
+.w150 {width: 150px;}
 .w300 {width: 300px;}
 
-.cursorpointer {cursor: pointer; color: blue;}
+.green {color: darkgreen;}

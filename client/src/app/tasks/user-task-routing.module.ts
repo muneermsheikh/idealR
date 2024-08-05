@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { UserTasksComponent } from './user-tasks/user-tasks.component';
 import { RouterModule } from '@angular/router';
 import { LoggedInUserTaskResolver } from '../_resolvers/admin/loggedInUserTaskResolver';
+import { TaskMenuComponent } from './task-menu/task-menu.component';
 
 const routes = [
-  {path: '', component: UserTasksComponent, resolve: {tasks: LoggedInUserTaskResolver}},
+  {path: '', component: TaskMenuComponent},
+  {path: 'loggedInUserTasks',  component: UserTasksComponent}
 ]
 
 

@@ -12,7 +12,7 @@ namespace api.Interfaces.Admin
         Task<AppTask> GetTaskByParams(TaskParams taskParams);
         AppTask GenerateTask(AppTask task);
         Task<string>saveTask(AppTask task);
-        Task<string>EditTask(AppTask task);
+        Task<AppTask>EditTask(AppTask task);
         Task<string> MarkTaskAsCompleted(int id);
         Task<string> DeleteTask(int TaskId);
         Task<string> DeleteTaskItem(int taskitemid);

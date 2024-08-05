@@ -421,6 +421,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     if (oParams.orderId !== 0 ) 
         params = params.append('orderId', oParams.orderId.toString()); 
     if (oParams.assignedToUsername !== '' ) params = params.append('assignedToUsername', oParams.assignedToUsername); 
+    if (oParams.assignedByUsername !== '' ) params = params.append('assignedByUsername', oParams.assignedByUsername); 
     if (new Date(oParams.taskDate).getFullYear() > 2000) params = params.append('taskDate', oParams.taskDate.toString()); 
     
     if(oParams.candidateId !==0) {

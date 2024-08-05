@@ -11,6 +11,7 @@ import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { getHttpParamsForTask, getPaginatedResult } from '../paginationHelper';
 import { IOrderItemIdAndHRExecEmpNoDto } from 'src/app/_dtos/admin/orderItemIdAndHRExecEmpNoDto';
 import { AccountService } from '../account.service';
+import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +64,7 @@ export class TaskService {
   }
   
   getTask(id: number) {
-    return this.http.get<IApplicationTask>(this.apiUrl + 'Task/taskbyid/' + id);
+    return this.http.get<IApplicationTask>(this.apiUrl + 'task/taskbyid/' + id);
   }
 
   getTaskByOrderIdAndTaskType(orderid: number, tasktype: string) {
@@ -88,7 +89,7 @@ export class TaskService {
   }
   
   UpdateTask(model: IApplicationTask) {
-    return this.http.put<string>(this.apiUrl + 'Task/task', model)
+    return this.http.put<IApplicationTask>(this.apiUrl + 'Task/task', model)
   }
 
   deleteTaskFromCache(id: number) {
@@ -140,4 +141,9 @@ export class TaskService {
   getParams() {
     return this.oParams;
   }
+
+  getEmployeeIdAndKnownAs() {
+    return this.http.get<IEmployeeIdAndKnownAs[]>(this.apiUrl + 'employees/idandknownas');
+  }
+  
 }

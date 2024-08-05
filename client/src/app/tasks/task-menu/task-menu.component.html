@@ -1,1 +1,22 @@
-<p>task-menu works!</p>
+<div class="container d-flex justify-contents-between align-items-center mt-5">
+
+    <div title="pending tasks of logged-in user" class="nav-item menuStdd">
+        <a routerLink="/tasks/loggedInUserTasks" class="nav-item menuStdd"
+            routerLinkActive="active" >Pending tasks of Logged-in User</a>
+    </div>
+
+    <div class="nav-item menuStdd"  
+        title="create a new Task">
+        <a routerLink="/tasks/newTask" 
+        routerLinkActive="active" class="nav-link">Create new Task</a>
+    </div>
+
+    <div class="nav-item  menuStdd" title="messages concerning the logged-in User" 
+        routerLink="/administration/messages" routerLinkActive="active" >
+        Messages
+    </div>
+        
+    <button class="fa fa-window-close" title="go back to home" routerLink="/"></button>
+
+</div>
+

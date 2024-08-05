@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Authorize(Policy ="AdminPolicy")]      //RequireRoles: Admin
+    
     public class EmployeesController : BaseApiController
     {
         private readonly IEmployeeRepository _empRepo;
@@ -19,7 +19,7 @@ namespace api.Controllers
             _empRepo = empRepo;
         }
 
-    
+        [Authorize(Policy ="AdminPolicy")]      //RequireRoles: Admin
         [HttpGet("employeepaged")]
         public async Task<ActionResult<PagedList<EmployeeBriefDto>>> GetEmployees([FromQuery]EmployeeParams empParams)
         {

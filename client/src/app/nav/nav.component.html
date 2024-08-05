@@ -12,7 +12,6 @@
                 <a class="nav-link menu" routerLink="/administration" routerLinkActive="active">Administration</a>
               </li>
             
-
               <li class="nav-item">
                 <a class="nav-link menu" routerLink="/deployment" routerLinkActive="active">Deployment</a>
               </li>
@@ -22,9 +21,11 @@
               </li>
               
               <li class="nav-item" style="width: 150px;">
-                <a class="nav-link menu" routerLinkActive="active" style="width: 150px;">Call Record</a>
+                <a class="nav-link menu" routerLink="/callRecords" routerLinkActive="active" style="width: 150px;">Call Record</a>
               </li>
-
+              <li class="nav-item" style="width: 150px;">
+                <a class="nav-link menu" routerLink="/tasks" routerLinkActive="active" style="width: 150px;">Tasks</a>
+              </li>
               <input type="text" style="height: 2em; width: 125px;"
                   name = "stPhoneNo" 
                   type="text"
@@ -32,6 +33,10 @@
                   class = "form-control me-2 menu"
                   placeholder="phone no"
               >
+              
+              <li *ngIf="user?.roles?.includes('admin')">
+                <a class="nav-link menu" routerLink="/userroles" routerLinkActive="active" style="width: 100px;">Roles & Authorities</a>
+              </li>
               <button class="btn btn-success fa fa-phone" (click)="editCallRecord()"  title="click to display call record details for the phone no" type="submit"></button>
               
              

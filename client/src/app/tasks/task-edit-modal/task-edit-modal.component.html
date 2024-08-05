@@ -1,0 +1,82 @@
+<div class="modal-header my-0" *ngIf="task">
+    <h4>Edit Task</h4>
+    <button class="btn fa fa-save fa-2x green" style="margin-left: 200px;"
+        title="edit emp data" (click)="updateTask()" ></button>
+    <button class="btn fa fa-window-close fa-2x pull-right" title="Close" (click)="bsModalRef.hide()" ></button>
+</div>
+
+<div class="modal-body my-0" *ngIf="task">
+    <form [formGroup]="form">
+        <label class="lbl w100">Task Type:</label>
+        <app-text-input class="stdd w200" [label]="'Task Type'" aria-readOnly="true" 
+            title="Not Editable" formControlName="taskType" ></app-text-input>
+        <label class="lbl w100">Task Date:</label>
+        <!-- <app-date-input class="stdd w150" formControlName="taskDate" ></app-date-input> -->
+        
+         <input class="stdd w110" type="text" placeholder="Task Date" 
+            formControlName="taskDate" bsDatepicker 
+            [bsValue]="bsValueDate" 
+            [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        
+        <br><label class="lbl w100">Assigned By:</label>
+        <app-text-input class="stdd w200" [label]="'Assigned By'" formControlName="assignedByUsername" ></app-text-input>
+        <label class="lbl w100" >Assigned To</label>
+        <ng-select 
+            class="stdd w100" 
+            [items]="empIdAndNames"
+            bindLabel="knownAs"
+            bindValue="username"
+            labelForId="username"
+            clearAllText="Clear"
+            formControlName="assignedToUsername"
+        ></ng-select>
+        <br><label class="lbl w100">Task Description:</label>
+        <textarea class="stdd" name="desc" id="desc" cols="60" rows="2" formControlName="taskDescription"></textarea>
+        
+        <label class="lbl w100">Status:</label>
+        <app-text-input class="stdd w125" [label]="'Status'" formControlName="taskStatus" ></app-text-input>
+        
+        <br><label class="lbl w80">Date</label>
+        <label class="lbl w300">Discussions in brief</label>
+        <label class="lbl w100">Status</label>
+        <label class="lbl w80">User</label>
+        <label class="lbl w80">Next Followup</label>
+        <label class="lbl w50" style="text-align: right;">By</label>
+        <button class="btn fa fa-plus pull-right" (click)="addTaskItem()" ></button>
+
+        <div formArrayName="taskItems">
+            <div *ngFor="let item of taskItems.controls; let i=index">
+                <div [formGroupName]="i">
+                    <input class="stdd w80" type="text" placeholder="Date" 
+                        formControlName="transactionDate" bsDatepicker 
+                        [bsValue]="bsValueDate" 
+                        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+
+                    <app-text-input class="stdd w250" [label]="'Description'" formControlName="taskItemDescription" ></app-text-input>
+                    <ng-select 
+                        style="display: inline-block;  font-size: small; width: 80px; vertical-align: top;"
+                        [items]="empIdAndNames"
+                        bindLabel="knownAs"
+                        bindValue="username"
+                        labelForId="username"
+                        clearAllText="Clear"
+                        formControlName="userName"
+                    ></ng-select>
+                    <app-date-picker class="stdd w80" formControlName="nextFollowupOn" ></app-date-picker>
+                    <ng-select 
+                        style="display: inline-block;  font-size: small; width: 80px; vertical-align: top;"
+                        [items]="empIdAndNames"
+                        bindLabel="knownAs"
+                        bindValue="username"
+                        labelForId="username"
+                        clearAllText="Clear"
+                        formControlName="nextFollowupByName"
+                    ></ng-select>
+                    <button class="btn w15 fa fa-trash fa-sm red" (click)="removeTaskItem(i)" ></button>
+                </div>
+            </div>
+        </div>
+        
+    </form>
+</div>
+<div class="modal-footer"></div>

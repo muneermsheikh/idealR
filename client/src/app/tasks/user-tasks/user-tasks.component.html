@@ -1,11 +1,9 @@
-<h4 style="font-weight: bold;" >Tasks assigned by/to {{user?.userName}}</h4>
+<h4 style="display: inline-block;">Tasks assigned by/to <strong>{{user?.knownAs}}</strong></h4>
 
-<div *ngIf="tasks && pagination" 
-    class="d-flex justify-contents-between align-items-center"
-        style="display: inline-block; margin-left: 15px; vertical-align: top;" >
-    
-    <h4 class="mx-5" style="display: inline-block; font-weight: bold;">Selections based on parameters</h4>
+<div *ngIf="tasks && pagination" style="display: inline-block;" class="mx-5">
+
     <pagination
+        style="margin: 0 5px 0 5px; display: inline-block;"
         [totalItems]="pagination!.totalItems"
         [itemsPerPage]="pagination!.itemsPerPage"
         (pageChanged)="onPageChanged($event)"
@@ -16,34 +14,41 @@
         lastText="&raquo;">
     ></pagination>
 
-    <div class="form-inline" style="margin-left: 50px !important;" >
+    <div class="stdd w300 mx-5">{{parameterCriteria}}</div>
+
+    <label class="lbl w100 mx-2">Choose Status</label>
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >all Status
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >Pending
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >Canceled
+    <div class="stdd form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w200" #search placeholder="Search">
         <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
         <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
-        <!-- <button (click)="sendReminders()" [disabled]="selectionsSelected.length === 0" 
-            title="send Acceptance reminders to all selected candidates" class="btn fa fa-bell"></button> -->
+        <button class="btn fa fa-window-close fa-2x mx-2" style="display: inline-block;" routerLink="/tasks" ></button>
     </div>
-    
-    <button class="btn fa fa-window-close fa-2x mx-2" routerLink="/administration" ></button>
     
 </div>
 
-<button class="btn fa fa-window-close fa-2x" routerLink="" ></button>
-<label class="lbl w125">Date</label>
-<label class="lbl w125">Assigned By</label>
-<label class="lbl w125">Assigned To</label>
-<label class="lbl w300">Task Description</label>
-<label class="lbl w125">Complete By</label>
-<label class="lbl w125">Status</label>
+<div class="container">
+    <label class="lbl w100">Date</label>
+    <label class="lbl w125">Assigned By</label>
+    <label class="lbl w125">Assigned To</label>
+    <label class="lbl w300">Task Description</label>
+    <label class="lbl w125">Complete By</label>
+    <label class="lbl w125">Status</label>
+    
+    <div *ngIf="!tasks">No tasks on record matching the criteria</div>
 
-<div class="container" *ngFor="let t of tasks">
-    <div class="stdd w125">{{t.taskDate | date: 'dd-MMM-yy'}}</div>
-    <div class="stdd w125">{{t.assignedByUsername}}</div>
-    <div class="stdd w125">{{t.assignedToUsername}}</div>
-    <div class="stdd w300">{{t.taskDescription}}</div>
-    <div class="stdd w125">{{t.completeBy | date: 'dd-MMM-yy'}}</div>
-    <div class="stdd w125">{{t.taskStatus}}</div>
-    <button class="btn fa fa-check green" (click)="markAsCompleted(t.id)" title="mark as completed"></button>
-    <button class="btn fa fa-trash red" (click)="removeTask(t.id)" title="Delete this task"></button>
+    <div *ngIf="tasks" >
+        <div *ngFor="let t of tasks">
+            <app-task-line
+                [task]="t"
+                (completedEvent)="markAsCompleted($event)"
+                (deleteEvent)="removeTask($event)"
+                (editEvent)="editDeploymentModal($event)"
+            ></app-task-line>
+        </div>
+    </div>
+    
 </div>

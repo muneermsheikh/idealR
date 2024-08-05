@@ -2,7 +2,7 @@ import { ITaskItem } from "./taskItem";
 
 export interface IApplicationTask {
      id: number;
-     taskTypeId: number;
+     taskType: string;
      taskDate: Date;
      assignedToUsername: string;
      assignedByUsername: string;
@@ -23,7 +23,7 @@ export interface IApplicationTask {
 }
 export class ApplicationTask implements IApplicationTask {
      id= 0;
-     taskTypeId= 0;
+     taskType= '';
      taskDate= new Date();
      assignedToUsername='';
      assignedByUsername='';

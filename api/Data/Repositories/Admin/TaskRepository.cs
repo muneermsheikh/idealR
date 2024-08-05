@@ -35,17 +35,21 @@ namespace api.Data.Repositories.Admin
 
         public async Task<AppTask> GetTaskByParams(TaskParams taskParams)
         {
-            var query = _context.Tasks.AsQueryable();
+            var query = _context.Tasks.Include(x => x.TaskItems).AsQueryable();
             
-            if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.AssignedByUsername)) query = query.Where(x => x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.TaskStatus)) query = query.Where(x => x.TaskStatus.ToLower() == taskParams.TaskStatus.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.TaskType)) query = query.Where(x => x.TaskType.ToLower() == taskParams.TaskType.ToLower());
-            if(!string.IsNullOrEmpty(taskParams.ResumeId)) query = query.Where(x => x.ResumeId == taskParams.ResumeId);
-            if(taskParams.ApplicationNo !=0) query = query.Where(x => x.ApplicationNo == taskParams.ApplicationNo);
-            if(taskParams.candidateId != 0) query = query.Where(x => x.CandidateId == taskParams.candidateId);
-            if(taskParams.TaskDate.Year > 2000) query = query.Where(x => x.TaskDate == taskParams.TaskDate);
-
+            if(taskParams.TaskId > 0) {
+                query = query.Where(x => x.Id == taskParams.TaskId);
+            } else {
+                if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
+                if(!string.IsNullOrEmpty(taskParams.AssignedByUsername)) query = query.Where(x => x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
+                if(!string.IsNullOrEmpty(taskParams.TaskStatus)) query = query.Where(x => x.TaskStatus.ToLower() == taskParams.TaskStatus.ToLower());
+                if(!string.IsNullOrEmpty(taskParams.TaskType)) query = query.Where(x => x.TaskType.ToLower() == taskParams.TaskType.ToLower());
+                if(!string.IsNullOrEmpty(taskParams.ResumeId)) query = query.Where(x => x.ResumeId == taskParams.ResumeId);
+                if(taskParams.ApplicationNo !=0) query = query.Where(x => x.ApplicationNo == taskParams.ApplicationNo);
+                if(taskParams.candidateId != 0) query = query.Where(x => x.CandidateId == taskParams.candidateId);
+                if(taskParams.TaskDate.Year > 2000) query = query.Where(x => x.TaskDate == taskParams.TaskDate);
+            }
+            
             var task = await query.FirstOrDefaultAsync();
 
             return task;
@@ -254,15 +258,15 @@ namespace api.Data.Repositories.Admin
             throw new NotImplementedException();
         }
 
-        public async Task<string> EditTask(AppTask task)
+        public async Task<AppTask> EditTask(AppTask task)
         {
             var existing = await _context.Tasks.FindAsync(task.Id);
 
-            if(existing==null) return "No such task on record";
+            if(existing==null) return null;
 
             _context.Entry(existing).CurrentValues.SetValues(task);
 
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to update the task";
+            return await _context.SaveChangesAsync() > 0 ? existing : null;
         }
 
         public async Task<PagedList<TaskInBriefDto>> GetPagedList(TaskParams taskParams)
@@ -273,9 +277,9 @@ namespace api.Data.Repositories.Admin
                 && !string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
                     query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower() 
                         || x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
-            } else if(!string.IsNullOrEmpty(taskParams.AssignedToUserName)) {
+            } else if(!string.IsNullOrEmpty(taskParams.AssignedToUserName) && (string.IsNullOrEmpty(taskParams.AssignedByUsername))) {
                 query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower());
-            } else if(!string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
+            } else if(!string.IsNullOrEmpty(taskParams.AssignedByUsername) && (string.IsNullOrEmpty(taskParams.AssignedToUserName)) ) {
                 query = query.Where(x => x.AssignedByUsername.ToLower() == taskParams.AssignedByUsername.ToLower());
             }
                 
@@ -285,7 +289,7 @@ namespace api.Data.Repositories.Admin
             if(taskParams.ApplicationNo !=0) query = query.Where(x => x.ApplicationNo == taskParams.ApplicationNo);
             if(taskParams.candidateId != 0) query = query.Where(x => x.CandidateId == taskParams.candidateId);
             if(taskParams.TaskDate.Year > 2000) query = query.Where(x => x.TaskDate == taskParams.TaskDate);
-            
+                        
             var paged = await PagedList<TaskInBriefDto>.CreateAsync(query.AsNoTracking()
                 .ProjectTo<TaskInBriefDto>(_mapper.ConfigurationProvider),
                 taskParams.PageNumber, taskParams.PageSize);
