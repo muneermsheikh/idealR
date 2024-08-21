@@ -13,7 +13,7 @@ namespace api.Interfaces.HR
         Task<PagedList<AssessmentQBankDto>> GetAssessmentQBanks(AssessmentQBankParams qParams);
         Task<ICollection<AssessmentQBankDto>> GetAssessmentStddQList(AssessmentQBankParams qParams);
         Task<AssessmentQBank> GetAssessmentQsOfACategoryByName(string categoryName);
-        Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQBankByOrderItemId(int orderitemid);
+        Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQBankByOrderItemId(int orderitemid);
         Task<AssessmentQBank> UpdateAssessmentQBank(AssessmentQBank model);
         Task<AssessmentQBank> InsertAssessmentQBank(AssessmentQBank model);
         Task<AssessmentStddQ> InsertStddQ(AssessmentStddQ stddQ);

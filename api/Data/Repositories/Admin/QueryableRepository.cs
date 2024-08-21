@@ -18,6 +18,7 @@ namespace api.Data.Repositories.Admin
         {
             var query =(from cvref in _context.CVRefs 
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                join cat in _context.Professions on item.ProfessionId equals cat.Id
                 join o in _context.Orders on item.OrderId equals o.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
         
@@ -33,30 +34,30 @@ namespace api.Data.Repositories.Admin
                     OrderNo = o.OrderNo,
                     OrderDate = o.OrderDate,
                     OrderItemId = cvref.OrderItemId,
-                    ProfessionName = item.Profession.ProfessionName,
-                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    ProfessionName = cat.ProfessionName,
+                    CategoryRefAndName = o.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
                     //PPNo = cv.PpNo,
                     ReferredOn = cvref.ReferredOn,
                     RefStatus = cvref.RefStatus
                 })
                 .AsQueryable();
     
-            if(refParams.OrderItemId  > 0) query = query.Where(x => x.OrderItemId == refParams.OrderItemId);
+            //if(refParams.OrderItemId  > 0) query = query.Where(x => x.OrderItemId == refParams.OrderItemId);
             if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
             if(refParams.CandidateId != 0) query = query.Where(x => x.CandidateId == refParams.CandidateId);
-            if(!string.IsNullOrEmpty(refParams.RefStatus)) 
-                query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());
+            /*if(!string.IsNullOrEmpty(refParams.RefStatus)) 
+                query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower()); */
             if(!string.IsNullOrEmpty(refParams.SelectionStatus)) 
                 query = query.Where(x => x.SelectionStatus.ToLower() == refParams.SelectionStatus.ToLower());
 
-            if(refParams.ProfessionId !=0) {
+            /*if(refParams.ProfessionId !=0) {
                 var orderItemIds = await _context.OrderItems.
                     Where(x => x.ProfessionId == refParams.ProfessionId)
                     .Select(x => x.Id).ToListAsync();
                 if(orderItemIds != null && orderItemIds.Count > 0) {
                     query = query.Where(x => orderItemIds.Contains(x.OrderItemId));
                 }
-            }
+            }*/
 
             if(refParams.AgentId != 0) {
                 var candidateIds = await _context.Candidates.Where(x => x.CustomerId == refParams.AgentId).Select(x => x.Id).ToListAsync();

@@ -112,7 +112,7 @@ namespace api.Controllers
         {
             if(await _candidateRepo.DeleteCandidate(id)) return Ok();
             
-            return BadRequest("Failed to delete the candidate");
+            return BadRequest(new ApiException(400, "Bad Request", "Failed to delete the candidate"));
         }
 
         [HttpPut]
@@ -314,60 +314,57 @@ namespace api.Controllers
                          new JsonSerializerOptions {
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
                     
-                    //var modelData = Request.Form["data"];
-                    //CompanyId=null DOB null, remove entityaddress, remove userPassports,
                     if(!await _candidateRepo.UpdateCandidate(modelData)) {
                         dtoToReturn.ErrorMessage = "Failed to update candidate obkect";
                         return BadRequest(new ApiException(404, "Bad Request", "Failed to update candidate object"));
-
                     }
+
                     applicationno = modelData.ApplicationNo.ToString();
                     var folderName = Path.Combine("Assets", "Images");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                     pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
-                    //D:\idealr_\IdealR\api\Assets\Images
-                    //D:\\idealr_\\IdealR\api\\Assets\\Images 
-                    //var attachmentTypes = modelData.UserAttachments;
                     var files = Request.Form.Files;
                     foreach (var file in files)
                     {
                          if(file.Length == 0) continue;
-                         //files uploaded but not prsent in existing file attachments are the new files to be uploaded, and hence also to be added in USERaTTACHMENTS
-                         //The userAttachments could already be having files uploaded earlier, and existing in the images folder, those are to be 
-                         //ignored and not added to the _context.UserAttachments object
-                        
+
+                        //files uploaded but not prsent in existing file attachments are the new files to be uploaded, and hence also to be added in USERaTTACHMENTS
+                        //The userAttachments could already be having files uploaded earlier, and existing in the images folder, those are to be 
+                        //ignored and not added to the _context.UserAttachments object
                         var filenameWOPath = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                         //var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                         var fileName = applicationno + "-" + filenameWOPath;
-                         if(System.IO.File.Exists(pathToSave + @"\" + fileName)) continue;
+                        var fileName = applicationno + "-" + filenameWOPath;
+                        if(System.IO.File.Exists(pathToSave + @"\" + fileName)) continue;
                          
-                         //the filename syntax is: application No + "-" + filename
-                         if(!fileName.Contains(applicationno.ToString().Trim())) fileName = applicationno.ToString().Trim() + "-" + fileName;
-                         
-                         var fullPath = Path.Combine(pathToSave, fileName);
-                         var dbPath = Path.Combine(folderName, fileName);
+                        //the filename syntax is: application No + "-" + filename
+                        if(!fileName.Contains(applicationno.ToString().Trim())) fileName = applicationno.ToString().Trim() + "-" + fileName;
+                        
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
 
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
                         var attach = new UserAttachment {
                             CandidateId = modelData.Id, AppUserId = modelData.AppUserId,
-                                Length=filenameWOPath.Length/1024,
-                                Name=fileName, UploadedbyUserName=User.GetUsername(), 
-                                UploadedLocation=pathToSave, UploadedOn=_today
+                            Length=filenameWOPath.Length/1024,
+                            Name=fileName, UploadedbyUserName=User.GetUsername(), 
+                            UploadedLocation=pathToSave, UploadedOn=_today,
+                            
                         };
                         
                         userattachmentlist.Add(attach);
                     }
 
+                    /*
                     //stream contains only new files uploaded.  ADd to it old files that
                     //existed, else they would be considered as not existing in the model
-                    //and deleted in the following procedure
+                    //and deleted in the following procedure - editCandidates
                     foreach(var item in modelData.UserAttachments) {
                         if(item.Name[..applicationno.Length] == applicationno ) userattachmentlist.Add(item);
                     }
                     var attachmentsUpdated = await _candidateRepo.AddAndSaveUserAttachments(userattachmentlist, User.GetUsername());                   
                     //candidateObject.UserAttachments=attachmentsUpdated;
+                    */
                     dtoToReturn.ReturnInt=Convert.ToInt32(applicationno);
                     if(string.IsNullOrEmpty(dtoToReturn.ErrorMessage)) dtoToReturn.ErrorMessage="";
                     return Ok(dtoToReturn);

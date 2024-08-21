@@ -50,13 +50,15 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageSize', oParams.pageSize);
 
     if (oParams.agentId !== 0) params = params.append('agentId', oParams.agentId!.toString());
-    if (oParams.professionId !== 0) params = params.append('professionId', oParams.professionId!.toString());
+    //if (oParams.professionId !== 0) params = params.append('professionId', oParams.professionId!.toString());
     if (oParams.applicationNo !== 0) params = params.append('agentId', oParams.applicationNo!.toString());
     if (oParams.candidateId !== 0) params = params.append('candidateId', oParams.candidateId!.toString());
     if (oParams.orderId !== 0) params = params.append('orderId', oParams.orderId.toString());
-    if (oParams.orderItemId !== 0) params = params.append('orderItemId', oParams.orderItemId!.toString());
+    if (oParams.orderNo !== 0) params = params.append('orderNo', oParams.orderNo.toString());
+    if(oParams.selectionStatus !== '') params = params.append('selectionStatus', oParams.selectionStatus);
+    //if (oParams.orderItemId !== 0) params = params.append('orderItemId', oParams.orderItemId!.toString());
     
-    if (oParams.search) params = params.append('search', oParams.search);
+    //if (oParams.search) params = params.append('search', oParams.search);
     
     params = params.append('sort', oParams.sort);
 
@@ -144,22 +146,6 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
-  export function getParamsNamesOfCVRefParams(sParams: CVRefParams): string {
-
-    var st='';
-
-    st = "Page No:" + sParams.pageNumber;
-    st +=  ", Page Size:" + sParams.pageSize;
-
-    if (sParams.orderItemId !== 0) st += ", Order ItemId: " + sParams.orderItemId;
-    if (sParams.professionId !== 0) st += ", Order Item: " + sParams.professionId;      
-    if (sParams.orderId !== 0) st += ", Order Id: " + sParams.orderId;
-    if (sParams.applicationNo !== 0) st += ", Application No: " + sParams.applicationNo;
-    if (sParams.search) st += ", Search criteria: " + sParams.search;
-    st += ", Sort By:" + sParams.sort;
-    
-    return st;
-  }
   export function getPaginationHeadersSelectionParams(sParams: SelDecisionParams): HttpParams {
     
     var dto = new HttpParamsWithStringDto();

@@ -43,7 +43,7 @@ namespace api.Controllers
         
         //OrderAssessmentItem
         [HttpGet("orderassessmentitem/{orderItemId}")]
-        public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessment(int orderItemId)
+        public async Task<ActionResult<OrderAssessmentItem>> GetOrderItemAssessment(int orderItemId)
         {
             var assessment = await _repo.GetOrCreateOrderAssessmentItem(orderItemId, User.GetUsername());
             if(assessment==null) return NotFound();
@@ -70,7 +70,7 @@ namespace api.Controllers
         }
 
         [HttpPost("itemassessment")]
-        public async Task<ActionResult<OrderItemAssessment>> InsertOrderItemAssessment(OrderAssessmentItem orderItemAssessment)
+        public async Task<ActionResult<OrderAssessmentItem>> InsertOrderItemAssessment(OrderAssessmentItem orderItemAssessment)
         {
             var posted = await _repo.SaveOrderAssessmentItem(orderItemAssessment);
             if(posted == null) return BadRequest("Failed to post the OrderItem Assessment");
@@ -100,7 +100,7 @@ namespace api.Controllers
         }
 
         [HttpGet("orderitemassessmentQ/{orderitemid}")]
-        public async Task<ActionResult<ICollection<OrderItemAssessmentQ>>> GetOrderAssessmentItemQs (int orderitemid)
+        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetOrderAssessmentItemQs (int orderitemid)
         {
             var obj = await _repo.GetOrderAssessmentItemQs(orderitemid);
 

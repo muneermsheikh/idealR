@@ -10,7 +10,7 @@ namespace api.Interfaces.HR
     public interface IProspectiveCandidatesRepository
     {
         Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(ProspectiveCandidateParams pParams);
-        Task<int> ConvertProspectiveToCandidate(int prospectiveid);
+        Task<int> ConvertProspectiveToCandidate(int prospectiveid, string Username);
         Task<ICollection<ProspectiveSummaryDto>> GetProspectiveSummary(ProspectiveSummaryParams pParams);
         Task<ProspectiveCandidate> GetProspectiveCandidate(ProspectiveSummaryParams pParams);
         Task<bool> DeleteProspectiveCandidate(int ProspectiveId);

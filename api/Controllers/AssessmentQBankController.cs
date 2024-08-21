@@ -55,7 +55,7 @@ namespace api.Controllers
         }
 
         [HttpGet("catqsbyorderitem/{orderitemid}")]
-        public async Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQBankByCategoryId(int orderitemid)
+        public async Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQBankByCategoryId(int orderitemid)
         {
             var q = await _qBankRepo.GetAssessmentQBankByOrderItemId(orderitemid);
             return q;

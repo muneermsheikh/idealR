@@ -1,4 +1,5 @@
 using api.DTOs;
+using api.DTOs.HR;
 using api.Entities;
 using api.Entities.Identity;
 using api.Helpers;
@@ -12,8 +13,6 @@ namespace api.Interfaces
         Task<bool> SaveAllAsync();
         Task<AppUser> GetUserByIdAsync (int id);
         Task<AppUser> GetUserByUserNameAsync (string username);
-        Task<IEnumerable<MemberDto>> GetMemberAsync(string username);
-        Task<ICollection<MemberDto>> GetMembersWithRoles();
-        Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
+        Task<ICollection<CVsMatchingProfAvailableDto>> GetMatchingCandidatesAvailable(int professionid);
     }
 }

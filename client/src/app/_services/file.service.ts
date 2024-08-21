@@ -30,7 +30,7 @@ export class FileService {
   public download(attachmentid: number) {
     return this.http.get(this.apiUrl + 'FileUpload/downloadattachmentfile/' + attachmentid, {
       reportProgress: true,
-      observe: 'events',
+      //observe: 'events',
       responseType: 'blob',
     });
   }

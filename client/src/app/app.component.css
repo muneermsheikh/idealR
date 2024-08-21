@@ -8,6 +8,7 @@
 }  
 .app-sidenav {
     width: 230px;
+    font-size: small !important;
 }
 .app-sidenav-content {
     display: flex;
@@ -16,6 +17,17 @@
     justify-content: center;
 } 
 
+mat-list-item {
+    margin: 0;
+    padding: 0;
+    color: darkblue;
+}
+mat-menu {
+    font-size: small;
+    margin: 0;
+    padding: 0;
+}
+
 md-sidenav, 
 md-sidenav.md-locked-open, 
 md-sidenav.md-closed.md-locked-open-add-active {
@@ -23,12 +35,16 @@ md-sidenav.md-closed.md-locked-open-add-active {
     width: 85vw !important;
     max-width: 400px !important;
     font-size: small !important;
+    margin: 0px !important;
+    padding: 0px !important;
 } 
 .sidenav {
     display: inline-block;
     width: inherit;
     font-size: small !important;
     height: inherit;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .mat-sidenav-backdrop.mat-sidenav-shown{

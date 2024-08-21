@@ -24,7 +24,7 @@ export class UploadDownloadService {
   */
 
   downloadFile(attachmentid: number) {
-    return this.http.get(this.apiUrl + 'candidate/downloadfile/' + attachmentid);
+    return this.http.get(this.apiUrl + 'candidate/downloadfile/' + attachmentid, {responseType: 'blob'});
   }
 
   

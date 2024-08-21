@@ -91,7 +91,7 @@ namespace api.Data.Repositories.HR
                 AssessedOn = _today,
                 AssessedByEmployeeName = Username,
                 ChecklistHRId = checklistId,
-                RequireInternalReview = requireAssess,
+                RequireInternalReview = requireAssess != "N",
                 AssessResult = "Not Assessed",
                 CategoryRefAndName = orderAssessmentItem.OrderNo + "-" + orderAssessmentItem.ProfessionName,
                 CustomerName = orderAssessmentItem.CustomerName,

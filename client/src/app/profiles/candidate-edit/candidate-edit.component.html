@@ -7,27 +7,22 @@
 <form [formGroup]="registerForm" 
      (ngSubmit)="registerForm.valid && savewithattachments()" 
      autocomplete="off"
-     *ngIf="candidate"
-     >
+     *ngIf="candidate">
+
      <div class="my-0" *ngIf="candidate" style="font-weight: bold; display: inline-block;">
           {{strAddMode}}
      </div>
      <div class="my-0" style="margin-left: 225px; display: inline-block; vertical-align: top;">
-          <button class="btn btn-default fa fa-undo" type="button" (click)="cancel()"></button>
+          <button class="btn btn-default fa fa-window-close" style="color: aliceblue;" type="button" (click)="cancel()"></button>
           <button [disabled]="!registerForm.valid" title="Update" 
                class="btn btn-success me-2 fa fa-save " type="submit"></button>
      </div>
      <br>
      <div class="stdd col-5 mt-1" style="border-style: groove; margin-left: 5px;">
        
-          <div class="stdd w30">
-               <app-text-input formControlName="id"></app-text-input>
-          </div>  
-          <br> 
-          
           <label class="lbl">Gender: </label>
-          <input type="radio" class="inputcheck form-check-input " value="male" formControlName="gender" >Male
-          <input type="radio" class="inputcheck form-check-input " value="female" formControlName="gender" >Female
+          <input type="radio" class="inputcheck form-check-input " value="m" formControlName="gender" >Male
+          <input type="radio" class="inputcheck form-check-input " value="f" formControlName="gender" >Female
            <br>
 
           <label for="firstName" class="lbl">First Name</label>
@@ -143,7 +138,7 @@
                                    <!-- <input class="stdd w15" type="text" formControlName="candidateId"> -->
 
                                    <button (click)="removeUserPhone(i)" style="margin-left: 20px;" 
-                                        class="stdd fa fa-trash" style="color:red; display: inline-block;"></button>
+                                        class="btn w25 fa fa-trash" style="color:red; display: inline-block;"></button>
                               </div>
                          </div>
                     </div>
@@ -263,11 +258,10 @@
                                         formControlName="attachmentType"
                                    >
                                    </ng-select>
-                                   
-                                   <button (click)="removeUserAttachment(j)" style="margin-left: 20px;" class="stdd red fa fa-trash"></button>
-                                   <button (click)="download(j)" class="stdd mx-1 fa fa-download"></button>
+                                   <button type="button" (click)="downloadattachment(j)" class="w25 mx-1 fa fa-download"></button>
+                                   <button type="button" (click)="removeUserAttachment(j)" style="margin-left: 20px;" class="w25 red fa fa-trash"></button>
                                    <!-- <input class="stdd w30 mx-5" type="text" readonly formControlName="candidateId"> -->
-                                   <input type="number" formControlName="id" readonly class="stdd w15" > 
+                                   <!-- <input type="number" formControlName="id" readonly class="stdd w15" >  -->
                               </div>
                          </div>
                     </div>

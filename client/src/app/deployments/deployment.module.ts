@@ -12,6 +12,8 @@ import { ChooseFlightModalComponent } from './choose-flight-modal/choose-flight-
 import { FlightDetailModalComponent } from './flight-detail-modal/flight-detail-modal.component';
 import { DeployStatusListComponent } from './deploy-status-list/deploy-status-list.component';
 import { DepNextSeqNamePipe } from './dep-next-seq-name.pipe';
+import { DepAttachmentModalComponent } from './dep-attachment-modal/dep-attachment-modal.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -27,11 +29,13 @@ import { DepNextSeqNamePipe } from './dep-next-seq-name.pipe';
     FlightDetailModalComponent,
     DeployStatusListComponent,
     DepNextSeqNamePipe,
+    DepAttachmentModalComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
-    DeploymentRoutingModule
+    DeploymentRoutingModule,
+    MatIconModule
   ]
 })
 export class DeploymentModule { }

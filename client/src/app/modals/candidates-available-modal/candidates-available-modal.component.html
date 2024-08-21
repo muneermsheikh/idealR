@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Select Candidates</h4>
+    <button type="button" class="btn btn-success fa fa-check" style="margin-left: 50px;" (click)="emitCVs()"></button>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div *ngIf="cvs">
+        <label class="lbl w55">Choose</label>
+        <label class="lbl w75">App No</label>
+        <!-- <label class="lbl w75">Person Id</label> -->
+        <label class="lbl w75">Source</label>
+        <label class="lbl w150">Candidate Name</label>
+        <label class="lbl w100">City</label>
+        <label class="lbl w100">Mobile No</label>
+        <label class="lbl w150">Profession</label>
+    </div>
+    <div *ngIf="cvs.length===0">
+        No CVs found with desired Profession
+    </div>
+    <div *ngFor="let cv of cvs">
+
+        <input type="checkbox" style="width: 20px; margin-left: 10px;border-color:black;"
+            class="form-check-input hAlignCenter"
+            [(ngModel)]="cv.checked"
+            (click)="SelectCVs(cv)"
+        >
+
+        <div class="stdd w75" style="text-align: center;">{{cv.applicationNo > 0 ? cv.applicationNo : "-"}}</div>
+        <!-- <div class="stdd w75">{{cv.candidateId}}</div> -->
+        <div class="stdd w100">{{cv.source}}</div>
+        <div class="stdd w150">{{cv.fullName}}</div>
+        <div class="stdd w100">{{cv.city}}</div>
+        <div class="stdd w100">{{cv.mobileNo}}</div>
+        <div class="stdd w150">{{cv.professionName}}</div>
+    </div>
+</div>
+
+<div class="modal-footer"></div>

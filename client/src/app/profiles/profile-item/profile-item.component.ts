@@ -16,6 +16,7 @@ export class ProfileItemComponent implements OnInit {
   @Output() cvAssessEvent = new EventEmitter<ICandidateBriefDto>();
   @Output() cvCheckedEvent = new EventEmitter<ICandidateBriefDto>();
   @Output() cvEditEvent = new EventEmitter<number>();
+  @Output() cvDeleteEvent = new EventEmitter<number>();
 
 
   currentId=0;
@@ -49,7 +50,8 @@ export class ProfileItemComponent implements OnInit {
     this.downloadEvent.emit(id);
   }
 
-  async onClickLoadDocument(cvid: number) {
+  //async 
+  onClickLoadDocument(cvid: number) {
     // get a document from the Web API endpoint 'LoadDocument'
     this.msgEvent.emit(cvid);
   }
@@ -73,6 +75,9 @@ export class ProfileItemComponent implements OnInit {
 
   editCV(id: number) {
       this.cvEditEvent.emit(id);
-      console.log('profile item edit cv, id: ', id);
+  }
+
+  deleteCV(id: number) {
+    this.cvDeleteEvent.emit(id);
   }
 }

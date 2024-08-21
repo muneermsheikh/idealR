@@ -493,8 +493,6 @@ namespace api.Data.Repositories
             } else {
                 if(orderParams.CustomerId > 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
             }
-
-            var temp=await query.ToListAsync();
             
             var paged = await PagedList<OrderBriefDto>.CreateAsync(query.AsNoTracking()
                 //.ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)

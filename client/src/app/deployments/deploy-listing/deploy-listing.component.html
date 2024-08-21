@@ -16,12 +16,12 @@
     <div class="form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w250" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn fa fa-search fa-2x"></button>
-        <button (click)="onReset()" class="btn fa fa-refresh fa-2x mx-1"></button>
+        <button (click)="onSearch()"  style="color: aliceblue;" class="btn w20 fa fa-search fa-2x"></button>
+        <button (click)="onReset()"  style="color: aliceblue;" class="btn w20 fa fa-refresh fa-2x mx-1"></button>
 
         <div class="stdd">
             <ng-select 
-                style="border-style: double; width: 250px; font-size: small;"
+                style="border-style: double; width: 250px; font-size: small;margin-left: 10px;"
                 [items]="statusNameAndSeq"
                 bindLabel="name"
                 bindValue="id"
@@ -29,14 +29,19 @@
                 clearAllText="Clear"
                 (selected)="selected($event)"
                 [(ngModel)]="sequenceSelected"
+                title="select a status for adding new deployment transactions"
+                placeholder="Select a Status"
             ></ng-select>
         </div>   
 
-        <button class="btn fa fa-check green fa-2x mx-1" (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
+        <button class="btn w20 fa fa-check fa-2x mx-1" style="color: aliceblue;" 
+            (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
     </div>
     
-    <button class="btn fas fa-th-large fa-2x mx-1" title="List of deployment status" routerLink="/deployment/deployStatus" ></button>
-    <button class="btn fa fa-window-close fa-2x mx-1" title="return to Administration Menu" routerLink="/administration" ></button>
+    <button class="btn w20 mx-1"  style="color: aliceblue;" 
+        title="List of deployment status" routerLink="/deployment/deployStatus" ><mat-icon>receipt</mat-icon> </button>
+    <button class="btn w20 fa fa-window-close fa-2x mx-1"  style="color: aliceblue;" 
+        title="return to Main Menu" routerLink="/" ></button>
     
 </div>
 
@@ -48,10 +53,10 @@
     <label class="stdd w150">Customer Name</label>
     <label class="stdd w50">Order#</label>
     <label class="stdd w150">Category</label>
-    <label class="stdd w110">Referred On</label>
-    <label class="stdd w110">Selected On</label>
-    <label class="stdd w150">Current Dep Status</label>
-    <label class="stdd w150">Next Dep Status</label>
+    <label class="stdd w75">Referred On</label>
+    <label class="stdd w75">Selected On</label>
+    <label class="stdd w125">Current Dep Status</label>
+    <label class="stdd w125">Next Dep Status</label>
     <label class="stdd w75">Estimated Date</label>
 </div>
 
@@ -68,6 +73,7 @@
         (showTicket)="displayCandidateTicket($event)"
         (candidateFlightDeleteEvent)="candidateFlightDelete($event)"
         (candidteFlightEditEvent)="candidateFlightEdit($event)"
+        (editAttachmentEvent)="editAttachmentModal($event, dep)"
         >   
     </app-deploy-line>
 

@@ -97,6 +97,7 @@ export class OrdersListingComponent implements OnInit {
       error: error => console.log(this.orders)
     });
 
+    console.log('orders:', this.orders);
   }
 
 

@@ -83,7 +83,7 @@ namespace api.Controllers
         [HttpPut("offeraccepted")]
         public async Task<ActionResult<bool>> RegisterOfferAcceptance(ICollection<OfferConclusionDto> dto)
         {
-            dto = dto.Where(x => !"acceptedrejected".Contains(x.acceptedString.ToLower())).ToList();
+            dto = dto.Where(x => !"acceptedrejected".Contains(x.AcceptedString.ToLower())).ToList();
 
             if(dto.Count == 0) return BadRequest(new ApiException(400, "invalid accepted String", "accepted value are 'Accepted' or 'Rejected"));
             

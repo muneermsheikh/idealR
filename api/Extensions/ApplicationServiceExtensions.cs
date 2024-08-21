@@ -82,6 +82,7 @@ namespace api.Extensions
             services.AddScoped<IProspectiveCandidatesRepository, ProspectiveCandidatesRepository>();
             services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IInterviewRepository, InterviewRepository>();
             
             return services;
         }

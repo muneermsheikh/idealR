@@ -1,11 +1,9 @@
 using System.Data.Common;
-using System.Net.Mail;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
-using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Extensions;
@@ -16,8 +14,6 @@ using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using api.Params.Deployments;
 using AutoMapper;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -362,6 +358,18 @@ namespace api.Data.Repositories.Deployment
             return strErr;
         }
         
+        public async Task<bool> DeleteDeploymentAttachment(string fullPath) {
+            var depitem = await _context.DepItems.Where(x => x.FullPath.ToLower()==fullPath.ToLower()).FirstOrDefaultAsync();
+            if(depitem == null) return false;
+
+            depitem.FullPath = "";
+            _context.Entry(depitem).State = EntityState.Modified;
+            
+            System.IO.File.Delete(fullPath);
+            return await _context.SaveChangesAsync() > 0;
+
+            
+        }
         public async Task<string> EditDepItem(DepItem depItem)
         {
             string strErr="";

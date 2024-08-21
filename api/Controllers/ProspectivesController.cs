@@ -42,7 +42,7 @@ namespace api.Controllers
         [HttpPut("convertProspective/{prospectiveid}")]
         public async Task<ActionResult<int>> ConvertProspectiveToCandidate(int prospectiveid)
         {
-            var appno = await _ProspectiveRepo.ConvertProspectiveToCandidate(prospectiveid);
+            var appno = await _ProspectiveRepo.ConvertProspectiveToCandidate(prospectiveid, User.GetUsername());
 
             return Ok(appno);
         }

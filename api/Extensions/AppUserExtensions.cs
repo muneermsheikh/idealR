@@ -62,7 +62,7 @@ namespace api.Extensions
                     Gender = candidate.Gender,
                     KnownAs = candidate.KnownAs,
                     City = candidate.City,
-                    UserName = candidate.UserName,
+                    UserName = candidate.Username,
                     Created = DateTime.UtcNow
                 };
 

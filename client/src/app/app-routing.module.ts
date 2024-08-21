@@ -47,6 +47,9 @@ const routes: Routes = [
       {path: 'deployment', //canActivate: [ProcessGuard],
         loadChildren:() => import('./deployments/deployment.module').then(mod=>mod.DeploymentModule)},
      
+      {path: 'interviews', //canActivate: [ProcessGuard],
+        loadChildren:() => import('./interviews/interview.module').then(mod=>mod.InterviewModule)},
+
       {path: 'userroles', component: UserManagementComponent,
         resolve: {
           userswithroles: UsersWithRolesResolver,

@@ -34,7 +34,7 @@ namespace api.Data.Repositories.HR
         }
 
 
-        public async Task<int> ConvertProspectiveToCandidate(int prospectiveId)
+        public async Task<int> ConvertProspectiveToCandidate(int prospectiveId, string username)
         {
             var prospective = await _context.ProspectiveCandidates.FindAsync(prospectiveId);
 
@@ -87,7 +87,7 @@ namespace api.Data.Repositories.HR
                }
           
                // finally, create the object candidate
-               var cand = await _candidateRepository.CreateCandidateAsync(cvDto, "username");
+               var cand = await _candidateRepository.CreateCandidateAsync(cvDto, username);
 
                if (cand == null) return 0;
                

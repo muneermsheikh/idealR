@@ -7,7 +7,6 @@ namespace api.DTOs.HR
         public int Id { get; set; }
         public int ApplicationNo { get; set; }
         public string FullName {get; set;}
-     //[Required]         
         public string KnownAs { get; set; }
         public string ReferredByName { get; set; }
         public string City {get; set;}

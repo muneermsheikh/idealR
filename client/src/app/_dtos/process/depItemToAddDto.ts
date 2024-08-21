@@ -5,6 +5,7 @@ export interface IDepItemToAddDto
     transactionDate: Date;
     sequence: number;
     nextSequence: number;
+    fullPath: string;
 }
 
 export class DepItemToAddDto
@@ -14,4 +15,5 @@ export class DepItemToAddDto
     transactionDate = new Date();
     sequence = 0;
     nextSequence = 0;
+    fullPath = '';
 }

@@ -6,13 +6,13 @@
 </ngx-spinner>
 
 <!--mat-toolbar is the horizontal bar at the top.  For side navigation, see below sidenav-->
-<!--
-    <mat-toolbar> -->  <!--color="primary" removed-->
- <!--       
+
+    <mat-toolbar>  <!--color="primary" removed-->
+        
         <button mat-icon-button (click)="sidenav.toggle()" matTooltip="Menu">
             <mat-icon>menu</mat-icon>
         </button>
-        <span>Ideal Solutions - Welcome {{user?.knownAs| titlecase}}</span>
+        <span style="font-size: small;">Ideal Solutions - Welcome {{user?.knownAs| titlecase}}</span>
         <span class="toolbar-item-spacer"></span>
     
         <form *ngIf="!(accountService.currentUser$|async)" #loginForm = "ngForm" (ngSubmit)="login()" 
@@ -61,9 +61,9 @@
             
         </mat-menu>
     </mat-toolbar>
--->
+
 <!--the side navigation bar menu-->
-<!--
+
 <mat-sidenav-container [hasBackdrop]="false" class="app-container" >
     <mat-sidenav #sidenav mode="side" [class.mat-elevation-z4]="true" class="app-sidenav">
         <div class="sidenav">
@@ -75,11 +75,8 @@
                 <div *ngIf="accountService.currentUser$|async" >
                     <div class="sidenav">
                         <mat-expansion-panel [class.mat-elevation-z0]="true">
-                            <mat-expansion-panel-header>Candidates</mat-expansion-panel-header>
+                            <mat-expansion-panel-header>H.R.</mat-expansion-panel-header>
                             <mat-nav-list>
-                                <a mat-list-item routerLink="/accordionTest">
-                                    <span class="sidenav">accordion</span>
-                                </a>
                                 <a mat-list-item routerLink="/candidates/listing">
                                     <span class="sidenav">Candidate List</span>
                                 </a>
@@ -87,9 +84,17 @@
                                     matTooltip="CVs assessed and ready to refer to clients" >
                                     <span class="sidenav">CVs ready to refer</span>
                                 </a>
+                                <a mat-list-item routerLink="/candidates/cvsreferred" 
+                                    matTooltip="CVs referred and awaiting client decision" >
+                                    <span class="sidenav">CVs awaiting selections</span>
+                                </a>
                                 <a mat-list-item routerLink="/candidates/prospective"
                                     matTooltip="prospective candidates - downloaded from portals.  These are contacted to ascertain their interest in the recruitment" >
                                     <span class="sidenav">Prospective Candidates</span>
+                                </a>
+                                <a mat-list-item routerLink="/interviews"
+                                    matTooltip="interview list, create new interview schedule" >
+                                    <span class="sidenav">Intreviews</span>
                                 </a>
                                 <a mat-list-item routerLink="/accordionTest"
                                     matTooltip="test of accodation component" >
@@ -116,17 +121,17 @@
                                 <span class="sidenav">Customers</span>
                             </a>
                             <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
-                                <span>Messages</span>
+                                <span class="sidenav" >Messages</span>
                             </a>
                             <a mat-list-item routerLink="/administration/feedback" matTooltip="Listing of feedbacks from Customers, Candidates or Vendors" >
-                                <mat-icon>feedback</mat-icon><span>Feedbacks</span>
+                                <span class="sidenav">Feedbacks</span>
                             </a>
         
                             <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
-                                <mat-icon></mat-icon><span>Messages</span>
+                                <mat-icon></mat-icon><span class="sidenav">Messages</span>
                             </a>
                             <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
-                                <mat-icon></mat-icon><span>Authorities & Roles</span>
+                                <span class="sidenav">Authorities & Roles</span>
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
@@ -137,11 +142,13 @@
                             <a mat-list-item routerLink="/deployment"
                                 matTooltip="presents all pending deployment transactions for updates"
                             >
-                                <mat-icon>airplanemode_active</mat-icon><span>Active List of Deployments</span>
+                                <!--<mat-icon>airplanemode_active</mat-icon> -->
+                                <span>Active Deployments</span>
                             </a>
                             <a mat-list-item routerLink="/deployment/statuses" 
                                 matTooltip="deployment statuses">
-                                <mat-icon>subject</mat-icon><span>Active List of Deployments</span>
+                                <!--<mat-icon>subject</mat-icon> -->
+                                <span>Deployment Status</span>
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
@@ -166,13 +173,13 @@
                         <mat-expansion-panel-header>Import from Excel Sheet</mat-expansion-panel-header>
                         <mat-nav-list>
                             <a mat-list-item (click)="exportExcelProspectives()" matTooltip="reads from PROSPECTIVE CANDIDATES Excel Sheet and copies the data to database" >
-                                <mat-icon>excel</mat-icon><span>Excel to DB - Prospectives</span>
+                                <mat-icon>excel</mat-icon><span>Prospectives</span>
                             </a>
                             <a mat-list-item (click)="exportExcelCustomers()" matTooltip="reads from CUSTOMERS Excel Sheet and copies to DB" >
-                                <mat-icon>excel</mat-icon><span>Excel to DB - Customers</span>
+                                <mat-icon>excel</mat-icon><span>Customers</span>
                             </a>
                             <a mat-list-item (click)="exportExcelEmployees()" matTooltip="reads data from Employees Excel Sheet and copies to DB" >
-                                <mat-icon></mat-icon><span>Excel to DB - Employees</span>
+                                <mat-icon></mat-icon><span>Employees</span>
                             </a>
                             
                         </mat-nav-list>
@@ -202,22 +209,21 @@
        
     </mat-sidenav>
     
-    <mat-sidenav-content style="background-color: transparent !important;">
-        <router-outlet></router-outlet>
--->
-         <!--<div class="app-sidenav-content">-->
+    <mat-sidenav-content>
+        <router-outlet></router-outlet> 
+        <div class="app-sidenav-content">
                 <!--Components open here-->
-            <!--</div> -->
-    <!--
+                
+        </div>
+    
         </mat-sidenav-content>
-</mat-sidenav-container> 
-
--->
-
-<app-nav></app-nav>
+        </mat-sidenav-container> 
 
 
-<div style="margin-top: 80px;">
-    <router-outlet></router-outlet>
-</div>
+<!-- <app-nav></app-nav> -->
+
+
+<!--<div style="margin-top: 80px;">
+    <router-outlet></router-outlet> 
+</div> -->
 

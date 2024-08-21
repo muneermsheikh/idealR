@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user';
 import { ICVRefAndDeployDto } from '../_dtos/process/cvRefAndDeployDto';
@@ -105,6 +105,10 @@ export class DeployService {
     return this.http.put<boolean>(this.apiUrl + 'Deployment/depItem', deploy);
   }
 
+  uploadAttachmentForItem(model: any) {
+    return this.http.post<string>(this.apiUrl + 'FileUpload/uploadDepAttachment', model);
+  }
+
   insertDepItemsWithTravelBooked(depItemsWithBooking: IDepItemWithFlightDto[]) {
     return this.http.post<IDeploymentPendingDto[]>(this.apiUrl + 'Deployment/insertItemsWithFlight', depItemsWithBooking);
   }
@@ -190,6 +194,21 @@ export class DeployService {
 
   deleteDeployment(deployId: number) {
     return this.http.delete<boolean>(this.apiUrl + 'Deployment/dep/' + deployId);
+  }
+
+  downloadAttachment(fullpath: string) {
+    let params = new HttpParams();
+    params = params.append('fullpath', fullpath);
+
+    return this.http.get(this.apiUrl + 'FileUpload/downloadfile', {params, responseType: 'blob'});
+  }
+
+  deleteAttachment(fullpath: string) {
+    
+    let params = new HttpParams();
+    params = params.append('fullpath', fullpath);
+
+    return this.http.get<string>(this.apiUrl + 'FileUpload/deleteattachmentbyfullpath', {params});
   }
 
 }

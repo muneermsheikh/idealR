@@ -4,7 +4,6 @@ namespace api.Entities.HR
     {
         public int ProfessionId { get; set; }   
         public string ProfessionName { get; set; }
-        public ICollection<AssessmentStddQ> AssessmentStddQs { get; set; }
-     
+        public ICollection<AssessmentStddQ> AssessmentStddQs { get; set;}
     }
 }

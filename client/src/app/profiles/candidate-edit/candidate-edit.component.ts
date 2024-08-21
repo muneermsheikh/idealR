@@ -90,7 +90,7 @@ export class CandidateEditComponent implements OnInit {
     private fb: FormBuilder, 
     private activatedRoute: ActivatedRoute,
     private candidateService: CandidateService,
-    private router: Router,
+    private router: Router, private toastr: ToastrService,
     passwordElement: ElementRef,
     private qualService: QualificationService,
     private downloadService: FileService
@@ -137,7 +137,7 @@ export class CandidateEditComponent implements OnInit {
     this.registerForm = this.fb.group({
       id: [cv.id, Validators.required], 
       applicationNo: [cv.applicationNo],
-      gender: [cv.gender, Validators.required],
+      gender: [cv.gender, [Validators.required, Validators.maxLength(1)]],
       nationality: ['Indian'],
       firstName: [cv.firstName, Validators.required],
       secondName: [cv.secondName],
@@ -153,6 +153,7 @@ export class CandidateEditComponent implements OnInit {
 
       address: [cv.address],
       city: [cv.city, Validators.required],
+      country: [cv.country ?? 'India'],
       pin: [cv.pin],
       district: [cv.district],
       email: [cv.email, Validators.required],
@@ -161,7 +162,7 @@ export class CandidateEditComponent implements OnInit {
         cv.userPhones.map(x => (
           this.fb.group({
             id: x.id, candidateId: [x.candidateId],
-            mobileNo: [x.mobileNo, Validators.required],
+            mobileNo: [x.mobileNo, [Validators.required, Validators.maxLength(15), Validators.minLength(10)]],
             isMain: [x.isMain],
             remarks: [x.remarks],
             isValid: [x.isValid]
@@ -246,7 +247,7 @@ export class CandidateEditComponent implements OnInit {
   newUserPhone(): FormGroup {
     return this.fb.group({
       candidateId: this.candidate?.id,
-      mobileNo: ['', Validators.required],
+      mobileNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(15)]],
       isMain: false,
       remarks: ''
     })
@@ -512,33 +513,41 @@ export class CandidateEditComponent implements OnInit {
             }
           })
     }
-}
+  }
 
 
   uploadFinished = (event: any) => { 
     this.response = event; 
   }
 
-  download(index: number) {
-    var attachmentid = this.userAttachments.at(index).get('id')?.value;
-    if(attachmentid ===0) {
+  
+  downloadattachment(index: number) {
+    var attachment = this.userAttachments.at(index).value;
+    if(attachment.id ===0) {
       this.toastrService.warning('this item has no primary key value');
       return;
     }
-    
-    this.toastrService.info('downloading from api server');
-    this.downloadService.download(attachmentid).subscribe(x => {
-      next: () => 
-        {
-          this.toastrService.success('file downloaded successfully');
-          this.toastrService.success('downloaded successfully');
-        }
-      error: (error: any) => this.toastrService.error('failed to download the file', error)
+    var attachmentid=attachment.id;
+    var filenameWithExtn = attachment.name;
+
+    this.downloadService.download(attachmentid).subscribe({
+      next: (blob: Blob) => {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = filenameWithExtn;
+
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: (err: any) => this.toastr.error(err.error.details, 'Error while downloading')
     })
   }
+
 
   IsNewAttachment(index: number): boolean {
     var id = this.userAttachments.value.map((x:any) => x.id).findIndex((x:any) => x.id ===0);
     return id !== undefined;
   }
+  
 }

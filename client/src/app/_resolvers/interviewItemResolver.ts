@@ -1,11 +1,9 @@
 import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, ResolveFn } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { IInterviewItem } from "../shared/models/hr/interviewItem";
-import { InterviewService } from "../shared/services/hr/interview.service";
-import { candidatesMatchingParams } from "../shared/params/hr/candidatesMatchingParams";
-import { IInterviewItemDto } from "../shared/models/hr/interviewItemDto";
-
+import { IInterviewItemDto } from "../_models/hr/interviewItemDto";
+import { candidatesMatchingParams } from "../_models/params/hr/candidatesMatchingParams";
+import { InterviewService } from "../_services/hr/interview.service";
 
  export const InterviewItemResolver: ResolveFn<IInterviewItemDto[] | null> = (
     route: ActivatedRouteSnapshot,

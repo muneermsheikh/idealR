@@ -1,0 +1,23 @@
+<div *ngIf="interview">
+    <h4 style="display: inline-block;">Interview Schedule</h4>
+    <button type="button" class="btn fa fa-window-close fa-2x mx-5" routerLink="/interviews" style="color: aliceblue;" ></button>
+    <hr style="margin: 0; padding: 0; border-width: thick; border-color: beige;">
+    <label class="lbl w100 mx-2">Customer Name</label> 
+        <input type="text" name="customerName" [(ngModel)]="interview.customerName" class="stdd w250 mx-3">
+    <label class="lbl w75 mx-2">Order No</label> 
+        <input type="text" name="orderNo" [(ngModel)]="interview.orderNo" class="stdd w75 mx-3"> 
+    <label class="lbl w75 mx-2">Dated</label>
+        <div class="stdd w100">{{interview.orderDate | date: 'dd-MMM-yy'}}</div> 
+    <label class="lbl w75">From: </label>
+    <input name="interviewDateFrom" class="stdd w100" type="text" placeholder="Date From" [(ngModel)]="interview.interviewDateFrom" 
+        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+    <label class="lbl w75 mx-2">Upto:</label>
+    <input name="interviewDateUpto" class="stdd w100" type="text" placeholder="Date Upto" [(ngModel)]="interview.interviewDateUpto" 
+        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+
+    <div *ngFor="let intw of interview.interviewItems">
+        <app-edit-schedule
+            [interviewItem]="intw"
+        ></app-edit-schedule>
+    </div>
+</div>

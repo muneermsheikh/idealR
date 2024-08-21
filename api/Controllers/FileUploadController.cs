@@ -1,10 +1,16 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using api.DTOs.HR;
+using api.Entities.Admin;
+using api.Entities.Deployments;
 using api.Entities.HR;
 using api.Errors;
 using api.Extensions;
 using api.Interfaces;
 using api.Interfaces.Admin;
+using api.Interfaces.Deployments;
+using api.Interfaces.HR;
+using api.Params.HR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -18,8 +24,19 @@ namespace api.Controllers
         private readonly IEmployeeRepository _empRepo;
         private readonly ICandidateRepository _candRepo;
         private readonly ICustomerRepository _custRepo;
-        public FileUploadController(IEmployeeRepository empRepo, ICandidateRepository candRepo, ICustomerRepository custRepo)
+        private readonly IInterviewRepository _intervwRepo;
+        private readonly IDeploymentRepository _depRepo;
+
+
+        public FileUploadController(
+            IEmployeeRepository empRepo, 
+            ICandidateRepository candRepo, 
+            ICustomerRepository custRepo, 
+            IInterviewRepository intervwRepo,
+            IDeploymentRepository depRepo)
         {
+            _intervwRepo = intervwRepo;
+            _depRepo = depRepo;
             _custRepo = custRepo;
             _candRepo = candRepo;
             _empRepo = empRepo;
@@ -32,27 +49,20 @@ namespace api.Controllers
             //DirectoryInfo source = new DirectoryInfo(SourceDirectory);
 
             var attachment = await _candRepo.GetUserAttachmentById(attachmentid);
+            if(string.IsNullOrEmpty(attachment.Name)) return BadRequest(new ApiException(400, "File Not available", "Attachment File Name not present"));
             if (attachment==null) return NotFound(new ApiException(402, "Not Found","the requested record does not exist"));
-            if(string.IsNullOrEmpty(attachment.UploadedLocation)) return BadRequest(new ApiException(400, "Bad Request", "UploadedLocation not defined"));
+            var location = attachment.UploadedLocation;
+            if(string.IsNullOrEmpty(location)) location = "D:\\IdealR_\\idealR\\api\\Assets\\Images";
             
-            var ln = attachment.UploadedLocation.Length;
-            var FileName = attachment.UploadedLocation + attachment.Name;
-            /*var FileName = attachment.UploadedLocation[(ln - 6)..] == "Images" 
-                ? attachment.UploadedLocation + "\\" + attachment.Name 
-                : attachment.UploadedLocation + "\\" + "Assets\\Images\\" + attachment.Name ; */
-
-            //if(string.IsNullOrEmpty(FileName)) return BadRequest("No URL found in the attachment record");
-
-            if(!System.IO.File.Exists(FileName)) return NotFound("the File " + attachment.Name + " does not exist");
-
-            //var FileName = "D:\\User Profile\\My Documents\\comments on emigration act 2021.docx";
+            var FileName = location + "\\" + attachment.Name;
+            
+            if(!System.IO.File.Exists(FileName)) return BadRequest(new ApiException(400, "File not found", "the File " + attachment.Name + " does not exist"));
 
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(FileName, out var contentType))
             {
                 contentType = "application/octet-stream";
             }
-            //if (!File.Exists(FileName)) return false;
 
             var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
             var dto = File(bytes, contentType, Path.GetFileName(FileName));
@@ -60,23 +70,146 @@ namespace api.Controllers
             return dto;
         }
 
-     
-        /*[HttpGet("downloadprospectivefile/{prospectiveid:int}")]
-        public async Task<ActionResult> DownloadProspectiveFile(int prospectiveid)
+        [HttpGet("downloadfile")]
+        public async Task<ActionResult> DownloadFileWithName([FromQuery] FullPathParams fParams)
         {
-            var FileName = "D:\\User Profile\\My Documents\\comments on emigration act 2021.docx";
+            var fullpath = fParams.FullPath;
+            if(string.IsNullOrEmpty(fullpath)) return BadRequest(new ApiException(400, "Params not defined", "Params value not received"));
+
+            if(!System.IO.File.Exists(fullpath)) return BadRequest(new ApiException(400, "Not Found", fullpath + " not found"));
 
             var provider = new FileExtensionContentTypeProvider();
-            if (!provider.TryGetContentType(FileName, out var contentType))
+            if (!provider.TryGetContentType(fullpath, out var contentType))
             {
                 contentType = "application/octet-stream";
             }
-            //if (!File.Exists(FileName)) return false;
-
-            var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
-            return File(bytes, contentType, Path.GetFileName(FileName));
+            
+            var bytes = await System.IO.File.ReadAllBytesAsync(fullpath);
+            var dto = File(bytes, contentType, Path.GetFileName(fullpath));
+            
+            return dto;
         }
-        */
+     
+        [HttpGet("deleteattachmentbyfullpath")]
+        public async Task<ActionResult> DeleteAttachmentByPath([FromQuery] FullPathParams fParams)
+        {
+            var fullpath = fParams.FullPath;
+            if(string.IsNullOrEmpty(fullpath)) return BadRequest(new ApiException(400, "Params not defined", "Params value not received"));
+
+            if(!System.IO.File.Exists(fullpath)) return BadRequest(new ApiException(400, "Not Found", fullpath + " not found"));
+
+            var deleted = await _depRepo.DeleteDeploymentAttachment(fullpath);
+
+            if (!deleted) return BadRequest(new ApiException(400, "Bad Request", "Failed to delete the file"));
+
+            return Ok(true);
+                        
+        }
+        [HttpPost("interviewitem")]
+        public async Task<ActionResult<string>> UploadAndUpdateInterviewItem()
+        {
+
+            var folderName = Path.Combine("Assets", "InterviewerComments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
+
+            try
+            {
+                var modelData = JsonSerializer.Deserialize<IntervwItem>(Request.Form["data"],  
+                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+               
+                var memoryStream = new MemoryStream();
+
+                foreach (var file in files)
+                {
+                    if (file.Length==0) continue;
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    
+                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                    if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                    var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    file.CopyTo(stream);
+
+                    var cand = modelData.InterviewItemCandidates.ToList();
+                    foreach(var cnd in cand) {
+                        if(!string.IsNullOrEmpty(cnd.AttachmentFileNameWithPath) && cnd.AttachmentFileNameWithPath.Contains(fileName)) {
+                            cnd.AttachmentFileNameWithPath=fullPath;
+                            break;
+                        }
+                    }
+                    
+
+                }
+
+                var dtoErr = new InterviewItemWithErrDto();
+                if(modelData.Id==0) {
+                    dtoErr = await _intervwRepo.SaveNewInterviewItem(modelData);
+                } else {
+                    dtoErr = await _intervwRepo.EditInterviewItem(modelData);
+                }
+
+                if(!string.IsNullOrEmpty(dtoErr.Error)) {
+                    return BadRequest(new ApiException(400, "Bad Request", dtoErr.Error));
+                }
+               
+                return "";  //dtoErr.intervwItem;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+
+
+        }
+
+        [HttpPost("uploadDepAttachment")]
+        public async Task<ActionResult<string>> UploadDeploymentAttachment()
+        {
+            var folderName = Path.Combine("Assets", "DeploymentAttachments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
+
+            //try
+            //{
+                var modelData = JsonSerializer.Deserialize<DepItem>(Request.Form["data"],  
+                    new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+               
+                var memoryStream = new MemoryStream();
+
+                var file=files[0];
+
+                if (file.Length==0) return null;
+
+                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                
+                var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                using var stream = new FileStream(fullPath, FileMode.Create);
+                file.CopyTo(stream);
+
+                modelData.FullPath = fullPath;
+                var dtoErr = await _depRepo.EditDepItem(modelData);
+
+                if(!string.IsNullOrEmpty(dtoErr)) {
+                    return BadRequest(new ApiException(400, "Bad Request", dtoErr));
+                }
+               
+                return fullPath;
+           /* }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+            */
+        }
 
         [HttpPost("prospectiveXLS"), DisableRequestSizeLimit]
         public  async Task<ActionResult<string>> ConvertProspectiveData()
@@ -354,19 +487,6 @@ namespace api.Controllers
                 return BadRequest(new ApiException(400, "File(s) downloaded, but failed to save data to datanase"));
 
             return Ok();
-        }
-
-        private static string GetContentType(string path)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-                        
-            if (!provider.TryGetContentType(path, out contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-                
-            return contentType;
         }
 
     }

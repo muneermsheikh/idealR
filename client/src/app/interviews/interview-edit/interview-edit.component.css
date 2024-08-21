@@ -1,0 +1,28 @@
+.lbl {
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+}
+
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+}
+.dt {
+    display: inline-block;
+    font-size: smaller;
+    margin: 0 1px 0 1px;
+    vertical-align: top;
+}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width:125px;}
+.w150 {width:150px;}
+.w250 {width: 250px;}
+
+.red {color: red}

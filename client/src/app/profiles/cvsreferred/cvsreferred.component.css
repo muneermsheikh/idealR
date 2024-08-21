@@ -1,6 +1,7 @@
 .stdd {
     display: inline-block;
     vertical-align: top;
+    color:hsl(from color h s l)
 }
 
 .lbl {
@@ -10,11 +11,20 @@
     vertical-align: middle;
 }
 
+ .radio {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px 0 2px;
+    border-color: black;
+    width: 20px;
+    height: 1em;
+}
 .fMedium {font-size: medium;}
 .fSmall {font-size: small;}
 
 .b {font-weight: bold;}
 .w50 {width: 50px;}
+.w75 {width: 75px;}
 .w100 {width: 100px;}
 .w130 {width: 130px;}
 .w150 {width: 180px;}

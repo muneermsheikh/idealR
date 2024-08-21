@@ -16,6 +16,7 @@ namespace api.Interfaces.Deployments
         Task<string> EditDeployment (Dep dep);
         Task<string> EditDepItem (DepItem depItem);
         Task<string> DeleteDepItem (int deployItemId);
+        Task<bool> DeleteDeploymentAttachment(string fullPath);
         Task<string> DeleteDep(int depId);
         Task<ICollection<DeployStatus>> GetDeploymentStatusData();
         Task<ICollection<DeployStatusAndName>> GetDeploymentSeqAndStatus();

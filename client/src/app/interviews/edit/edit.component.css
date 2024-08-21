@@ -1,0 +1,43 @@
+.lbl {
+    display: inline-block;
+    font-size: small;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+}
+
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+}
+
+
+.stddC {
+    display: inline-block;
+    font-size: smaller;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+    color: darkblue;
+}
+
+.dt {
+    display: inline-block;
+    font-size: smaller;
+    margin: 0 1px 0 1px;
+    vertical-align: top;
+    width: 150px;
+    color: darkblue;
+}
+
+.w15 {width: 15px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width:125px;}
+.w135 {width: 135px;}
+.w150 {width:150px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}
+
+.red {color: red;}
+.green {color: green;}

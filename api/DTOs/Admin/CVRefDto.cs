@@ -18,10 +18,11 @@ namespace api.DTOs.Admin
         public int OrderItemId { get; set; }    
         public int SrNo {get; set;}
         public string ProfessionName { get; set; }
-        public string CategoryRef { get; set; }
+        public string CategoryRefAndName { get; set; }
         //public string PPNo {get; set;}
         public DateTime ReferredOn { get; set; }
         public string RefStatus { get; set; }
         public string SelectionStatus { get; set; }
+        public DateTime SelectionStatusDate {get; set;}
     }
 }

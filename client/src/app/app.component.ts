@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
   }
 
   exportExcelProspectives() {
-
+    this.router.navigateByUrl('/administration/excelConversion')
   }
 
   exportExcelCustomers() {

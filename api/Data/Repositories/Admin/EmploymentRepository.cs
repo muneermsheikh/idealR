@@ -182,7 +182,7 @@ namespace api.Data.Repositories.Admin
                .AsNoTracking()
                .SingleOrDefaultAsync() ?? throw new Exception("The Employment object does not exist in the database");
             
-            var offerAcceptChanged = string.IsNullOrEmpty(existingObj.OfferAccepted) || existingObj.OfferAccepted != model.OfferAccepted;
+            var offerAcceptChanged = string.IsNullOrEmpty(existingObj.ConclusionStatus) || existingObj.OfferAccepted != model.OfferAccepted;
 
             _context.Entry(existingObj).CurrentValues.SetValues(model);   //saves only the parent, not children
             _context.Entry(existingObj).State = EntityState.Modified; 
@@ -190,10 +190,10 @@ namespace api.Data.Repositories.Admin
             if (offerAcceptChanged) {
                 var postAcceptanceDto = new PostOfferAcceptanceDto
                 {
-                     ConclusionStatus = model.OfferAccepted ?? "", 
+                     ConclusionStatus = model.ConclusionStatus ?? "", 
                      Charges=model.Charges, 
                      SelectedOn=model.SelectedOn, 
-                     ConclusionDate= model.OfferAcceptanceConcludedOn, 
+                     ConclusionDate= model.OfferAcceptedOn, 
                      CVRefId=model.CvRefId
                 };
                 var postAcceptanceDtos = new List<PostOfferAcceptanceDto>{postAcceptanceDto};
@@ -222,8 +222,8 @@ namespace api.Data.Repositories.Admin
 
             foreach(var emp in ExistingEmps) {
                 var dto = dtos.FirstOrDefault(x => x.EmploymentId == emp.Id);
-                emp.OfferAccepted = dto.acceptedString;
-                emp.OfferAcceptanceConcludedOn = dto.ConclusionDate;
+                emp.OfferAccepted = dto.OfferAccepted;
+                emp.OfferAcceptedOn = dto.ConclusionDate;
                 emp.OfferConclusionRegisteredByUsername = Username;
 
                 _context.Entry(emp).State = EntityState.Modified;
@@ -231,7 +231,7 @@ namespace api.Data.Repositories.Admin
                 postOfferConclusionList.Add(new PostOfferAcceptanceDto {
                     Charges = emp.Charges,
                     ConclusionDate = dto.ConclusionDate,
-                    ConclusionStatus = dto.acceptedString,
+                    ConclusionStatus = dto.ConclusionStatus,
                     CVRefId = emp.CvRefId,
                     SelectedOn = emp.SelectedOn
                 });

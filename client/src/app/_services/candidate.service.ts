@@ -42,7 +42,8 @@ export class CandidateService {
     })
   }
   
-  async onClickLoadDocument() {
+  //async 
+  onClickLoadDocument() {
     // get a document from the Web API endpoint 'LoadDocument'
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
@@ -160,7 +161,7 @@ export class CandidateService {
   
   downloadAttachmentFile(attachmentid: number) {
     // get a document from the Web API endpoint 'LoadDocument'
-    return this.http.get<any>(this.apiUrl + 'fileupload/downloadattachmentfile/' + attachmentid);
+    return this.http.get(this.apiUrl + 'fileupload/downloadattachmentfile/' + attachmentid, {responseType: 'blob'});
   }
 
   updateAttachments(model: IUserAttachment) {
@@ -176,6 +177,10 @@ export class CandidateService {
 
   deleteAttachment(attachmentId: number) {
     return this.http.delete<boolean>(this.apiUrl + 'Candidate/userattachment/' + attachmentId);
+  }
+
+  deleteCV(cvid: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'Candidate/' + cvid);
   }
 
   setPhoto(model: IUserAttachment) {

@@ -2,8 +2,16 @@
     display: inline-block;
     vertical-align: top;
     padding-left: 5px;
-	display: inline-block;
 	margin-top: 5px;
+	color: aliceblue;
+}
+
+tab {
+	display: inline-block;
+    vertical-align: top;
+	margin: 0 2px 0 2px;
+	color: aliceblue;
+	background-color: gray;
 }
 
 .inputCheck {
@@ -68,7 +76,7 @@ input[type="radio"]:checked::before {
 
 .fSmaller {font-size: smaller;}
 
-.w15 {width: 15px;}
+.w25 {width: 25px;}
 .w30 {width: 30px;}
 .w50 {width: 50px;}
 .w75 {width: 75px;}

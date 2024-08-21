@@ -297,7 +297,7 @@ namespace api.Data
                 foreach(var item in dbData) 
                 {
                     var user = new AppUser{
-                        UserName = item.UserName,
+                        UserName = item.Username,
                         KnownAs = item.KnownAs,
                         Gender = item.Gender,
                         LastActive = DateTime.UtcNow,
@@ -387,7 +387,7 @@ namespace api.Data
                 if(result.Succeeded){
                     var roleresult=await userManager.AddToRoleAsync(user, "Candidate");
                     if(roleresult.Succeeded) {
-                        var dbObj = await context.Candidates.Where(x => x.UserName.ToLower()==user.UserName.ToLower())
+                        var dbObj = await context.Candidates.Where(x => x.Username.ToLower()==user.UserName.ToLower())
                             .FirstOrDefaultAsync();
                         if(dbObj != null) {
                             dbObj.AppUserId=user.Id;

@@ -1,4 +1,5 @@
 using api.DTOs;
+using api.DTOs.HR;
 using api.Entities.Identity;
 using api.Helpers;
 using api.Interfaces;
@@ -28,50 +29,32 @@ namespace api.Data.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<MemberDto>> GetMemberAsync(string username)
+        public async Task<ICollection<CVsMatchingProfAvailableDto>> GetMatchingCandidatesAvailable(int professionid)
         {
-            throw new NotImplementedException();
+            var query2 = await (from prof in _context.UserProfessions where prof.ProfessionId == professionid
+                    join cv in _context.Candidates on prof.CandidateId equals cv.Id where
+                        "!traveledcanceledselectedblacklisted".Contains(cv.Status.ToLower())
+                    join ph in _context.UserPhones on cv.Id equals ph.CandidateId where ph.IsValid
+                    orderby cv.ApplicationNo
+                    select new CVsMatchingProfAvailableDto {
+                        ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
+                        CandidateId = Convert.ToString(cv.Id), Gender=  cv.Gender, Checked = false, 
+                        ProfessionName = prof.ProfessionName, Source="Candidates", MobileNo=ph.MobileNo
+                    }).ToListAsync();
+
+            var query = await (from prosp in _context.ProspectiveCandidates where prosp.ProfessionId==professionid
+                select new CVsMatchingProfAvailableDto {
+                    CandidateId = prosp.PersonId, City = prosp.CurrentLocation, FullName = prosp.CandidateName,
+                    Gender = prosp.Gender, Checked=false, Source = "Prospectives", 
+                    ProfessionName=prosp.ProfessionName, MobileNo = prosp.PhoneNo
+                }).ToListAsync();
+            
+            foreach(var q in query) {
+                query2.Add(q);
+            }
+
+            return query2;
         }
-
-        public async Task<PagedList<MemberDto>> GetMembersAsync([FromQuery]UserParams userParams)
-        {
-                var query = _context.Users.AsQueryable();
-                //query = query.Where(x => x.UserName != userParams.CurrentUsername);
-                query = query.Where(x => x.Gender == userParams.Gender);
-                
-                if(userParams.MaxAge > 0) {
-                    var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
-                    query = query.Where(u => u.DateOfBirth >= minDob);
-                }
-
-                if(userParams.MinAge > 0) {
-                    var maxDob = DateTime.Today.AddYears(-userParams.MinAge);                   
-                    query = query.Where(u => u.DateOfBirth <= maxDob);
-                }
-
-                query = userParams.OrderBy switch
-                {
-                    "created" => query.OrderByDescending(x => x.Created),
-                    _ => query.OrderByDescending(x => x.LastActive)
-                };
-
-             
-                var paged = await PagedList<MemberDto>.CreateAsync(query.AsNoTracking()
-                    .ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
-                    userParams.PageNumber, userParams.PageSize);
-                return paged;
-        }
-
-        public async Task<ICollection<MemberDto>> GetMembersWithRoles()
-        {
-                var query = await _context.Users
-                    .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                    .OrderBy(x => x.UserName)
-                    .ToListAsync();
-
-                return query;
-        }
-
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
                 return await _context.Users.Where(x => x.Id == id)

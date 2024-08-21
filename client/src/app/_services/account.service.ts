@@ -17,6 +17,7 @@ export class AccountService {
   
   login(model: any) {
 
+    
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map((response: User) => {
         const user = response;
@@ -27,6 +28,7 @@ export class AccountService {
         }
       })
     )
+    
   }
 
   register(model: any) {

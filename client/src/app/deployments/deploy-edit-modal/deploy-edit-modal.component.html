@@ -1,8 +1,8 @@
 <div class="modal-header my-0" *ngIf="dep">
-    <h6>Edit Deployment records</h6>
+    <h4>Edit Deployment records</h4>
     <button class="btn fa fa-save fa-2x" style="margin-left: 200px;"
     title="edit emp data" (click)="updateDeployment()" ></button>
-    <button class="btn fa fa-window-close pull-right" title="Close" (click)="close()" ></button>
+    <button class="btn fa fa-window-close fa-2x pull-right my-0" title="Close" (click)="close()" ></button>
 </div>
 
 <div class="modal-body my-0" *ngIf="dep" >
@@ -23,17 +23,17 @@
         <div class="stdd w250">{{dep.currentStatus}}</div>
 
         <hr class="my-0">
-        <label class="stdd w110 b vMiddle">Date</label> 
+        <label class="stdd w90 b vMiddle">Date</label> 
         <label class="stdd w200 b vMiddle">Process Name</label> 
         <label class="stdd w200 b vMiddle">Next Process</label> 
-        <label class="stdd w110 b vMiddle">Next Process<br>Estimated Dt</label>
+        <label class="stdd w90 b vMiddle">Next Process<br>Estimated Dt</label>
         <button class="btn fa fa-plus pull-right" (click)="addDepItem()" ></button>
         
         <div formArrayName="depItems">
             <div *ngFor="let item of depItems.controls; let i=index;">
                 <div [formGroupName]="i">
 
-                    <input class="stdd w100" type="text" placeholder="Selected On" 
+                    <input class="stdd w90" type="text" placeholder="Selected On" 
                         formControlName="transactionDate" bsDatepicker 
                         [bsValue]="bsValueDate" 
                         [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
@@ -60,11 +60,13 @@
                     ></ng-select>
                     
                         
-                    <input class="stdd w110" type="text" placeholder="Selected On" 
+                    <input class="stdd w90" type="text" placeholder="Selected On" 
                         formControlName="nextSequenceDate" bsDatepicker 
                         [bsValue]="bsValueDate" 
                         [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-                    
+
+                    <input type="text" formControlName="fullPath" style="font-size: smaller;" class="stdd w50">
+                    <button type="button" class="btn fa fa-download" (click)="download(i)" title="download the attachment" ></button>
                     <button class="btn w25 fa fa-trash fa-sm red" (click)="removeDepItem(i)" ></button>
                 </div>
             </div>

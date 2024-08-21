@@ -37,6 +37,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectAssociatesModalComponent } from './modals/select-associates-modal/select-associates-modal.component';
 import { InputModalComponent } from './modals/input-modal/input-modal.component';
 import { DateInputRangeModalComponent } from './modals/date-input-range-modal/date-input-range-modal.component';
+import { CandidatesAvailableModalComponent } from './modals/candidates-available-modal/candidates-available-modal.component';
+import { DisplayTextModalComponent } from './modals/display-text-modal/display-text-modal.component';
 
 
 @NgModule({
@@ -63,6 +65,8 @@ import { DateInputRangeModalComponent } from './modals/date-input-range-modal/da
     SelectAssociatesModalComponent,
     InputModalComponent,
     DateInputRangeModalComponent,
+    CandidatesAvailableModalComponent,
+    DisplayTextModalComponent,
   
         
   ],

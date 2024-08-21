@@ -44,8 +44,10 @@ export class CallRecordsEditModalComponent implements OnInit {
   InitializeForm(call: ICallRecord) {
 
     this.form = this.fb.group({
-      id: call.id,  categoryRef: call.categoryRef, personId: call.personId, personName: call.personName,
-      personType: call.personType, username: call.username, status: call.status, statusDate: call.statusDate, email: call.Email, phoneNo: call.phoneNo,
+      id: call.id,  categoryRef: call.categoryRef, 
+      personId: call.personId, personName: call.personName,
+      personType: call.personType, username: call.username, 
+      status: call.status, statusDate: call.statusDate, email: call.Email, phoneNo: call.phoneNo,
       subject: call.subject, concludedOn: call.concludedOn,
       
       callRecordItems: this.fb.array(

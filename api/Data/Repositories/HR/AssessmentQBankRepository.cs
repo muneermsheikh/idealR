@@ -21,15 +21,15 @@ namespace api.Data.Repositories.HR
             _context = context;
         }
 
-        public async Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQBankByOrderItemId(int orderitemid)
+        public async Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQBankByOrderItemId(int orderitemid)
         {
-            var query = await (from assessment in _context.orderItemAssessments 
+            var query = await (from assessment in _context.OrderAssessmentItems 
                     where assessment.OrderItemId == orderitemid 
-                join qBank in _context.OrderItemAssessmentQs 
-                    on assessment.Id equals qBank.OrderItemAssessmentId
-                select new OrderItemAssessmentQ {
+                join qBank in _context.OrderAssessmentItemQs 
+                    on assessment.Id equals qBank.OrderAssessmentItemId
+                select new OrderAssessmentItemQ {
                     Id = assessment.Id,  MaxPoints = qBank.MaxPoints, IsMandatory = qBank.IsMandatory,
-                    OrderItemAssessmentId = qBank.OrderItemAssessmentId, Question = qBank.Question,
+                    OrderAssessmentItemId = qBank.OrderAssessmentItemId, Question = qBank.Question,
                     QuestionNo = qBank.QuestionNo, Subject = qBank.Subject
                 }).ToListAsync();
 

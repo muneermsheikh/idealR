@@ -33,9 +33,12 @@
         </div>
         
         <br>
-        <input class="stdd d-flex align-items-center" title="click to choose an excel file containing the prospective data" type="file" id="file" (change)="onProspectiveFileInputChange($event)" >
-        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file to database" (click)="exportProspectiveFile()" ></button>
-        <button class="stdd btn fa fa-window-close" title="close this prospective file input" (click)="closeProspectiveFileInput()" ></button>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onProspectiveFileInputChange($event)"
+            title="click to choose an excel file containing the prospective data"  >
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file to database" 
+            (click)="exportProspectiveFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this prospective file input" 
+            (click)="closeProspectiveFileInput()" ></button>
     </div>
 
 

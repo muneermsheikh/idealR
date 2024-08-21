@@ -1,0 +1,11 @@
+<div *ngIf="interview">
+    <div class="stdd w100">{{interview.orderNo}}</div>
+    <div class="stdd w100">{{interview.orderDate | date: 'ddMMMyy'}}</div>
+    <div class="stdd w200">{{interview.customerName}}</div>
+    <div class="stdd w200">{{interview.interviewVenues}}</div>
+    <div class="stdd w100">{{interview.interviewDateFrom | date: 'dd-MMM'}}</div>
+    <div class="stdd w100">{{interview.interviewDateUpto | date: 'dd-MMM'}}</div>
+    <div class="stdd w100">{{interview.interviewStatus}}</div>
+    <button class="btn fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" ></button>
+    <button class="btn fa fa-trash red" (click)="deleteClicked()"></button>
+</div>

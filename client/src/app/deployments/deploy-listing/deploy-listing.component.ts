@@ -21,6 +21,7 @@ import { ICandidateFlight } from 'src/app/_models/process/candidateFlight';
 import { FlightDetailModalComponent } from '../flight-detail-modal/flight-detail-modal.component';
 import { ICandidateFlightData } from 'src/app/_models/process/candidateFlightData';
 import { IDeploymentStatus } from 'src/app/_models/masters/deployStatus';
+import { DepAttachmentModalComponent } from '../dep-attachment-modal/dep-attachment-modal.component';
 
 @Component({
   selector: 'app-deploy-listing',
@@ -62,7 +63,8 @@ export class DeployListingComponent implements OnInit{
       {name:'Order No', value:'orderNo'},  
       {name:'Category Name', value:'categoryName'},  
       {name:'Date Selected', value:'selectedon'},  
-      {name:'Employer Name', value:'customerName'}
+      {name:'Employer Name', value:'customerName'},
+      {name:'Status', value:'status'}
   ]
 
   sortOptions = [
@@ -265,6 +267,32 @@ export class DeployListingComponent implements OnInit{
       })
   }
 
+  
+ editAttachmentModal(dep: any, item: IDeploymentPendingDto){
+
+  if(dep === null) {
+    this.toastr.warning('No Deployment object returned from the modal form');
+    return;
+  }  
+
+  const config = {
+      class: 'modal-dialog-centered modal-lg',
+      initialState: {
+        dep,
+        depStatusAndNames: this.statusNameAndSeq,
+        candidateName: item.applicationNo + '-' + item.candidateName,
+        categoryRef: item.categoryName,
+        companyName: item.customerName
+      }
+    }
+
+    this.bsModalRef = this.bsModalService.show(DepAttachmentModalComponent, config);
+
+    this.bsModalRef.content.updateDep.subscribe({
+      next: () => this.toastr.info('attachment process completed', 'Process Over')
+    })
+    
+}
 
   verifyNextSequence(existingSeq: number, nextSeqProposed: number, ecnr: boolean): string {
     
@@ -379,7 +407,8 @@ export class DeployListingComponent implements OnInit{
     this.deploysSelected.forEach(x => {
         var depitem: IDepItemToAddDto = {
           id: 0, depId: x.depId, transactionDate : new Date(),
-          sequence : this.sequenceSelected, nextSequence: 0};
+          sequence : this.sequenceSelected, nextSequence: 0,
+          fullPath: ''};
 
         depItemsToInsert.push(depitem);
     })
@@ -417,7 +446,8 @@ export class DeployListingComponent implements OnInit{
 
               depItemsToInsert.forEach(x => {
                 let depitem: IDepItem = {id: 0, depId: x.depId, sequence: x.sequence, 
-                    nextSequence: x.nextSequence, transactionDate: x.transactionDate, nextSequenceDate: new Date()};
+                    nextSequence: x.nextSequence, transactionDate: x.transactionDate, 
+                    nextSequenceDate: new Date(), fullPath: x.fullPath};
                                   
                 let candFlightData: ICandidateFlight = {
                   id: 0, depId: x.depId, depItemId: 0, cvRefId: 0, applicationNo: 0, candidateName: '', customerName: '', customerCity: '', 

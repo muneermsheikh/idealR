@@ -26,7 +26,7 @@ namespace api.Helpers
     {
         public AutomapperProfile()
         {
-            CreateMap<MemberUpdateDto, AppUser>();
+            /*CreateMap<MemberUpdateDto, AppUser>();
             CreateMap<AppUser, MemberDto>()
                 .ForMember(dest => dest.photoUrl, 
                     opt => opt.MapFrom(src => src.photos.FirstOrDefault(x => x.IsMain).Url))
@@ -35,7 +35,7 @@ namespace api.Helpers
                 
             CreateMap<Photo, PhotoDto>();
             
-            CreateMap<MemberUpdateDto, MemberDto>();    //dimmy
+            CreateMap<MemberUpdateDto, MemberDto>(); */    //dimmy
             
             CreateMap<RegisterDto, AppUser>();
             CreateMap<Message, MessageDto>()
@@ -76,8 +76,10 @@ namespace api.Helpers
             CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
 
             CreateMap<CVRefDto, CVRefDto>();
+
+            CreateMap<Intervw, InterviewBriefDto>();
             
-            CreateMap<OrderItemAssessmentQ, CandidateAssessmentItem>();
+            CreateMap<OrderAssessmentItemQ, CandidateAssessmentItem>();
 
             CreateMap<CandidateAssessment, CandidateAssessedDto>();
             CreateMap<OrderAssessmentItemQ, CandidateAssessmentItem>();

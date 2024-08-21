@@ -26,6 +26,7 @@ export interface ICandidate {
      city: string;
      pin: string;
      district: string;
+     country: string;
      nationality: string;
      email: string;
      companyId: number;
@@ -65,6 +66,7 @@ export class Candidate implements ICandidate {
      city= '';
      pin= '';
      district= '';
+     country='India';
      nationality= '';
      email= '';
      companyId= 0;

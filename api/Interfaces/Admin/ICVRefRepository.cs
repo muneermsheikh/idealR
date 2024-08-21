@@ -11,8 +11,8 @@ namespace api.Interfaces.Admin
     public interface ICVRefRepository
     {
         Task<PagedList<CVRefDto>> GetCVReferrals(CVRefParams refParams);
-        Task<PagedList<SelPendingDto>> GetCVReferralsPending(CVRefParams refParams);
-        Task<PagedList<CVRefDto>> GetPendingReferrals(CVRefParams refParams);
+        //Task<PagedList<SelPendingDto>> GetCVReferralsPending(CVRefParams refParams);
+        //Task<PagedList<CVRefDto>> GetPendingReferrals(CVRefParams refParams);
         Task<CVRefWithDepDto> GetCVRefWithDeploys(int CVRefId);
         Task<MessageWithError> MakeReferrals (ICollection<int> CVReviewIds, string Username);
         Task<bool> EditReferral (CVRef cvref);

@@ -116,6 +116,7 @@ namespace api.Data.Repositories
                     join item in _context.OrderItems on asses.OrderItemId equals item.Id
                     join cat in _context.Professions on item.ProfessionId equals cat.Id
                     join order in _context.Orders on item.OrderId equals order.Id
+                    orderby cv.ApplicationNo
                     select new cvsAvailableDto {
                         CandAssessmentId = asses.Id, ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
                         CandidateId = cv.Id, AssessedOn = asses.AssessedOn, Gender=  (cv.Gender == "female" ? "F": "M").ToUpper(),
@@ -163,6 +164,7 @@ namespace api.Data.Repositories
                         }
 
                         if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
+                        query = query.OrderBy(x => x.ApplicationNo);
                     }
                 
                 var paged = await PagedList<CandidateBriefDto>.CreateAsync(query.AsNoTracking()
@@ -193,7 +195,8 @@ namespace api.Data.Repositories
                 .Include(x => x.UserProfessions)
                 .Include(x => x.UserExperiences)
                 .Include(x => x.UserPhones)
-                .Include(x => x.UserQualifications)
+                .Include(x => x.UserAttachments)
+                //.Include(x => x.UserQualifications)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .SingleOrDefault();
@@ -308,6 +311,8 @@ namespace api.Data.Repositories
                 }
             }
 
+            /*
+            
             //edit UserQualifications
             foreach (var existingItem in existingObject.UserQualifications.ToList())
             {
@@ -317,7 +322,7 @@ namespace api.Data.Repositories
                     _context.Entry(existingItem).State = EntityState.Deleted; 
                 }
             }
-
+        
             //items in current object - either updated or new items
             foreach(var newItem in newObject.UserQualifications)
             {
@@ -339,8 +344,49 @@ namespace api.Data.Repositories
                     _context.Entry(itemToInsert).State = EntityState.Added;
                 }
             }
-
+            */
             
+            //userAttachments
+            foreach (var existingItem in existingObject.UserAttachments.ToList())
+            {
+                if(!newObject.UserAttachments.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    //delete  any files previously uploaded
+                    var location = existingItem.UploadedLocation;
+                    if(string.IsNullOrEmpty(location)) location = "D:\\IdealR_\\idealR\\api\\Assets\\Images";
+                    var FileToDelete = location + "\\" + existingItem.Name;
+                    if(File.Exists(FileToDelete)) File.Delete(FileToDelete);
+
+                    _context.UserAttachments.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted; 
+                }
+            }
+
+            foreach(var newItem in newObject.UserAttachments)
+            {
+                var existingItem = existingObject.UserAttachments?
+                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                if(existingItem != null)    //update navigation record
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                } else {    //insert new navigation record
+                    var itemToInsert = new UserAttachment
+                    {
+                        CandidateId = existingObject.Id,
+                        Name = newObject.ApplicationNo + "-" + newItem.Name,
+                        UploadedbyUserName = newItem.UploadedbyUserName,
+                        UploadedLocation = newItem.UploadedLocation,
+                        UploadedOn = newItem.UploadedOn,
+                        AttachmentType = newItem.AttachmentType,
+                        AppUserId = newItem.AppUserId
+                    };
+
+                    existingObject.UserAttachments.Add(itemToInsert);
+                    _context.Entry(itemToInsert).State = EntityState.Added;
+                }
+            }
+
             _context.Entry(existingObject).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0;
@@ -366,7 +412,7 @@ namespace api.Data.Repositories
                 var coa = new COA{
                      AccountClass = "R", AccountType = "B", 
                      AccountName = cand.ApplicationNo + "-" + cand.FullName,
-                     Divn = "Candidate"
+                     Divn = "B"
                 };
 
                 _context.COAs.Add(coa);

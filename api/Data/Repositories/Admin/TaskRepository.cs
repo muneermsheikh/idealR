@@ -114,7 +114,7 @@ namespace api.Data.Repositories.Admin
 
             var oBriefItems = await (from o in _context.Orders where o.Id == orderid 
                 join i in _context.OrderItems on o.Id equals i.OrderId
-                join aq in _context.orderItemAssessments on i.Id equals aq.OrderItemId into assessQDesigned 
+                join aq in _context.OrderAssessmentItems on i.Id equals aq.OrderItemId into assessQDesigned 
                 from aqDesigned in assessQDesigned.DefaultIfEmpty()
                 select new OrderItemForwardDto{
                         Id = o.Id, OrderItemId = i.Id, //RequireInternalReview = i.RequireInternalReview,
@@ -271,7 +271,7 @@ namespace api.Data.Repositories.Admin
 
         public async Task<PagedList<TaskInBriefDto>> GetPagedList(TaskParams taskParams)
         {
-            var query = _context.Tasks.AsQueryable();
+            var query = _context.Tasks.OrderByDescending(x => x.TaskDate).AsQueryable();
 
             if(!string.IsNullOrEmpty(taskParams.AssignedToUserName) 
                 && !string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
@@ -290,6 +290,7 @@ namespace api.Data.Repositories.Admin
             if(taskParams.candidateId != 0) query = query.Where(x => x.CandidateId == taskParams.candidateId);
             if(taskParams.TaskDate.Year > 2000) query = query.Where(x => x.TaskDate == taskParams.TaskDate);
                         
+            
             var paged = await PagedList<TaskInBriefDto>.CreateAsync(query.AsNoTracking()
                 .ProjectTo<TaskInBriefDto>(_mapper.ConfigurationProvider),
                 taskParams.PageNumber, taskParams.PageSize);

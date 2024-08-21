@@ -34,6 +34,7 @@ namespace api.Extensions
                     };
                 });
             
+            
             services.AddAuthorization(opt => {
                 opt.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
                 opt.AddPolicy("HRMPolicy", policy => policy.RequireRole("HR Manager", "HR Supervisor", "HR Executive", "Admin", "Admin Manager"));
@@ -50,9 +51,9 @@ namespace api.Extensions
                 opt.AddPolicy("CashierPolicy", policy => policy.RequireRole("Cashier"));
                 opt.AddPolicy("ProcessPolicy", policy => policy.RequireRole("Document Controller-Processing", "Processing Manager", "Process Supervisor", "Admin"));
                 opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("OrderForward"));
-                opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
-                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
-            });
+                //opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
+                opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Customer Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
+            }); 
 
             return services;
         }

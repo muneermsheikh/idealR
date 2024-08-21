@@ -332,7 +332,7 @@ namespace api.Data.Repositories.Admin
                             Subject = "followup acceptance", PhoneNo = cand.UserPhones.Where(x => x.IsMain && x.IsValid)
                                 .Select(x => x.MobileNo).FirstOrDefault(),
                             Email = cand.Email, Status = "Not Started", StatusDate = _today, CreatedOn = _today,
-                            Username = cand.UserName, ConcludedOn = null, Source=cand.Source ?? ""
+                            Username = cand.Username, ConcludedOn = null, Source=cand.Source ?? ""
                     }).FirstOrDefaultAsync();
                     
                     break;

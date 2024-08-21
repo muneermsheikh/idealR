@@ -314,7 +314,7 @@ namespace api.Controllers
                }
                catch (Exception ex)
                {
-                    return BadRequest(new ApiException(500, "Internal server error", ex.Message));
+                    return BadRequest(new ApiException(500, "Internal server error in Finance Controller", ex.Message));
                }
           }
   

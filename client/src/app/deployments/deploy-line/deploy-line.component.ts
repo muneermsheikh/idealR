@@ -16,7 +16,7 @@ export class DeployLineComponent {
   @Output() deleteDepEvent = new EventEmitter<number>();
   @Output() selectedEvent = new EventEmitter<IDeploymentPendingDto>();
   @Output() showTicket = new EventEmitter<number>();    //emit the CVRefId, to allow calling program to display the ticket
- // @Input() sequence: Observable<number>=of(0);
+  @Output() editAttachmentEvent = new EventEmitter<IDep>();
 
   constructor(private service: DeployService, private toastr: ToastrService) { }
 
@@ -54,6 +54,18 @@ export class DeployLineComponent {
 
   selectedClicked() {
       this.selectedEvent.emit(this.dep)
+  }
+
+  editAttachment() {
+    if(this.dep) {
+      this.service.getDeploymentWithItems(this.dep.depId).subscribe({
+        next: (response: IDep) => {
+          if(response) {
+            this.editAttachmentEvent.emit(response);
+          } 
+        }
+      })
+    }
   }
   
 }

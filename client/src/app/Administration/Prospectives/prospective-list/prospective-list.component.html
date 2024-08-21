@@ -13,9 +13,9 @@
 
      
     <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" class="btn fa-solid fa-find fa-2x mx-2"></button>
+    <button (click)="onSearch()" title="search the text entered" class="btn fa fa-search fa-2x mx-2" style="color: aliceblue;"></button>
 
-    <button (click)="onReset()" class="btn fa fa-refresh fa-2x mx-2"></button>
+    <button (click)="onReset()" class="btn fa fa-refresh fa-2x mx-2" style="color: aliceblue;"></button>
     
     <label class="lbl w100 mx-2" title="The paged list that will retreive records based upon the status you select" >Choose Status</label>
         <ng-select class="stdd"
@@ -27,9 +27,9 @@
             clearAllText="Clear"
             [(ngModel)]="pParams.statusClass"
     ></ng-select>
-    <button class="btn fa fa-filter fa-2x" title="filters the records based upon the status selected" 
-        (click)="setParameters()" ></button>
-    <button class="btn fa fa-window-close fa-2x pull-right" title="go back" routerLink="/candidates" ></button>
+    <button class="btn fa fa-filter fa-2x" style="color: aliceblue;" 
+        title="filters the records based upon the status selected" (click)="setParameters()" ></button>
+    <button class="btn fa fa-window-close fa-2x mx-5" style="color: aliceblue;" title="go back" routerLink="/" ></button>
 </div>
 
 <div class="form-inline">

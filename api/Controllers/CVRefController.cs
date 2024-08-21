@@ -95,7 +95,7 @@ namespace api.Controllers
           {
                //cvrefParams.RefStatus = "Referred";
 
-               var pendings = await _cvrefRepo.GetCVReferralsPending(cvrefParams);
+               var pendings = await _cvrefRepo.GetCVReferrals(cvrefParams);
 
                if (pendings==null && pendings.Count == 0) return NotFound(new ApiException(402, "No CVs pending for forwarding to customers"));
                

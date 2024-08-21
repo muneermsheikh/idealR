@@ -6,6 +6,7 @@ export interface IDepItem
     sequence: number;
     nextSequence: number;
     nextSequenceDate: Date;
+    fullPath: string;
 }
 
 export class DepItem implements IDepItem
@@ -16,4 +17,5 @@ export class DepItem implements IDepItem
     sequence = 0;
     nextSequence = 0;
     nextSequenceDate = new Date();
+    fullPath = "";
 }

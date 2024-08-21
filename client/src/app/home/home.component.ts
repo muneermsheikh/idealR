@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit{
   constructor(public accountService: AccountService, private router: Router){}
 
   ngOnInit(): void {
-    this.router.navigateByUrl('/tasks/loggedInUserTasks');
+    //this.router.navigateByUrl('/tasks/loggedInUserTasks')
   }
 
   registerToggle() {

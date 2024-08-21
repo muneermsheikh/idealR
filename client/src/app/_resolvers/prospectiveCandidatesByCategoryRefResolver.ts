@@ -1,11 +1,11 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn } from "@angular/router";
-import { IPagination } from "../shared/models/pagination";
-import { IProspectiveCandidate } from "../shared/models/hr/prospectiveCandidate";
-import { prospectiveCandidateParams } from "../shared/params/hr/prospectiveCandidateParams";
-import { ProspectiveService } from "../shared/services/hr/prospective.service";
+import { IProspectiveCandidate } from "../_models/hr/prospectiveCandidate";
+import { prospectiveCandidateParams } from "../_models/params/hr/prospectiveCandidateParams";
+import { ProspectiveService } from "../_services/hr/prospective.service";
+import { Pagination } from "../_models/pagination";
 
-export const ProspectiveCandidatesByCategoryRefResolver: ResolveFn<IPagination<IProspectiveCandidate[]> | undefined | null> = (
+export const ProspectiveCandidatesByCategoryRefResolver: ResolveFn<IProspectiveCandidate[] | undefined | null> = (
     route: ActivatedRouteSnapshot,
   ) => {
         var routeid = route.paramMap.get('categoryRef');    
@@ -16,5 +16,5 @@ export const ProspectiveCandidatesByCategoryRefResolver: ResolveFn<IPagination<I
         pParams.categoryRef=routeid!;
         pParams.status = status!;
         inject(ProspectiveService).setParams(pParams);
-        return inject(ProspectiveService).getProspectiveCandidates(false);
+        return inject(ProspectiveService).getProspectiveCandidates(pParams);
   };

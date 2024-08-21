@@ -29,7 +29,7 @@ namespace api.Middleware
 
                 var response = _env.IsDevelopment()
                 ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
-                : new ApiException(context.Response.StatusCode, ex.Message,"Internal Server Error");
+                : new ApiException(context.Response.StatusCode, ex.Message,"Internal Server Error caught in Exception Middleware");
 
                 var options = new JsonSerializerOptions{PropertyNamingPolicy=JsonNamingPolicy.CamelCase};
                 

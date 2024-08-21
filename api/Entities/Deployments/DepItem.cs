@@ -6,12 +6,12 @@ namespace api.Entities.Deployments
         {
         }
 
-
         public int DepId { get; set; }
         public DateTime TransactionDate { get; set; }   
         public int Sequence { get; set; }
         public int NextSequence { get; set; }
         public DateTime NextSequenceDate { get; set; }
+        public string FullPath { get; set; }
         //public Dep Dep { get; set; }
     }
 }

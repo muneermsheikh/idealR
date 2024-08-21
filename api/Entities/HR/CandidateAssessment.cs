@@ -8,14 +8,14 @@ namespace api.Entities.HR
     {
         [Required]
         public int OrderItemId { get; set; }
+        public int CandidateId {get; set;}
         public string CustomerName { get; set; }
         public string CategoryRefAndName { get; set; }
-        public DateTime OrderDate { get; set; }
-        public int CandidateId {get; set;}
         public DateTime AssessedOn { get; set; }
+        public int AssessedByEmployeeId { get; set; }
         public string AssessedByEmployeeName {get; set;}
         [Required]
-        public string RequireInternalReview {get; set;}
+        public bool RequireInternalReview {get; set;}
         public int ChecklistHRId {get; set;}
         [Required]
         public string AssessResult { get; set; } = "Not Assessed";

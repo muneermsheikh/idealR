@@ -27,7 +27,7 @@ namespace api.Data
         public DbSet<Employee> Employees {get; set;}
         public DbSet<Message> Messages {get; set;}
         //public DbSet<UserLike> UserLikes {get; set;}
-        public DbSet<ContactResult> contactResults {get; set;}  
+        //public DbSet<ContactResult> contactResults {get; set;}  
 
         public DbSet<CustomerFeedback> CustomerFeedbacks {get; set;}
         public DbSet<FeedbackItem> FeedbackItems {get; set;}
@@ -54,11 +54,10 @@ namespace api.Data
         public DbSet<Order> Orders {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
         public DbSet<OrderAssessment> OrderAssessments {get; set;}
-        public DbSet<OrderItemAssessment> orderItemAssessments {get; set;}
-        public DbSet<OrderItemAssessmentQ> OrderItemAssessmentQs {get; set;}
+        //public DbSet<OrderAssessmentItem> rderAssessmentItems {get; set;}
+        public DbSet<OrderAssessmentItemQ> OrderAssessmentItemQs {get; set;}
 
         public DbSet<OrderAssessmentItem> OrderAssessmentItems {get; set;}
-        public DbSet<OrderAssessmentItemQ> OrderAssessmentItemQs {get; set;}
         public DbSet<AcknowledgeToClient> AckanowledgeToClients {get; set;}
         public DbSet<Remuneration> Remunerations {get; set;}
         public DbSet<FlightDetail> FlightDetails {get; set;}
@@ -95,6 +94,15 @@ namespace api.Data
         public DbSet<UserPhone> UserPhones {get; set;}
         public DbSet<UserProfession> UserProfessions {get;set;}
         public DbSet<UserQualification> UserQualifications {get; set;}
+
+        //interviews
+        public DbSet<Interview> Interviews {get; set;}
+        public DbSet<InterviewItem> InterviewItems {get; set;}
+       
+        public DbSet<Intervw> Intervws {get; set;}
+        public DbSet<IntervwItem> IntervwItems {get; set;}
+        public DbSet<IntervwItemCandidate> IntervwItemCandidates{get; set;}
+        //public DbSet<IntervwCandAttachment> IntervwCandAttachments {get; set;}
 
         //Master
         public DbSet<CategoryAssessmentQBank> CategoryAssessmentQBanks {get;set;}
@@ -154,11 +162,23 @@ namespace api.Data
             builder.Entity<Profession>().HasIndex(x => x.ProfessionName).IsUnique();
             builder.Entity<Industry>().HasIndex(x => x.IndustryName).IsUnique();
             builder.Entity<Qualification>().HasIndex(x => x.QualificationName).IsUnique();
-            builder.Entity<ContactResult>().HasIndex(x => x.Status).IsUnique();
+            //builder.Entity<ContactResult>().HasIndex(x => x.Status).IsUnique();
             
-            builder.Entity<CVRef>().HasOne(o => o.Process);
+            builder.Entity<CVRef>().HasMany(o => o.Deps);
             builder.Entity<CVRef>().HasIndex(i => new {i.OrderItemId, i.CandidateId}).IsUnique();
-            
+
+            //interviews
+            builder.Entity<Interview>().HasMany(o => o.InterviewItems);
+            builder.Entity<Interview>().HasIndex(x => x.OrderId).IsUnique();
+            builder.Entity<InterviewItem>().HasIndex(x => x.OrderItemId).IsUnique();
+
+            builder.Entity<Intervw>().HasMany(o => o.InterviewItems);
+            builder.Entity<Intervw>().HasIndex(o => o.OrderId).IsUnique();
+            builder.Entity<IntervwItem>().HasMany(o => o.InterviewItemCandidates);
+            builder.Entity<IntervwItem>().HasIndex(x => x.OrderItemId).IsUnique();
+            builder.Entity<IntervwItemCandidate>().HasIndex(x => new{x.CandidateId, x.InterviewItemId})
+                .HasFilter("CandidateId <> 0").IsUnique();
+            //builder.Entity<IntervwCandAttachment>().HasIndex(x => new {x.CandidateId, x.FileName}).IsUnique();
             //builder.Entity<AgencySpecialty>().HasIndex(i => new {i.CustomerId, i.IndustryId, i.ProfessionId}).IsUnique();
             
             builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne().OnDelete(DeleteBehavior.Cascade);

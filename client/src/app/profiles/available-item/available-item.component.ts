@@ -48,7 +48,8 @@ export class AvailableItemComponent implements OnInit {
     this.downloadEvent.emit(id);
   }
 
-  async onClickLoadDocument(cvid: number) {
+  //async 
+  onClickLoadDocument(cvid: number) {
     // get a document from the Web API endpoint 'LoadDocument'
     this.msgEvent.emit(cvid);
   }

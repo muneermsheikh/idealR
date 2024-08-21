@@ -1,0 +1,40 @@
+
+<pagination *ngIf="pagination !== undefined"
+    class="stdd"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+
+<label class="stdd" style="width: 250px; margin-left: 15px; text-align: right;">Enter Order No to generate new schedule</label>
+<input type="text" title="enter order number to get the interview data" 
+    class="stdd form-control w100" style="margin-left: 20px;" [(ngModel)]="orderNoToGet">
+
+<button type="button" (click)="getInterviewR()" class="mx-5 fa fa-search fa-2x"></button>
+<button type="button" (click)="onReset()" class="fa fa-refresh fa-2x mx-2" ></button>
+<button type="button" routerLink="/" class="fa fa-window-close fa-2x" ></button>
+
+
+<br><label class="stdd w100">Order No</label>
+<label class="lbl w100">Dated</label>
+<label class="lbl w200">Customer</label>
+<label class="lbl w200">Interview Venues</label>
+<label class="lbl w100">Date From</label>
+<label class="lbl w100">Date Upto</label>
+<label class="lbl w100">Interview Status</label>
+
+<div *ngIf="interviews.length===0" class="my-2">
+    No interview schedule on record
+</div>
+<div *ngFor="let intervw of interviews">
+    <app-interview-line
+        [interview]="intervw"
+        (editEvent)="interviewEdit($event)"
+        (deleteEvent)="interviewDelete($event)"
+    ></app-interview-line>
+</div>

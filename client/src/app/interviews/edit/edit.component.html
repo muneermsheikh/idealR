@@ -1,0 +1,126 @@
+
+<div *ngIf="interview" style="margin-left: 5px;">
+    <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+        <h4 class="stdd">Interview Schedule</h4>
+        <hr style="margin: 0; padding: 0; border-width: thick; border-color: beige;">
+        <label class="lbl w75 mx-2">Customer Name</label> 
+            <input type="text" name="customerName" [(ngModel)]="interview.customerName" class="stdd w250 mx-3">
+        <label class="lbl w75 mx-2">Order No</label> 
+            <input type="text" name="orderNo" [(ngModel)]="interview.orderNo" class="stdd w75 mx-3"> 
+        <label class="lbl w75 mx-2">Dated</label>
+            <div class="stdd w100">{{interview.orderDate | date: 'dd-MMM-yy'}}</div> 
+        <label class="lbl w75">From: </label>
+        <input name="interviewDateFrom" class="stdd w100" type="text" placeholder="Date From" [(ngModel)]="interview.interviewDateFrom" 
+            bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <label class="lbl w75 mx-2">Upto:</label>
+        <input name="interviewDateUpto" class="stdd w100" type="text" placeholder="Date Upto" [(ngModel)]="interview.interviewDateUpto" 
+            bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <button class="btn fa fa-save btn-success" (click)="update()" ></button>
+        <button class="btn fa fa-window-close fa-2x mx-5" style="color: aliceblue; vertical-align: top;" routerLink="/interviews" ></button>
+        
+        <div *ngFor="let item of interview.interviewItems">
+            <label class="lbl w100">Category:</label> 
+                <div name="professionName" class="stdd w150">{{item.professionName}}</div>
+            <label class="lbl w100">Interview Mode:</label>
+                <app-text-input name="interviewMode" [label]="'Interview Mode'" 
+                    [(ngModel)]="item.interviewMode" class="stdd w100" ></app-text-input>
+            
+            <label class="lbl w100">Venue:</label>
+                <app-text-input name="interviewVenue" [label]="'Venue'" 
+                    [(ngModel)]="item.interviewVenue" class="stdd w150" ></app-text-input>
+            
+            <label class="lbl w100">Interiewer:</label>
+                <app-text-input name="interviewerName" [label]="'Interviewer Name'" 
+                    [(ngModel)]="item.interviewerName" class="stdd w150" ></app-text-input>
+            
+            <button class="btn fa fa-users w15" style="color: aliceblue;"  (click)="getMatchingCVs(item)"
+                title="gets candidates available and matching this profession.  Sources from candidates as well as prospetive candidates"></button>
+            
+            <div *ngIf="item.interviewItemCandidates?.length === 0">No Candidates assigned yet</div>
+            
+            <div *ngIf="item.interviewItemCandidates?.length !== 0" style="margin-left: 50px; border-bottom-color: aqua;">
+                <label class="lbl w75">Appl No</label>
+                <label class="lbl w150">Candidate Name</label>
+                <label class="lbl w150">Scheduled to start at</label>
+                <label class="lbl w150">Reported at</label>
+                <label class="lbl w150">interviewed At</label>
+                <label class="lbl w125">Interview Status</label>
+                <label class="lbl w150">Interviewer Remarks</label>
+                <label class="lbl w150">total assigned: {{item.interviewItemCandidates.length}}</label>
+                <div *ngFor="let cand of item.interviewItemCandidates">
+                    <app-text-input name="applicationNo" [label]="'App No'" [(ngModel)]="cand.applicationNo" (click)="addItemCandidate(item.id)" class="stddC w75" ></app-text-input>
+                    <app-text-input name="candidateName" class="stddC w150" [(ngModel)]="cand.candidateName" [label]="'Candidate Name'"></app-text-input>
+                    <input name="scheduledFrom" aria-label="Sch From" class="dt" type="datetime-local" [(ngModel)]="cand.scheduledFrom" />
+                    <!-- <span class="invalid-feedback">
+                        <span *ngIf="lastNameVar.errors?.required">
+                          Please enter your last name.
+                        </span>
+                        <span *ngIf="lastNameVar.errors?.maxlength">
+                          The last name must be less than 50 characters.
+                        </span>
+                      </span>
+                    -->
+                    <input name="reportedAt" aria-label="reported at" class="dt" type="datetime-local" [(ngModel)]="cand.reportedAt" 
+                        (dblclick)="updateReportedAt(cand)"/>
+                    <input name="interviewedAt" aria-label="interviewed at" class="dt" type="datetime-local" [(ngModel)]="cand.interviewedAt" (dblclick)="updateInterviewedAt(cand)" />
+                    <app-text-input name="interviewStatus" class="stddC w125" [(ngModel)]="cand.interviewStatus" [label]="'Interview Status'" ></app-text-input>
+                    <app-text-input name="interviewerRemarks" class="stddC w300" [(ngModel)]="cand.interviewerRemarks" [label]="'Interview Remarks'"></app-text-input>
+                    <button class="btn fa fa-trash red" (click)="deleteItemCandidate(item.orderItemId, cand.candidateId)" ></button>
+                </div>
+                <hr class="my-0" style="border-width: thick;">
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<!--
+<div *ngIf="interview" style="margin-left: 5px;">
+    <form [formGroup]="form" >
+
+        <h4 class="stdd">Interview Schedule</h4>
+        <div class="stdd w250 mx-3"><strong>Customer:</strong>{{interview.customerName}}</div>
+        <div class="stdd w250 mx-3"><strong>Order No.:</strong> {{interview.orderNo}} <strong>dated:</strong> {{interview.orderDate | date: 'dd-MMM-yy'}}</div>
+        <label class="lbl w75">From:</label>
+    -->
+        <!-- <input class="stdd w100" type="text" placeholder="Date From" formControlName="interviewDateFrom"
+            bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <label class="lbl w75 mx-2">Upto: </label>
+        <input class="stdd w100" type="text" placeholder="Date Upto" formControlName="interviewDateUpto"
+            bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"> -->
+
+        <!--<button class="btn fa fa-window-close fa-2x mx-5" routerLink="/interviews" 
+            style="vertical-align: top; color:aliceblue ;" title="Close" ></button>
+        <br><label class="lbl w150">category</label>
+        <label class="lbl w75">mode</label>
+        
+        <div formArrayName="interviewItems" class="my-2">
+            <div *ngFor="let item of interviewItems().controls; let itemIndex=index; ">
+                <div [formGroupName]="itemIndex">
+
+                    <app-text-input formControlName="professionName" class="stdd w150" ></app-text-input>
+                    <app-text-input [label]="'Interview Mode'" formControlName="interviewMode" class="stdd w75" ></app-text-input>
+
+                    <div formArrayName="interviewItemCandidates" class="my-2">
+                        <div *ngFor="let cand of interviewItemCandidates(itemIndex).controls; let candIndex=index">
+                            <div [formGroupName]="candIndex">
+                                <app-text-input class="stdd w75" formControlName="applicationNo" [label]="'App No'"></app-text-input>
+                                <app-text-input class="stdd w150" formControlName="candidateName" [label]="'Candidate Name'"></app-text-input>
+                                <input aria-label="Sch From" class="dt w125" type="datetime-local" formControlName="scheduledFrom" />
+                                <input aria-label="Sch Upto" class="dt w125" type="datetime-local" formControlName="scheduledUpto" />
+                                <input aria-label="reported at" class="dt w125" type="datetime-local" formControlName="reportedAt" />
+                                <input aria-label="interviewed at" class="dt w125" type="datetime-local" formControlName="interviewedAt" />
+                                <app-text-input class="stdd w125" formControlName="interviewStatus" [label]="'Interview Status'"></app-text-input>
+                                <app-text-input class="stdd w150" formControlName="interviewRemarks" [label]="'Interview Remarks'"></app-text-input>
+                                <button class="btn fa fa-trash red" (click)="removeInterviewItemCandidate(itemIndex, candIndex)" ></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                    
+            </div>
+        </div>
+    </form>
+</div>
+-->

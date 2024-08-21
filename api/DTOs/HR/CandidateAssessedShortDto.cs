@@ -12,7 +12,8 @@ namespace api.DTOs.HR
         public string CandidateName { get; set; }
         public DateTime AssessedOn { get; set; }
         public string AssessedByUsername {get; set;}
-        public string RequireInternalReview {get; set;}
+        //public string RequireInternalReview {get; set;}
+        public bool RequireInternalReview {get; set;}
         public int ChecklistHRId {get; set;}
         public string AssessResult { get; set; } 
         public OrderItemBriefDto orderItemBriefDto {get; set;}

@@ -40,20 +40,25 @@
           <!-- <button class="w30 fa fa-pencil" style="display: inline-block;" type="button" routerLink="/candidate/edit/{{cv.id}}" ></button> -->
           <!-- <button class="stdd fSmall fa fa-eye" type="button" routerLink="/candidate/view/{{cv.id}}" ></button> -->
      <button (click)="editCV(cv.id)" type="button" 
-          class="btn btn-outline-secondary fa fa-solid fa-pencil w50" type="button" 
+          class="btn btn-outline-secondary fa fa-solid fa-pencil w15" type="button" 
           title="edit the candidate profile">
      </button>
 
      <button (click)="cvAssessClicked(cv)" type="button" 
-          class="btn btn-outline-secondary mx-2 fa fa-solid fa-balance-scale w50" type="button" 
+          class="btn btn-outline-secondary mx-2 fa fa-solid fa-balance-scale w15" type="button" 
           title="Assess the CV">
      </button>
 
      <button (click)="download(cv.id)" type="button" 
-          class="btn btn-outline-secondary fa fa-regular fa-trash w50" type="button" 
+          class="btn fa fa-download w15" type="button" 
           title="download the CV">
      </button>
      
+     <button (click)="deleteCV(cv.id)" type="button" 
+          class="btn fa fa-download w15" type="button" 
+          title="download the CV">
+     </button>
+
      <!-- <app-cv-assess *ngIf="currentId===item.id" [header]="header" [candidateAssessment]="assessment" ></app-cv-assess> -->
 </div>
 

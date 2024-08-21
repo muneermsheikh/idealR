@@ -393,7 +393,7 @@ namespace api.Data.Repositories
 
         public async Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid)
         {
-            var obj = await (from assessment in  _context.orderItemAssessments 
+            var obj = await (from assessment in  _context.OrderAssessmentItems 
                     where assessment.OrderItemId == orderitemid
                 join Q in _context.OrderAssessmentItemQs on assessment.Id equals Q.OrderAssessmentItemId
                 select Q).ToListAsync();

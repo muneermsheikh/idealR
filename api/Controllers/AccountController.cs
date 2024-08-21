@@ -30,12 +30,12 @@ namespace api.Controllers
             if(user==null) return Unauthorized("invalid credentials");
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            if(!result) return Unauthorized("invalid credentials1");
+            if(!result) return Unauthorized("invalid credentials");
             
             var usr = new UserDto {
                 UserName = user.UserName,
                 Token = await _tokenService.CreateToken(user),
-                photoUrl = user.photos.FirstOrDefault(x => x.IsMain)?.Url,
+                //photoUrl = user.photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
@@ -67,9 +67,10 @@ namespace api.Controllers
         }
         */
 
-        private async Task<bool> userExists (string username)
+        /*private async Task<bool> userExists (string username)
         {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
+        */
     }
 }

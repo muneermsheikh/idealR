@@ -12,16 +12,16 @@
     <div class="stdd w50">{{dep.orderNo}}</div>
     <div class="stdd w150">{{dep.categoryName}} </div>
     <!-- <div class="stdd w75">{{dep.referredOn | date: 'ddMMMyy'}}</div> -->
-    <div class="stdd w110" >{{dep.referredOn | date: 'dd-MMM'}}</div> 
-    <div class="stdd w110" >{{dep.selectedOn | date: 'dd-MMM'}}</div> 
+    <div class="stdd w75" >{{dep.referredOn | date: 'dd-MMM'}}</div> 
+    <div class="stdd w75" >{{dep.selectedOn | date: 'dd-MMM'}}</div> 
 
-    <div class="stdd w150 cursorPointer" (click)="showFlight()" 
+    <div class="stdd w125 cursorPointer" (click)="showFlight()" 
         title="if ticket booked, press this to display flight details" >{{dep.deploySequence | depStatus}}</div>
     
-    <div class="stdd w150">{{dep.nextSequence | depStatus}}</div>
+    <div class="stdd w125">{{dep.nextSequence | depStatus}}</div>
     <div class="stdd w75">{{dep.nextStageDate | date :'dd-MMM'}}</div>
 
-    <button class="btn fa fa-pencil fa-sm" (click)="editDep()" title="edit Deployment Transactions.  This option also provides for addition of a transaction"></button>
-    <!-- <button class="btn fa fa-trash fa-sm red" (click)="deleteDep()" title="Delete this deployment, including all its Transactions"></button> -->
-    
+    <button class="btn fa fa-pencil fa-sm"  style="color: aliceblue;" (click)="editDep()" title="edit Deployment Transactions.  This option also provides for addition of a transaction"></button>
+    <button class="btn fa fa-upload"  style="color: aliceblue;" (click)="editAttachment()" 
+        title="upload/download attachments."></button>
 </div>

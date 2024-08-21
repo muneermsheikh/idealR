@@ -1,19 +1,21 @@
 .stdd {
 	display: inline-block;
-	margin-top: 1px;
-	margin-left: 1px;
-	margin-right: 1px;
+	margin: 1px 0 1px 0;
 	vertical-align: top;
+	word-wrap: break-word;
 	font-size: small;
-	word-break: normal;
-	font-weight: bold;
  }
 
+ .fSmall {font-size: small;}
+ .fSmaller {font-size: smaller;}
+
+ .w20 {width: 20px;}
  .w30 {width: 30px;}
  .w50 {width: 50px;}
- .w75{width: 75px;}
+ .w75{width: 75px; font-size: smaller !important;}
  .w100 {width: 100px;}
  .w110 {width: 110px;}
+ .w125 {width: 125px;}
  .w150 {width: 150px;}
  .w175{width: 175px;}
 .w200 {width: 200px;}

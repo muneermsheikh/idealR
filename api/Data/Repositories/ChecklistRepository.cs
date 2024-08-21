@@ -136,7 +136,7 @@ namespace api.Data.Repositories
 
             var hrTask = new ChecklistHR{
                 CandidateId=candidateId, OrderItemId= orderItemId, 
-                UserName = Username, CheckedOn = _today, 
+                Username = Username, CheckedOn = _today, 
                 Charges = charges,
                 ChecklistHRItems = itemList, HrExecUsername = hrexecusername };
             
@@ -281,7 +281,7 @@ namespace api.Data.Repositories
                     Id = checklist.Id, ApplicationNo = candidate.ApplicationNo, OrderItemId = orderItemId,
                     CandidateName = candidate.FullName, CandidateId = candidate.Id,
                     //OrderRef =  order.OrderNo + "-" + orderitem.SrNo + "-" + orderitem.Profession.ProfessionName,
-                    UserName = checklist.UserName, 
+                    UserName = checklist.Username, 
                     CheckedOn = checklist.CheckedOn, 
                     HrExecUsername = rvwitem.HrExecUsername,
                     //UserComments = checklist.UserComments,

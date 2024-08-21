@@ -15,6 +15,8 @@ export interface ICVRefDto
      srNo: number;
      refStatus: string;
      selectionStatus: string;
+     selectionStatusDate: Date;
+     categoryRefAndName: string;
 
      professionName: string;
      cvRefId: number;
@@ -40,7 +42,9 @@ export class CVRefDto implements ICVRefDto
      srNo = 0;
      refStatus = '';
      selectionStatus = '';
+     selectionStatusDate = new Date();
      professionName = '';
+     categoryRefAndName = '';
      
      cvRefId = 0;
      categoryRef = '';

@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { IOrderBriefDto } from 'src/app/_dtos/admin/orderBriefDto';
 import { OrderForwardToHR } from 'src/app/_models/orders/orderForwardToHR';
 import { OrderForwardService } from 'src/app/_services/admin/order-forward.service';
+import { InterviewService } from 'src/app/_services/hr/interview.service';
 
 @Component({
   selector: 'app-order-item',
@@ -22,10 +23,10 @@ export class OrderItemComponent implements OnInit{
   @Output() cvreferredEvent = new EventEmitter<number>();
   @Output() orderAssessmentItemEvent = new EventEmitter<number>();
   @Output() selectionEvent=new EventEmitter<number>();
-
+  
   menuTopLeftPosition =  {x: 0, y: 0}
 
-  constructor(private orderFwdService: OrderForwardService, private toastr: ToastrService) { }
+  constructor(private orderFwdService: OrderForwardService, private toastr: ToastrService, private intervwService: InterviewService) { }
 
   ngOnInit(): void {
     
@@ -83,4 +84,6 @@ export class OrderItemComponent implements OnInit{
   cvReferredClicked() {
     this.cvreferredEvent.emit(this.order?.id);
   }
+
+  
 }

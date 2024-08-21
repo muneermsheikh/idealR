@@ -1,0 +1,13 @@
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w200 {width: 200px;}
+
+.stdd {
+    display: inline-block;
+    margin: 0 2px 0 2px;
+    font-size: small;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.red {color: red}

@@ -12,7 +12,7 @@ namespace api.DTOs.HR
         public string CategoryRef { get; set; }
         public int OrderId { get; set; }
         public string ProfessionName { get; set; }
-        public string  RequireInternalReview { get; set; }
+        public bool  RequireInternalReview { get; set; }
         public string AssessedByUsername { get; set; }
         public string AssessResult { get; set; }
         public DateTime AssessedOn { get; set; }

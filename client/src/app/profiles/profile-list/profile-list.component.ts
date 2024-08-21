@@ -180,9 +180,6 @@ export class ProfileListComponent implements OnInit{
     prms.pageNumber=1;
     this.service.setCVParams(prms);
     this.getCVs();
-
-
-
   }
 
   private getOpenOrderItemsArray(): IOrderItemBriefDto[] {
@@ -200,7 +197,20 @@ export class ProfileListComponent implements OnInit{
     return aitems;
   }
 
-  downloadFileEvent(candidateid: any) {
+  downloadFileEvent(candidateid: any, candidatename: string) {
+
+    return this.downloadservice.downloadFile(candidateid).subscribe({
+      next: (blob: Blob) => {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = 'filename.ext'
+        
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+      }
+      , error: (err: any) => this.toastr.error(err.error.details, 'Error encountered while downloading the file ')
+    })
     return this.downloadservice.downloadFile(candidateid).subscribe(() => {
       this.toastr.success('document downloaded');
     }, (error: any) => {
@@ -251,6 +261,19 @@ export class ProfileListComponent implements OnInit{
 
   cvAssessClicked() {
     this.navigateByUrl('/hr/assessments', this.selectedCVs, false);
+  }
+
+  cvDeleteClicked(id: any) {
+    this.service.deleteCV(id).subscribe({
+      next: (response: boolean) => {
+        if(response) {
+          this.toastr.success('CV Deleted', 'Success')
+        } else {
+          this.toastr.warning('Failed to delete the CV', 'Failure')
+        }
+      },
+      error: (err: any) => this.toastr.error(err.error.details, 'Error in deleting the CV')
+    })
   }
 
 }

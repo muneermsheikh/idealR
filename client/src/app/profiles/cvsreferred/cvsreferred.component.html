@@ -13,11 +13,16 @@
 ></pagination>
 
 <div class="stdd" *ngIf="cvs">
-    <input (keyup.enter)="onSearch()" type="text" title="enter name or app nos, separated by commma" 
-        class="stdd form-control w300" style="margin-left: 20px;" #search placeholder="Search">
-    <button type="button" (click)="onSearch()" class="stdd btn fa fa-find mx-1"></button>
-    <button type="button" (click)="onReset()" class="stdd mx-1 fa-arrows-rotate fa-2x" 
-        style="font-size: small;">Reset</button>
+    <label class="stdd w75 fSmall b" style="text-align: right; vertical-align: middle !important;">Order#</label>
+    <input type="text" title="enter Order No to search"  [(ngModel)]="cvParams.orderNo"
+        class="stdd form-control fSmall w75" style="margin-left: 20px;" #search placeholder="Order No">
+    <button type="button" (click)="onSearch()" class="stdd btn fa fa-search mx-1"></button>
+    
+    <input type="radio" value="" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">all Status
+    <input type="radio" value="Selected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Selected
+    <input type="radio" value="Rejected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Rejected
+    <button type="button" (click)="onReset()" class="stdd mx-1 fa fa-refresh fa-2x" ></button>
+    
     <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
         (click)="close()" ></button>
 </div>

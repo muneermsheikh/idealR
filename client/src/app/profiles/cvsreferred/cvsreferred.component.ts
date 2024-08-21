@@ -9,7 +9,6 @@ import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
 import { User } from 'src/app/_models/user';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
 import { CvrefService } from 'src/app/_services/hr/cvref.service';
-import { getParamsNamesOfCVRefParams } from 'src/app/_services/paginationHelper';
 import { UploadDownloadService } from 'src/app/_services/upload-download.service';
 import { CvAssessModalComponent } from 'src/app/hr/cv-assess-modal/cv-assess-modal.component';
 
@@ -60,9 +59,9 @@ export class CvsreferredComponent implements OnInit{
 
   ngOnInit(): void {
     if(this.id!==0) this.cvParams.orderId=this.id;
-    if(this.id! !== 0) this.cvParams.cVRefStatus='';
+    //if(this.id! !== 0) this.cvParams.cVRefStatus='';
     this.loadCVsReferred();
-    if(this.cvs.length > 0) this.paramNames=getParamsNamesOfCVRefParams(this.cvParams);
+    //if(this.cvs.length > 0) this.paramNames=getPaginationHeadersCVRefParams(this.cvParams);
   }
 
   loadCVsReferred() {
@@ -84,16 +83,16 @@ export class CvsreferredComponent implements OnInit{
   onSearch() {
     const params = this.service.getParams() ?? new CVRefParams();
     
-    params.search = this.searchTerm!.nativeElement.value;
+    if(this.searchTerm?.nativeElement.value !== '') params.orderNo = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
     this.service.setParams(params);
     this.loadCVsReferred();
   }
 
   onReset() {
-    this.searchTerm!.nativeElement.value = '';
-    this.cvParams = new CVRefParams();
+    this.cvParams.pageNumber=1;
     this.service.setParams(this.cvParams);
+
     this.loadCVsReferred();
   }
   

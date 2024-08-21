@@ -6,12 +6,11 @@ export interface IInterviewBrief{
      orderNo: number;
      orderDate: Date;
      customerId: number;
-     companyName: string;
-     interviewVenue: string;
+     customerName: string;
+     interviewVenues: string;
      interviewDateFrom: Date;
      interviewDateUpto: Date;
      interviewStatus: string;
-     concludingRemarks: string;
      //interviewItems: IInterviewItem[];
 }
 

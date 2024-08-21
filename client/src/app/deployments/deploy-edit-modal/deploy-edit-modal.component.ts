@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -67,10 +67,11 @@ export class DeployEditModalComponent implements OnInit {
             this.fb.group({
                 id: x.id,
                 depId: x.depId,
-                transactionDate: x.transactionDate,
-                sequence: x.sequence,
+                transactionDate: [x.transactionDate, Validators.required],
+                sequence: [x.sequence, Validators.required],
                 nextSequence: x.nextSequence,
-                nextSequenceDate: x.nextSequenceDate
+                nextSequenceDate: x.nextSequenceDate,
+                fullPath: x.fullPath
             })
           ))
         )
@@ -86,10 +87,11 @@ export class DeployEditModalComponent implements OnInit {
     return this.fb.group({
       id: 0,
       depId: this.form.get("id")?.value,
-      transactionDate: new Date(),
-      sequence: this.depItems.value[this.depItems.length].map((x:any) => x.nextSequence),
+      transactionDate: [new Date(), Validators.required],
+      sequence: [this.depItems.value[this.depItems.length].map((x:any) => x.nextSequence), Validators.required],
       nextSequence: this.service.getNextSequence(this.depItems.value[this.depItems.length].map((x:any) => x.nextSequence), this.ecnr),
-      nextSequenceDate: this.service.getNextStageDate(this.depItems.value[this.depItems.length].map((x:any) => x.nextSequence))
+      nextSequenceDate: this.service.getNextStageDate(this.depItems.value[this.depItems.length].map((x:any) => x.nextSequence)),
+      fullPath: ''
     })
     
 
@@ -125,6 +127,34 @@ export class DeployEditModalComponent implements OnInit {
 
   }
 
+  download(index: number) {
+    var depitem = this.depItems.at(index).value;
+    var filename = depitem.fullPath;
+    if(filename==='') {
+      this.toastr.warning('this transaction has no file uploaded', 'Invalid selection');
+      return;
+    }
+
+    this.service.downloadAttachment(filename).subscribe({
+      next: (blob: Blob) => {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        var i=filename.lastIndexOf('\\');
+        if(i !== -1) {
+          a.download = filename.substring(i+1);
+        } else {
+          a.download = 'filename.ext'
+        }
+        
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+      }
+      , error: (err: any) => this.toastr.error(err.error.details, 'Error encountered while downloading the file ')
+    })
+
+  }
+
   /* TODO - IMPLEMENT THIS
   deploySequenceChanged(sequence: number, newSequence: number, ecnr: boolean) {
 
@@ -136,4 +166,6 @@ export class DeployEditModalComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
+
+ 
 }

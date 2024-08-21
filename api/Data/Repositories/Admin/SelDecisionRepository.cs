@@ -176,8 +176,8 @@ namespace api.Data.Repositories.Admin
             //there might be an AppUser record for the candidate, but the candidate object does not have the AppUserId info
             var newAppUser = new AppUser();
 
-            if(!string.IsNullOrEmpty(candidateObj.UserName)) {
-                newAppUser = await _userManager.FindByNameAsync(candidateObj.UserName);
+            if(!string.IsNullOrEmpty(candidateObj.Username)) {
+                newAppUser = await _userManager.FindByNameAsync(candidateObj.Username);
             }
             
             if(newAppUser.Id == 0) {        //appuser not found
@@ -251,7 +251,7 @@ namespace api.Data.Repositories.Admin
             if (emp!=null) {
                 _context.Employments.Remove(emp);
                 _context.Entry(emp).State = EntityState.Deleted;
-                offerAcceptedOn = emp.OfferAcceptanceConcludedOn;
+                offerAcceptedOn = emp.OfferAcceptedOn;
             }
             
             //2 - update CVRef.SelectionStatus
@@ -622,7 +622,7 @@ namespace api.Data.Repositories.Admin
         }
         public async Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams)
         {
-             var query = _context.Employments.Where(x => x.OfferAccepted == null || x.OfferAccepted == "").AsQueryable();
+             var query = _context.Employments.Where(x => !x.OfferAccepted).AsQueryable();
              
              var paged = await PagedList<EmploymentsNotConcludedDto>.CreateAsync(
                 query.AsNoTracking()
