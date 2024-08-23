@@ -5,7 +5,6 @@ using api.Helpers;
 using api.Interfaces.Finance;
 using api.Params.Finance;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Finance
@@ -110,7 +109,7 @@ namespace api.Data.Repositories.Finance
                 if(!string.IsNullOrEmpty(coaParams.AccountName)) query = query.Where(x => x.AccountName.ToLower() == coaParams.AccountName.ToLower());
                 if(!string.IsNullOrEmpty(coaParams.AccountType)) query = query.Where(x => x.AccountName.ToLower() == coaParams.AccountType.ToLower());
                 if(!string.IsNullOrEmpty(coaParams.Divn)) query = query.Where(x => x.Divn.ToLower() == coaParams.Divn.ToLower());
-                if(!string.IsNullOrEmpty(coaParams.DivisionToExclude)) query = query.Where(x => x.Divn.ToLower() != coaParams.DivisionToExclude.ToLower());
+                if(!string.IsNullOrEmpty(coaParams.DivisionToExclude)) query = query.Where(x => x.Divn != coaParams.DivisionToExclude);
             }
              
             var paged = await PagedList<COA>.CreateAsync(
@@ -118,7 +117,6 @@ namespace api.Data.Repositories.Finance
                 //.ProjectTo<COA>(_mapper.ConfigurationProvider)
                 , coaParams.PageNumber, coaParams.PageSize);
     
-
             return paged;
         }
 
@@ -146,20 +144,22 @@ namespace api.Data.Repositories.Finance
 
         public async Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams pParams)
         {
-            var cashandbank = await _context.COAs.Where(x => x.AccountClass=="CashAndBank").Select(x => x.Id).ToListAsync();
+            var cashandbank = await _context.COAs.Where(x => x.AccountClass=="banks" || x.AccountClass=="personalaccount").Select(x => x.Id).ToListAsync();
 
 			var qry = (from e in _context.VoucherEntries
-				where e.DrEntryApproved != true && e.Dr > 0  && cashandbank.Contains(e.CoaId)
+				where (e.DrEntryApproved != true || e.DrEntryApproved == null) && e.Dr > 0  && cashandbank.Contains(e.CoaId)
 				join v in _context.FinanceVouchers on e.FinanceVoucherId equals v.Id
 				select new PendingDebitApprovalDto{
                      DrAccountId=e.CoaId, DrAccountName=e.AccountName, DrAmount=e.Dr, VoucherEntryId=e.Id, 
-                     DrEntryApproved = e.DrEntryApproved, Id=e.FinanceVoucherId,
+                     DrEntryApproved = Convert.ToBoolean(e.DrEntryApproved), Id=e.FinanceVoucherId,
                      VoucherDated = DateOnly.FromDateTime(v.VoucherDated), VoucherNo=v.VoucherNo
                 }).AsQueryable();
 			
             if(!string.IsNullOrEmpty(pParams.AccountName)) 
                 qry = qry.Where(x => x.DrAccountName.ToLower() == pParams.AccountName.ToLower());
            
+            var test = await qry.ToListAsync();
+
 			var paged = await PagedList<PendingDebitApprovalDto>.CreateAsync(
                 qry.AsNoTracking()
                 //.ProjectTo<PendingDebitApprovalDto>(_mapper.ConfigurationProvider)
@@ -167,14 +167,14 @@ namespace api.Data.Repositories.Finance
             return paged;
         }
 
-        public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate)
+        public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateTime fromDate, DateTime uptoDate)
         {
            //DateTime uptoDate = UptoDate.Hour < 1 ? UptoDate.AddHours(23) : UptoDate;
 			
 			var trans =  await (from i in _context.VoucherEntries 
                     where i.CoaId == accountid && 
-                        DateOnly.FromDateTime(i.TransDate) >= fromDate && 
-                        DateOnly.FromDateTime(i.TransDate) <= uptoDate
+                        i.TransDate >= fromDate && 
+                        i.TransDate <= uptoDate
 				join v in _context.FinanceVouchers on i.FinanceVoucherId equals v.Id
 				join a in _context.COAs on i.CoaId equals a.Id
 				orderby i.TransDate descending
@@ -194,25 +194,28 @@ namespace api.Data.Repositories.Finance
 				select new {v.Id, v.TransDate, v.CoaId, v.AccountName, v.Dr, v.Cr})
                     .OrderByDescending(x => x.TransDate).ToListAsync();
 			var opBal = await (from v in _context.VoucherEntries where v.CoaId==accountid && 
-                DateOnly.FromDateTime(v.TransDate) < fromDate
+                v.TransDate < fromDate
 				group v by v.CoaId into g 
 				select new {Id = g.Key, Bal = g.Sum(e => -e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
 			var oclBalTest = await (from v in _context.VoucherEntries where v.CoaId==accountid 
-                    && DateOnly.FromDateTime(v.TransDate) >= uptoDate
+                    && v.TransDate >= uptoDate
 				select new {v.Id, v.TransDate, v.CoaId, v.AccountName, v.Dr, v.Cr}).ToListAsync();
 
 			var BalForThePeriod = await (from v in _context.VoucherEntries 
 					where v.CoaId==accountid 
-						&& DateOnly.FromDateTime(v.TransDate) >= fromDate 
-						&& DateOnly.FromDateTime(v.TransDate) <= uptoDate
+						&& v.TransDate >= fromDate 
+						&& v.TransDate <= uptoDate
 				group v by v.CoaId into g 
 				select new {Id = g.Key, Bal = -g.Sum(e => e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
-
-			var dto = new StatementOfAccountDto{
+            
+            DateTime dt1 = DateTime.Parse(fromDate.ToString());
+            DateTime dt2 = DateTime.Parse(uptoDate.ToString());
+         
+            var dto = new StatementOfAccountDto{
 				AccountId=accountid,
-				AccountName= trans.Count()==0 ? await GetAccountNameFromCOA(accountid) : trans[0].AccountName, 
-				FromDate = fromDate,
-				UptoDate = uptoDate,
+				AccountName= trans.Count == 0 ? await GetAccountNameFromCOA(accountid) : trans[0].AccountName, 
+				FromDate = DateOnly.FromDateTime(dt1),
+				UptoDate = DateOnly.FromDateTime(dt2),
 				StatementOfAccountItems = trans,
 				OpBalance = opBal==null? 0 : opBal.Bal,
 				ClBalance = BalForThePeriod==null ? 0 : BalForThePeriod.Bal
@@ -265,13 +268,22 @@ namespace api.Data.Repositories.Finance
             return vno == 0 ? 1000 : vno + 1;
         }
  
-         public async Task<Voucher> AddNewVoucher(Voucher voucher, string Username)
+         public async Task<FinanceVoucher> AddNewVoucher(FinanceVoucher voucher, string Username)
         {
-            _context.Entry(voucher).State = EntityState.Modified;
+            if(voucher.VoucherNo != 0) return null;
 
-            await _context.SaveChangesAsync();
+            var accountnm = await _context.COAs.FindAsync(voucher.CoaId);
+            if(accountnm==null) return null;
+            voucher.AccountName = accountnm.AccountName;
 
-            return voucher;
+            _context.Entry(voucher).State = EntityState.Added;
+
+            if (await _context.SaveChangesAsync() > 0) {
+                return voucher;
+            } else {
+                return null;
+            }
+
         }
 
         public async Task<FinanceVoucher> GetVoucher(int id)
@@ -284,7 +296,7 @@ namespace api.Data.Repositories.Finance
 
         public async Task<PagedList<FinanceVoucher>> GetVouchers(VoucherParams vParams)
         {
-            var query = _context.FinanceVouchers.AsQueryable();
+            var query = _context.FinanceVouchers.OrderBy(x => x.VoucherNo).AsQueryable();
 
             if(vParams.VoucherNo !=0) {
                 query = query.Where(x => x.VoucherNo == vParams.VoucherNo);
@@ -305,13 +317,14 @@ namespace api.Data.Repositories.Finance
                 query.AsNoTracking()
                 //.ProjectTo<Voucher>(_mapper.ConfigurationProvider)
                 , vParams.PageNumber, vParams.PageSize);
-    
+
+
 
             return paged;
             
         }
 
-        public async Task<bool> EditVoucher(FinanceVoucher newObject)
+        public async Task<FinanceVoucher> EditVoucher(FinanceVoucher newObject)
         {
             var existing = await _context.FinanceVouchers.Include(x => x.VoucherEntries)
                 .Where(x => x.Id == newObject.Id).AsNoTracking().FirstOrDefaultAsync();
@@ -355,7 +368,7 @@ namespace api.Data.Repositories.Finance
 
             _context.Entry(existing).State = EntityState.Modified;
 
-            return await _context.SaveChangesAsync() > 0;
+            if (await _context.SaveChangesAsync() > 0) {return existing;} else { return null;}
         }
 
         public async Task<bool> DeleteVoucher(int id)
@@ -476,6 +489,21 @@ namespace api.Data.Repositories.Finance
             return existingVoucher;
 			
 		}
+
+        public async Task<bool> ApproveDrApprovals(ICollection<int> CoaIds, string username)
+        {
+            var entries = await _context.VoucherEntries.Where(x => CoaIds.Contains(x.Id)).ToListAsync();
+
+            foreach(var entry in entries) {
+                entry.DrEntryApprovedOn = DateTime.Now;
+                entry.DrEntryApprovedByUsername = username;
+                entry.DrEntryApproved=true;
+
+                _context.Entry(entry).State = EntityState.Modified;
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
 
     }
 }

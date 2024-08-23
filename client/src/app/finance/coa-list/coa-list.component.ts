@@ -84,7 +84,7 @@ export class CoaListComponent implements OnInit {
           this.pagination = response.pagination;
         }
       },
-      error: err => console.log(err)
+      error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
     });
     
   }
@@ -123,7 +123,6 @@ export class CoaListComponent implements OnInit {
     if(this.sParams.divisionToExclude !== this.lastExclude) {
         this.getCOAs(false);
         this.lastExclude = this.sParams.divisionToExclude;
-
     }
     
   }
@@ -165,15 +164,17 @@ export class CoaListComponent implements OnInit {
         return this.service.editCOA(editedCOA)
       })
     ).subscribe((edited: ICOA) => {
-      if(edited) {
-        if(edit==null) {
+      console.log('returned from api:', edited);
+      if(edited !== null) {     //succeeded in api
+        if(edit==null) {        //object sent to api was null, hence it is add new
           this.coas.push(edited)
-        } else {
+          this.toastr.success('COA was added', 'Success');
+        } else {                //edited
           var index = this.coas.findIndex(x => x.id===edit?.id);
           if(index !==-1) this.coas[index] = edited;
+          this.toastr.success('COA was edited', 'Success')
         }
-        this.toastr.success('COA was edited', 'Success')
-      } else {
+      } else {                  //filed from api
         this.toastr.warning('Failed to update the COA', 'Failure')
       }
     })
@@ -228,7 +229,10 @@ export class CoaListComponent implements OnInit {
         return;
       }
 
-      let route = '/finance/soa/' + accountid + '/' + dateRange.fromDate.toISOString() + '/' + dateRange.uptoDate.toISOString();
+      var dt1 = this.convertDateToDateOnly(dateRange.fromDate);
+      var dt2 = this.convertDateToDateOnly(dateRange.uptoDate);
+
+      let route = '/finance/soa/' + accountid + '/' + dt1 + '/' + dt2;
  
       this.router.navigate(
           [route], 
@@ -243,10 +247,25 @@ export class CoaListComponent implements OnInit {
       console.log('error in invoking Date Range input modal', error);
     })
 
-
-
   }
   
+  convertDateToDateOnly(datepart: Date) {
+
+    const milliseconds: number = +datepart; // Replace with your milliseconds value
+    const date: Date = new Date(milliseconds);
+
+    // Extract the date part
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1; // Months are zero-based
+    const day: number = date.getDate();
+
+    // Format the date as YYYY-MM-DD
+    const formattedDate: string = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+    return formattedDate;
+  }
+
+
   deleteCoa(accountid: number) {
 
     if(this.confirmService

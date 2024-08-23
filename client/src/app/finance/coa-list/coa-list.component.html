@@ -11,16 +11,26 @@
         lastText="&raquo;">
     ></pagination>
 
-    <br><input (keyup.enter)="onSearch()" type="text" class="stdd w300" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" class="stdd btn fa fa-filter fa-2x"></button>
-    <button (click)="addNewCOA()" title="Add a new Account" class="btn fa fa-plus fa-2x"></button>
-    <button (click)="onReset()" title="resets search parameters" class="btn fa fa-refresh fa-2x mx-1"></button>
+    <input (keyup.enter)="onSearch()" type="text" class="stdd w250" style="display: inline-block;" 
+        #search placeholder="Search">
+    <button (click)="onSearch()" title="search the text entered" style="color: aliceblue;" 
+        class="w20 btn fa fa-filter fa-2x"></button>
+    <button (click)="addNewCOA()" title="Add a new Account" style="color: aliceblue;"
+         class="btn w20 fa fa-plus fa-2x"></button>
+    <button (click)="onReset()" title="resets search parameters" style="color:aliceblue;" 
+        class="btn w20 fa fa-refresh fa-2x"></button>
     
-    <label class="lbl w80" style="text-align: right;" >Exclude:</label>
-    <input type="radio" id="none" name="none" [(ngModel)]="sParams.divisionToExclude" value="" class="w35 stdd">None -->
-    <input type="radio" id="candidate" name="candidate" [(ngModel)]="sParams.divisionToExclude" value="Candidate" class="w35 stdd">Candidate
-    <button (click)="applyFilter()" title="Apply the filter" class="btn fa fa-check green fa-2x mx-1"></button>
-    <button (click)="returnToCaller()" title="close this page" class="btn fa fa-window-close fa-2x mx-3"></button>
+    <label class="lbl w80" style="text-align: right; margin-left: 15px;" >Exclude:</label>
+    <input type="radio" id="none" name="none" [(ngModel)]="sParams.divisionToExclude" value=""
+        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
+        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: smaller;">None</span>
+    <input type="radio" id="candidate" name="candidate" [(ngModel)]="sParams.divisionToExclude" value="C" 
+        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
+        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: smaller;">Candidate</span>
+    <button (click)="applyFilter()" title="Apply the filter" style="color: aliceblue;" 
+        class="btn w20 fa fa-check green fa-2x"></button>
+    <button (click)="returnToCaller()" title="close this page" style="color:aliceblue;" 
+        class="btn w20 fa fa-window-close fa-2x"></button>
     
 <hr>
 <div class="container">

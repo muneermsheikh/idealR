@@ -1,10 +1,10 @@
 <h4 class="lbl b">Transactions pending approval</h4>
 <div class="lbl w200 mx-5">Logged in User: {{user?.knownAs}}</div>
 
-<button class="btn fa fa-check fa-2x green mx-5" style="margin-left: 100px !important;" 
+<button class="btn fa fa-check fa-2x green mx-5" style="margin-left: 100px !important; color:aliceblue;" 
     title="Confirm receipt of funds pending for acceptance" [disabled]="pendingSelected.length===0" (click)="update()" ></button>
 
-<button class="btn fa fa-window-close fa-2x mx-10" 
+<button class="btn fa fa-window-close fa-2x mx-10" style="color: aliceblue;"
     title="Confirm receipt of funds pending for acceptance" routerLink="/finance" ></button>
 
 <div class="container my-2">
@@ -14,6 +14,7 @@
     <label class="lbl w200">Account Name</label>
     <label class="lbl w75">Amount</label>
     
+    <div class="my-2" *ngIf="!pending.length">No Voucher Entries pending for Debit Entry Approvals</div>
     <div *ngIf="pending">
         <div *ngFor="let item of pending">
             <input type="checkbox" 
@@ -22,7 +23,8 @@
                 [(ngModel)]="item.drEntryApproved"
                 (click)="selectedClicked(item)" >
             
-            <div class="stdd w75 hAlignCenter cursorPointer"(click)="displayVoucher(item.id)">{{item!.voucherNo}}</div>
+            <div class="stdd w75 hAlignCenter cursorPointer"(click)="displayVoucher(item.id)" 
+                title="display the Voucher">{{item!.voucherNo}}</div>
             <div class="stdd w100 hAlignCenter">{{item!.voucherDated|date:'dd-MMM-yy'}}</div>
             <div class="stdd w200">{{item!.drAccountName}}</div>
             <div class="stdd w75 hAlignRight">{{item!.drAmount.toLocaleString()}}</div>

@@ -13,6 +13,7 @@ export interface IDeploymentPendingDto {
     orderNo: number;
     orderDate: Date;
     categoryName: string;
+    currentStatus: string;
 
     ecnr: boolean;
     deploySequence: number;
@@ -32,6 +33,7 @@ export class DeploymentPendingDto implements IDeploymentPendingDto {
     applicationNo: number=0;
     candidateName: string='';
     ecnr=false;
+    currentStatus = '';
     
     customerName: string='';
     cityOfWorking: string='';

@@ -77,7 +77,7 @@ export class VouchersService {
   }
 
   updateVoucher(formdata: IVoucher) {
-    return this.http.put<IVoucher>(this.apiUrl + 'finance/voucher', formdata);
+    return this.http.put<boolean>(this.apiUrl + 'finance/voucher', formdata);
   }
 
   public updateWithFiles(formData: FormData) {
@@ -92,7 +92,7 @@ export class VouchersService {
   }
   
 
-  getStatementOfAccount(accountid: number, fromdate: string, uptodate: string) {
+  getStatementOfAccount(accountid: number, fromdate: any, uptodate: any) {
 
     return this.http.get<IStatementofAccountDto>(this.apiUrl + 'finance/soa/' + accountid + '/' + fromdate + '/' + uptodate);
   

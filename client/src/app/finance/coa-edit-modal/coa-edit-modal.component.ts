@@ -21,8 +21,8 @@ export class CoaEditModalComponent implements OnInit {
   
   accountClasses=[
     {'accountClass':'exp'}, {'accountClass':'banks'},{'accountClass':'salesiata'},{'accountClass':'personalaccount'}
-    ,{'accountClass':'sales'},{'accountClass':'candidate'},{'accountClass':'asset'}
-  ]
+    ,{'accountClass':'sales'},{'accountClass':'candidate'},{'accountClass':'asset'}, {'accountClass': 'employees'}, 
+    {'accountClass':'vendors'}]
 
   constructor(public bsModalRef: BsModalRef, private coaService: COAService, private toastr: ToastrService) { }
 

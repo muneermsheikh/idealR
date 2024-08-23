@@ -48,6 +48,10 @@ export class ConfirmReceiptsService {
     return this.http.put<string>(this.apiUrl + 'finance/updateVoucherEntries', confirmations);
   }
 
+  approveDrApprovals(ids: number[]) {
+    return this.http.put<boolean>(this.apiUrl + 'finance/updateDrApprovals', ids);
+  }
+
   updateVoucher(voucher: IVoucher) {
       return this.http.put<boolean>(this.apiUrl + 'finance/voucher', voucher);
   }

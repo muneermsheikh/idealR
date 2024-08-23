@@ -23,15 +23,15 @@ namespace api.Interfaces.Finance
         //
         Task<PagedList<FinanceVoucher>> GetVouchers(VoucherParams voucherParams);
         Task<FinanceVoucher> GetVoucher(int id);
-        Task<Voucher> AddNewVoucher(Voucher voucher, string Username);
-        Task<bool> EditVoucher(FinanceVoucher voucher);
+        Task<FinanceVoucher> AddNewVoucher(FinanceVoucher voucher, string Username);
+        Task<FinanceVoucher> EditVoucher(FinanceVoucher voucher);
         Task<bool> DeleteVoucher(int id);
         Task<int> GetNextVoucherNo();
-        Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateOnly fromDate, DateOnly uptoDate);
+        Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateTime fromDate, DateTime uptoDate);
         Task<long> GetClosingBalIncludingSuspense(int accountid);
         Task<ICollection<string>> GetMatchingCOANames(string testName);
         Task<string> AddVoucherAttachments(ICollection<VoucherAttachment> attachments);
         Task<FinanceVoucher> UpdateFinanceVoucher(FinanceVoucher model);
-       
+        Task<bool> ApproveDrApprovals(ICollection<int> CoaIds, string username);
     }
 }

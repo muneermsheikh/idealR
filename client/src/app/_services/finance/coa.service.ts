@@ -44,7 +44,6 @@ export class COAService {
   getCoas(useCache: boolean=true) {
 
     var oParams = this.sParams;  
-    console.log('sParams in coaservice', this.sParams);
 
       if(useCache) {
           const response = this.cache.get(Object.values(oParams).join('-'));
@@ -52,7 +51,6 @@ export class COAService {
       }
 
       let params = this.getHttpParamsForCOA(oParams);
-      console.log('getting COAs from api');
       
       return getPaginatedResult<ICOA[]>(this.apiUrl + 'Finance/coapagedlist', params, this.http).pipe(
         map(response => {

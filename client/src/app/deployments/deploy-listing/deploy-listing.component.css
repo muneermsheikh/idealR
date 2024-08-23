@@ -9,8 +9,9 @@
  .fSmall {font-size: small;}
  .fSmaller {font-size: smaller;}
 
+ .hAlignCenter {text-align: center;}
+
  .w20 {width: 20px;}
- .w30 {width: 30px;}
  .w50 {width: 50px;}
  .w75{width: 75px; font-size: smaller !important;}
  .w100 {width: 100px;}

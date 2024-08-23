@@ -441,21 +441,29 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageNumber', dParams.pageNumber);
     params = params.append('pageSize', dParams.pageSize)
     
-    if(dParams.cvRefId !== 0)
-      params = params.append('cvRefId', dParams.cvRefId)
-
-    if(dParams.orderItemId !== 0 )
+    if(dParams.cvRefId !== 0) {
+       params = params.append('cvRefId', dParams.cvRefId)
+    } else if(dParams.orderItemId !== 0 ) {
       params = params.append('orderItemId', dParams.orderItemId);
-
-    if(dParams.candidateId !== 0)
+    } else if(dParams.candidateId !== 0) {
         params = params.append('candidateId', dParams.candidateId);
-    
-    if(dParams.customerId !== 0) params = params.append("customerId", dParams.customerId.toString());
+    } else if(dParams.customerId !== 0) {
+      params = params.append("customerId", dParams.customerId.toString());
+    } else if(dParams.orderNo !== 0) {
+      params = params.append("orderNo", dParams.orderNo.toString());
+    } else if (dParams.customerName !=='') {
+      params = params.append("customerName", dParams.customerName);
+    } else if (dParams.categoryName !== '') {
+      params = params.append('categoryName', dParams.categoryName);
+    } else if (dParams.applicationNo !== 0) {
+      params = params.append('applicationNo', dParams.applicationNo.toString())
+    } else if (dParams.candidateName !== '') {
+      params = params.append('candidateName', dParams.candidateName);
+    }
 
-    if(dParams.orderNo !== 0) params = params.append("orderNo", dParams.orderNo.toString());
-
-    //if(dParams.selectedOn.getFullYear() > 2000) 
-        //params = params.append('selectedOn', dParams.selectedOn.toString());
+    /*if(dParams.selectedOn.getFullYear() > 2000) 
+        params = params.append('selectedOn', dParams.selectedOn.toString());
+    */
 
     return params;
   }

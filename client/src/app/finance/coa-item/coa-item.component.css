@@ -2,10 +2,11 @@
 	display: inline-block;
 	margin: 0 2px 0 2px;
 	vertical-align: top;
+	color: aliceblue;
 }
 
-.cursorPointer {cursor: pointer; color: darkblue;}
-.red {color: red;}
+.cursorPointer {cursor: pointer; color: white;}
+.red {color:pink;}
 
 .rAlign{text-align: right;}
 

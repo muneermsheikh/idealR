@@ -79,6 +79,13 @@ export class VoucherListComponent implements OnInit{
 
   
   onSearch() {
+    var searchString=this.searchTerm!.nativeElement.value;
+    if(this.sParams.search===searchString) return;
+
+    this.sParams.search = this.searchTerm!.nativeElement.value;
+    this.sParams.pageNumber = 1;
+    this.service.setParams(this.sParams);
+    this.getVouchers(); 
   }
 
 

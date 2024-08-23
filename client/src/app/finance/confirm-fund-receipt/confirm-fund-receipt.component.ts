@@ -3,11 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { IPendingDebitApprovalDto } from 'src/app/_dtos/finance/pendingDebitApprovalDto';
-import { IUpdatePaymentConfirmationDto, UpdatePaymentConfirmationDto } from 'src/app/_dtos/finance/updatePaymentConfirmationDto';
-import { IVoucherEntry, VoucherEntry } from 'src/app/_models/finance/voucherEntry';
 import { Pagination } from 'src/app/_models/pagination';
 import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
-import { prospectiveSummaryParams } from 'src/app/_models/params/hr/prospectiveSummaryParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
@@ -57,14 +54,15 @@ export class ConfirmFundReceiptComponent implements OnInit {
             this.bolNavigationExtras=true;
             if(nav.extras.state['returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
 
-            var usr = this.accountService.currentUser$.subscribe({
-              next: response => this.user=response!
-            })
         }
      }
 
   ngOnInit(): void {
-
+    this.accountService.currentUser$.subscribe({
+      next: response => {
+        this.user=response!;
+      }
+    })
     this.pParams = new ParamsCOA();
     this.getPendings();
   }
@@ -84,27 +82,28 @@ export class ConfirmFundReceiptComponent implements OnInit {
 
   update() {
     
-    var entries: IVoucherEntry[]=[];
+    var ids = this.pendingSelected.map(x => x.voucherEntryId);
 
-    this.pendingSelected.forEach(x => {
-      
-      entries.push({id: x.voucherEntryId, financeVoucherId: x.id, transDate: new Date(), 
-        coaId: x.drAccountId, dr: x.drAmount, cr:0, accountName:'', narration: '',
-        drEntryApproved: x.drEntryApproved, drEntryApprovedByUsername: this.user!.userName,
-        drEntryApprovedOn: new Date()})
-    })
-
-    this.service.updateVoucherEntries(entries).subscribe(response => {
-        if(response ==='') {
+    this.service.approveDrApprovals(ids).subscribe({
+      next: response => {
+        if(response) {
           this.toastr.success('selected payments confirmed as received');
+          //remove records from pending
+          ids.forEach(x => {
+            var index=this.pending.findIndex(m => m.voucherEntryId===x);
+            if(index !== -1) {
+              this.pending.splice(index, 1);
+            }
+          })
         } else {
-          this.toastr.warning(response, 'failed to register the payment confirmations');
+          this.toastr.warning('Failed to register the approvals', 'failure');
           return;
         }
-      }, err => {
-        this.toastr.error(err, 'failed to register the payment confirmations');
-        return;
-      })
+      },
+      error: (err: any) => {
+        this.toastr.error(err.error.details, 'failed to register the payment confirmations');
+      }
+    })
     
   }
     
@@ -122,6 +121,7 @@ export class ConfirmFundReceiptComponent implements OnInit {
     } else {
       console.log('drEntryapproved not reached:', item.drEntryApproved);
     }
+    console.log('selected', this.pendingSelected);
   }
 
   PageChanged(event: any){

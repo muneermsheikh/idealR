@@ -21,6 +21,7 @@ mat-list-item {
     margin: 0;
     padding: 0;
     color: darkblue;
+    font-size: smaller;
 }
 mat-menu {
     font-size: small;

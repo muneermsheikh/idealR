@@ -130,12 +130,23 @@
                             <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
                                 <mat-icon></mat-icon><span class="sidenav">Messages</span>
                             </a>
+                           
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+
+        
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Administration</mat-expansion-panel-header>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
+                                <span class="sidenav">Authorities & Roles</span>
+                            </a>
                             <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
                                 <span class="sidenav">Authorities & Roles</span>
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
-        
+
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Deployments</mat-expansion-panel-header>
                         <mat-nav-list>
@@ -145,7 +156,7 @@
                                 <!--<mat-icon>airplanemode_active</mat-icon> -->
                                 <span>Active Deployments</span>
                             </a>
-                            <a mat-list-item routerLink="/deployment/statuses" 
+                            <a mat-list-item routerLink="/deployment/deployStatus" 
                                 matTooltip="deployment statuses">
                                 <!--<mat-icon>subject</mat-icon> -->
                                 <span>Deployment Status</span>
@@ -158,7 +169,8 @@
                         <mat-expansion-panel-header>Master Values</mat-expansion-panel-header>
                         <mat-nav-list>
                             <a mat-list-item routerLink="/administration/categories" matTooltip="List of Categories">
-                                <mat-icon></mat-icon><span>Categories List</span>
+                                <mat-icon></mat-icon>
+                                <span>Categories List</span>
                             </a>
                             <a mat-list-item routerLink="/administration/qualifications" matTooltip="List of Qualifications" >
                                 <mat-icon></mat-icon><span>Qualifications List</span>
@@ -191,15 +203,15 @@
                         <mat-nav-list>
                             <a mat-list-item routerLink="/finance/coalist" 
                                 matTooltip="Chart of accounts" >
-                                <mat-icon>account_balance</mat-icon><span>Chart Of Accounts</span>
+                                <span>Chart Of Accounts</span>
                             </a>
                             <a mat-list-item routerLink="/finance/voucherlist" 
                                 matTooltip="list of vouchers" >
-                                <mat-icon>account_balance</mat-icon><span>Voucher List</span>
+                                <span>Voucher List</span>
                             </a>
                             <a mat-list-item routerLink="/finance/receiptspendingconfirmation" 
                                 matTooltip="presents cash and bank transactions pending realization" >
-                                <mat-icon>attach_money</mat-icon><span>confirm funds realization</span>
+                                <span>confirm funds realization</span>
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>

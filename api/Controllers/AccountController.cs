@@ -43,34 +43,5 @@ namespace api.Controllers
             return usr;
         }
 
-        /*[HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
-        {
-            if(await userExists(registerDto.Username)) return BadRequest("username is already taken");
-
-            var user = _mapper.Map<AppUser>(registerDto);
-   
-            user.UserName = registerDto.Username.ToLower();
-            
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-            if(!result.Succeeded) return BadRequest(result.Errors);
-
-            var roleResult = await _userManager.AddToRoleAsync(user, registerDto.Role);
-            if(!roleResult.Succeeded) return BadRequest(roleResult.Errors);
-
-             return new UserDto {
-                UserName = user.UserName,
-                Token = await _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs,
-                Gender = user.Gender
-            };
-        }
-        */
-
-        /*private async Task<bool> userExists (string username)
-        {
-            return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
-        }
-        */
     }
 }

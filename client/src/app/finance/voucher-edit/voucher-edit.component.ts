@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap } from 'rxjs';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { coa, ICOA } from 'src/app/_models/finance/coa';
@@ -128,7 +128,6 @@ export class VoucherEditComponent implements OnInit{
       this.activatedRoute.data.subscribe(data => {
         this.coas = data['coas'];
         this.voucher = data['voucher'];
-        console.log('oninit', this.voucher);
       })
 
       if(this.voucher !== undefined && this.voucher !== null) {
@@ -208,7 +207,7 @@ export class VoucherEditComponent implements OnInit{
           this.voucherEntries.push(this.newDRVoucherEntry());
         } else {
           this.suggestedDefaultAmountCR = Math.abs(this.iDiff);
-          this.suggestedDefaultCoaIdCR = this.form.controls['coa'].value;
+          this.suggestedDefaultCoaIdCR = this.form.get('cOAId')?.value;
 
           this.voucherEntries.push(this.newCRVoucherEntry());
         }
@@ -238,7 +237,7 @@ export class VoucherEditComponent implements OnInit{
     }
 
     newCRVoucherEntry(): any {
-      var craccountid=this.form.controls['cOAId'].value;
+      var craccountid = this.form.get('cOAID')?.value;
       return this.fb.group({
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 
@@ -405,7 +404,6 @@ export class VoucherEditComponent implements OnInit{
           // handle both successfull
           (coaAdded : any) => {
             this.coas.push(coaAdded)
-          //console.log('Both APIs succeeded, result from 2) is returned', coaAdded);
         }),
         // handle uncaught errors
         (err : any) => {
@@ -445,14 +443,14 @@ export class VoucherEditComponent implements OnInit{
         }
         
       this.service.updateVoucher(this.form.value).subscribe({
-        next: (response: IVoucher) => {
-          if(response===null) {
+        next: (response: boolean) => {
+          if(!response) {
               this.toastr.warning('Failed to update the voucher', 'failure');
           } else {
               this.toastr.success('Voucher updated', 'success');
               this.router.navigateByUrl(this.returnUrl);
           }
-        }, error: err => this.toastr.error(err, 'Error encountered')
+        }, error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
       })
     }
     
@@ -466,7 +464,6 @@ export class VoucherEditComponent implements OnInit{
       var microsecondsDiff: number= 28000;
       var nowDate: number =Date.now();
       
-      //console.log('nowDate', nowDate, ' last time', this.lastTimeCalled);
       if(nowDate < this.lastTimeCalled+ microsecondsDiff) {
         console.log('repeat call dialowed at', nowDate, ' last time called at', this.lastTimeCalled);
         return;

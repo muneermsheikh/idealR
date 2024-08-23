@@ -5,7 +5,7 @@
 	Extract of transactions of: <strong> {{soa.accountName}} </strong> 
 		for the period between {{soa.fromDate | date: 'dd-MMM-yy'}} and {{soa.uptoDate | date: 'dd-MMM-yy'}}
 	
-	<button class="btn stdd ml-15 fa fa-2x fa-undo" (click)="returnToCaller()" ></button>
+	<button class="btn ml-15 fa fa-2x fa-window-close" style="color: aliceblue;" (click)="returnToCaller()" ></button>
 </div>
 
 <br>
@@ -20,7 +20,7 @@
 	<div class="opBal">Opening Balance</div>
 	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance > 0">{{soa.opBalance}}</div>
 	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance <= 0">{{soa.opBalance}}</div>
-	
+	<br><br>
 	<div *ngFor="let item of soa.statementOfAccountItems">
 
 		<app-soa-line

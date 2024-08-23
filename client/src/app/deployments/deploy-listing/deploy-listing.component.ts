@@ -22,6 +22,7 @@ import { FlightDetailModalComponent } from '../flight-detail-modal/flight-detail
 import { ICandidateFlightData } from 'src/app/_models/process/candidateFlightData';
 import { IDeploymentStatus } from 'src/app/_models/masters/deployStatus';
 import { DepAttachmentModalComponent } from '../dep-attachment-modal/dep-attachment-modal.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-deploy-listing',
@@ -35,6 +36,11 @@ export class DeployListingComponent implements OnInit{
 
   user?: User;
   returnUrl = '';
+  title = '';
+  currentSearchValue = '';
+  currentOption = '';
+  currentStatus='';
+  deployStatus = '';
 
   deploys: IDeploymentPendingDto[]=[];
   deploysSelected: IDeploymentPendingDto[]=[]; 
@@ -56,15 +62,16 @@ export class DeployListingComponent implements OnInit{
   dParams = new deployParams();
 
   newSequence: Subject<number> = new Subject<number>();
+
+  optionSelected='';
   
   searchOptions = [
-      {name:'Application', value:'applicationno'},
+      {name:'Application', value:'applicationNo'},
       {name:'Candidate Name', value:'candidateName'},  
       {name:'Order No', value:'orderNo'},  
       {name:'Category Name', value:'categoryName'},  
       {name:'Date Selected', value:'selectedon'},  
-      {name:'Employer Name', value:'customerName'},
-      {name:'Status', value:'status'}
+      {name:'Employer Name', value:'customerName'}
   ]
 
   sortOptions = [
@@ -102,6 +109,7 @@ export class DeployListingComponent implements OnInit{
     })
         
     this.getDeploymentStatuses();
+    this.title = "active";
   }
 
   getDeployStatusAndSeq() {
@@ -180,10 +188,62 @@ export class DeployListingComponent implements OnInit{
       
   onSearch() {
     const params = this.service.getParams();
-    params.search = this.searchTerm!.nativeElement.value;
+    var search = this.searchTerm!.nativeElement.value;
+    console.log('currentSearchValue:',this.currentSearchValue, 'search=', search, 'option selected', 
+      this.optionSelected, 'current option:', this.currentOption, 'currentStatus:', this.deployStatus);
+
+    if(this.currentSearchValue == search && this.optionSelected == this.currentOption
+        && this.currentStatus == this.deployStatus ) {
+          this.toastr.warning('No valid selection', 'Bad Request');
+          return;
+    }
+
+    this.currentStatus = this.deployStatus;
+   
+    //if(this.currentSearchValue === search) return;
+    this.currentSearchValue = search;
+    
+    switch (this.optionSelected) {
+      case "applicationNo":
+        params.applicationNo=search;  
+        break;
+      case "orderNo":
+        params.orderNo = search;
+        break;
+      case "selectedOn":
+        params.selectedOn = new Date(search);
+        break;
+      case "customerName":
+        params.customerName = search;
+        break;
+      case "categoryName":
+        params.categoryName = search;
+        break;
+      case "candidateName":
+        params.candidateName = search;
+        break;
+      default:
+        break;
+    }
+
+    this.title = this.optionSelected + "=" + search;
+    if(this.deployStatus ==='') this.deployStatus = "Concluded";
+    params.status=this.deployStatus;
     params.pageNumber = 1;
     this.service.setParams(params);
     this.getDeployments();
+  }
+
+  onOptionSelected(option: any) {
+      if(this.optionSelected === option) return;
+
+      this.optionSelected = option;
+      this.currentOption = option;
+
+  }
+
+  optionCleared() {
+    this.optionSelected = '';
   }
 
   onReset() {
@@ -373,7 +433,7 @@ export class DeployListingComponent implements OnInit{
 
   applyTransactions() {
 
-    if(this.sequenceSelected === 0) {
+    if(this.sequenceSelected === 0 ) {
       this.toastr.warning('Deployment Stage not selected', 'Please select the deployment transaction you want to apply');
       return;
     }

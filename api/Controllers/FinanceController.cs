@@ -51,7 +51,7 @@ namespace api.Controllers
         public async Task<ActionResult<PagedList<COA>>> GetCOAPagedList([FromQuery]ParamsCOA coaParams)
         {
             var pagedList = await _finRepo.GetCOAPagedList(coaParams);
-            if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
+            if(pagedList.Count ==0) return BadRequest(new ApiException(400, "Not Found","No Chart Of Account on record matching the criteria"));
 
             Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
                 pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
@@ -155,9 +155,9 @@ namespace api.Controllers
         public async Task<ActionResult<Voucher>> EditVoucher(FinanceVoucher voucher)
         {
             var existing = await _finRepo.EditVoucher(voucher);
-            if(!existing) return BadRequest(new ApiException(400, "Bad Request", "Failed to update the Voucher"));
+            if(existing == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to update the Voucher"));
 
-            return Ok("Voucher updated");
+            return Ok(existing);
         }
 
         [HttpDelete("deletevoucher/{id}")]
@@ -170,7 +170,7 @@ namespace api.Controllers
         }
 
         [HttpPost("newvoucher")]
-        public async Task<ActionResult<Voucher>> AddNewVoucher(Voucher voucher)
+        public async Task<ActionResult<FinanceVoucher>> AddNewVoucher(FinanceVoucher voucher)
         {
             var newvoucher = await _finRepo.AddNewVoucher(voucher, User.GetUsername());
 
@@ -181,14 +181,13 @@ namespace api.Controllers
         }
 
         [HttpPost("newvoucherwithattachment"), DisableRequestSizeLimit]
-        public async Task<ActionResult<string>> AddNewVoucherWithAttachment(Voucher voucher)
+        public async Task<ActionResult<string>> AddNewVoucherWithAttachment(FinanceVoucher voucher)
         {
             List<VoucherAttachment> Attachmentlist = new();
-               
-
+         
                try
                {
-                    var modelData = JsonSerializer.Deserialize<Voucher>(Request.Form["data"],   //THE Voucher OBJECT
+                    var modelData = JsonSerializer.Deserialize<FinanceVoucher>(Request.Form["data"],   //THE Voucher OBJECT
                          new JsonSerializerOptions {
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                          });
@@ -319,12 +318,20 @@ namespace api.Controllers
           }
   
         [HttpGet("soa/{coaid}/{datefrom}/{dateupto}")]
-        public async Task<ActionResult<StatementOfAccountDto>> GetStatementOfAccount(int coaid, DateOnly datefrom, DateOnly dateupto)
+        public async Task<ActionResult<StatementOfAccountDto>> GetStatementOfAccount(int coaid, DateTime datefrom, DateTime dateupto)
         {
             var obj = await _finRepo.GetStatementOfAccount(coaid, datefrom, dateupto);
             if(obj==null) return BadRequest(new ApiException(500, "Server Error", "failed to get the statement of account based on criteira given"));
 
             return Ok(obj);
+        }
+    
+        [HttpPut("updateDrApprovals")]
+        public async Task<ActionResult<bool>> UpdateDrApprovals(ICollection<int> CoaIds)
+        {
+            var succeeded = await _finRepo.ApproveDrApprovals(CoaIds, User.GetUsername());
+
+            return Ok(succeeded);
         }
     }
 }

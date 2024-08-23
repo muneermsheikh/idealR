@@ -531,7 +531,7 @@ namespace api.Data.Repositories.Deployment
                 select new DeploymentPendingDto {
                     DepId = dep.Id,
                     ApplicationNo = cv.ApplicationNo,
-                    CandidateName = cv.FullName,
+                    CandidateName = cv.FirstName + " " + cv.FamilyName,
                     CategoryName = item.Profession.ProfessionName,
                     CustomerName = order.Customer.KnownAs,
                     CvRefId = cvref.Id,
@@ -545,18 +545,28 @@ namespace api.Data.Repositories.Deployment
                     NextSequence =dep.DepItems.OrderByDescending(x => x.NextSequence)
                         .Select(x => x.NextSequence).FirstOrDefault(), 
                     OrderItemId = item.Id,
+                    CurrentStatus = dep.CurrentStatus,
                     NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
                         .Select(x => x.NextSequenceDate).FirstOrDefault()
                 }).AsQueryable();
-
-            if(depParams.CvRefId != 0) query = query.Where(x => x.CvRefId == depParams.CvRefId);
-
-            //if(depParams.SelectedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
             
-            if(depParams.OrderItemId != 0 ) 
+            if(depParams.OrderNo != 0) {
+                query = query.Where(x => x.OrderNo == depParams.OrderNo);
+            } else if(depParams.CvRefId != 0) {
+                query = query.Where(x => x.CvRefId == depParams.CvRefId);
+            } else if(depParams.OrderItemId !=0) {
                 query = query.Where(x => x.OrderItemId== depParams.OrderItemId);
-            
-            //if(depParams.CustomerId > 0) query = query.Where(x => x.CustomerId == depParams.CustomerId);
+            } else if (!string.IsNullOrEmpty(depParams.CandidateName)) {
+                query = query.Where(x => x.CandidateName.ToLower().Contains(depParams.CandidateName.ToLower()));
+            } else if (depParams.ApplicationNo != 0) {
+                query = query.Where(x => x.ApplicationNo == depParams.ApplicationNo);
+            } else if (!string.IsNullOrEmpty(depParams.CustomerName)) {
+                query = query.Where(x => x.CustomerName.ToLower().Contains(depParams.CustomerName.ToLower()));
+            } else if(depParams.SelectedOn.Year > 2000) {
+                query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
+            }
+
+            if(!string.IsNullOrEmpty(depParams.Status)) query = query.Where(x => x.CurrentStatus.ToLower() == "concluded");
 
             var paged = await PagedList<DeploymentPendingDto>.CreateAsync(query.AsNoTracking()
                 //.ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
