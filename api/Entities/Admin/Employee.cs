@@ -14,32 +14,28 @@ namespace api.Entities.Admin
         public string FamilyName { get; set; }
         [Required]         
         public string KnownAs { get; set; }
+        public string DisplayName {get; set;}
         public string UserName { get; set; }
         [Required]
         public string Position { get; set; }
-        public string Qualifications {get; set;}
+        public string Qualification {get; set;}
         [Required]
         public DateTime DateOfBirth { get; set; }
         public string PlaceOfBirth { get; set; }
         public string AadharNo { get; set; }
-        public string Nationality {get; set;} = "Indian";
-        [EmailAddress]
-        public string OfficialEmail {get; set;}
-        public string OfficialPhoneNo { get; set; }
-        public string OfficialMobileNo { get; set; }
+       [EmailAddress]
+        public string Email {get; set;}
+        public string PhoneNo { get; set; }
+        public string Phone2 { get; set; }
         public DateTime DateOfJoining {get; set;}
         public string Department { get; set; }
         public string Remarks { get; set; }        
-        public string EmployeeAddress {get; set;}
-        public string EmployeePhone {get; set;}
-        public string EmployeePhone2 {get; set;}
-        public string EmployeeQualifications {get; set;}
         public string Status { get; set; } = "Employed";
         public string Address { get; set; }
         public string Address2 {get; set;}
         public string City { get; set;} 
-        public string Country { get; set;}
         public ICollection<HRSkill> HRSkills {get; set;}
-        public ICollection<OtherSkill> OtherSkills{get; set;}
+        public ICollection<EmployeeOtherSkill> EmployeeOtherSkills{get; set;}
+        public ICollection<EmployeeAttachment> EmployeeAttachments {get; set;}  
     }
 }

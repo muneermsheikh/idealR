@@ -1,8 +1,12 @@
-<h6 style="display: inline-block;">Edit Customer Review</h6>
-<button class="btn btn-success fa fa-save" [disabled]="!form.dirty" style="margin-left: 200px;" (click)="updateReview()" ></button>
-<button class="btn fa fa-window-close fa-2x" style="margin-left: 200px;" (click)="goback()" ></button>
+<h4 style="display: inline-block;">Edit Customer Review</h4>
+<button class="btn btn-success fa fa-save" [disabled]="!form.dirty" style="margin-left: 200px;" 
+    style="color:aliceblue;margin-left: 50px;" (click)="updateReview()" ></button>
+<button class="btn fa fa-window-close fa-2x" 
+    style="margin-left: 200px; color: aliceblue;" (click)="goback()" ></button>
 
-<div class="my-2">
+<div class="my-2 container">
+    <div *ngIf="!review">The customer review does not exist.  Press Create New Review to create a new Review</div>
+
     <div *ngIf="review">
         <form [formGroup]="form">
             <div class="stdd w150 b">Customer</div>
@@ -16,7 +20,7 @@
             <label class="stdd w80">ApprovedBy</label>
             <label class="stdd w80">On</label>
             
-            <button class="btn fa fa-plus" (click)="addReviewItem()" ></button>
+            <button class="btn fa fa-plus" style="color: aliceblue;" (click)="addReviewItem()" ></button>
             
             <div formArrayName="customerReviewItems">
                 <div *ngFor="let rvw of customerReviewItems.controls; let i=index">

@@ -128,6 +128,7 @@ export class CandidateService {
 
 
   UpdateCandidateWithFiles(model: any) {
+      console.log('model in update service candidate', model);
       return this.http.put<IApiReturnDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }
     

@@ -45,7 +45,7 @@ export class IndustriesService {
     return this.http.get<IIndustryType>(this.apiUrl + 'Industries/industrybyid/' + id );
   }
 
-  getIndustries() {
+  getIndustryList() {
     return this.http.get<IIndustryType[]>(this.apiUrl + 'Industries/industrylist');
   }
 

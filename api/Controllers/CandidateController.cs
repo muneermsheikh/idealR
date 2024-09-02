@@ -1,20 +1,21 @@
-using System.Data.Common;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using api.DTOs;
+using api.DTOs.Admin;
 using api.DTOs.HR;
+using api.Entities.Admin;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.Admin;
 using api.Params.HR;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
 
 namespace api.Controllers
 {
@@ -26,11 +27,13 @@ namespace api.Controllers
         private readonly ICandidateRepository _candidateRepo;
         private readonly ITokenService _tokenService;
         private readonly ILogger<CandidateController> _logger;
+        private readonly IEmployeeRepository _empRepo;
 
         private readonly DateTime _today = DateTime.UtcNow;
-        public CandidateController(ICandidateRepository candidateRepo, UserManager<AppUser> userManager, 
+        public CandidateController(ICandidateRepository candidateRepo, UserManager<AppUser> userManager, IEmployeeRepository empRepo,
             IMapper mapper, ITokenService tokenService, ILogger<CandidateController> logger)
         {
+            _empRepo = empRepo;
             _tokenService = tokenService;
             _logger = logger;
 
@@ -138,7 +141,6 @@ namespace api.Controllers
         {
             return await _candidateRepo.CheckPPExists(ppnumber);
         }
-        
         
         [HttpGet("aadahrexists/{aadharno}")]
         public async Task<ActionResult<bool>> CheckAadharNoExistsAsync([FromQuery] string aadharno)
@@ -414,6 +416,66 @@ namespace api.Controllers
             return await _candidateRepo.DeleteUserAttachment(attachmentid);
         }
     
+        [HttpPost("updateEmployeeWithAttachments")]
+        public async Task<ActionResult> UploadAndUpdateEmployee()
+        {
+            var folderName = Path.Combine("Assets", "EmployeeAttachments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
+
+            try
+            {
+                var modelData = JsonSerializer.Deserialize<Employee>(Request.Form["data"],  
+                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+               
+                var memoryStream = new MemoryStream();
+
+                foreach (var file in files)
+                {
+                    if (file.Length==0) continue;
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    
+                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                    if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                    var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    file.CopyTo(stream);
+
+                    var cand = modelData.EmployeeAttachments.ToList();
+                    foreach(var cnd in cand) {
+                        if(!string.IsNullOrEmpty(cnd.FullPath) && cnd.FullPath.Contains(fileName)) {
+                            cnd.FullPath=fullPath;
+                            break;
+                        }
+                    }
+                    
+                }
+
+                var obj = new EmployeeWithErrDto();
+                if(modelData.Id==0) {
+                    obj = await _empRepo.AddNewEmployee(modelData);
+                } else {
+                    obj = await _empRepo.EditEmployee(modelData);
+                }
+
+                if(!string.IsNullOrEmpty(obj.Error)) {
+                    return BadRequest(new ApiException(400, "Bad Request", obj.Error));
+                }
+               
+                return Ok(obj.employee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+
+
+        }
+
+  
         
     }
 

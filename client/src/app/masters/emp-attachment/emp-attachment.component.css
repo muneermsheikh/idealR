@@ -1,0 +1,13 @@
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+.w300 {width: 300px;}
+
+.fSmaller {font-size: smaller;}
+
+.stdd {display: inline-block; margin-left:5px; margin-right:5px; font-size: small;}
+
+.b {font-weight: bold;}
+.red {color: red;}
+
+btn {color: aliceblue !important; width: 25px;}

@@ -67,12 +67,18 @@
 
 
 <div class="stdd col-7 my-0" style="vertical-align: top;">
-    <input (keyup.enter)="onSearchInUsernames()" [disabled]="messages?.length === 0" type="text" class="stdd fa-solid fa-find fa-2x w200" #search placeholder="Search in Username">
-    <button (click)="onSearchInUsernames()"  [disabled]="messages?.length === 0" 
-        title="search the text in message Usernames" class="btn fa fa-find fa-2x mx-2"></button>
+    <input (keyup.enter)="onSearchInUsernames()" [disabled]="messages?.length === 0" type="text" 
+        class="stdd fa-solid fa-find fa-2x w200" #search placeholder="Search in Username">
+
+    <button (click)="onSearchInUsernames()" style="color: yellow; background-color: white;" 
+        class="btn fa fa-find fa-2x mx-2" [disabled]="messages?.length === 0" 
+        title="search the text in message Usernames" ></button>
  
-    <input (keyup.enter)="onSearchInContents()" [disabled]="messages?.length === 0"  type="text" class="stdd fa-solid fa-find fa-2x w200" #searchInContents placeholder="Search in message contnts">
+    <input (keyup.enter)="onSearchInContents()" [disabled]="messages?.length === 0" type="text" style="color: aliceblue;"
+        class="stdd fa-solid fa-find fa-2x w200" #searchInContents placeholder="Search in message contnts">
+
     <button (click)="onSearchInContents()" [disabled]="messages?.length === 0" 
+        style="color: aliceblue; background-color: grey;"
         title="search in Message Contents" class="btn fa fa-find fa-2x mx-2"></button>
 
     <div *ngIf="messageSentOn.getFullYear() < 2000" (click)="sendMessage()">Draft message</div>
@@ -80,4 +86,5 @@
         [(ngModel)]="msgToDisplay"
     ></angular-editor>
 </div>
-<button class="btn fa fa-window-close fa-2x" type="button" title="close this window" routerLink="/administration" ></button>
+<button class="btn fa fa-window-close fa-2x" type="button" style="color: aliceblue;" 
+    title="close this window" routerLink="/" ></button>

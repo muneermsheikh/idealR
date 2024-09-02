@@ -169,23 +169,26 @@ namespace api.Data.Repositories
         {
             var qry = _context.Messages.OrderByDescending(x => x.MessageSentOn).AsQueryable();
 
-            qry = mParams.Container switch
+            if(loggedinUsername.ToLower()=="admin") {
+                 qry = mParams.Container switch
+                {
+                    "Inbox" => qry = qry.Where(x => x.RecipientDeleted == false),
+                    "Outbox" => qry = qry.Where(x => x.SenderDeleted == false),
+                    _ => qry = qry.Where(x => x.RecipientDeleted == false)
+                };
+
+            } else {
+                qry = mParams.Container switch
                 {
                     "Inbox" => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && 
                         x.RecipientDeleted == false),
                     "Outbox" => qry = qry.Where(x => x.SenderUsername.ToLower() == loggedinUsername.ToLower() && 
                         x.SenderDeleted == false),
-                    _ => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && x.RecipientDeleted == false)
+                    _ => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && 
+                        x.RecipientDeleted == false)
                 };
-
-            if(loggedinUsername.ToLower()=="admin") {       //only admin user can view messages of other users
-                if(mParams.CvRefId != 0) qry = qry.Where(x => x.CvRefId == mParams.CvRefId);
-                //if(!string.IsNullOrEmpty(mParams.SenderEmail)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
-                //if(!string.IsNullOrEmpty(mParams.RecipientEmail)) qry = qry.Where(x => x.RecipientEmail.ToLower() == mParams.RecipientEmail.ToLower());
-                //if(!string.IsNullOrEmpty(mParams.SenderUsername)) qry = qry.Where(x => x.SenderEmail.ToLower() == mParams.SenderEmail.ToLower());
-                //if(!string.IsNullOrEmpty(mParams.RecipientUsername)) qry = qry.Where(x => x.RecipientUsername.ToLower() == mParams.RecipientUsername.ToLower());
-            } 
-
+            }
+            
             if(!string.IsNullOrEmpty(mParams.Search)) qry = qry
                 .Where(x => x.SenderUsername.ToLower().Contains(mParams.Search) || x.RecipientUsername.ToLower().Contains(mParams.Search) );
             if(!string.IsNullOrEmpty(mParams.SearchInContents)) qry = qry

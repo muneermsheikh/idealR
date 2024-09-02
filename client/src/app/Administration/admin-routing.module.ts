@@ -4,9 +4,6 @@ import { MenuComponent } from './menu/menu.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
 import { RouterModule } from '@angular/router';
 import { SelectionsComponent } from './selections/selections.component';
-import { CategoriesComponent } from './categories/categories.component';
-import { IndustriesComponent } from './industries/industries.component';
-import { QualificationsComponent } from './qualifications/qualifications.component';
 import { UserManagementComponent } from '../admin/user-management/user-management.component';
 import { OrdersListingComponent } from './orders/orders-listing/orders-listing.component';
 import { OrderResolver } from '../_resolvers/orderResolver';
@@ -104,12 +101,7 @@ const routes = [
 
   {path: 'pendingSelections', component: SelectionPendingComponent},
 
-  {path: 'categories', component: CategoriesComponent},
-
-  {path: 'industries', component: IndustriesComponent},
-
-  {path: 'qualifications', component: QualificationsComponent },
-
+  
   {path: 'customers', component: CustomerListComponent},
 
   {path: 'customerEdit/:id', component: CustomerEditComponent,
@@ -126,7 +118,7 @@ const routes = [
 
   {path: 'feedbacklist', component: FeedbackListComponent},
   
-  {path: 'feedback/:id/:customerId', component: FeedbackComponent,
+  {path: 'feedback/:id/:customerId', component: FeedbackComponent,      //id and customerid are exclusive of each other
     resolve: {
       feedback: FeedbackInputResolver,
       history: FeedbackHistoryResolver

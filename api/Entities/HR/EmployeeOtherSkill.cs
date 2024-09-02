@@ -2,7 +2,7 @@ using api.Entities.Admin;
 
 namespace api.Entities.HR
 {
-    public class OtherSkill: BaseEntity
+    public class EmployeeOtherSkill: BaseEntity
     {
         public int EmployeeId { get; set; }
         public int SkillDataId { get; set; }

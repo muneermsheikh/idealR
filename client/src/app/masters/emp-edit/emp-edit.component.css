@@ -1,0 +1,57 @@
+.lbl {
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 2px;
+    font-size: small;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: top;
+}
+
+.stdd {
+    display: inline-block;
+    margin-right: 2px;
+    margin-left: 2px;
+    font-size: small;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: top;
+}
+
+btn {color: aliceblue !important; width: 25px;}
+
+.b {font-weight: bold;}
+.red {color: red;}
+.hAlignR {text-align: right;}
+
+.stdd1px {
+    display: inline-block;
+    margin-right: 1px;
+    margin-left: 1px;
+    font-size: smaller;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.w25 {width: 25px;}
+.w50 {width: 50px;}
+.w60 {width: 60px;}
+.w70 {width: 70px;}
+.w75 {width: 75px;}
+.w80 {width: 80px;}
+.w100{width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w175 {width: 175px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}
+
+.fSmall {font-size: small;}
+.fSmaller {
+    font-size: smaller;
+}
+
+

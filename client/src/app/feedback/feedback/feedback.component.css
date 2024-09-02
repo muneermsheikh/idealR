@@ -13,6 +13,7 @@
     vertical-align: top;
     padding: 0px;
     word-wrap: normal;
+    
 }
 
 .hist {
@@ -28,18 +29,46 @@
 .b {font-weight: bold;}
 .red {color: red;}
 
-.mL185 {margin-left: 185px;}
+.mL215 {margin-left: 215px;}
 .mL600 {margin-left: 600px!important;}
 .mL50 {margin-left: 50px!important;}
 
 .cursorPointer{cursor:pointer; color: darkblue;}
 
-.radio {
-    width: 30px;
-    display: inline-block;
-    margin: 0 2px 0 2px;
-    padding: 0px;
+.inputCheck {
+    margin-right: 5px;
+    width: 40px;
+    margin-left: 10px;
+    border: 2px;
+    border-color: #000000;
 }
+
+input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #fff;
+	border-radius: 50%;
+	margin-right: 10px;
+	background-color: rgb(195, 177, 177);
+	position: relative;
+}
+
+input[type="radio"]:checked::before {
+	content: "";
+	display: block;
+	width: 8px;
+	height: 8px;
+	background-color: #4a0fec;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: appear 0.8s;
+}
+
 
 md-content{
     position: absolute;
@@ -53,6 +82,7 @@ md-content{
     margin-bottom: 0px;
     padding-top: 0px;
     padding-bottom: 0px;
+    background-color: darkgrey;
 }
 
 .w25 {width: 25px;}
@@ -65,4 +95,4 @@ md-content{
 .w150 {width: 150px;}
 .w200 {width: 200px;}
 .w250 {width: 250px;}
-.w370 {width: 370px;}
+.w450 {width: 450px;}

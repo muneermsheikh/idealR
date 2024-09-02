@@ -6,7 +6,7 @@ import { User } from '../_models/user';
 import { ICVRefAndDeployDto } from '../_dtos/process/cvRefAndDeployDto';
 import { Pagination } from '../_models/pagination';
 import { deployParams } from '../_models/params/process/deployParams';
-import { IDeployStage, IDeployStatusAndName } from '../_models/masters/deployStage';
+import { IDeployStatusAndName } from '../_models/masters/deployStage';
 import { IDeploymentDto } from '../_models/process/deploymentdto';
 import { GetHttpParamsForDepProcess, getPaginatedResult } from './paginationHelper';
 import { IDeploymentPendingDto } from '../_dtos/process/deploymentPendingDto';

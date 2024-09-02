@@ -4,7 +4,7 @@ import { getPaginatedResult } from './paginationHelper';
 import { Message } from '../_models/message';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { messageParams } from '../_models/params/Admin/messageParams';
-import { of } from 'rxjs';
+import { map, of } from 'rxjs';
 import { IMessage } from '../_models/admin/message';
 
 @Injectable({
@@ -41,7 +41,13 @@ export class MessageService {
     if(msgparams.recipientUsername !=='') params = params.append('recipientUsername', msgparams.recipientUsername);
     if(msgparams.senderUsername !=='') params = params.append('senderUsername', msgparams.senderUsername);
 
-    return getPaginatedResult<Message[]>(this.baseUrl + 'Messages', params, this.http);
+    
+    return getPaginatedResult<Message[]>(this.baseUrl + 'Messages', params, this.http).pipe(
+      map(response => {
+        this.cache.set(Object.values(this.msgParams).join('-'), response);
+        return response;
+      })
+    )
   }
 
   getMessageThread(username: string) {

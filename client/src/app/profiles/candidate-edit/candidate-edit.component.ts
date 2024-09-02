@@ -33,7 +33,7 @@ export class CandidateEditComponent implements OnInit {
   registerForm: FormGroup = new FormGroup({});
   maxDate: Date = new Date();
   validationErrors: string[] | undefined;
-  memberPhotoUrl: string='';
+  //memberPhotoUrl: string='';
 
   candidate: ICandidate|undefined;
   professions: IProfession[]=[];
@@ -78,7 +78,17 @@ export class CandidateEditComponent implements OnInit {
   returnUrl = '/candidates';
 
   attachmentTypes = [
-    {'typeName':'CV'}, {'typeName':'Educational Certificate'},{'typeName':'Experience Certificate'}, {'typeName':'Passport Copy'}, {'typeName':'Photograph'}  
+    {'typeName':'CV'}, 
+    {'typeName':'Educational Certificate'},
+    {'typeName':'Experience Certificate'}, 
+    {'typeName':'Passport Copy'}, 
+    {'typeName':'Photograph'},
+    {'typeName':'affidavit'},
+    {'typeName':'Air Ticket'},
+    {'typeName':'Travel Insurance'},
+    {'typeName':'Medical Fit certificate'},
+    {'typeName':'Visa Copy'},
+    {'typeName':'Job Offer'}
   ]
   
   lastTimeCalled: number= Date.now();
@@ -274,7 +284,6 @@ export class CandidateEditComponent implements OnInit {
   removeUserQualification(i:number) {
     this.userQualifications.removeAt(i);
   }
-
 
   newUserProfession(): FormGroup {
     return this.fb.group({

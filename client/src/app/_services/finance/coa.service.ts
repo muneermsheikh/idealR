@@ -34,13 +34,7 @@ export class COAService {
     return this.http.get<ICOA>(this.apiUrl + 'finance/candidateCOA/' + appno + '/' + true);
   }
 
-  
-  /*getCandidateCOAWithClBal(appno: number) {
-    return this.http.get<COADto>(this.apiUrl + 'finance/coaforcandidate/' + appno + '/' + false);
-  }
-  */
-
-  
+    
   getCoas(useCache: boolean=true) {
 
     var oParams = this.sParams;  

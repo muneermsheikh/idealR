@@ -20,7 +20,7 @@ namespace api.Controllers
             - RegisterFeedback.  The data is now ready to be formatted at the client end, to send to the customer
         4. Once the feedback questionnaire is written to the database, it is formatted to a layout in the client section.
         5. A link of this form is sent to the client, who then updates te form with his inputs.
-        6. The client then submits the form, which is received by the api server.
+        6. The client then submits the form, which is received by the api.
     */
     public class FeedbackController : BaseApiController
     {
@@ -65,17 +65,26 @@ namespace api.Controllers
         }
 
         [HttpGet("newfeedback/{feedbackId}/{customerid}")]
-        public async Task<CustomerFeedback> GenerateNewNewFeedbackObject(int feedbackId, int customerid)
+        public async Task<CustomerFeedback> GenerateOrGetFeedbackObject(int feedbackId, int customerid)
         {
             var obj = await _repo.GenerateOrGetFeedbackFromId(feedbackId, customerid);
             return obj;
         }
 
+        [HttpGet("generatenewfeedback/{customerid}")]
+        public async Task<CustomerFeedback> GenerateNewFeedbackObject(int customerid)
+        {
+            var obj = await _repo.GenerateNewFeedbackOfCustomer(customerid);
+            return obj;
+        }
+
+        
+
         [HttpGet("history/{customerId}")]
         public async Task<ActionResult<ICollection<FeedbackHistoryDto>>> GetFeedbackHistory(int customerId) {
 
             var hist = await _repo.CustomerFeedbackHistory(customerId);
-            if(hist==null || hist.Count == 0) return BadRequest(new ApiException(400, "Not Found", "No feedback history available"));
+            //if(hist==null || hist.Count == 0) return BadRequest(new ApiException(400, "Not Found", "No feedback history available"));
             return Ok(hist);
         }
 
@@ -93,9 +102,10 @@ namespace api.Controllers
             return await _repo.GetFeedbackStddQs();
         }
 
-        [HttpGet("sendfeedback/{id}/{urlstring}")]
-        public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id, string urlstring)
+        [HttpGet("sendfeedback/{id}")]
+        public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id)
         {
+            var urlstring = "sample string";
             var err = await _repo.SendFeedbackEmailToCustomer(id, urlstring, User.GetUsername());
 
             if(string.IsNullOrEmpty(err)) return Ok("");

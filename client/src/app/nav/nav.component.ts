@@ -70,7 +70,6 @@ export class NavComponent implements OnInit{
     observableOuter.pipe(
       filter((response) => response !==null),
       switchMap((response) => {
-        console.log('nav.ts, switchMap', response);
         const config = {
           class: 'modal-dialog-centered modal-lg',
           initialState: {

@@ -1,5 +1,6 @@
 export interface IEmployeeBriefDto
 {
+    id: number;
     appUserId: number;
     gender: string;
     firstName: string;

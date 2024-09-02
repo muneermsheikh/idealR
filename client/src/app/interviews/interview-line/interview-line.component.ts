@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { IInterview } from 'src/app/_models/hr/interview';
 import { IInterviewBrief } from 'src/app/_models/hr/interviewBrief';
-import { IIntervw } from 'src/app/_models/hr/intervw';
 import { InterviewService } from 'src/app/_services/hr/interview.service';
 
 @Component({

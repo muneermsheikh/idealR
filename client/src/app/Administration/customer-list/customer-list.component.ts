@@ -111,10 +111,6 @@ export class CustomerListComponent implements OnInit{
       this.customerSelected = item.checked ? undefined : item;
     }
 
-    customerEvaluationCicked(event: any) {
-
-    }
-
     deleteClicked(event: any) {
       var id=event;
       var confirmMsg = 'confirm delete this Customer?. WARNING: this cannot be undone';
@@ -140,44 +136,6 @@ export class CustomerListComponent implements OnInit{
 
     }
 
-
-    /*editByModalClicked(event: any, item: ICustomerBriefDto)    //event:customer.id
-    {
-          if(event === null) {
-            this.toastr.warning('No customer object returned from the modal form');
-            return;
-          }  
-
-        const config = {
-            class: 'modal-dialog-centered modal-lg',
-            initialState: {
-              customer: event,
-            }
-          }
-
-          this.bsModalRef = this.modalService.show(CustomerEditModalComponent, config);
-
-          const observableOuter =  this.bsModalRef.content.updateEvent;
-          
-          observableOuter.pipe(
-            filter((response: ICustomer) => response !==null),
-            switchMap((response: ICustomer) =>  {
-              return this.service.updateCustomer(response)
-            })
-          ).subscribe((response: string) => {
-      
-            if(response==='') {
-              this.toastr.success('Customer updated', 'Success');
-      
-            } else {
-              this.toastr.warning(response, 'Failure');
-            }
-            
-          })
-              
-    }
-    */
-
     addClicked() {
       this.navigateByRoute(0, '/administration/customerEdit');
     }
@@ -191,8 +149,11 @@ export class CustomerListComponent implements OnInit{
       var id=event;
  
       if(id === undefined)   return;
-      //this.router.navigateByUrl('/administration/feedback/0/' + event);
-      this.navigateByRoute(event, '/administration/feedback/0');
+      
+      this.router.navigate( ['/administration/feedback/0/' + id ], 
+        { state: { user: this.user,  returnUrl: '/administration/customers' } }
+      );
+      
     }
 
     evaluationClicked(event: any) {   //customer line emits ICustomerReview

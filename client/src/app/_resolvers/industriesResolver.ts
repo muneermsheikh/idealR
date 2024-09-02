@@ -1,9 +1,9 @@
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { IIndustryType } from "../shared/models/admin/industryType";
-import { MastersService } from "../shared/services/masters.service";
+import { IIndustryType } from "../_models/admin/industryType";
+import { EmployeeService } from "../_services/admin/employee.service";
 
-export const IndustriesResolver: ResolveFn<IIndustryType[]> = (
+export const IndustryListResolver: ResolveFn<IIndustryType[]> = (
   ) => {
-    return inject(MastersService).getIndustries();
+    return inject(EmployeeService).getIndustryList();
   };

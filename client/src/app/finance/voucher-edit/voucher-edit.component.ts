@@ -80,7 +80,6 @@ export class VoucherEditComponent implements OnInit{
   voucherFiles: File[] = [];
   
   public progress: number=0;
-  public message: string='';  
   isMultipleUploaded = false;
   isSingleUploaded = false;
   urlAfterUpload = '';
@@ -484,8 +483,6 @@ export class VoucherEditComponent implements OnInit{
                 this.progress = Math.round(100 * event.loaded / event.total);
               else if (event.type === HttpEventType.Response) 
               {
-                  this.message = 'Upload success.';
-          
                   this.form.get('voucherNo')?.setValue(event.body.returnInt);
                   this.returnToCaller();
                   this.toastr.success('the Voucher is created, and assigned Voucher No. '+  event.body.returnInt);
@@ -501,7 +498,6 @@ export class VoucherEditComponent implements OnInit{
               if (event.type === HttpEventType.UploadProgress)
                   this.progress = Math.round(100 * event.loaded / event.total);
               else if (event.type === HttpEventType.Response) {
-                  this.message = 'Upload success.';
                 
                   this.toastr.success("Voucher Updated and Files uploaded");
                   this.onUploadFinished.emit(event.body);
@@ -517,33 +513,5 @@ export class VoucherEditComponent implements OnInit{
     uploadFinished = (event: any) => { 
       this.response = event; 
     }
-
-    /*download (i: number) {
-      this.attachmentid = this.voucherAttachments.at(i).get('id')?.value;
-      if(this.attachmentid===0) return;
-  
-      var filename = this.voucherAttachments.at(i).get('fileName')?.value;
-        this.fileService.download(this.attachmentid).subscribe((event: any) => {
-            if(event.type===HttpEventType.DownloadProgress)  
-                this.progress = Math.round((100 * event.loaded) / event.total);
-            else if(event.type===HttpEventType.Response) {
-                this.message='download success';
-                this.downloadFile(event, filename);
-            }
-        });
-    }
-
-    private downloadFile = (data: HttpResponse<Blob>, filename: string) => {
-
-      const downloadedFile = new Blob([data.body!], { type: data.body?.type });
-      const a = document.createElement('a');
-      a.setAttribute('style', 'display:none;');
-      document.body.appendChild(a);
-      a.download = filename;
-      a.href = URL.createObjectURL(downloadedFile);
-      a.target = '_blank';
-      a.click();
-      document.body.removeChild(a);
-    }
-      */
+   
 }

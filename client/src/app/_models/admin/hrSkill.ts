@@ -5,6 +5,5 @@ export interface IHRSkill
      professionId: number;
      professionName: string;
      industryId: number;
-     skillLevel: number;
      skillLevelName: string;
 }

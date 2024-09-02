@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { IProfession } from 'src/app/_models/masters/profession';
 import { Pagination } from 'src/app/_models/pagination';
 import { professionParams } from 'src/app/_models/params/masters/ProfessionParams';
@@ -9,7 +9,6 @@ import { CategoryService } from 'src/app/_services/category.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
-import { IIndustryType } from 'src/app/_models/admin/industryType';
 
 @Component({
   selector: 'app-categories',

@@ -96,10 +96,6 @@
                                     matTooltip="interview list, create new interview schedule" >
                                     <span class="sidenav">Intreviews</span>
                                 </a>
-                                <a mat-list-item routerLink="/accordionTest"
-                                    matTooltip="test of accodation component" >
-                                    <span class="sidenav">Accordion Test</span>
-                                </a>
                             </mat-nav-list>
                         </mat-expansion-panel>
                         
@@ -117,19 +113,7 @@
                             <a mat-list-item routerLink="/administration/selections" matTooltip="list of candidates selected" >
                                 <span class="sidenav">Selected candidates</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/customers" matTooltip="Customers, Vendors, Associates" >
-                                <span class="sidenav">Customers</span>
-                            </a>
-                            <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
-                                <span class="sidenav" >Messages</span>
-                            </a>
-                            <a mat-list-item routerLink="/administration/feedback" matTooltip="Listing of feedbacks from Customers, Candidates or Vendors" >
-                                <span class="sidenav">Feedbacks</span>
-                            </a>
-        
-                            <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
-                                <mat-icon></mat-icon><span class="sidenav">Messages</span>
-                            </a>
+                            
                            
                         </mat-nav-list>
                     </mat-expansion-panel>
@@ -138,12 +122,36 @@
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Administration</mat-expansion-panel-header>
                         <mat-nav-list>
-                            <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
-                                <span class="sidenav">Authorities & Roles</span>
+                            <a mat-list-item routerLink="/administration/customers" matTooltip="Customers, Vendors, Associates" >
+                                <span class="sidenav">Customers</span>
+                            </a>
+                            <a mat-list-item routerLink="/administration/feedback" matTooltip="Listing of feedbacks from Customers, Candidates or Vendors" >
+                                <span class="sidenav">Feedbacks</span>
+                            </a>
+        
+                            <a mat-list-item routerLink="/masters/employees" matTooltip="Employees" >
+                                <span class="sidenav">Employees</span>
+                            </a>
+                            <a mat-list-item routerLink="/masters/categories" matTooltip="Categories" >
+                                <span class="sidenav">Categories</span>
+                            </a>
+                            <a mat-list-item routerLink="/masters/qualifications" matTooltip="Qualifications" >
+                                <span class="sidenav">Qualifications</span>
+                            </a>
+                            <a mat-list-item routerLink="/masters/industries" matTooltip="Industries" >
+                                <span class="sidenav">Industries</span>
+                            </a>
+                            <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
+                                <span class="sidenav" >Messages</span>
                             </a>
                             <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
                                 <span class="sidenav">Authorities & Roles</span>
                             </a>
+                     
+                            <a mat-list-item (click)="exportExcelProspectives()" matTooltip="reads from PROSPECTIVE CANDIDATES Excel Sheet and copies the data to database" >
+                                <span class="sidenav">Excel Conversion</span>
+                            </a>
+
                         </mat-nav-list>
                     </mat-expansion-panel>
 
@@ -163,41 +171,7 @@
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
-                   
-        
-                    <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Master Values</mat-expansion-panel-header>
-                        <mat-nav-list>
-                            <a mat-list-item routerLink="/administration/categories" matTooltip="List of Categories">
-                                <mat-icon></mat-icon>
-                                <span>Categories List</span>
-                            </a>
-                            <a mat-list-item routerLink="/administration/qualifications" matTooltip="List of Qualifications" >
-                                <mat-icon></mat-icon><span>Qualifications List</span>
-                            </a>
-                            <a mat-list-item routerLink="/administration/industries" matTooltip="Industries List" >
-                                <mat-icon></mat-icon><span>Industries List</span>
-                            </a>
-                        </mat-nav-list>
-                    </mat-expansion-panel>
-        
-                    <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Import from Excel Sheet</mat-expansion-panel-header>
-                        <mat-nav-list>
-                            <a mat-list-item (click)="exportExcelProspectives()" matTooltip="reads from PROSPECTIVE CANDIDATES Excel Sheet and copies the data to database" >
-                                <mat-icon>excel</mat-icon><span>Prospectives</span>
-                            </a>
-                            <a mat-list-item (click)="exportExcelCustomers()" matTooltip="reads from CUSTOMERS Excel Sheet and copies to DB" >
-                                <mat-icon>excel</mat-icon><span>Customers</span>
-                            </a>
-                            <a mat-list-item (click)="exportExcelEmployees()" matTooltip="reads data from Employees Excel Sheet and copies to DB" >
-                                <mat-icon></mat-icon><span>Employees</span>
-                            </a>
-                            
-                        </mat-nav-list>
-                    </mat-expansion-panel>
-                    
-                    
+               
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Finance</mat-expansion-panel-header>
                         <mat-nav-list>

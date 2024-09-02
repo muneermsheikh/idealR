@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin;
 using api.Entities.Deployments;
@@ -105,6 +106,7 @@ namespace api.Controllers
             return Ok(true);
                         
         }
+        
         [HttpPost("interviewitem")]
         public async Task<ActionResult<string>> UploadAndUpdateInterviewItem()
         {
@@ -292,19 +294,17 @@ namespace api.Controllers
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
 
-                        if (System.IO.File.Exists(fullPath)) {
-                            ErrorString="The file [" + file.FileName + "] already exists at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
-                            return ErrorString;
-                        }
+                        if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                        
 
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
-                        var recAffected = await _custRepo.WriteCustomerExcelToDB(fullPath, User.GetUsername());
+                        var err = await _custRepo.WriteCustomerExcelToDB(fullPath, User.GetUsername());
 
-                        if(recAffected > 0) return Ok("");
-
-                        return BadRequest(new ApiException(400, "Error in copying the excel sheet to database", "Failed to copy the file to database" ) );
+                        if(!string.IsNullOrEmpty(err)) return  BadRequest(new ApiException(400, err, "Failed to copy the file to database" ) );
+                        
+                        return Ok("");
                      }
                 
                 } catch (Exception ex) {
@@ -399,15 +399,12 @@ namespace api.Controllers
                         var FileExtn = Path.GetExtension(file.FileName);
                         if(FileExtn != ".xlsx") return "Only '.xlsx' files are accepted";
                         
-
                         var filename=file.FileName[..9].ToLower();
 
                         var fullPath = Path.Combine(pathToSave, fileName);
                         var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
 
-                        if (System.IO.File.Exists(fullPath)) {
-                            System.IO.File.Delete(fullPath);
-                         }
+                        if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
 
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
@@ -488,6 +485,52 @@ namespace api.Controllers
 
             return Ok();
         }
+ 
+       
+        [HttpPost("updateAndUploadAttachments")]
+        public async Task<ActionResult<ICollection<EmployeeAttachment>>> UploadAndUpdateAttachment()
+        {
+            var folderName = Path.Combine("Assets", "EmployeeAttachments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
+
+            //try
+            //{
+                var modelData = JsonSerializer.Deserialize<ICollection<EmployeeAttachment>>(Request.Form["data"],  
+                    new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+
+                foreach(var file in files) {
+                    var memoryStream = new MemoryStream();
+                    if (file.Length==0) return null;
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                
+                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                    if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                    var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    file.CopyTo(stream);
+                    var modelFile = modelData.FirstOrDefault(x => x.FileName == file.FileName);
+                    if(modelFile != null) modelFile.FullPath = fullPath;
+                }
+
+                var dtoErr = await _empRepo.EditEmployeeAttachments(modelData);
+
+                if(!string.IsNullOrEmpty(dtoErr.Error)) {
+                    return BadRequest(new ApiException(400, "Bad Request", dtoErr.Error));
+                }
+               
+                return Ok(dtoErr.employeeAttachments);
+           /* }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+            */
+        }
+   
 
     }
 }

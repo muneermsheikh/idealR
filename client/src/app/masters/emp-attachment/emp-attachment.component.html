@@ -1,0 +1,33 @@
+<form [formGroup]="form">
+    <div class="stdd"><span class="stdd b">Employee Name:</span>{{empName}}</div>
+    <div class="stdd"><span class="stdd b">Position:</span>{{position}}</div>
+    <button class="btn fa fa-save fa-2x green" (click)="update()" ></button>
+    <button class="btn fa fa-window-close fa-2x" (click)="bsModalRef.hide()" ></button>
+    <br><div class="b my-2" style="margin-left: 10px;">Attachments</div>            
+        <hr class="my-1">
+        <label class="fSmaller w125" style="margin-left: 50px;">Type</label>
+        <label class="fSmaller w150" >File Name</label>
+        <label class="fSmaller w300">Full Path</label>
+        <button class="btn fa fa-plus" (click)="addEmployeeAttachment()" ></button>
+        <input class="stdd" type="file" id="file" (change)="onFileInputChange($event)" >
+        <div formArrayName="employeeAttachments" style="margin-left: 50px;">
+            <div *ngFor="let att of employeeAttachments.controls; let k=index">
+                <div [formGroupName]="k">
+                    <ng-select   
+                        style="display: inline-block; font-size: smaller;width: 125px;" 
+                        [items]="fileTypes" 
+                        [searchable]=true 
+                        bindLabel = "fileType"
+                        bindValue = "fileType"
+                        formControlName="fileType"
+                        >
+                    </ng-select> 
+                    <app-text-input [label]="'File Name'" formControlName="fileName" class="stdd w150" ></app-text-input>
+                    <app-text-input [label]="'Full Path'" formControlName="fullPath" class="stdd w300" ></app-text-input>
+                    <button class="btn fa fa-download" (click)="download(k)" ></button>
+                    
+                    <button class="btn fa fa-trash red" (click)="removeEmployeeAttachment(k)" ></button>
+                </div>
+            </div>
+        </div>
+</form>

@@ -65,7 +65,8 @@ export class CvsreferredComponent implements OnInit{
   }
 
   loadCVsReferred() {
-
+      console.log('CVParams', this.cvParams);
+      
       this.service.setParams(this.cvParams);
       this.service.referredCVsPaginated(true).subscribe({
         next: response => {

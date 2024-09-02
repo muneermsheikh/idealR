@@ -106,6 +106,8 @@ export class ExcelConversionMenuComponent {
   }
 
   onCustomerFileInputChange(event: Event) {
+    this.formData = new FormData();
+    
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
@@ -165,11 +167,10 @@ export class ExcelConversionMenuComponent {
   }
 
   exportEmployeeFile() {
-    console.log('formdata:', this.formData);
     
     this.accountService.copyEmployeeXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
-        if(response === '') {
+        if(response === '' || response === null) {
           this.toastr.success(response + ' file(s) copied to database', 'success');
           this.uploadEmployeeExcel=false;
           } else {

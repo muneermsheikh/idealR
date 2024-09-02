@@ -110,8 +110,53 @@ namespace api.Data.Repositories.HR
                 .Where(x => x.DateIssued.Month == month && x.DateIssued.Year == year && x.CustomerId==CustomerId)
                 .FirstOrDefaultAsync();
             */
-            
-            if(FeedbackId == 0) {   //generate new feedback for the customer
+            var fdbk = new CustomerFeedback();
+
+            if(FeedbackId !=0) {
+                fdbk = await _context.CustomerFeedbacks.Include(x => x.FeedbackItems).Where(x => x.Id==FeedbackId)
+                    .FirstOrDefaultAsync();
+                return fdbk;
+            } else if (CustomerId !=0) {         
+                //compose new object           
+                fdbk = await _context.CustomerFeedbacks.Where(x => x.CustomerId==CustomerId)
+                    .Include(x => x.FeedbackItems.OrderBy(x => x.QuestionNo))
+                    .OrderByDescending(x => x.DateIssued)
+                    .FirstOrDefaultAsync();
+                
+                if(fdbk != null) return fdbk;
+
+                //return blank new object of customerFeedback
+
+                var inputQs = await _context.FeedbackQs.OrderBy(x => x.QuestionNo)
+                    .Select(x => new FeedbackItem {
+                        FeedbackGroup=x.FeedbackGroup,
+                        Question=x.Question, QuestionNo = x.QuestionNo,
+                        Response="", Prompt1=x.Prompt1, Prompt2=x.Prompt2, 
+                        Prompt3=x.Prompt3, Prompt4=x.Prompt4
+                    }).ToListAsync();
+                
+                fdbk = await (from cust in _context.Customers where cust.Id == CustomerId
+                    join off in _context.CustomerOfficials on cust.Id equals off.CustomerId 
+                    where off.Status == "Active" && off.Divn=="HR"
+                    orderby off.PriorityHR
+                    select new CustomerFeedback{
+                        CustomerId = CustomerId, CustomerName = cust.CustomerName, City=cust.City,
+                        OfficialName=off.OfficialName, Designation = off.Designation,
+                        Email = off.Email, PhoneNo = off.PhoneNo, DateIssued = DateTime.Now,
+                        FeedbackItems=inputQs}
+                ).FirstOrDefaultAsync();
+
+                return fdbk;
+            } else {
+                return null;
+            }
+
+        }
+
+        
+        public async Task<CustomerFeedback> GenerateNewFeedbackOfCustomer(int CustomerId)
+        {
+            if (CustomerId !=0) {         
                 var inputQs = await _context.FeedbackQs.OrderBy(x => x.QuestionNo)
                     .Select(x => new FeedbackItem {
                         FeedbackGroup=x.FeedbackGroup,
@@ -133,12 +178,11 @@ namespace api.Data.Repositories.HR
 
                 return fdbk;
             } else {
-                var fdbk = await _context.CustomerFeedbacks.Where(x => x.Id == FeedbackId)
-                    .Include(x => x.FeedbackItems).FirstOrDefaultAsync();
-                return fdbk;
+                return null;
             }
-                
+
         }
+
 
         public async Task<ICollection<FeedbackHistoryDto>> CustomerFeedbackHistory(int customerId) {
             

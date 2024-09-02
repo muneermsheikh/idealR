@@ -7,7 +7,7 @@ import { IndustryParams } from 'src/app/_models/params/masters/industryParams';
 import { User } from 'src/app/_models/user';
 import { IndustriesService } from 'src/app/_services/admin/industries.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
-import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
+import { CategoryEditModalComponent } from '../../masters/category-edit-modal/category-edit-modal.component';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 
 @Component({

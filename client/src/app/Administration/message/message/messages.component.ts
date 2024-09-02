@@ -85,8 +85,8 @@ export class MessageComponent implements OnInit {
   }
 
   loadMessages(useCache: boolean=true) {
-    if(this.container == this.lastContainer) return;
-
+    //if(this.container == this.lastContainer) return;
+    console.log('useccache:', useCache);
     this.loading = true;
     this.service.setParams(this.msgParams);
 
@@ -108,6 +108,7 @@ export class MessageComponent implements OnInit {
   }
 
   pageChanged(event: any) {
+    
     if (this.msgParams.pageNumber !== event.page) {
       this.msgParams.pageNumber = event.page;
       this.loadMessages();

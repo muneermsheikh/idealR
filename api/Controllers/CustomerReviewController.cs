@@ -18,7 +18,8 @@ namespace api.Controllers
         [HttpGet("customerreview/{customerId}")]
         public async Task<CustomerReview> GetCustomerReview(int customerId)
         {
-            return await _custRvwRepo.GetCustomerReview(customerId);
+            //return await _custRvwRepo.GetCustomerReview(customerId);
+            return await _custRvwRepo.GetOrCreateCustomerReviewObject(customerId, User.GetUsername());
         }
 
         

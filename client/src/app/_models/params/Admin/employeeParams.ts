@@ -9,6 +9,6 @@ export class employeeParams {
      position ="";
      sort = "name";
      pageNumber = 1;
-     pageSize = 10;
+     pageSize = 15;
      search: string='';
 }

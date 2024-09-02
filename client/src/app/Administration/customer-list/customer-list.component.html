@@ -12,13 +12,17 @@
     ></pagination>
 
     <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" 
-        class="stdd btn fa-solid fa-magnifying-glass">Search</button>
+    <button (click)="onSearch()" title="search the text entered" style="color: aliceblue;"
+        class="stdd btn fa fa-find fa-2x"></button>
 
-    <label class="lbl w100">Type</label>
-    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="customer" class="w35 stdd">Customer
-    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="associate" class="w35 stdd">associate
-    <input type="radio" id="customerType" name="customerType" [(ngModel)]="cParams.customerType" value="vendor" class="w35 stdd">Vendor
+    <label class="lbl w100" style="text-align: right; margin-right:5px;">Type</label>
+    <span style="font-size: small;">Customer</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="customer" class="inputcheck form-check-input">
+
+    <span style="font-size: small;">Associate</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="associate" class="inputcheck form-check-input">
+    <span style="font-size: small;">Vendor</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="vendor" class="inputcheck form-check-input">
 
     <button class="btn fa fa-check" (click)="applyCustomerType()"
         title="retrieves records from database based upon customerType selected"></button>
@@ -33,8 +37,8 @@
         class="btn btn-outline-success fa fa-window-close mx-1"></button>
 
     <hr class="my-0">
-    <label class="lbl w35">Sel</label>
-    <label class="lbl w75" style="margin-left: 20px;">Type</label>
+    <label class="lbl w35" style="margin-left: 25px !important;">Sel</label>
+    <label class="lbl w50" style="margin-left: 10px;">Type</label>
     <label class="lbl w200">Customer Name</label>
     <label class="lbl w125">Known As</label>
     <label class="lbl w100">City</label>

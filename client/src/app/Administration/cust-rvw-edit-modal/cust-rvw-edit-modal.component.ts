@@ -157,7 +157,9 @@ export class CustRvwEditModalComponent implements OnInit {
       }
       
     });
-    }
+  }
+
+  
   goback() {
     this.router.navigateByUrl(this.returnUrl);
   }

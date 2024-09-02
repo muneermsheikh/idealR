@@ -3,6 +3,7 @@ using api.DTOs.Admin;
 using api.Entities.Admin;
 using api.Entities.HR;
 using api.Entities.Identity;
+using api.Entities.Master;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
@@ -12,7 +13,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using SQLitePCL;
 
 namespace api.Data.Repositories.Master
 {
@@ -31,13 +31,15 @@ namespace api.Data.Repositories.Master
         }
 
 
-        public async Task<Employee> AddNewEmployee(EmployeeToAddDto model)
+        public async Task<EmployeeWithErrDto> AddNewEmployee(Employee model)
         {
+            var errDto = new EmployeeWithErrDto();
+
             var user = new AppUser{
-                City=model.City, Country=model.Country, Created = model.DOJ,
-                DateOfBirth = model.DOB, Email = model.Email, KnownAs = model.KnownAs,
+                City=model.City, Created = model.DateOfJoining,
+                DateOfBirth = model.DateOfBirth, Email = model.Email, KnownAs = model.KnownAs,
                 Gender = model.Gender, Position = model.Position, 
-                PhoneNumber = model.OfficialMobileNo, UserName = model.Email
+                PhoneNumber = model.PhoneNo, UserName = model.Email
             };
 
             var result = await _userManager.CreateAsync(user, "Pa$$w0rd");
@@ -46,10 +48,17 @@ namespace api.Data.Repositories.Master
 
             model.AppUserId = user.Id;
 
-            var emp = _mapper.Map<Employee>(model);
-            _context.Employees.Add(emp);
+            _context.Employees.Add(model);
 
-            return await _context.SaveChangesAsync() > 0 ? emp : null;
+            try {
+                await _context.SaveChangesAsync();
+                errDto.employee = model;
+            } catch (DbException ex) {
+                errDto.Error = ex.Message;
+            } catch (Exception ex) {
+                errDto.Error = ex.Message;
+            }
+            return errDto;
         }
 
         public async Task<bool> DeleteEmployee(int employeeid)
@@ -63,9 +72,14 @@ namespace api.Data.Repositories.Master
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Employee> EditEmployee(Employee model )
+        public async Task<EmployeeWithErrDto> EditEmployee(Employee model )
         {
-            var existing = await _context.Employees.Include(x => x.HRSkills).Include(x => x.OtherSkills)
+            var errDto = new EmployeeWithErrDto();
+
+            var existing = await _context.Employees
+                .Include(x => x.HRSkills)
+                .Include(x => x.EmployeeOtherSkills)
+                //.Include(x => x.EmployeeAttachments)
                 .Where(x => x.Id == model.Id).FirstOrDefaultAsync();
             
             if(existing == null) return null;
@@ -94,7 +108,7 @@ namespace api.Data.Repositories.Master
                 {
                     var newItem = new HRSkill{ EmployeeId=model.Id, IndustryId= modelItem.IndustryId, 
                         ProfessionId = modelItem.ProfessionId, IsMain = modelItem.IsMain, 
-                        SkillLevel = modelItem.SkillLevel};
+                        SkillLevelName = modelItem.SkillLevelName};
                     
                     existing.HRSkills.Add(newItem);
                     _context.Entry(newItem).State = EntityState.Added;
@@ -102,18 +116,18 @@ namespace api.Data.Repositories.Master
             }
 
             //OtherSkills
-            foreach (var existingItem in existing.OtherSkills.ToList())
+            foreach (var existingItem in existing.EmployeeOtherSkills.ToList())
             {
                 if (!model.HRSkills.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
-                    _context.OtherSkills.Remove(existingItem);
+                    _context.EmployeeOtherSkills.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted;
                 }
             }
 
-            foreach (var modelItem in model.OtherSkills)
+            foreach (var modelItem in model.EmployeeOtherSkills)
             {
-                var existingItem = existing.OtherSkills.Where(c => c.Id == modelItem.Id && c.Id != default(int)).SingleOrDefault();
+                var existingItem = existing.EmployeeOtherSkills.Where(c => c.Id == modelItem.Id && c.Id != default(int)).SingleOrDefault();
                 if (existingItem != null)       // Update child
                 {
                     _context.Entry(existingItem).CurrentValues.SetValues(modelItem);
@@ -121,22 +135,22 @@ namespace api.Data.Repositories.Master
                 }
                 else            //insert children as new record
                 {
-                    var newItem = new OtherSkill{ EmployeeId=model.Id, SkillDataId = modelItem.SkillDataId,
+                    var newItem = new EmployeeOtherSkill{ EmployeeId=model.Id, SkillDataId = modelItem.SkillDataId,
                         IsMain = modelItem.IsMain, SkillLevel = modelItem.SkillLevel};
                     
-                    existing.OtherSkills.Add(newItem);
+                    existing.EmployeeOtherSkills.Add(newItem);
                     _context.Entry(newItem).State = EntityState.Added;
                 }
             }
 
-            var user = await _userManager.FindByEmailAsync(model.OfficialEmail);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 user = new AppUser{
-                    City=model.City, Country=model.Country, Created = model.DateOfJoining,
-                    DateOfBirth = model.DateOfBirth, Email = model.OfficialEmail, KnownAs = model.KnownAs,
-                    Gender = model.Gender, Position = model.Position, PhoneNumber = model.EmployeePhone,
-                    UserName = model.OfficialEmail
+                    City=model.City, Created = model.DateOfJoining,
+                    DateOfBirth = model.DateOfBirth, Email = model.Email, KnownAs = model.KnownAs,
+                    Gender = model.Gender, Position = model.Position, PhoneNumber = model.PhoneNo,
+                    UserName = model.Email
                 };
 
                 var result = await _userManager.CreateAsync(user, "Pa$$w0rd");
@@ -145,13 +159,13 @@ namespace api.Data.Repositories.Master
             } else {
                 //email or phone changed? update ApopUser
                  var appuserchanged=false;
-                if(existing.OfficialEmail != model.OfficialEmail) {
-                    user.Email = model.OfficialEmail;
+                if(existing.Email != model.Email) {
+                    user.Email = model.Email;
                     appuserchanged = true;
                 }
 
-                if(existing.OfficialPhoneNo != model.OfficialPhoneNo) {
-                    user.PhoneNumber = model.OfficialPhoneNo;
+                if(existing.PhoneNo != model.PhoneNo) {
+                    user.PhoneNumber = model.PhoneNo;
                     appuserchanged = true;
                 }
 
@@ -160,15 +174,135 @@ namespace api.Data.Repositories.Master
 
             model.AppUserId = user.Id;
 
+            /* //EmployeeAttachments
+
+            foreach (var existingItem in existing.EmployeeAttachments.ToList())
+            {
+                if (!model.EmployeeAttachments.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.EmployeeAttachments.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted;
+                }
+            }
+
+            foreach (var modelItem in model.EmployeeAttachments)
+            {
+                var existingItem = existing.EmployeeAttachments.Where(c => c.Id == modelItem.Id && c.Id != default(int)).SingleOrDefault();
+                if (existingItem != null)       // Update child
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(modelItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                }
+                else            //insert children as new record
+                {
+                    var newItem = new EmployeeAttachment{ 
+                        EmployeeId=model.Id, FileName= modelItem.FileName, 
+                        FileType = modelItem.FileType, 
+                        FullPath = modelItem.FullPath};
+                    
+                    existing.EmployeeAttachments.Add(newItem);
+                    _context.Entry(newItem).State = EntityState.Added;
+                }
+            }
+
+            */
             _context.Entry(existing).State = EntityState.Modified;
 
-            return await _context.SaveChangesAsync() > 0 ? existing : null;
+            try {
+                await _context.SaveChangesAsync();
+                errDto.employee = existing;
+            } catch (DbException ex) {
+                errDto.Error = ex.Message;
+            } catch (Exception ex) {
+                errDto.Error = ex.Message;
+            }
 
+            return errDto;
+        }
+
+        public async Task<ICollection<EmployeeAttachment>> GetEmployeeAttachments(int employeeid)
+        {
+            var obj = await _context.EmployeeAttachments.Where(x => x.EmployeeId == employeeid).ToListAsync();
+
+            obj ??= new List<EmployeeAttachment>{ new() };
+            return obj;
+        }
+
+        public async Task<EmployeeAttachmentsWithErrDto> EditEmployeeAttachments(ICollection<EmployeeAttachment> model)
+        {
+            var dtoErr = new EmployeeAttachmentsWithErrDto();
+
+            var employeeid = model.Select(x => x.EmployeeId).FirstOrDefault();
+
+            var existingItems = await _context.EmployeeAttachments.Where(x => x.EmployeeId == employeeid).ToListAsync();
+            if (existingItems == null) {
+                foreach(var item in model) {
+                    var newItem = new EmployeeAttachment{ 
+                        EmployeeId=item.EmployeeId, FileName= item.FileName, 
+                        FileType = item.FileType, FullPath = item.FullPath};
+                    //_context.EmployeeAttachments.Add(item);
+                    existingItems.Add(item);
+                    _context.Entry(item).State= EntityState.Added;
+                }
+
+            } else {
+  
+                foreach (var existingItem in existingItems)
+                {
+                    if (!model.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                    {
+                        _context.EmployeeAttachments.Remove(existingItem);
+                        _context.Entry(existingItem).State = EntityState.Deleted;
+                    }
+                }
+
+                foreach (var modelItem in model)
+                {
+                    var existingItem = existingItems.Where(c => c.Id == modelItem.Id && c.Id != default(int)).SingleOrDefault();
+                    if (existingItem != null)       // Update child
+                    {
+                        _context.Entry(existingItem).CurrentValues.SetValues(modelItem);
+                        _context.Entry(existingItem).State = EntityState.Modified;
+                    }
+                    else            //insert children as new record
+                    {
+                        var newItem = new EmployeeAttachment{ 
+                            EmployeeId=employeeid, FileName= modelItem.FileName, 
+                            FileType = modelItem.FileType, 
+                            FullPath = modelItem.FullPath};
+                        
+                        existingItems.Add(newItem);
+                        _context.Entry(newItem).State = EntityState.Added;
+                    }
+                }
+
+            }
+
+            try {
+                await _context.SaveChangesAsync();
+                dtoErr.employeeAttachments=existingItems;
+            } catch (DbException ex) {
+                dtoErr.Error = ex.Message;
+            } catch (Exception ex) {
+                dtoErr.Error = ex.Message;
+            }
+
+            return dtoErr;
         }
 
         public async Task<Employee> GetEmployeeFromEmpId(int empId)
         {
-            return await _context.Employees.FindAsync(empId);
+            var obj = await _context.Employees.Where(x => x.Id == empId)
+                .Include(x => x.HRSkills)
+                .Include(x => x.EmployeeOtherSkills)
+                //.Include(x => x.EmployeeAttachments)
+                .FirstOrDefaultAsync();
+            
+            return obj;
+        }
+        public async Task<ICollection<Industry>> GetIndustriesList()
+        {
+            return await _context.Industries.OrderBy(x => x.IndustryName).ToListAsync();
         }
 
         public async Task<ICollection<EmployeeIdAndKnownAsDto>> GetEmployeeIdAndKnownAs()
@@ -196,7 +330,7 @@ namespace api.Data.Repositories.Master
                 if(!string.IsNullOrEmpty(empParams.SecondName)) query = query.Where(x => x.SecondName.ToLower() == empParams.SecondName.ToLower());
                 if(!string.IsNullOrEmpty(empParams.FamilyName)) query = query.Where(x => x.FamilyName.ToLower() == empParams.FamilyName.ToLower());
                 if(!string.IsNullOrEmpty(empParams.Department)) query = query.Where(x => x.Department.ToLower() == empParams.Status.ToLower());
-                if(!string.IsNullOrEmpty(empParams.Email)) query = query.Where(x => x.OfficialEmail.ToLower() == empParams.Email.ToLower());
+                if(!string.IsNullOrEmpty(empParams.Email)) query = query.Where(x => x.Email.ToLower() == empParams.Email.ToLower());
                 if(!string.IsNullOrEmpty(empParams.Gender)) query = query.Where(x => x.Gender.ToLower() == empParams.Gender.ToLower());
             }
 
@@ -215,7 +349,11 @@ namespace api.Data.Repositories.Master
             return strError;
         }
 
-        
+        public async Task<ICollection<SkillData>> GetSkillDatas() {
+            var obj = await _context.SkillDatas.OrderBy(x => x.SkillName).ToListAsync();
+
+            return obj;
+        }
         public async Task<string> ReadEmployeeExcelFile(string filePath, string Username)
         {
             //column titles in row 4, data starts from row 5
@@ -285,7 +423,7 @@ namespace api.Data.Repositories.Master
                 
                 string Gender = "", FirstName = "", SecondName = "", FamilyName = "", KnownAs = "";
                 string Position = "", Qualification = "", DateOfBirth = "", PlaceOfBirth = "";
-                string AadharNo = "", Nationality="", OfficialEmail="";
+                string AadharNo = "", OfficialEmail="";
                 string OfficialPhoneNo="", OfficialMobileNo="", DateOfJoining="";
                 string Department="", Address="", Address2="", City="", Country=""; 
                 string HRSkill1="", HRSkill2="", HRSkill3="";
@@ -334,11 +472,11 @@ namespace api.Data.Repositories.Master
                     {
                         Gender = Gender, FirstName = FirstName, SecondName = SecondName,
                         FamilyName = FamilyName, KnownAs = KnownAs, UserName = Username,
-                        Position = Position, Qualifications = Qualification, PlaceOfBirth=PlaceOfBirth,
-                        AadharNo = AadharNo, Nationality = Nationality, OfficialEmail=OfficialEmail,
-                        OfficialPhoneNo = OfficialPhoneNo, OfficialMobileNo = OfficialMobileNo,
+                        Position = Position, Qualification = Qualification, PlaceOfBirth=PlaceOfBirth,
+                        AadharNo = AadharNo, Email=OfficialEmail,
+                        PhoneNo = OfficialPhoneNo, Phone2 = OfficialMobileNo,
                         Department = Department, Address = Address, Address2 = Address2, 
-                        City = City, Country = Country
+                        City = City
                     };
                     
                     
@@ -403,5 +541,24 @@ namespace api.Data.Repositories.Master
             return string.IsNullOrEmpty(strError) ? "" : strError;
         }
 
+        public async Task<string> CheckAadharExists(string aadharno)
+        {
+             var obj = await _context.Employees
+                .Where(x => x.AadharNo == aadharno)
+                .Select(x => x.FirstName)
+                .FirstOrDefaultAsync();
+            
+            return obj ?? "";
+        }
+
+        public async Task<string> CheckEmailExists(string email)
+        {
+             var obj = await _context.Employees
+                .Where(x => x.Email.ToLower() == email.ToLower())
+                .Select(x => x.FirstName)
+                .FirstOrDefaultAsync();
+            
+            return obj ?? "";
+        }
     }
 }

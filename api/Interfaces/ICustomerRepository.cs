@@ -23,7 +23,7 @@ namespace api.Interfaces
          
          Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official);
          Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official);
-        Task<int> WriteCustomerExcelToDB(string fileNameWithPath, string username);
+        Task<string> WriteCustomerExcelToDB(string fileNameWithPath, string username);
          
          Task<ICollection<OfficialAndCustomerNameDto>> GetOfficialsAndCustomerNames(string customerType);
 

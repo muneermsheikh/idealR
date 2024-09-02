@@ -169,9 +169,9 @@ namespace api.Extensions
                 int intKnownAs=0, intUserName=0, intDepartment = 0;
                 int intPosition=0, intQualification=0, intDOB=0, intAadharNo=0, intPPNo=0, intEmail=0;
                 int intDOJ=0, intPlaceOfBirth=0, intCity=0, intAddress=0, intPIN=0, intPhoneNo=0, intMobileNo=0;
-                int intHRSkill1ProfessionId=0, intHRSkill1SkillLevel=0, intHRSkill1IsMain=0;
-                int intHRSkill2ProfessionId=0, intHRSkill2SkillLevel=0, intHRSkill2IsMain=0;
-                int intHRSkill3ProfessionId=0, intHRSkill3SkillLevel=0, intHRSkill3IsMain=0;
+                int intHRSkill1ProfessionId=0, intHRSkill1SkillLevelName=0, intHRSkill1IsMain=0;
+                int intHRSkill2ProfessionId=0, intHRSkill2SkillLevelName=0, intHRSkill2IsMain=0;
+                int intHRSkill3ProfessionId=0, intHRSkill3SkillLevelName=0, intHRSkill3IsMain=0;
                 int intOtherSkill1DataId=0, intOtherSkill1Level=0, intOtherSkill1IsMain=0;
                 int intOtherSkill2DataId=0, intOtherSkill2Level=0, intOtherSkill2IsMain=0;
                 int intOtherSkill3DataId=0, intOtherSkill3Level=0, intOtherSkill3IsMain=0;
@@ -205,9 +205,9 @@ namespace api.Extensions
                         case "hrskill1professionid": case "hrskill1profid": case "hr skill1 professionid": intHRSkill1ProfessionId=col; break;
                         case "hrskill2professionid": case "hrskill2profid": case "hr skill2 professionid": intHRSkill2ProfessionId=col; break;
                         case "hrskill3professionid": case "hrskill3profid": case "hr skill3 professionid": intHRSkill3ProfessionId=col; break;
-                        case "hrskill1skilllevel": case "hrskill1skill level": intHRSkill1SkillLevel=col; break;
-                        case "hrskill2skilllevel": case "hrskill2skill level": intHRSkill2SkillLevel=col; break;
-                        case "hrskill3skilllevel": case "hrskill3skill level": intHRSkill3SkillLevel=col; break;
+                        case "hrskill1skilllevelName": case "hrskill1skillName level": intHRSkill1SkillLevelName=col; break;
+                        case "hrskill2skilllevel": case "hrskill2skill level": intHRSkill2SkillLevelName=col; break;
+                        case "hrskill3skilllevel": case "hrskill3skill level": intHRSkill3SkillLevelName=col; break;
                         case "hrskill1ismain": case "hrskill1is main": intHRSkill1IsMain=col; break;
                         case "hrskill2ismain": case "hrskill2is main": intHRSkill2IsMain=col; break;
                         case "hrskill3ismain": case "hrskill3is main": intHRSkill3IsMain=col; break;
@@ -233,7 +233,7 @@ namespace api.Extensions
                 string PhoneNo = "", CurrentLocation = "", Qualification = "", MobileNo="";
                 string Gendr = "",  Address = "", City="";
                 int HRSkill1ProfessionId=0, HRSkill2ProfessionId=0, HRSkill3ProfessionId=0;
-                int HRSkill1SkillLevel=0, HRSkill2SkillLevel=0, HRSkill3SkillLevel=0;
+                string HRSkill1SkillLevelName="", HRSkill2SkillLevelName="", HRSkill3SkillLevelName="";
                 bool HRSkill1IsMain=false, HRSkill2IsMain=false, HRSkill3IsMain=false;
 
                 int OtherSkill1DataId=0, OtherSkill2DataId=0, OtherSkill3DataId=0;
@@ -263,7 +263,7 @@ namespace api.Extensions
 
                     if(intHRSkill1ProfessionId > 0) {
                       HRSkill1ProfessionId = Convert.ToInt32(worksheet.Cells[row, intHRSkill1ProfessionId].Value.ToString());
-                      HRSkill1SkillLevel = Convert.ToInt32(worksheet.Cells[row, intHRSkill1SkillLevel].Value.ToString());
+                      HRSkill1SkillLevelName = worksheet.Cells[row, intHRSkill1SkillLevelName].Value.ToString();
                       HRSkill1IsMain = Convert.ToBoolean(worksheet.Cells[row, intHRSkill1IsMain].Value.ToString());
                     }
 
@@ -284,25 +284,26 @@ namespace api.Extensions
                         DateOfBirth = dob, DateOfJoining=doj,
                         Address = Address,
                         City = CurrentLocation,
-                        OfficialEmail = EmailId,
-                        OfficialPhoneNo = PhoneNo, OfficialMobileNo = MobileNo,
+                        Email = EmailId,
+                        PhoneNo = PhoneNo, Phone2 = MobileNo,
                         Department = Department,
                         HRSkills = new List<HRSkill>(),
-                        OtherSkills = new List<OtherSkill>()
+                        EmployeeOtherSkills = new List<EmployeeOtherSkill>(),
+                        EmployeeAttachments = new List<EmployeeAttachment>()
                     };
 
                     if(HRSkill1ProfessionId > 0) newEmployee.HRSkills.Add(new() {
-                        ProfessionId=HRSkill1ProfessionId, SkillLevel=HRSkill1SkillLevel, IsMain=true});
+                        ProfessionId=HRSkill1ProfessionId, SkillLevelName=HRSkill1SkillLevelName, IsMain=true});
                     if(HRSkill2ProfessionId > 0) newEmployee.HRSkills.Add(new() {
-                        ProfessionId=HRSkill2ProfessionId, SkillLevel= HRSkill2SkillLevel, IsMain=HRSkill2IsMain});
+                        ProfessionId=HRSkill2ProfessionId, SkillLevelName= HRSkill2SkillLevelName, IsMain=HRSkill2IsMain});
                     if(HRSkill3ProfessionId > 0) newEmployee.HRSkills.Add(new() {
-                        ProfessionId=HRSkill3ProfessionId, SkillLevel= HRSkill3SkillLevel, IsMain=HRSkill3IsMain});
+                        ProfessionId=HRSkill3ProfessionId, SkillLevelName= HRSkill3SkillLevelName, IsMain=HRSkill3IsMain});
 
-                    if(OtherSkill1DataId != 0) newEmployee.OtherSkills.Add(new () {
+                    if(OtherSkill1DataId != 0) newEmployee.EmployeeOtherSkills.Add(new () {
                         SkillDataId=OtherSkill1DataId, SkillLevel=OtherSkill1Level, IsMain=OtherSkill1IsMain});
-                    if(OtherSkill2DataId != 0) newEmployee.OtherSkills.Add(new () {
+                    if(OtherSkill2DataId != 0) newEmployee.EmployeeOtherSkills.Add(new () {
                         SkillDataId=OtherSkill2DataId, SkillLevel=OtherSkill2Level, IsMain=OtherSkill2IsMain});
-                    if(OtherSkill3DataId != 0) newEmployee.OtherSkills.Add(new () {
+                    if(OtherSkill3DataId != 0) newEmployee.EmployeeOtherSkills.Add(new () {
                         SkillDataId=OtherSkill3DataId, SkillLevel=OtherSkill3Level, IsMain=OtherSkill3IsMain});
                     
                     context.Entry(newEmployee).State = EntityState.Added;

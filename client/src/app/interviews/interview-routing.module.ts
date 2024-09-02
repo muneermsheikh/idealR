@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InterviewListComponent } from './interview-list/interview-list.component';
 import { InterviewEditComponent } from './interview-edit/interview-edit.component';
-import { InterviewResolver } from '../_resolvers/interviewResolver';
 import { RouterModule } from '@angular/router';
-import { EditComponent } from './edit/edit.component';
 import { IntervwResolver } from '../_resolvers/hr/intervwResolver';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 

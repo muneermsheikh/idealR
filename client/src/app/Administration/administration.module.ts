@@ -4,9 +4,6 @@ import { SharedModule } from '../_modules/shared.module';
 import { MenuComponent } from './menu/menu.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { SelectionsComponent } from './selections/selections.component';
-import { CategoriesComponent } from './categories/categories.component';
-import { IndustriesComponent } from './industries/industries.component';
-import { QualificationsComponent } from './qualifications/qualifications.component';
 import { OrdersListingComponent } from './orders/orders-listing/orders-listing.component';
 import { OrderItemComponent } from './orders/order-item/order-item.component';
 import { ReviewStatusNamePipe } from './review-status-name.pipe';
@@ -37,7 +34,6 @@ import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.comp
 import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract-rvw-item.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MessageComponent } from './message/message/messages.component';
-import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
 import { DLComponent } from './dl/dl.component';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 
@@ -46,9 +42,6 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
   declarations: [
     MenuComponent,
     SelectionsComponent,
-    CategoriesComponent,
-    IndustriesComponent,
-    QualificationsComponent,
     OrdersListingComponent,
     OrderItemComponent,
     ReviewStatusNamePipe,
@@ -78,7 +71,6 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
     ContractRvwComponent,
     ContractRvwItemComponent,
     MessageComponent,
-    CategoryEditModalComponent,
     DLComponent,
     ExcelConversionMenuComponent,
   ],

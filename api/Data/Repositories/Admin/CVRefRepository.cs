@@ -191,7 +191,8 @@ namespace api.Data.Repositories.Admin
     
             //if(refParams.OrderItemId  > 0) query = query.Where(x => x.OrderItemId == refParams.OrderItemId);
             if(refParams.CustomerId > 0) query = query.Where(x => x.CustomerId == refParams.CustomerId);
-            if(refParams.CustomerId > 0) query = query.Where(x => x.OrderNo == refParams.OrderNo);
+            if(refParams.OrderNo > 0) query = query.Where(x => x.OrderNo == refParams.OrderNo);
+            if(refParams.OrderId != 0) query = query.Where(x => x.OrderId == refParams.OrderId);
             if(refParams.CandidateId != 0) query = query.Where(x => x.CandidateId == refParams.CandidateId);
             //if(!string.IsNullOrEmpty(refParams.RefStatus)) 
                 //query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());

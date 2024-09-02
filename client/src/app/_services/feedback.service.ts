@@ -66,13 +66,18 @@ export class FeedbackService {
     
     return this.http.get<IFeedback>(this.apiUrl + 'Feedback/newfeedback/' + feedbackId + '/' + customerId  );
   }
+
+  generatenewfeedback(customerid: number) {
+    return this.http.get<IFeedback>(this.apiUrl + 'Feedback/generatenewfeedback/' + customerid);
+  }
   
   getFeedbackHistory(customerId: number) {
     return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + customerId);
   }
 
   sendFeedbackMail(id: number) {
-    return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id + '/emaillink');
+    console.log('entered service', id);
+    return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id );
   }
 
   setParams(params: FeedbackParams) {

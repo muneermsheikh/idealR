@@ -425,7 +425,8 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerName", "City")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("CustomerName IS NOT NULL");
 
                     b.ToTable("Customers");
                 });
@@ -756,9 +757,6 @@ namespace api.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -768,16 +766,10 @@ namespace api.Data.Migrations
                     b.Property<string>("Department")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeAddress")
+                    b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeePhone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeePhone2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeQualifications")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FamilyName")
@@ -794,16 +786,10 @@ namespace api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nationality")
+                    b.Property<string>("Phone2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OfficialEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OfficialMobileNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OfficialPhoneNo")
+                    b.Property<string>("PhoneNo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PlaceOfBirth")
@@ -813,7 +799,7 @@ namespace api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Qualifications")
+                    b.Property<string>("Qualification")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Remarks")
@@ -831,6 +817,33 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.EmployeeAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeAttachments");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.FlightDetail", b =>
@@ -2679,6 +2692,33 @@ namespace api.Data.Migrations
                     b.ToTable("ChecklistHRItems");
                 });
 
+            modelBuilder.Entity("api.Entities.HR.EmployeeOtherSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SkillDataId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SkillLevel")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("EmployeeOtherSkills");
+                });
+
             modelBuilder.Entity("api.Entities.HR.Employment", b =>
                 {
                     b.Property<int>("Id")
@@ -2803,41 +2843,14 @@ namespace api.Data.Migrations
                     b.Property<string>("ProfessionName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SkillLevel")
-                        .HasColumnType("int");
+                    b.Property<string>("SkillLevelName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("HRSkills");
-                });
-
-            modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SkillDataId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SkillLevel")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("OtherSkills");
                 });
 
             modelBuilder.Entity("api.Entities.HR.ProspectiveCandidate", b =>
@@ -3859,6 +3872,15 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.EmployeeAttachment", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Employee", null)
+                        .WithMany("EmployeeAttachments")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Admin.InterviewItem", b =>
                 {
                     b.HasOne("api.Entities.Admin.Interview", null)
@@ -4142,6 +4164,17 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.HR.EmployeeOtherSkill", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Employee", "Employee")
+                        .WithMany("EmployeeOtherSkills")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("api.Entities.HR.Employment", b =>
                 {
                     b.HasOne("api.Entities.HR.SelectionDecision", null)
@@ -4153,24 +4186,11 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.HR.HRSkill", b =>
                 {
-                    b.HasOne("api.Entities.Admin.Employee", "Employee")
+                    b.HasOne("api.Entities.Admin.Employee", null)
                         .WithMany("HRSkills")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("api.Entities.HR.OtherSkill", b =>
-                {
-                    b.HasOne("api.Entities.Admin.Employee", "Employee")
-                        .WithMany("OtherSkills")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("api.Entities.HR.SelectionDecision", b =>
@@ -4325,9 +4345,11 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Admin.Employee", b =>
                 {
-                    b.Navigation("HRSkills");
+                    b.Navigation("EmployeeAttachments");
 
-                    b.Navigation("OtherSkills");
+                    b.Navigation("EmployeeOtherSkills");
+
+                    b.Navigation("HRSkills");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Interview", b =>

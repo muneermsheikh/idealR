@@ -10,6 +10,7 @@ namespace api.Interfaces.HR
     {
         Task<PagedList<FeedbackDto>> GetFeedbackList(FeedbackParams feedbackParams);
         Task<CustomerFeedback> GenerateOrGetFeedbackFromId(int feedbackId, int customerid);
+        Task<CustomerFeedback> GenerateNewFeedbackOfCustomer(int CustomerId);
         Task<ICollection<FeedbackHistoryDto>> CustomerFeedbackHistory(int customerId);
         Task<CustomerFeedback> GetFeedbackWithItems(int feedbackId);
         Task<ICollection<FeedbackQ>> GetFeedbackStddQs();

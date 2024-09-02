@@ -1,0 +1,46 @@
+
+<pagination *ngIf="pagination !== undefined"
+    style="display: inline-block;"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+
+<label class="stdd" style="width: 250px; margin-left: 15px; text-align: right;">Enter Employee name to search</label>
+<input type="text" title="enter first name to search" 
+    class="stdd form-control w200" style="margin-left: 20px;" [(ngModel)]="iParams.firstName">
+
+<button type="button" (click)="onSearch()" class="mx-5 fa fa-search fa-2x"></button>
+<button type="button" (click)="onReset()" class="fa fa-refresh fa-2x mx-2" ></button>
+<button type="button" routerLink="/" class="fa fa-window-close fa-2x" ></button>
+
+
+<br>
+
+    <label class="lbl w50" style="margin-left: 50px;" >Gender</label>
+    <label class="lbl w150">First Name</label>
+    <label class="lbl w100">Family Name</label>
+    <label class="lbl w100">Known As</label>
+    <label class="lbl w100">Department</label>
+    <label class="lbl w150">Position</label>
+    <label class="lbl w100">Status</label>
+    
+    <div *ngIf="employees.length===0" class="my-2">
+        No employees on record
+    </div>
+    <div *ngFor="let emp of employees">
+        <app-employee-line
+            [emp]="emp"
+            (editEmployeeEvent)="employeeEdit($event)"
+            (deleteEmployeeEvent)="employeeDelete($event)"
+            
+        ></app-employee-line>
+    </div>
+
+    <!--(uploadClickedEvent)="attachments(emp)"-->
+    

@@ -25,6 +25,7 @@ namespace api.Data
 
         //Admin
         public DbSet<Employee> Employees {get; set;}
+        public DbSet<EmployeeAttachment> EmployeeAttachments {get; set;}
         public DbSet<Message> Messages {get; set;}
         //public DbSet<UserLike> UserLikes {get; set;}
         //public DbSet<ContactResult> contactResults {get; set;}  
@@ -88,7 +89,7 @@ namespace api.Data
         public DbSet<CVRef> CVRefs {get; set;}
         public DbSet<Employment> Employments {get; set;}
         public DbSet<HRSkill> HRSkills {get; set;}
-        public DbSet<OtherSkill> OtherSkills {get; set;}
+        public DbSet<EmployeeOtherSkill> EmployeeOtherSkills {get; set;}
         public DbSet<SelectionDecision> SelectionDecisions {get; set;}
         public DbSet<UserExp> UserExps {get; set;}
         public DbSet<UserPhone> UserPhones {get; set;}
@@ -154,7 +155,7 @@ namespace api.Data
 
             builder.Entity<AcknowledgeToClient>().HasIndex(x => x.OrderId).IsUnique();
 
-            builder.Entity<Customer>().HasIndex(x => new {x.CustomerName, x.City}).IsUnique();
+            builder.Entity<Customer>().HasIndex(x => new {x.CustomerName, x.City}).IsUnique().HasFilter("CustomerName IS NOT NULL");
             builder.Entity<CustomerOfficial>().HasIndex(x => new{x.CustomerId, x.OfficialName}).IsUnique();
             
             builder.Entity<CustomerFeedback>().HasMany(x => x.FeedbackItems).WithOne().OnDelete(DeleteBehavior.Cascade);

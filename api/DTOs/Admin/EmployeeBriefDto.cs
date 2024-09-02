@@ -2,6 +2,7 @@ namespace api.DTOs.Admin
 {
     public class EmployeeBriefDto
     {
+        public int Id { get; set; }
         public int AppUserId { get; set; }
         public string Gender { get; set; }
         public string FirstName { get; set; }

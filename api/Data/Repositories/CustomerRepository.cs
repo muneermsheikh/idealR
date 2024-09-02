@@ -311,10 +311,9 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> WriteCustomerExcelToDB(string fileNameWithPath, string Username)
+        public async Task<string> WriteCustomerExcelToDB(string fileNameWithPath, string Username)
         {
-            var count = await _context.ReadCustomerDataExcelFile(fileNameWithPath,Username);
-            return count;
+            return await _context.ReadCustomerDataExcelFile(fileNameWithPath,Username);
         }
 
        

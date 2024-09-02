@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { IInterview } from 'src/app/_models/hr/interview';
 import { IInterviewBrief } from 'src/app/_models/hr/interviewBrief';
 import { Pagination } from 'src/app/_models/pagination';
 import { interviewParams } from 'src/app/_models/params/Admin/interviewParams';

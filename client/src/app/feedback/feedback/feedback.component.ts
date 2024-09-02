@@ -69,6 +69,7 @@ export class FeedbackComponent implements OnInit {
       email: feedbk.email,
       phoneNo: feedbk.phoneNo,
       dateIssued: feedbk.dateIssued,
+      dateReceived: feedbk.dateReceived,
       gradeAssessedByClient: feedbk.gradeAssessedByClient,
       customerSuggestion: feedbk.customerSuggestion,
 
@@ -153,6 +154,20 @@ export class FeedbackComponent implements OnInit {
 
   }
 
+  generatenew() {
+    if(this.feedback!.id !== 0) {
+      var msg = "This will replace the current feedback data with a new blank Feedback Object.  do you want to continue?";
+      this.confirm.confirm("Confirm replace current feedback", msg).subscribe({
+        next: (cnfm: boolean) => {
+          if(!cnfm) return;
+        }
+      })
+    }
+    
+    this.service.generatenewfeedback(this.feedback!.customerId).subscribe({
+      next: (response: IFeedback) => this.feedback = response
+    })
+  }
   
   generateLinkForAddresses() {
 
@@ -199,7 +214,17 @@ export class FeedbackComponent implements OnInit {
       return;
     }
 
-    this.service.sendFeedbackMail(this.feedback!.id);
+    this.service.sendFeedbackMail(this.feedback!.id).subscribe({
+      next: (response: string) => {
+        if(response ==='' || response === null) {
+          this.toastr.success('Feedback mail composed, and can be viewed in messages', 'Message composed')
+        } else {
+          this.toastr.info(response, 'Failed to compose message')
+        }
+      }, error : (response: any) => {
+        this.toastr.error(response.error.details, 'Error in composing email message')
+      }
+    })
   }
   
 }

@@ -19,7 +19,7 @@
         <a  routerLinkActive="active" (click)="toggleOrdersExcel()" class="nav-link">Conversion for Orders</a>
     </div>
 
-    <button class="fa fa-window-close" title="go back to home" routerLink="/administration"></button>
+    <button class="fa fa-window-close fa-2x" title="go back to home" routerLink="/"></button>
 
     <div *ngIf="uploadExcel" class="my-10" >
         
@@ -69,13 +69,22 @@
             <li>The Worksheet name must be named 'Sheet1'</li>
             <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
             <li>Data should begin from row 3rd row.</li>
+            <li>Required Values are:
+                <ul>Customer Name - Min 5 characters, max 100 characters.</ul> 
+                <ul>Known As - Min 5 characters, Max 15 characters</ul>
+                <ul>City - min 4 characters, max 50 characters</ul>
+                <ul>Email - a valid email address</ul>
+            </li>
+            <li>Data should begin from row 3rd row.</li>
             
         </div>
         
         <br>
         <input class="stdd d-flex align-items-center w450" type="file" id="file" (change)="onCustomerFileInputChange($event)" >
-        <button class="stdd btn fa fa-check green fa-2x" title="covert the uploaded customer excel file to database" (click)="exportCustomerFile()" ></button>
-        <button class="stdd btn fa fa-window-close" title="close this customer file input" (click)="closeCustomerFileInput()" ></button>
+        <button class="btn btn fa fa-check fa-2x" style="color: aliceblue; display: inline-block;"
+            title="covert the uploaded customer excel file to database" (click)="exportCustomerFile()" ></button>
+        <button class="btn btn fa fa-window-close" style="color: aliceblue; display: inline-block;"
+            title="close this customer file input" (click)="closeCustomerFileInput()" ></button>
     </div>
 
     <div *ngIf="uploadEmployeeExcel" class="my-10" >
@@ -86,16 +95,22 @@
             <li>The Worksheet name must be named 'Sheet1'</li>
             <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
             <li>Data should begin from row 3rd row.</li>
+            <ul>
+                Following fields are required:
+                <li style="font-size: smaller;">First Name</li>
+                <li style="font-size: smaller;">Known As</li>
+                <li style="font-size: smaller;">Position</li>
+            </ul>
             
         </div>
         
         <br>
         <input class="stdd d-flex align-items-center w450" type="file" id="file" 
             (change)="onEmployeeFileInputChange($event)" >
-        <button class="stdd btn fa fa-check green fa-2x" title="covert the uploaded customer excel file to database" 
+        <button class="stdd btn fa fa-check green fa-2x" style="color: aliceblue;" title="covert the uploaded customer excel file to database" 
             (click)="exportEmployeeFile()" ></button>
-        <button class="stdd btn fa fa-window-close" title="close this customer file input" 
-            (click)="closeEmployeeFileInput()" ></button>
+        <button class="stdd btn fa fa-window-close fa-2x" title="close this customer file input" routerLink="/"
+            (click)="closeEmployeeFileInput()" style="color: aliceblue;" ></button>
     </div>
 
 

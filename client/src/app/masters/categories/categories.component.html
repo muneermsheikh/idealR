@@ -13,12 +13,12 @@
     
     <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid w200" #search placeholder="Search">
     <button (click)="onSearch()" title="searches the database based upon criteria entered in the search box" 
-         class="btn btn fa fa-search fa-2x"></button>
+         class="btn btn fa fa-search fa-2x" style="color: aliceblue;"></button>
     <button (click)="onReset()" title="Resets the search criteria" 
-         class="btn fa fa-refresh fa-2x"></button>
+         class="btn fa fa-refresh fa-2x" style="color: aliceblue;"></button>
     <button class="btn fa fa-plus fa-2x" title="Add a new Category" (click)="addCategory()" ></button>
 
-    <button class="btn fa fa-window-close fa-2x" routerLink="/administration" ></button>
+    <button class="btn fa fa-window-close fa-2x" style="color: aliceblue;" routerLink="/administration" ></button>
 </div>
 <div class="container my-2">
     <div class="stdd w50 b" >Sr#</div>

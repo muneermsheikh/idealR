@@ -37,7 +37,7 @@ namespace api.Extensions
         public static async Task<int> UpdateEmployeeAppUserId(this Employee employee,
             UserManager<AppUser> userManager, string cityName)
         {
-            var off =await userManager.FindByEmailAsync(employee.OfficialEmail);
+            var off =await userManager.FindByEmailAsync(employee.Email);
             if(off == null){
                 off = new AppUser{
                     Gender = employee.Gender,
@@ -101,7 +101,7 @@ namespace api.Extensions
             DataContext context, int EmployeeId)
         {
             var email = await context.Employees.Where(x => x.Id == EmployeeId)
-                .Select(x => new {appuserid=x.AppUserId, AppUserEmail=x.OfficialEmail, Name=x.FirstName, Position=x.Position})
+                .Select(x => new {appuserid=x.AppUserId, AppUserEmail=x.Email, Name=x.FirstName, Position=x.Position})
                 .FirstOrDefaultAsync();
 
             if(email == null) return null;

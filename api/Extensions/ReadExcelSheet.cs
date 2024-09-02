@@ -5,6 +5,7 @@ using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
@@ -43,7 +44,7 @@ namespace api.Extensions
                 int intOrderItemIdRow=2;
                 for(int col=1; col <= 3; col++){
                     try {
-                        var colTitle = worksheet.Cells[intOrderItemIdRow, col].Value.ToString();
+                        var colTitle = worksheet.Cells[intOrderItemIdRow, col].Value?.ToString();
                         switch (colTitle.ToLower()) {
                             case "orderitemid": case "order item id": case "orderitem id": 
                                 OrderItemId=Convert.ToInt32((worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "0").ToString()); 
@@ -111,25 +112,25 @@ namespace api.Extensions
                     
                 for (int row = rowTitle+1; row <= rows; row++)
                 {
-                    CandidateName = intCandidateName == 0 ? "" : worksheet.Cells[row, intCandidateName].Value.ToString() ?? "";
-                    EmailId = intEmail == 0 ? "" : worksheet.Cells[row, intEmail].Value.ToString() ?? "";
-                    AlternateEmailId = intAlternateEmail == 0 ? "" : worksheet.Cells[row, intAlternateEmail].Value.ToString() ?? "";
-                    AlternatePhone = intAlternatePhone == 0 ? "" : worksheet.Cells[row, intAlternatePhone].Value.ToString() ?? "";
-                    DOB = intDob == 0 ? "" : worksheet.Cells[row, intDob].Value.ToString() ?? "";
-                    MobileNo = intMobileNo == 0 ? "": worksheet.Cells[row, intMobileNo].Value.ToString()  ?? "";
-                    AlternateNumber = intAlternatePhone == 0 ? "" : worksheet.Cells[row, intAlternateNo].Value.ToString() ?? "";
-                    ResumeTitle = intResumeTitle == 0 ? "" : worksheet.Cells[row, intResumeTitle].Value.ToString() ?? "";
-                    KeySkills = intKeySkills == 0 ? "" : worksheet.Cells[row, intKeySkills].Value.ToString() ?? "";
-                    WorkExp = intWorkExp == 0 ? "" : worksheet.Cells[row, intWorkExp].Value.ToString() ?? "";
-                    Address = intAddress == 0 ? "": worksheet.Cells[row, intAddress].Value.ToString() ?? "";
-                    CurrentLocation = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCurrentLocation].Value.ToString() ?? "";
-                    Education = intEducation == 0 ? "" : worksheet.Cells[row, intEducation].Value.ToString() ?? "";
-                    Gendr = intGender == 0 ? "Male" : worksheet.Cells[row, intGender].Value.ToString() ?? "Male";
+                    CandidateName = intCandidateName == 0 ? "" : worksheet.Cells[row, intCandidateName].Value?.ToString() ?? "";
+                    EmailId = intEmail == 0 ? "" : worksheet.Cells[row, intEmail].Value?.ToString() ?? "";
+                    AlternateEmailId = intAlternateEmail == 0 ? "" : worksheet.Cells[row, intAlternateEmail].Value?.ToString() ?? "";
+                    AlternatePhone = intAlternatePhone == 0 ? "" : worksheet.Cells[row, intAlternatePhone].Value?.ToString() ?? "";
+                    DOB = intDob == 0 ? "" : worksheet.Cells[row, intDob].Value?.ToString() ?? "";
+                    MobileNo = intMobileNo == 0 ? "": worksheet.Cells[row, intMobileNo].Value?.ToString()  ?? "";
+                    AlternateNumber = intAlternatePhone == 0 ? "" : worksheet.Cells[row, intAlternateNo].Value?.ToString() ?? "";
+                    ResumeTitle = intResumeTitle == 0 ? "" : worksheet.Cells[row, intResumeTitle].Value?.ToString() ?? "";
+                    KeySkills = intKeySkills == 0 ? "" : worksheet.Cells[row, intKeySkills].Value?.ToString() ?? "";
+                    WorkExp = intWorkExp == 0 ? "" : worksheet.Cells[row, intWorkExp].Value?.ToString() ?? "";
+                    Address = intAddress == 0 ? "": worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    CurrentLocation = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCurrentLocation].Value?.ToString() ?? "";
+                    Education = intEducation == 0 ? "" : worksheet.Cells[row, intEducation].Value?.ToString() ?? "";
+                    Gendr = intGender == 0 ? "Male" : worksheet.Cells[row, intGender].Value?.ToString() ?? "Male";
                     Gendr = Gendr == "m" ? "Male" : "Female";
-                    Age =  intAge == 0 ? "" : worksheet.Cells[row, intAge].Value.ToString() ?? "";
-                    Address = intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value.ToString() ?? "";
-                    ResumeId = intResumeId == 0 ? "" : worksheet.Cells[row, intResumeId].Value.ToString() ?? "";
-                    Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value.ToString() ?? "";
+                    Age =  intAge == 0 ? "" : worksheet.Cells[row, intAge].Value?.ToString() ?? "";
+                    Address = intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    ResumeId = intResumeId == 0 ? "" : worksheet.Cells[row, intResumeId].Value?.ToString() ?? "";
+                    Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value?.ToString() ?? "";
                     
                     var newProspectiveCandidate = new ProspectiveCandidate
                     {
@@ -179,10 +180,11 @@ namespace api.Extensions
             return string.IsNullOrEmpty(strError) ? "" : strError;
         }
 
-        public static async Task<int> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
+        public static async Task<string> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
         {
             //column title in row 2, data starts from row 3
             //string filePath = "D:\\IdealR_/Ideal/api/CandidateExcelData.xlsx";
+            string Error="";
             int rowTitle=2;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -190,7 +192,7 @@ namespace api.Extensions
             {
 
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                DataTable dataTable = new();
+                //DataTable dataTable = new();
                 int rows = worksheet.Dimension.Rows;
                 int columns = worksheet.Dimension.Columns;
 
@@ -206,8 +208,8 @@ namespace api.Extensions
                     intOfficialDesignation3=0, intDept3=0, intMobileNo3=0,intOfficialEmail3=0, intUsername3=0;
                 int intCustomerStatus=0;
                 
-                for(int col=3; col <= columns; col++) {
-                    var colTitle = worksheet.Cells[rowTitle, col].Value.ToString();
+                for(int col=1; col <= columns; col++) {
+                    var colTitle = worksheet.Cells[rowTitle, col].Value?.ToString();
 
                     switch (colTitle.ToLower()) {
                         case "customertype": case "customer type": intCustomerType=col;break;
@@ -229,37 +231,37 @@ namespace api.Extensions
                         case "customerstatus": case "customer status": intStatus=col;break;
                         case "isblacklisted": intIsBlacklisted=col;break;
 
-                        case "industrytype1": case "industry type 1": case "indsutry type1": intIndustryType1=col;break;
-                        case "industrytype2":  case "industry type 2": case "indsutry type2": intIndustryType2=col;break;
-                        case "industrytype3": case "industry type 3": case "indsutry type3": intIndustryType3=col;break;
+                        case "industrytype1": case "industry type 1": case "industry type1": intIndustryType1=col;break;
+                        case "industrytype2":  case "industry type 2": case "industry type2": intIndustryType2=col;break;
+                        case "industrytype3": case "industry type 3": case "industry type3": intIndustryType3=col;break;
 
                         case "gender1": intGender1=col;break;
 
                         case "appuserid1": case "appuserid 1": intAppUserId1=col;break;
                         case "username1": case "user name1": intUsername1=col;break;
-                        case "officialname1": case "official name 1": case "officialname 1": intOfficialName1=col;break;
-                        case "officialtitle1": case "official title 1": case "officialtitle 1":  intOfficialName1=col;break;
+                        case "officialname1": case "official name 1": case "officialname 1": case "official name1": intOfficialName1=col;break;
+                        case "officialtitle1": case "official title 1": case "officialtitle 1":  intOfficialTitle1=col;break;
                         case "designation1": case "designation 1": intOfficialDesignation1=col;break;
-                        case "dept1": case "department1": case "department 1": intDept1=col;break;
+                        case "dept1": case "dept 1": case "department1": case "department 1": intDept1=col;break;
                         case "officialmobile1": case "official mobile1" : case "official mobile 1": intMobileNo1=col;break;
                         case "officialemail1":case "official email1": case "official email 1": intOfficialEmail3=col;break;
 
                         case "appuserid2": case "appuserid 2":  intAppUserId2=col;break;
                         case "username2": case "user name2":  intUsername2=col;break;
-                        case "officialname2":case "official name 2": case "officialname 2": intOfficialName2=col;break;
-                        case "officialtitle2": case "officialtitle 2": case "official title 2":intOfficialName2=col;break;
+                        case "officialname2":case "official name 2": case "officialname 2": case "official name2": intOfficialName2=col;break;
+                        case "officialtitle2": case "officialtitle 2": case "official title 2":intOfficialTitle2=col;break;
                         case "designation2": case "designation 2": intOfficialDesignation2=col;break;
-                        case "dept2": case "department 2": case "department2": intDept2=col;break;
+                        case "dept2": case "dept 2": case "department 2": case "department2": intDept2=col;break;
                         case "officialmobile2": case "official mobile2": case "officialmobile 2": intMobileNo2=col;break;
                         case "officialemail2": case "official email2": case "officialemail 2": intOfficialEmail2=col;break;
 
                         case "appuserid3": intAppUserId3=col;break;
                         case "username3": case "username 3": intUsername3=col;break;
-                        case "officialname3": case "official name 3": case "officialname 3":intOfficialName3=col;break;
-                        case "officialtitle3": case "official title 3": case "officialtitle 3": intOfficialTitle3=col;break;
-                        case "designation3": intOfficialDesignation3=col;break;
-                        case "dept3":case "department 3": case "department3": intDept3=col;break;
-                        case "officialmobile3": intMobileNo3=col;break;
+                        case "officialname3": case "official name 3": case "official  name3": case "officialname 3":intOfficialName3=col;break;
+                        case "officialtitle3": case "official title 3": case "officialtitle 3": case "official title3": intOfficialTitle3=col;break;
+                        case "designation3": case "designation 3": intOfficialDesignation3=col;break;
+                        case "dept3": case "dept 3": case "department 3": case "department3": intDept3=col;break;
+                        case "officialmobile3": case "official mobile3": intMobileNo3=col;break;
                         case "officialemail3": intOfficialEmail3=col;break;
 
                         default:break;
@@ -270,62 +272,64 @@ namespace api.Extensions
                 var customerIndustries = new List<CustomerIndustry>();
                 var agencySpecialties = new List<AgencySpecialty>();
 
-                for (int row = 2; row <= rows; row++)
+                for (int row = rowTitle+1; row <= rows; row++)
                 {
-                    var CustomerType = worksheet.Cells[row, intCustomerType].Value.ToString() ?? "Customer";
-                    var CustomerName = worksheet.Cells[row, intCustomerName].Value.ToString() ?? "";
-                    var KnownAs = worksheet.Cells[row, intKnownAs].Value.ToString() ?? "";
-                    var Add = worksheet.Cells[row, intAddress].Value.ToString() ?? "";
-                    var Add2 = worksheet.Cells[row, intAddress2].Value.ToString() ?? "";
-                    var City = worksheet.Cells[row, intCity].Value.ToString() ?? "";
-                    var District = worksheet.Cells[row, intDistrict].Value.ToString() ?? "";
-                    var State = worksheet.Cells[row, intState].Value.ToString() ?? "";
-                    var Country = worksheet.Cells[row, intCountry].Value.ToString() ?? "";
-                    var Email = worksheet.Cells[row,intEmail].Value.ToString() ?? "";
-                    var Website = worksheet.Cells[row, intWebsite].Value.ToString() ?? "";
-                    var Phone = worksheet.Cells[row,intPhone1].Value.ToString() ?? "";
-                    var Phone2 = worksheet.Cells[row, intPhone2].Value.ToString() ?? "";
-                    var CreatedOn = worksheet.Cells[row,intCreatedOn].Value.ToString() ?? "";
-                    var Introduction = worksheet.Cells[row, intIntroduction].Value.ToString() ?? "";
-                    var CustomerStatus = worksheet.Cells[row, intCustomerStatus].Value.ToString();
-                    var IsBlacklisted = worksheet.Cells[row, intIsBlacklisted].Value.ToString();
+                    var CustomerType = intCustomerType==0 ? "" : worksheet.Cells[row, intCustomerType].Value?.ToString() ?? "Customer";
+                    var CustomerName = intCustomerName==0 ? "" : worksheet.Cells[row, intCustomerName].Value?.ToString() ?? "";
+                    if(string.IsNullOrEmpty(CustomerName)) continue;
 
-                    var IndustryType1 = worksheet.Cells[row, intIndustryType1].Value.ToString() ?? "";
-                    var IndustryType2 = worksheet.Cells[row, intIndustryType2].Value.ToString() ?? "";
-                    var IndustryType3 = worksheet.Cells[row, intIndustryType3].Value.ToString() ?? "";
-                    
-                    var AppUserId1 = worksheet.Cells[row, intAppUserId1].Value.ToString() ?? "0";
-                    var Username1 = worksheet.Cells[row, intUsername1].Value.ToString() ?? "";
-                    var Gender1 = worksheet.Cells[row, intGender1].Value.ToString() ?? "Male";
-                    var OfficialTitle1 = worksheet.Cells[row, intOfficialTitle1].Value.ToString() ?? "";
-                    var OfficialName1  = worksheet.Cells[row, intOfficialName1].Value.ToString() ?? "";
-                    var OfficialKnownAs1  = worksheet.Cells[row, intKnownAs1].Value.ToString() ?? "";
-                    var Designation1 = worksheet.Cells[row, intOfficialDesignation1].Value.ToString() ?? "";
-                    var Dept1 = worksheet.Cells[row, intDept1].Value.ToString() ?? "";
-                    var OfficialMobile1 = worksheet.Cells[row, intMobileNo1].Value.ToString() ?? "";
-                    var OfficialEmail1 = worksheet.Cells[row, intOfficialEmail1].Value.ToString() ?? "";
-                    
-                    var AppUserId2 = worksheet.Cells[row, intAppUserId2].Value.ToString() ?? "0";
-                    var Username2 = worksheet.Cells[row, intUsername2].Value.ToString() ?? "";
-                    var Gender2 = worksheet.Cells[row, intGender2].Value.ToString() ?? "Male";
-                    var OfficialTitle2 = worksheet.Cells[row, intOfficialTitle2].Value.ToString() ?? "";
-                    var OfficialName2  = worksheet.Cells[row, intOfficialName2].Value.ToString() ?? "";
-                    var OfficialKnownAs2  = worksheet.Cells[row, intKnownAs2].Value.ToString() ?? "";
-                    var Designation2 = worksheet.Cells[row, intOfficialDesignation2].Value.ToString() ?? "";
-                    var Dept2 = worksheet.Cells[row, intDept2].Value.ToString() ?? "";
-                    var OfficialMobile2 = worksheet.Cells[row, intMobileNo2].Value.ToString() ?? "";
-                    var OfficialEmail2 = worksheet.Cells[row, intOfficialEmail2].Value.ToString() ?? "";
+                    var KnownAs =  intKnownAs==0 ? "" : worksheet.Cells[row, intKnownAs].Value?.ToString() ?? "";
+                    var Add = intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    var Add2 = intAddress2 == 0 ? "" : worksheet.Cells[row, intAddress2].Value?.ToString() ?? "";
+                    var City = intCity==0 ? "" : worksheet.Cells[row, intCity].Value?.ToString() ?? "";
+                    var District = intDistrict == 0 ? "" :worksheet.Cells[row, intDistrict].Value?.ToString() ?? "";
+                    var State = intState == 0 ? "" : worksheet.Cells[row, intState].Value?.ToString() ?? "";
+                    var Country = intCountry == 0 ? "" :  worksheet.Cells[row, intCountry].Value?.ToString() ?? "";
+                    var Email = intEmail == 0 ? "" :  worksheet.Cells[row,intEmail].Value?.ToString() ?? "";
+                    var Website = intWebsite == 0 ? "" :  worksheet.Cells[row, intWebsite].Value?.ToString() ?? "";
+                    var Phone = intPhone1 == 0 ? "" :  worksheet.Cells[row,intPhone1].Value?.ToString() ?? "";
+                    var Phone2 = intPhone2 == 0 ? "" :  worksheet.Cells[row, intPhone2].Value?.ToString() ?? "";
+                    var CreatedOn =intCreatedOn == 0 ? "" :  worksheet.Cells[row,intCreatedOn].Value?.ToString() ?? "";
+                    var Introduction = intIntroduction == 0 ? "" : worksheet.Cells[row, intIntroduction].Value?.ToString() ?? "";
+                    var CustomerStatus = intCustomerStatus == 0 ? "" :  worksheet.Cells[row, intCustomerStatus].Value?.ToString();
+                    var IsBlacklisted = intIsBlacklisted == 0 ? "" : worksheet.Cells[row, intIsBlacklisted].Value?.ToString();
 
-                    var AppUserId3 = worksheet.Cells[row, intAppUserId3].Value.ToString() ?? "0";
-                    var Username3 = worksheet.Cells[row, intUsername3].Value.ToString() ?? "";
-                    var Gender3 = worksheet.Cells[row, intGender3].Value.ToString() ?? "Male";
-                    var OfficialTitle3 = worksheet.Cells[row, intOfficialTitle3].Value.ToString() ?? "";
-                    var OfficialName3  = worksheet.Cells[row, intOfficialName3].Value.ToString() ?? "";
-                    var OfficialKnownAs3  = worksheet.Cells[row, intKnownAs3].Value.ToString() ?? "";
-                    var Designation3 = worksheet.Cells[row, intOfficialDesignation3].Value.ToString() ?? "";
-                    var Dept3 = worksheet.Cells[row, intDept3].Value.ToString() ?? "";
-                    var OfficialMobile3 = worksheet.Cells[row, intMobileNo3].Value.ToString() ?? "";
-                    var OfficialEmail3 = worksheet.Cells[row, intOfficialEmail3].Value.ToString() ?? "";
+                    var IndustryType1 = intIndustryType1 == 0 ? "" : worksheet.Cells[row, intIndustryType1].Value?.ToString() ?? "";
+                    var IndustryType2 = intIndustryType2 == 0 ? "" : worksheet.Cells[row, intIndustryType2].Value?.ToString() ?? "";
+                    var IndustryType3 = intIndustryType3 == 0 ? "" : worksheet.Cells[row, intIndustryType3].Value?.ToString() ?? "";
+                    
+                    var AppUserId1 = intAppUserId1 == 0 ? "" : worksheet.Cells[row, intAppUserId1].Value?.ToString() ?? "0";
+                    var Username1 = intUsername1 == 0 ? "" : worksheet.Cells[row, intUsername1].Value?.ToString() ?? "";
+                    var Gender1 = intGender1 == 0 ? "" : worksheet.Cells[row, intGender1].Value?.ToString() ?? "Male";
+                    var OfficialTitle1 =intOfficialTitle1 == 0 ? "" :  worksheet.Cells[row, intOfficialTitle1].Value?.ToString() ?? "";
+                    var OfficialName1  =intOfficialName1 == 0 ? "" :  worksheet.Cells[row, intOfficialName1].Value?.ToString() ?? "";
+                    var OfficialKnownAs1  = intKnownAs1 == 0 ? "" :  worksheet.Cells[row, intKnownAs1].Value?.ToString() ?? "";
+                    var Designation1 = intOfficialDesignation1 == 0 ? "" :  worksheet.Cells[row, intOfficialDesignation1].Value?.ToString() ?? "";
+                    var Dept1 = intDept1 == 0 ? "" :  worksheet.Cells[row, intDept1].Value?.ToString() ?? "";
+                    var OfficialMobile1 = intMobileNo1 == 0 ? "" : worksheet.Cells[row, intMobileNo1].Value?.ToString() ?? "";
+                    var OfficialEmail1 = intOfficialEmail1 == 0 ? "" :  worksheet.Cells[row, intOfficialEmail1].Value?.ToString() ?? "";
+                    
+                    var AppUserId2 = intAppUserId2 == 0 ? "" : worksheet.Cells[row, intAppUserId2].Value?.ToString() ?? "0";
+                    var Username2 = intUsername2 == 0 ? "" : worksheet.Cells[row, intUsername2].Value?.ToString() ?? "";
+                    var Gender2 =intGender2 == 0 ? "" :  worksheet.Cells[row, intGender2].Value?.ToString() ?? "Male";
+                    var OfficialTitle2 = intOfficialTitle2 == 0 ? "" :  worksheet.Cells[row, intOfficialTitle2].Value?.ToString() ?? "";
+                    var OfficialName2  = intOfficialName2 == 0 ? "" : worksheet.Cells[row, intOfficialName2].Value?.ToString() ?? "";
+                    var OfficialKnownAs2  = intKnownAs2 == 0 ? "" : worksheet.Cells[row, intKnownAs2].Value?.ToString() ?? "";
+                    var Designation2 = intOfficialDesignation2 == 0 ? "" : worksheet.Cells[row, intOfficialDesignation2].Value?.ToString() ?? "";
+                    var Dept2 = intDept2 == 0 ? "" : worksheet.Cells[row, intDept2].Value?.ToString() ?? "";
+                    var OfficialMobile2 = intMobileNo2 == 0 ? "" : worksheet.Cells[row, intMobileNo2].Value?.ToString() ?? "";
+                    var OfficialEmail2 = intOfficialEmail2 == 0 ? "" : worksheet.Cells[row, intOfficialEmail2].Value?.ToString() ?? "";
+
+                    var AppUserId3 = intAppUserId3 == 0 ? "" : worksheet.Cells[row, intAppUserId3].Value?.ToString() ?? "0";
+                    var Username3 = intUsername3 == 0 ? "" : worksheet.Cells[row, intUsername3].Value?.ToString() ?? "";
+                    var Gender3 = intGender3 == 0 ? "" : worksheet.Cells[row, intGender3].Value?.ToString() ?? "Male";
+                    var OfficialTitle3 = intOfficialTitle3 == 0 ? "" :  worksheet.Cells[row, intOfficialTitle3].Value?.ToString() ?? "";
+                    var OfficialName3  = intOfficialName3 == 0 ? "" : worksheet.Cells[row, intOfficialName3].Value?.ToString() ?? "";
+                    var OfficialKnownAs3  = intKnownAs3 == 0 ? "" : worksheet.Cells[row, intKnownAs3].Value?.ToString() ?? "";
+                    var Designation3 = intOfficialDesignation3 == 0 ? "" : worksheet.Cells[row, intOfficialDesignation3].Value?.ToString() ?? "";
+                    var Dept3 = intDept3 == 0 ? "" : worksheet.Cells[row, intDept3].Value?.ToString() ?? "";
+                    var OfficialMobile3 = intMobileNo3 == 0 ? "" :  worksheet.Cells[row, intMobileNo3].Value?.ToString() ?? "";
+                    var OfficialEmail3 = intOfficialEmail3 == 0 ? "" : worksheet.Cells[row, intOfficialEmail3].Value?.ToString() ?? "";
 
 
                     if (!DateTime.TryParse(CreatedOn, out DateTime createdon))
@@ -383,6 +387,7 @@ namespace api.Extensions
                         Add = Add, Add2 = Add2, City = City, District = District, State = State,
                         Country = Country, Email = Email, Website = Website, Phone = Phone, Phone2=Phone2,
                         CreatedOn = createdon, Introduction = Introduction, CustomerStatus = CustomerStatus,
+                        
                         IsBlackListed = Convert.ToBoolean(IsBlacklisted), CustomerIndustries = customerIndustries,
                         CustomerOfficials = customerOfficials
                     };      
@@ -391,9 +396,25 @@ namespace api.Extensions
                    
                 }
             }
-
-            var recAffected=await context.SaveChangesAsync();
-            return recAffected;
+             
+            int EntriesFailed=0;
+            //bool isSaved = false;
+            //do {
+                try {
+                    await context.SaveChangesAsync();
+                    //isSaved = true;
+                } catch (DbUpdateException ex) {
+                    /*foreach (var entry in ex.Entries) {
+                        entry.State = EntityState.Detached; // Remove from context so won't try saving again.
+                        Error += ex.Message;
+                        EntriesFailed ++;
+                    }*/
+                    Error = ex.Message;
+                }
+            //} while (!isSaved);
+            
+            if(!string.IsNullOrEmpty(Error)) Error += "Total Entries Failed:" + EntriesFailed + ". ";
+            return Error;
         }
         
     }

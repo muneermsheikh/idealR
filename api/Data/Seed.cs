@@ -88,6 +88,18 @@ namespace api.Data
             var UserListCandidates = new List<AppUser>();
             var UserListEmployees = new List<AppUser>();
             var UserListOfficials = new List<AppUser>();
+            
+            if(!await context.SkillDatas.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/SkillSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<SkillData>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.SkillDatas.Add(item);
+                }
+             }
+
 
             if(!await context.MessageComposeSources.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/FlightSeedData.json");
