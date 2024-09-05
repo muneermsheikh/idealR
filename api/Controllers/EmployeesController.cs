@@ -56,7 +56,7 @@ namespace api.Controllers
 
         }
 
-        [Authorize(Policy ="anonymous")]
+        [Authorize]
         [HttpGet("idandknownas")]
         public async Task<ActionResult<ICollection<EmployeeIdAndKnownAsDto>>> GetEmployeIdAndKnownAs() 
         {

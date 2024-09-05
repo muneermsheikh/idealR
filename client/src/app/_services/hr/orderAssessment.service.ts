@@ -32,9 +32,7 @@ export class OrderAssessmentService {
     }
 
     getOrderAssessmentItem(orderitemid: number) {
-
       return this.http.get<IOrderAssessmentItem>(this.apiUrl + 'OrderAssessment/orderassessmentitem/' + orderitemid);
-
     }
     
     getOrderAssessment(orderid: number) {
@@ -42,7 +40,7 @@ export class OrderAssessmentService {
     }
 
     updateOrderAssessment(assessment: IOrderAssessment) {
-      return this.http.put<boolean>(this.apiUrl + 'OrderAssessment/assessment', assessment);
+      return this.http.put<string>(this.apiUrl + 'OrderAssessment/assessment', assessment);
     }
 
     deleteAssessmentQ(questionId: number) {

@@ -9,14 +9,14 @@
         and thereafter try to edit individual assessment items for the order
     </div>
 
-    <div *ngIf="orderAssessmentItem.orderAssessmentId !== 0">
+    
         <app-text-input [label]="'Order No'" formControlName="orderNo" class="stdd w75" > </app-text-input>
 
         <label class="lbl w100">Customer Name</label>
-        <app-text-input [label]="'Customer Name'" formControlName="customerName" class="stdd w250" > </app-text-input>
+        <div class="stdd w250">{{orderAssessmentItem.customerName}}</div>
     
         <label class="lbl w100">Category</label>
-        <app-text-input [label]="'Category Name'" formControlName="professionName" class="stdd w250"> </app-text-input>
+        <div class="stdd w250">{{orderAssessmentItem.professionName}}</div>
         <br>
         
         <label class="lbl w100">Designed By</label>
@@ -25,16 +25,16 @@
         <label class="lbl w100">Approved By</label>
         <input type="text" class="stdd w75" formControlName="approvedBy" (dblclick)="updateApprovedBy()" >
         
-        <button class="btn btn-primary mx-2 fa fa-download" title="imports standard assessment questions" 
+        <button class="btn mx-2 fa fa-download" title="imports standard assessment questions" 
             (click)="populateStddAssessmentQuestions()"></button>
             
-        <button class="btn fa fa-download mx-2" title="imports custom assessment questions matching the profession" 
+        <button class="btn fa fa-download" title="imports custom assessment questions matching the profession" 
             (click)="populateCustomAssessmentQuestions(professionId)"></button>
     
-        <button class="btn btn-success mx-2 fa fa-save" title="Save this data" 
+        <button class="btn fa fa-save" title="Save this data" 
             (click)="update()"></button>
     
-        <button class="btn fa fa-window-close fa-lg" title="close this form and return to the calling program" 
+        <button class="btn fa fa-window-close fa-2x" title="close this form and return to the calling program" 
             (click)="cancel()"></button>
     
         <div formArrayName="orderAssessmentItemQs" >
@@ -42,7 +42,7 @@
             <label class="lbl w50">Qstn No</label>
             <label class="lbl w250">Subject</label>
             <label class="lbl w400">Question</label>
-            <label class="lbl w50">Points</label>
+            <label class="lbl w75">Points</label>
             <label class="lbl w75">Mandatory</label>
             <button class="stdd btn btn-priamry fa fa-plus fa-lg" style="margin-left: 15px;"
                 type="button" (click)="addNewOrderAssessmentItemQ()">
@@ -56,10 +56,9 @@
                     <div class="stdd w250">
                         <app-text-input [label]="'Subject'" formControlName="subject"></app-text-input>
                     </div>
-                    <div class="stdd w400">
-                        <app-text-input [label]="'question'" formControlName="question"></app-text-input>
-                    </div>
-                    <input type="number" class="stdd w50" formControlName="maxPoints" (change)="calcualteTotals()">
+                    <app-text-input class="stdd w400" [label]="'question'" formControlName="question"></app-text-input>
+                    <app-text-input [type]="'number'" (change)="calcualteTotals()" class="stdd w75" [label]="'Points'" formControlName="maxPoints"></app-text-input>
+                    <!--<input class="stdd w50" formControlName="maxPoints" (change)="calcualteTotals()">-->
                     <input class="stdd mx-4" type="checkbox" formControlName="isMandatory">
                     <button class="mx-4 btn fa fa-trash red" (click)="removeOrderAssessmentItemQ(i)" ></button>
                 
@@ -68,5 +67,8 @@
             <div style="margin-left: 700px;">Total: {{totalMarks}}</div>
         </div>
     
-    </div>
+
     </form>
+<div style="font-size: smaller;">
+    {{form.value|json}}
+</div>

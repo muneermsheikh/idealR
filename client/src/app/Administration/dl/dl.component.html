@@ -6,13 +6,9 @@
         <label class="lbl w110 mx-2">Complete By</label>
         <label class="lbl w110 mx-2">City</label>
         <label class="lbl w150 mx-2">Country</label>
-        <label class="lbl w150 mx-2">Order Ref</label>
-        <label class="lbl w200 mx-2">Project Head</label>
-
+        <label class="lbl w110 mx-2">Order Ref</label>
         <br>
-        <div class="stdd w110 mx-2">
-            <app-text-input [label]="'Order No'" formControlName="orderNo" ></app-text-input>
-        </div>
+        <app-text-input class="stdd w110 mx-2" [label]="'Order No'" formControlName="orderNo" ></app-text-input>
         
         <div class="stdd w300 mx-2">
             <ng-select 
@@ -31,16 +27,12 @@
         <input class="stdd w110 mx-2" type="text" placeholder="Order Date" formControlName="completeBy"
             bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
 
-        <div class="stdd w110 mx-2">
-            <app-text-input [label]="'City'" formControlName="cityOfWorking" ></app-text-input>
-        </div>
+        <app-text-input class="stdd w110 mx-2" [label]="'City'" formControlName="cityOfWorking" ></app-text-input>
+        <app-text-input class="stdd w150 mx-2" [label]="'Country'" formControlName="country" ></app-text-input>
+        <app-text-input class="stdd w110 mx-5" [label]="'Order Ref'" formControlName="orderRef" ></app-text-input>
+        
+        <br><label class="lbl w150 mx-2">Project Head</label>
         <div class="stdd w150 mx-2">
-            <app-text-input [label]="'Country'" formControlName="country" ></app-text-input>
-       </div>
-       <div class="stdd w150 mx-2">
-            <app-text-input [label]="'Order Ref'" formControlName="orderRef" ></app-text-input>
-       </div>
-       <div class="stdd w110 mx-2">
             <ng-select  
                  [items]="employees"
                  bindLabel="knownAs"
@@ -51,10 +43,9 @@
             </ng-select>
        </div>
 
-       <br>
         <div *ngIf="!isAddMode" class="stdd" >
                 <label class="lbl w150">Contract Review Status</label>
-                <div class="stdd w100 cursorpointer" style="border:btn-primary;" 
+                <div class="stdd w100 cursorpointer yellow" style="border:btn-primary;" 
                     [ngClass]="order.contractReviewStatus==='Accepted'
                     ?'green'
                     :order.contractReviewStatus==='Accepted with regrets'
@@ -65,49 +56,51 @@
             </div>  
             <label class="lbl w150 mx-3">Forwarded to HR On</label>
             <div *ngIf="order.forwardedToHRDeptOn !==null && order.forwardedToHRDeptOn !== undefined "  
-                    id="forwardedToHRDeptOn" class="stdd w110" style="border:btn-primary;">
+                    id="forwardedToHRDeptOn" class="stdd w110 yellow mx-2">
                     {{order.forwardedToHRDeptOn | date}}
-                    <!-- {{member.forwardedToHRDeptOn.getFullYear() < 2000 ? 'not forwarded': member.forwardedToHRDeptOn | date}} -->
             </div>
-            <div *ngIf="order.forwardedToHRDeptOn ===undefined" class="stdd w100 cursorpointer"
+            <div *ngIf="order.forwardedToHRDeptOn ===undefined" class="stdd w110 cursorpointer mx-2 yellow"
                     (click)="forwardOrderToHRDept()">
                     Not Forwarded
             </div>
         </div>
-       
-        <button class="stdd btn btn-primary pull-right fa fa-2x fa-window-close fa-2x " (click)="close()"
-            title="Return to calling procedure" ></button>
+         <label class="lbl w100">Status</label>
+        <div class="stdd fontSmaller w120 yellow">{{order.status}}</div>
 
-        <label class="lbl w100">Status</label>
-        <div class="stdd fontSmaller w120">{{order.status}}</div>
+
        
         <button type="submit" [disabled]="!form.dirty" style="margin-left: 25px!important;" 
-            class="stdd btn btn-success fa fa-save" (click)="onSubmit()" title="Save the requirement" >
+            class="fa fa-save fa-2x" (click)="onSubmit()" title="Save the requirement" >
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
         </button> 
        
-        <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
+        <div *ngIf="!isAddMode" style="display: inline-block;" >
             <button [disabled]="order.contractReviewStatus !== 'Accepted'" 
-                class="btn btn-primary stdd fa fa-users " (click)="assignTasksToHRExecs()" 
+                class="btn mx-2 fa fa-users fa-2x" (click)="assignTasksToHRExecs()" 
                 title="assign selected categories once Contract Review is done"
             > </button>
-            <button [disabled]="order.contractReviewStatus !== 'Accepted'" 
-                class="btn btn-primary stdd fa fa-balance " (click)="OpenOrderAssessment()" 
+            <!--<button [disabled]="order.contractReviewStatus !== 'Accepted'" 
+                class="btn mx-2 fa fa-question fa-2x" (click)="OpenOrderAssessment()" 
                 title="assign selected categories once Contract Review is done"
-            >Assess </button>
+            ></button> -->
         </div>
+           
+        <button class="btn fa fa-2x fa-window-close" (click)="close()" style="margin-left: 25px;"
+            title="Return to calling procedure" ></button>
+
         <hr style="margin: 0px; padding: 0px;">
 
         <div formArrayName="orderItems" class="my-2">
             <div style="font-weight: bold; margin-left: 0px; font-size: smaller;">
                 <label class="lbl w30">Sel</label>
                 <label class="lbl w30" >Sr#</label>
-                <label class="lbl w240">Category</label>
+                <label class="lbl w225">Category</label>
                 <label class="w30 mx-2" style="display: inline-block;">ECNR</label>
-                <label class="lbl w110">Source<br>From</label>
+                <label class="lbl w100">Source<br>From</label>
                 <label class="lbl w50">Qnty</label>
                 <label class="lbl w50" >Min<br>CVs</label>
                 <label class="lbl w50" >Max<br>CVs</label>
+                <!-- <label class="lbl w75" >Require<br>Assess</label> -->
                 <label class="lbl w110" 
                     title="Date by which the shortlisting of candidates is to be completed by the HR Executive"
                     >Complete by
@@ -134,11 +127,13 @@
                     </ng-select>
 
                     <input type="checkbox" formControlName="ecnr" class="chk w30" >
-                    <app-text-input class="stdd w110" [label]="'Source From'" formControlName="sourceFrom"></app-text-input>
+                    <app-text-input class="stdd w100" [label]="'Source From'" formControlName="sourceFrom"></app-text-input>
                     <app-text-input class="stdd w50" [label]="'quantity'" formControlName="quantity" ></app-text-input>
                     <app-text-input class="stdd w50" [label]="'Min CVs'" formControlName="minCVs" ></app-text-input>
-                    <app-text-input class="stdd w50" [label]="'max CVs'" formControlName="maxCVs" ></app-text-input>
-                    
+                    <app-text-input class="stdd w50" [label]="'max CVs'" style="padding-right: 10px;" formControlName="maxCVs" ></app-text-input>
+                    <!-- <input type="radio" class="inputcheck form-check-input " value=1 formControlName="requireAssessment" >Y
+                    <input type="radio" class="inputcheck form-check-input " value=0 formControlName="requireAssessment" >N -->
+
                     <input type="text"
                         class="stdd w110"
                         placeholder="Complete By"
@@ -151,17 +146,17 @@
                         (click)="openContractReviewItemModal(i)" formControlName="reviewItemStatus" >
 
                     <div *ngIf="!isAddMode" class="stdd">       
-                        <button class="w10 btn fa fa-question-mark" 
+                        <button class="w10 btn fa fa-question" 
                                 title="design Assessment Questions for this category" 
                                 (click)="assessItem(i)" 
-                                >Q</button>
+                                ></button>
 
-                        <button class="w10 btn fa fa-list" title="Open Job Description"
+                        <button class="btn fa fa-list" title="Open Job Description"
                                 (click)="openJDModal(i)" ></button>
-                        <button class="w10 btn fa fa-dollar" title="Open Remuneration"
+                        <button class="btn fa fa-dollar" title="Open Remuneration"
                                 (click)="openRemunerationModal(i)" ></button>
                     </div>
-                    <button (click)="removeItem(i)" class="w10 btn fa fa-trash red" 
+                    <button (click)="removeItem(i)" class="btn fa fa-trash red" 
                         title="remove this item"
                     ></button>
                 </div>
@@ -175,6 +170,6 @@
    </ul>
 </div>
 
-<div style="font-size: small;">
+<!-- <div style="font-size: small;">
     {{form.value |json}}
-</div>
+</div> -->

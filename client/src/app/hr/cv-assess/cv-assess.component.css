@@ -34,8 +34,10 @@
 .fontSmaller {font-size:x-small}
 .fontSmall {font-size: small}
 
+btn {color:aliceblue;}
+
 .ww {word-wrap: break-word;}
-.blue {color: blue;}
+.blue {color: yellow;}
 .green {color: green;}
 .red {color: red;}
 .vAlignCenter{vertical-align: middle;}

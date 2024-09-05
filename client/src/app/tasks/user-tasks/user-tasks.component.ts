@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap, take } from 'rxjs';
 import { IApplicationTask } from 'src/app/_models/admin/applicationTask';
 import { IApplicationTaskInBrief } from 'src/app/_models/admin/applicationTaskInBrief';
@@ -49,19 +49,19 @@ export class UserTasksComponent implements OnInit {
       this.tasks = data['tasks'];
     }) */
 
-    if(this.user) {
+    if(this.user?.roles.includes("Admin") || this.user?.roles.includes("Admin Manager")) {
+      this.sParams.taskStatus.toLowerCase() !== "completed";
+    } else {
         this.sParams.assignedByUsername = this.user?.userName!;
         this.sParams.assignedToUsername = this.user?.userName!;
-        this.getTasksPaged();
-    
     }
+    this.getTasksPaged();
   }
 
   getTasksPaged() {
     this.service.setParams(this.sParams);
     this.service.getPaginatedTasks().subscribe({
       next: (response: any) => {
-        console.log('response:', response);
         if(response.result && response.pagination) {
           this.tasks = response.result;
           this.pagination = response.pagination;

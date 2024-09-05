@@ -17,7 +17,6 @@ import { JdModalComponent } from '../orders/jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../orders/remuneration-modal/remuneration-modal.component';
 import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { filter, switchMap } from 'rxjs';
-import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
 
 @Component({
   selector: 'app-dl',
@@ -112,7 +111,8 @@ ngOnInit(): void {
             maxCVs: ph.maxCVs,
             completeBefore: ph.completeBefore,
             status: ph.status,
-            reviewItemStatus: ph.reviewItemStatus
+            reviewItemStatus: ph.reviewItemStatus,
+            requireAssessment: ph.requireAssessment
           })
         ))
       ),
@@ -146,7 +146,8 @@ ngOnInit(): void {
       maxCVs: 0,
       completeBefore: [completebefore, Validators.required],
       status: 'Not Started',
-      reviewItemStatus: 'Not Reviewed'
+      reviewItemStatus: 'Not Reviewed',
+      requireAssessment: false
       })
   }
 
@@ -230,12 +231,12 @@ ngOnInit(): void {
     this.navigateByRoute('/administration/orderassessmentitem/' + orderitemid, null, true);
   }
 
-  OpenOrderAssessment() {
+  /* OpenOrderAssessment() {
     var orderid = this.form.get('id')?.value;
     if(orderid === 0) return;
 
     this.navigateByRoute('/administration/orderassessment/' + orderid, null, true);
-  }
+  } */
 
   assignTasksToHRExecs() {
     if(this.isAddMode) return;

@@ -10,6 +10,7 @@ using api.Params.Orders;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace api.Data.Repositories
 {
@@ -466,35 +467,24 @@ namespace api.Data.Repositories
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
 
-            var query = (from order in _context.Orders 
-                join cust in _context.Customers on order.CustomerId equals cust.Id
-                join hrforwd in _context.OrderForwardToHRs on order.Id equals hrforwd.OrderId into hrforward
-                    from hrfwd in hrforward.DefaultIfEmpty()
-                join acknlj in _context.AckanowledgeToClients on order.Id equals acknlj.OrderId into Acknowledge
-                    from ackn in Acknowledge.DefaultIfEmpty()
-                join review in _context.ContractReviews on order.Id equals review.OrderId into contractRvw
-                    from rvw in contractRvw.DefaultIfEmpty()
-                orderby order.OrderNo
-                select new OrderBriefDto {
-                    CompleteBy = order.CompleteBy, CustomerName = cust.CustomerName, 
-                    ContractReviewedOn = rvw.ReviewedOn, OrderDate=order.OrderDate, OrderNo=order.OrderNo,
-                    Status = order.Status, Id=order.Id, CityOfWorking = order.CityOfWorking,
-                    ContractReviewStatus = order.ContractReviewStatus ?? "Not Reviewed", 
-                    ForwardedToHRDeptOn = hrfwd.DateOnlyForwarded, 
-                    ContractReviewId=rvw.Id, CustomerId=order.CustomerId,
-                    AcknowledgedToClientOn = ackn.DateAcknowledged
-                    
+            var qry = _context.Orders.Where(x => x.Status.ToLower() != "concluded")
+                //.Include(x => x.ContractReview)
+                .OrderBy(x => x.OrderNo)
+                .Select(x => new OrderBriefDto {
+                    CompleteBy = x.CompleteBy
+                    , CustomerName = x.Customer.CustomerName
+                    //, ContractReviewedOn = x.ContractReview.ReviewedOn
+                    , OrderDate=x.OrderDate, OrderNo=x.OrderNo,
+                    Status = x.Status, Id=x.Id
+                    , CityOfWorking = x.CityOfWorking
+                    ,ContractReviewStatus = x.ContractReviewStatus 
+                    , ForwardedToHRDeptOn = x.ForwardedToHRDeptOn
+                    , ContractReviewId=x.ContractReviewId, CustomerId=x.CustomerId
                 }).AsQueryable();
-
-            if(orderParams.Id > 0) {
-                query = query.Where(x => x.Id==orderParams.Id);
-            } else if(orderParams.OrderNo > 0) {
-                query = query.Where(x => x.OrderNo == orderParams.OrderNo);
-            } else {
-                if(orderParams.CustomerId > 0) query = query.Where(x => x.CustomerId == orderParams.CustomerId);
-            }
             
-            var paged = await PagedList<OrderBriefDto>.CreateAsync(query.AsNoTracking()
+            //var temp = await qry.ToListAsync();
+
+            var paged = await PagedList<OrderBriefDto>.CreateAsync(qry.AsNoTracking()
                 //.ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)
                 , orderParams.PageNumber, orderParams.PageSize);
          
@@ -550,6 +540,12 @@ namespace api.Data.Repositories
                 }).ToListAsync();
 
             return query;
+        }
+
+        public async Task<string> WriteOrdersExcelToDB(string fileNameWithPath, string Username)
+        {
+            return await _context.ReadOrdersExcelFile(fileNameWithPath, Username);
+            
         }
 
     }

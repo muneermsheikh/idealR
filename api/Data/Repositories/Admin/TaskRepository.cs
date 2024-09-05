@@ -273,6 +273,8 @@ namespace api.Data.Repositories.Admin
         {
             var query = _context.Tasks.OrderByDescending(x => x.TaskDate).AsQueryable();
 
+            var temp = await query.ToListAsync();
+            
             if(!string.IsNullOrEmpty(taskParams.AssignedToUserName) 
                 && !string.IsNullOrEmpty(taskParams.AssignedByUsername)) {
                     query = query.Where(x => x.AssignedToUsername.ToLower() == taskParams.AssignedToUserName.ToLower() 

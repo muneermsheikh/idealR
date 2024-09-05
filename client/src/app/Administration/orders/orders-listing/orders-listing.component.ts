@@ -137,11 +137,11 @@ export class OrdersListingComponent implements OnInit {
     this.confirmService.confirm('confirm delete this Order', 'confirm delete order').pipe(
       switchMap(confirmed => this.service.deleteOrder(id).pipe(
         catchError(err => {
-          console.log('Error in deleting the order', err);
           return of();
         }),
+        
         tap(res => this.toastr.success('deleted Order')),
-        //tap(res=>console.log('delete voucher succeeded')),
+
       )),
       catchError(err => {
         this.toastr.error('Error in getting delete confirmation', err);
@@ -149,7 +149,8 @@ export class OrdersListingComponent implements OnInit {
       })
     ).subscribe(
         () => {
-          console.log('delete succeeded');
+          var index = this.orders.findIndex(x => x.id === id);
+          if(index !== -1) this.orders.splice(index,1);
           this.toastr.success('order deleted');
         },
         (err: any) => {

@@ -24,7 +24,6 @@ import { IdsModalComponent } from './modals/ids-modal/ids-modal.component';
 import { HelpModalComponent } from './modals/help-modal/help-modal.component';
 import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
 import { CandidateAssessmentComponent } from './hr/candidate-assessment/candidate-assessment.component';
-import { CandidateAssessComponent } from './hr/candidate-assess/candidate-assess.component';
 import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 //material includes
 import { MatButtonModule } from '@angular/material/button';
@@ -59,8 +58,6 @@ import { DisplayTextModalComponent } from './modals/display-text-modal/display-t
     HelpModalComponent,
     CvAssessComponent,
     CandidateAssessmentComponent,
-   
-    CandidateAssessComponent,
     CvAssessModalComponent,
     SelectAssociatesModalComponent,
     InputModalComponent,

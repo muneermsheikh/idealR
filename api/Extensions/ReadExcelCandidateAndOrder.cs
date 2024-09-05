@@ -322,7 +322,7 @@ namespace api.Extensions
             return string.IsNullOrEmpty(strError) ? "" : strError;
         }
 
-        public static async Task<int> ReadOrderDataExcelFile(this DataContext context, string filePath, string Username)
+        /*public static async Task<int> ReadOrderDataExcelFile(this DataContext context, string filePath, string Username)
         {
             //column title in row 2, data starts from row 3
             //string filePath = "D:\\IdealR_/Ideal/api/CandidateExcelData.xlsx";
@@ -492,7 +492,7 @@ namespace api.Extensions
 
             var recAffected=await context.SaveChangesAsync();
             return recAffected;
-        }
+        }*/
 
    
 

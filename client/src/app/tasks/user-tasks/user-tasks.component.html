@@ -17,9 +17,12 @@
     <div class="stdd w300 mx-5">{{parameterCriteria}}</div>
 
     <label class="lbl w100 mx-2">Choose Status</label>
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >all Status
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >Pending
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" >Canceled
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="allstatus">all Status
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="pending`" >Pending
+    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="canceled" >Canceled
+    <input type="radio" class="stdd mx-2" [disabled]="user!.roles.includes('Admin') || user!.roles.includes('Admin Manager')" 
+        [(ngModel)]="sParams.taskStatus" value="allusers">All Users
+
     <div class="stdd form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w200" #search placeholder="Search">

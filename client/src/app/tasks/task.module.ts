@@ -6,6 +6,7 @@ import { SharedModule } from '../_modules/shared.module';
 import { TaskMenuComponent } from './task-menu/task-menu.component';
 import { TaskEditModalComponent } from './task-edit-modal/task-edit-modal.component';
 import { TaskLineComponent } from './task-line/task-line.component';
+import { PendingTasksComponent } from './pending-tasks/pending-tasks.component';
 
 
 
@@ -14,7 +15,8 @@ import { TaskLineComponent } from './task-line/task-line.component';
     UserTasksComponent,
     TaskMenuComponent,
     TaskEditModalComponent,
-    TaskLineComponent
+    TaskLineComponent,
+    PendingTasksComponent
   ],
   imports: [
     CommonModule,

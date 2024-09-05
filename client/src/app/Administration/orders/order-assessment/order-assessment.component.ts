@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { IOrderAssessment } from 'src/app/_models/admin/orderAssessment';
 import { User } from 'src/app/_models/user';
 import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
@@ -48,6 +48,7 @@ export class OrderAssessmentComponent implements OnInit {
       CreateAndInitializeFormArray(assess: IOrderAssessment) {
 
           this.form = this.fb.group({
+              id: assess.id,
               orderId: [assess.orderId, Validators.required],
               orderNo: [assess.orderNo, Validators.required],
               customerName: [assess.customerName, Validators.required],
@@ -132,21 +133,20 @@ export class OrderAssessmentComponent implements OnInit {
       }
 
       updateAssessment() {
-         
-        this.service.updateOrderAssessment(this.form.value).subscribe({
-          next: (succeeded:boolean) => {
-              if(succeeded) {
+
+        if(this.orderAssessment) {
+        var kopy: IOrderAssessment = {...this.form.value};
+        this.service.updateOrderAssessment(kopy).subscribe({
+          next: (res: string) => {
+              if(res==='') {
                 this.toastr.success('Updated the Order Assessment data', 'success');
               } else {
-                this.toastr.warning('Failed to update the order assessment data', 'Failure')
+                this.toastr.warning('Failed to update the order assessment data', 'Failure');
+                console.log('next error:', res);
               }
-          },
-          error: (error: any) => this.toastr.error(error, 'Error in updating the Order Assessment')
+          }
         })
-      }
+      }}
 
-      close() {
-        
-      }
   }
 

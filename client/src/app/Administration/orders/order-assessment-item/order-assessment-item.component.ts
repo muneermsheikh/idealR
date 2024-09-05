@@ -151,7 +151,7 @@ export class OrderAssessmentItemComponent implements OnInit {
   }
 
   calcualteTotals() {
-    this.totalMarks = this.form.get('orderAssessmentItemQs')?.value.map((x: IOrderAssessmentItemQ) => x.maxPoints).reduce((a: any, b: any) => a + b);
+    this.totalMarks = this.form.get('orderAssessmentItemQs')?.value.map((x: IOrderAssessmentItemQ) => x.maxPoints).reduce((a: number, b: number) => +a + +b);
   }
 
   GetConfirmation(existingQs: number): boolean {

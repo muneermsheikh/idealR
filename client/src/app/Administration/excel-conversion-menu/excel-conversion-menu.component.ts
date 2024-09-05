@@ -204,14 +204,14 @@ export class ExcelConversionMenuComponent {
     this.uploadCustomerExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
+
   }
 
-  
   exportOrderFile() {
     this.accountService.copyOrderXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
-        if(response === '') {
-          this.toastr.success(response + ' file(s) copied to database', 'success');
+        if(isNaN(Number(response))) {
+          this.toastr.success(response + ' records copied to database', 'success');
           this.uploadEmployeeExcel=false;
           } else {
             this.toastr.warning(response, 'Failed to copy the excel data to database')
@@ -232,6 +232,8 @@ export class ExcelConversionMenuComponent {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
+
+    this.formData = new FormData();
 
     if(f.size > 0)  this.formData.append('file', f, f.name);
         

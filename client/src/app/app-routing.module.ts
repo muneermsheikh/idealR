@@ -26,6 +26,7 @@ const routes: Routes = [
         loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
 
       {path: 'feedback', loadChildren:() => import('./feedback/feedback.module').then(mod => mod.FeedbackModule)},
+      {path: 'tasks', loadChildren:() => import('./tasks/task.module').then(mod => mod.TaskModule)},
       
       {path: 'hr/cvassess/:id', component: CvAssessComponent, canActivate: [HrGuard],
       resolve: {

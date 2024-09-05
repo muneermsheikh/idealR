@@ -1,34 +1,29 @@
-<form [formGroup]="form" (ngSubmit)="form.valid && updateAssessment()" 
+<form [formGroup]="form"  
     autocomplete="off" *ngIf="orderAssessment" >
 
-    <div class="stdd mt-2" style="border-style: groove; margin-left: 15px; width: 100%;">
-
-        <!--<app-text-input formControlName="orderId" class="stdd w15"></app-text-input>
-        <app-text-input formControlName="orderNo" class="stdd w15" ></app-text-input> -->
-        <label class="lbl w100">Customer</label>
-        <app-text-input [label]="'Customer Name'" formControlName="customerName" class="stdd w200" ></app-text-input>
-        <label class="lbl w100 mx-2">Order No</label>
-        <app-text-input [label]="'Order No'" formControlName="orderNo" class="stdd w100" ></app-text-input>
-        <button class="btn fa fa-save fa-2x" (click)="updateAssessment()" ></button>
-        <button class="btn fa fa-window-close fa-2x" (click)="close()" ></button>
-        <br><label class="lbl">Order Assessment Items</label>
+    <div class="stdd my-1" style="border-style: groove; margin: 5px;">
+        <div class="my-2">
+            <label class="lbl w100">Customer</label>
+            <div class="stdd w200">{{orderAssessment.customerName}}</div>
+            <label class="lbl w100 mx-2">Order No</label>
+            <div class="stdd w100">{{orderAssessment.orderNo}}</div>
+            <button class="btn fa fa-save fa-2x" [disabled]="!form.valid" style="margin-left: 50px;"  (click)="updateAssessment()" ></button>
+            <button class="btn fa fa-window-close fa-2x" routerLink="/administration/orders/edit/{{orderAssessment.orderId}}" ></button>
+        </div>
+        <label class="lbl">Order Assessment Items</label>
 
         <div formArrayName="orderAssessmentItems" class="formArray">
             <div *ngFor="let item of orderAssessmentItems.controls; let itemIndex=index">
                 <!-- <button class="btn" (click)="displayItem(itemIndex) =!displayItem(itemIndex)" >{{displayItem(itemIndex) ? "Hide" : "Show"}}</button> -->
                 <div [formGroupName]="itemIndex" style="margin-left: 25px;" >
-                    <!-- <app-text-input formControlName="orderAssessmentId" class="stdd w15"></app-text-input>
-                    <app-text-input formControlName="orderId" class="stdd w15"></app-text-input>
-                    <app-text-input formControlName="orderItemId" class="stdd w15"></app-text-input>
-                    <app-text-input formControlName="orderId"></app-text-input> -->
+
                     <label class="stdd w100">Category</label>
-                    <app-text-input class="stdd w200" [label]="'Profession Name'" formControlName="professionName"></app-text-input>
-                    <label class="stdd w100">Quantity</label>
-                    <app-text-input class="stdd w100" [label]="'Quantity'" formControlName="quantity"></app-text-input>
+                    <div class="stdd w200">{{orderAssessmentItems.at(itemIndex).get('professionName')?.value}}</div>
+                    <!--<label class="stdd w100">Quantity</label>
+                    <div class="stdd w100">{{orderAssessmentItems.at(itemIndex).get('quantity')?.value}}</div> -->
                     
-                    <!-- <button (click)="removeOrderAssessmentItem(itemIndex)" style="margin-left: 20px;" class="stdd fa fa-trash red"></button> -->
-                    <br> <label class="lbl" style="margin-left: 50px;">Assessment Questions for the category</label>
-                    <label class="title w50">Q No</label>
+                    <br><label class="lbl" style="margin-left: 50px;">Assessment Questions for the category</label>
+                    <br><label class="title w50" style="margin-left: 50px;">Q No</label>
                     <label class="title w150">Subject</label>
                     <label class="title w200">Question</label>
                     <label class="title w50">Max Pts</label>
@@ -36,13 +31,12 @@
                     <button class="my-1 fa fa-plus" title="add a new Assessment Question" (click)="addNewOrderAssessmentItemQ(itemIndex)" ></button>
                     <hr>
                     <div formArrayName="orderAssessmentItemQs" class="formArray">
-                        
                         <div *ngFor="let q of orderAssessmentItemQs(itemIndex).controls; let qIndex=index">
                             <div [formGroupName]="qIndex" style="margin-left: 50px;">
                                 <app-text-input class="stdd w50" [label]="'Question No'" formControlName="questionNo"></app-text-input>
                                 <app-text-input class="stdd w150" [label]="'subject'" formControlName="subject"></app-text-input>
                                 <app-text-input class="stdd w200" [label]="'Question'" formControlName="question"></app-text-input>
-                                <app-text-input class="stdd w50" [type]="'number'" [label]="'Max Points'" formControlName="maxPoints"></app-text-input>
+                                <app-text-input class="stdd w50" [label]="'Max Points'" formControlName="maxPoints"></app-text-input>
                                 <input type="checkbox" class="stdd w15" formControlName="isMandatory">
                                 <button (click)="removeOrderAssessmentItemQ(itemIndex, qIndex)" style="margin-left: 20px;" class="stdd fa fa-trash red"></button>
                             </div>
@@ -55,6 +49,6 @@
 
 </form>
 
-<div style="font-size: smaller;">
+<!-- <div style="font-size: smaller;">
     {{form.value | json}}
-</div>
+</div> -->

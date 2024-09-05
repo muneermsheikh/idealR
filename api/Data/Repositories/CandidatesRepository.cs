@@ -144,7 +144,15 @@ namespace api.Data.Repositories
 
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
         {
-                var query = _context.Candidates.Include(x => x.UserProfessions).AsQueryable();
+                var query =  _context.Candidates.Include(x => x.UserProfessions)
+                    
+                    .Select(cand => new CandidateBriefDto {
+                        ApplicationNo = cand.ApplicationNo, City = cand.City, Created = cand.Created, Email=cand.Email,
+                        FullName=cand.FullName, Id=cand.Id, KnownAs=cand.KnownAs, LastActive=cand.LastActive, 
+                        CustomerId=Convert.ToInt32(cand.CustomerId), Status = cand.Status, PpNo=cand.PpNo,
+                        userProfessions = cand.UserProfessions
+                    })
+                    .AsQueryable();
 
                 if(candidateParams.Id > 0) {
                     query = query.Where(x => x.Id == candidateParams.Id);}
@@ -166,10 +174,11 @@ namespace api.Data.Repositories
                         if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
                         query = query.OrderBy(x => x.ApplicationNo);
                     }
-                
+
+
                 var paged = await PagedList<CandidateBriefDto>.CreateAsync(query.AsNoTracking()
-                        .ProjectTo<CandidateBriefDto>(_mapper.ConfigurationProvider),
-                        candidateParams.PageNumber, candidateParams.PageSize);
+                        //.ProjectTo<CandidateBriefDto>(_mapper.ConfigurationProvider)
+                        , candidateParams.PageNumber, candidateParams.PageSize);
                 
                 return paged;
 

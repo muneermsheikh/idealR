@@ -5,13 +5,16 @@ export interface IOrderAssessmentItem
 {
      id: number;
      orderAssessmentId: number;
+     assessmentRef: string;
      orderItemId: number;
-     orderId: number;
-     orderNo: number;
      customerName: string;
      professionId: number;
      professionName: string;
-     designedBy: string;
+     orderId: number;
+     orderNo: number;
      approvedBy: string;
+     dateDesigned: Date;     
+     requireCandidateAssessment: boolean;
+     designedBy: string;
      orderAssessmentItemQs: IOrderAssessmentItemQ[];
 }

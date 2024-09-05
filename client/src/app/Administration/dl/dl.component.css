@@ -6,6 +6,7 @@
     vertical-align: middle;
 }
 
+.btn {color:aliceblue; width: 15px;}
 .stdd {
     display: inline-block;
     font-size: small;
@@ -15,12 +16,52 @@
 .cursorpointer {cursor: pointer; color: darkblue; font-weight: bold;}
 
 .red {color: red;}
+.yellow {color: yellow;}
 
 .w15 {width: 15px;}
 .w30 {width: 30px;}
 .w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
 .w110 {width: 110px;}
 .w150 {width: 150px;}
 .w200 {width: 200px;}
+.w225 {width: 225px;}
 .w240 {width: 240px;}
 .w300 {width: 300px;}
+
+
+.inputCheck {
+    margin-right: 5px;
+    width: 40px;
+    margin-left: 10px;
+    border: 2px;
+    border-color: #000000;
+}
+
+input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 15px;
+	height: 15px;
+	border: 1px solid #fff;
+	border-radius: 50%;
+	margin-right: 5px;
+	background-color: rgb(195, 177, 177);
+	position: relative;
+    vertical-align: middle;
+}
+
+input[type="radio"]:checked::before {
+	content: "";
+	display: block;
+	width: 9px;
+	height: 9px;
+	background-color: #4a0fec;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: appear 0.8s;
+}

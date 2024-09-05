@@ -4,11 +4,9 @@ import { map, of } from 'rxjs';
 import { Pagination } from 'src/app/_models/pagination';
 import { UserParams } from 'src/app/_models/params/userParams';
 import { environment } from 'src/environments/environment.development';
-import { getHttpParamsForUserParams, getPaginatedResult } from '../paginationHelper';
+import { getPaginatedResult } from '../paginationHelper';
 import { User } from 'src/app/_models/user';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
-import { ICustomerOfficialDto } from 'src/app/_models/admin/customerOfficialDto';
-import { IOrderItemsAndAgentsToFwdDto } from 'src/app/_dtos/admin/orderItemsAndAgentsToFwdDto';
 import { IUserWithRolesDto } from 'src/app/_dtos/admin/usersWithRolesDto';
 
 @Injectable({

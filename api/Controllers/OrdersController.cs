@@ -101,7 +101,7 @@ namespace api.Controllers
         {
             var obj = await _repo.GetOpenItemCategoryList();
 
-            if(obj.Count() ==0) return BadRequest("No order items on record matching the criteria");
+            if(obj.Count == 0) return BadRequest("No order items on record matching the criteria");
 
             return Ok(obj);
         }

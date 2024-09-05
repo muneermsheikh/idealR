@@ -8,9 +8,11 @@ namespace api.DTOs.HR
         public int ApplicationNo { get; set; }
         public string FullName {get; set;}
         public string KnownAs { get; set; }
+        public int CustomerId { get; set; }
         public string ReferredByName { get; set; }
         public string City {get; set;}
         public string Email { get; set; }
+        public string PpNo { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public ICollection<UserProfession> userProfessions { get; set; }

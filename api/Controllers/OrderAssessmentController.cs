@@ -46,8 +46,9 @@ namespace api.Controllers
         public async Task<ActionResult<OrderAssessmentItem>> GetOrderItemAssessment(int orderItemId)
         {
             var assessment = await _repo.GetOrCreateOrderAssessmentItem(orderItemId, User.GetUsername());
-            if(assessment==null) return NotFound();
-            return Ok(assessment);
+            if(!string.IsNullOrEmpty(assessment.Error)) return BadRequest(new ApiException(400, "Error in getting OrderAssessmentItem", assessment.Error));
+            
+            return Ok(assessment.orderAssessmentItem);
         }
 
         [HttpGet("orderAssessment/{orderId}")]
@@ -90,13 +91,13 @@ namespace api.Controllers
 
 
         [HttpPut("assessment")]
-        public async Task<ActionResult<bool>> UpdateOrderAssessment(OrderAssessment orderAssessment)
+        public async Task<ActionResult<string>> UpdateOrderAssessment(OrderAssessment orderAssessment)
         {
-            var updated = await _repo.EditOrderAssessment(orderAssessment, User.GetUsername());
+            var strErr = await _repo.EditOrderAssessment(orderAssessment, User.GetUsername());
 
-            if(!updated) return BadRequest("Failed to update the Order Assessment");
+            if(!string.IsNullOrEmpty(strErr)) return BadRequest(new ApiException(400,"Faild to update the order assessment", strErr));
 
-            return Ok(true);
+            return Ok("");
         }
 
         [HttpGet("orderitemassessmentQ/{orderitemid}")]

@@ -1,7 +1,7 @@
 
 <div class="stdd col-3 vAlignTop" style="margin-top: 10px; margin-left: 5px;"  *ngIf="cvBrief">
-     <button class="stdd w30 fa fa-question" (click)="openShortlistCandidateHelpModal()"></button>
-     <button class="stdd w30 pull-right fa fa-undo" (click)="returnToCalling()" ></button>
+     <button class="btn mx-5 w30 fa fa-question" (click)="openShortlistCandidateHelpModal()"></button>
+     <button class="btn mx-5 w30 fa fa-window-close fa-2x pull-right" (click)="returnToCalling()" ></button>
      
      <div class="b my-1">Candidate Details</div>
      <div style="padding-left: 5px; border:blue;">
@@ -82,7 +82,7 @@
      
      <br>
      <!--require InternalReview -->
-     <div *ngIf="requireInternalReview && !qDesigned" class="fontSmall text-danger">
+     <div *ngIf="orderItemSelected && requireInternalReview && !qDesigned" class="fontSmall text-danger">
           Assessment Questions for the Order Category selected not designed.  In the Assessment form, you can press the + button to the right to create custom assessment questions, or add standard questions to the order category"
      </div>
 

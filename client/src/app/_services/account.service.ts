@@ -75,7 +75,7 @@ export class AccountService {
   }
 
   copyOrderXLSFileToDB(model: any) {
-    return this.http.post<string>(this.baseUrl + 'FileUpload/orderXLS', model);
+    return this.http.post<string>(this.baseUrl + 'OrdersExport/orderexcelconversion', model);
   }
 
 

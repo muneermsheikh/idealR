@@ -15,7 +15,7 @@ export interface IOrderItem{
      minCVs: number; 
      maxCVs: number;
      //requireInternalReview: boolean; 
-     //requireAssess: boolean; 
+     requireAssessment: boolean; 
      completeBefore: Date; 
      //assignedId: number; 
      //assignedToName: string; 

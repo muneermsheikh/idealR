@@ -27,7 +27,7 @@ namespace api.Interfaces
         Task<OrderItemBriefDto> GetOrderItemBrief(int orderitemid);
         Task<string> GetOrderItemRefCode(int orderitemid);
         Task<ICollection<OpenOrderItemCategoriesDto>> GetOpenItemCategoryList();
-
+        Task<string> WriteOrdersExcelToDB(string fileNameWithPath, string Username);
         
     }
 }

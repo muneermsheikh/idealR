@@ -179,6 +179,15 @@ namespace api.Extensions
     
             return query;
         }
+
+        public async static Task<int> GetProfessionIdFromOrderItemId(this DataContext context, int OrderItemId)
+        {
+            var query = await (from item in context.OrderItems  where item.Id == OrderItemId 
+                select item.ProfessionId).FirstOrDefaultAsync();
+    
+            return query;
+        }
+
     }
     
 }
