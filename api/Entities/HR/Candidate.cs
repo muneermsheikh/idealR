@@ -23,8 +23,8 @@ namespace api.Entities.HR
         public string Address {get; set;}
         public string City {get; set;}
         public string Pin {get; set;}
-        public string Country { get; set; }
-        public string Nationality {get; set;}
+        public string Country { get; set; } = "India";
+        public string Nationality {get; set;}="Indian";
         [EmailAddress]
         public string Email { get; set; }
     //general

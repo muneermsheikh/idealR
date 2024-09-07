@@ -253,7 +253,7 @@ namespace api.Extensions
                 string CompleteBefore1="", CompleteBefore2="", CompleteBefore3="", CompleteBefore4="";
                 
             
-                int NextOrderNo = await context.Orders.MaxAsync(x => x.OrderNo) + 1;
+                int NextOrderNo = (await context.Orders.MaxAsync(x => (int?) x.OrderNo) ?? 1000) + 1;
                 var OrderItems = new List<OrderItem>();
 
                 for (int row = rowTitle+1; row <= rows; row++)

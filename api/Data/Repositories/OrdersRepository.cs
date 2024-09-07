@@ -466,7 +466,6 @@ namespace api.Data.Repositories
         }
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
-
             var qry = _context.Orders.Where(x => x.Status.ToLower() != "concluded")
                 //.Include(x => x.ContractReview)
                 .OrderBy(x => x.OrderNo)
@@ -487,7 +486,11 @@ namespace api.Data.Repositories
             var paged = await PagedList<OrderBriefDto>.CreateAsync(qry.AsNoTracking()
                 //.ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)
                 , orderParams.PageNumber, orderParams.PageSize);
-         
+
+            var reviews = await _context.ContractReviews.Where(x => paged.Select(x => x.Id).ToList().Contains(x.OrderId)).ToListAsync();
+            foreach(var pg in paged) {
+                pg.ContractReviewedOn = reviews.Where(x => x.OrderId==pg.Id).Select(x => x.ReviewedOn).FirstOrDefault();
+            }
             return paged;
         }
 

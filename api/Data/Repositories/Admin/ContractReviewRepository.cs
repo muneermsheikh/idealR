@@ -2,6 +2,7 @@ using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.DTOs.Order;
 using api.Entities.Admin.Order;
+using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.Admin;
@@ -205,42 +206,46 @@ namespace api.Data.Repositories.Admin
                
                if(contractreview != null) return contractreview;
 
-               //now, generate a new contract review 
-               var order = await _context.Orders.Where(x => x.Id == orderId)
-                    .Include(x => x.OrderItems).ThenInclude(x => x.Remuneration)
-                    .FirstOrDefaultAsync();
-               
-               var contractReviewItems = new List<ContractReviewItem>();
                var reviewQs = await _context.ContractReviewItemStddQs.OrderBy(x => x.SrNo).ToListAsync();
-               var itemQs = (ICollection<ContractReviewItemQ>)_mapper.Map<ContractReviewItemQ>(reviewQs);
+               
+               var contractRvwItemQs = new List<ContractReviewItemQ>();
+               foreach(var rvwQ in reviewQs) {
+                    contractRvwItemQs.Add(new ContractReviewItemQ{
+                         SrNo=rvwQ.SrNo, ResponseText=rvwQ.ResponseText,
+                         ReviewParameter=rvwQ.ReviewParameter,Response=false,
+                         IsResponseBoolean=false, IsMandatoryTrue=rvwQ.IsMandatoryTrue,
+                         Remarks=""
+                    });
+               }
 
-               var contractReview = new ContractReview
-               {
-                    OrderNo = order.OrderNo,
-                    OrderId = orderId,
-                    OrderDate = order.OrderDate,
-                    CustomerId = order.CustomerId,
-                    CustomerName = await _context.CustomerNameFromId(order.CustomerId),
-                    ReviewedByName = Username,
-                    ReviewedOn = System.DateTime.Now                   
-               };
+               var contractReviewItems = await (from item in _context.OrderItems where item.OrderId==orderId
+                    join prof in _context.Professions on item.ProfessionId equals prof.Id
+                    orderby item.SrNo
+                    select new ContractReviewItem {
 
-               foreach (var item in order.OrderItems)
-               {
-                    var newContractReviewItem = new ContractReviewItem
-                    {
                          OrderItemId = item.Id,
                          OrderId = orderId,
                          Quantity = item.Quantity,
-                         ProfessionName = await _context.GetProfessionNameFromId(item.ProfessionId),
+                         ProfessionName = prof.ProfessionName,
                          Ecnr = item.Ecnr,
                          SourceFrom = item.SourceFrom,
-                         ContractReviewItemQs = itemQs,
+                         ContractReviewItemQs = contractRvwItemQs,
                          RequireAssess = "false"
-                    };
-                    contractReview.ContractReviewItems.Add(newContractReviewItem);
-               }
-
+                    }).ToListAsync();
+               
+               
+               var contractReview = await (from order in _context.Orders where order.Id==orderId
+                    select new ContractReview {
+                         OrderNo = order.OrderNo,
+                         OrderId = orderId,
+                         OrderDate = order.OrderDate,
+                         CustomerId = order.CustomerId,
+                         CustomerName = order.Customer.CustomerName,
+                         ReviewedByName = Username,
+                         ReviewedOn = System.DateTime.Now,
+                         ContractReviewItems=contractReviewItems
+                    }).FirstOrDefaultAsync();
+ 
                return contractReview;
           }
 
@@ -280,13 +285,42 @@ namespace api.Data.Repositories.Admin
           {
                _context.ContractReviews.Add(contractReview);
                //*TODO* data verification
+               
+               try {
+                    await _context.SaveChangesAsync();
+                    var order = await _context.Orders.FindAsync(contractReview.OrderId);
+               
+                    switch (contractReview.ReviewStatus.ToLower()) {
+                         case "accepted":
+                              order.ContractReviewStatus="Accepted";
+                              order.ContractReviewId=contractReview.Id;
+                              
+                              break;
+                         case "regretted":
+                              order.ContractReviewStatus="Regretted";
+                              order.ContractReviewId = contractReview.Id;
+
+                              break;
+                         case "accepted with regrets":
+                              order.ContractReviewStatus="Accepted With Regrets";
+                              order.ContractReviewId=contractReview.Id;
+
+                              break;
+                         default:
+                              break;
+                    }
+
+               } catch {
+                    return null;
+               }
 
                try {
                     await _context.SaveChangesAsync();
-               } catch (Exception ex) {
-                    throw new Exception(ex.Message, ex);
+               } catch {
+                    return null;
                }
-
+               
+               
                return contractReview;
           }
                
