@@ -10,6 +10,7 @@ using api.Entities.Master;
 using api.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace api.Data
 {
@@ -144,6 +145,12 @@ namespace api.Data
                 var dbData = JsonSerializer.Deserialize<List<FinanceVoucher>>(data);
                 foreach(var item in dbData) 
                 {
+                    var coaid = await context.COAs.Where(x => x.AccountName==item.AccountName).Select(x => x.Id).FirstOrDefaultAsync();
+                    if(coaid != 0) item.CoaId=coaid;
+                    foreach(var trans in item.VoucherEntries) {
+                        var coatrans = await context.COAs.Where(x => x.AccountName==trans.AccountName).Select(x => x.Id).FirstOrDefaultAsync();
+                        if(coatrans != 0) trans.CoaId=coatrans;
+                    }
                     context.FinanceVouchers.Add(item);
                 }
             }
@@ -173,6 +180,28 @@ namespace api.Data
                 }
             }
             var maxCustomerId = Convert.ToInt32(await context.Customers.MaxAsync(x => (int?)x.Id));
+ 
+            if(!await context.Professions.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/ProfessionSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Profession>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.Professions.Add(item);
+                }
+            }
+            var maxProfId=Convert.ToInt32(await context.Professions.MaxAsync(x => (int?)x.Id));
+
+            if(!await context.Industries.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/IndustrySeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Industry>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.Industries.Add(item);
+                }
+            }
+            var maxIndId = Convert.ToInt32(await context.Industries.MaxAsync(x => (int?)x.Id));
 
             if(!await context.Employees.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/EmployeeSeedData.json");
@@ -195,7 +224,15 @@ namespace api.Data
                         var roleResult = await userManager.AddToRoleAsync(user, "Employee");
                         if(roleResult.Succeeded) item.AppUserId=user.Id;
                     }
-                    context.Employees.Add(item);
+
+                    foreach(var sk in item.HRSkills) {
+                        sk.ProfessionId=random.Next(1, maxProfId);
+                        sk.IndustryId=random.Next(1,maxIndId);
+                        sk.SkillLevelName="Proficient";
+                        sk.IsMain=true;
+                    }
+
+                   context.Employees.Add(item);
 
                 }
                 await context.SaveChangesAsync();
@@ -204,17 +241,6 @@ namespace api.Data
             
             var maxEmpId=Convert.ToInt32(await context.Employees.MaxAsync(x => (int?)x.Id));
             
-            if(!await context.Professions.AnyAsync()) {
-                var data = await File.ReadAllTextAsync("Data/SeedData/ProfessionSeedData.json");
-                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<Profession>>(data);
-                foreach(var item in dbData) 
-                {
-                    context.Professions.Add(item);
-                }
-            }
-            var maxProfId=Convert.ToInt32(await context.Professions.MaxAsync(x => (int?)x.Id));
-
             if(!await context.ContractReviewItemStddQs.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/ContractReviewItemStddQSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -225,16 +251,6 @@ namespace api.Data
                 }
             }
             
-            if(!await context.Industries.AnyAsync()) {
-                var data = await File.ReadAllTextAsync("Data/SeedData/IndustrySeedData.json");
-                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var dbData = JsonSerializer.Deserialize<List<Industry>>(data);
-                foreach(var item in dbData) 
-                {
-                    context.Industries.Add(item);
-                }
-            }
-
             if(!await context.AssessmentQStdds.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/AssessmentQStddSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
