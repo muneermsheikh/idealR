@@ -1,0 +1,28 @@
+<div *ngIf="dto">
+    
+    <button class="btn fa fa-minus" *ngIf="bExpand" style="color:aqua;" (click)="bExpand=false"></button>
+    <button class="btn fa fa-plus" *ngIf="!bExpand" style="color:aqua;" (click)="bExpand=true"></button>
+    <div class="stdd w120">{{dto.dateOfFlight|date:'dd-MMM-yy'}}</div>
+    <div class="stdd w150 cursorPointer" >{{dto.airportOfBoarding}}</div>
+    <div class="stdd w150">{{dto.airportOfDestination}}</div>
+    <div class="stdd w120">{{dto.airlineName}}</div>
+    <div class="stdd w120">{{dto.eTD_Boarding | date:'dd-MMM-yy'}}</div>
+    <div class="stdd w120">{{dto.eTA_Destination}}</div>
+    <div class="stdd w50">{{dto.candidateFlightItems.length}}</div>
+    
+    <button class="btn w25 fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" title="edit this Flight" ></button>
+    <button class="btn w25 fa fa-envelope" style="color: aliceblue;" (click)="travelAdviseClicked()" title="edit this Flight" ></button>
+    <button class="btn w25 fa fa-trash red" (click)="deleteClicked()" style="color: red;"
+        title="delete this customer"></button>
+    
+    <div *ngIf="bExpand">
+        <label class="cand w50 b" style="margin-left: 100px !important;">Sr No</label>
+        <label class="cand w100 b" style="margin-left: 15px !important;">App No</label>
+        <label class="cand w150 b">Candidate Name</label>
+        <div *ngFor="let c of dto.candidateFlightItems; let i=index;">
+            <div class="cand w50" style="margin-left: 100px !important; text-align: right;">{{i+1}}</div>
+            <div class="cand w100" style="margin-left: 50px !important;">{{c.applicationNo}}</div>
+            <div class="cand w150">{{c.candidateName}}</div>
+        </div>
+    </div>
+</div>

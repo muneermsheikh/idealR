@@ -24,7 +24,6 @@ namespace api.Controllers
         public async Task<ActionResult<UserDto>> LogIn (LoginDto loginDto)
         {
             var user = await _userManager.Users
-                .Include(p => p.photos)
                 .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
             
             if(user==null) return Unauthorized("invalid credentials");

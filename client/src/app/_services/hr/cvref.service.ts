@@ -53,6 +53,7 @@ export class CvrefService {
       }
 
       let params = getPaginationHeadersCVRefParams(this.cvRefParams);
+      console.log('cvrefparams', params);
        
       return getPaginatedResult<ISelPendingDto[]>(this.apiUrl 
         + 'cvref/cvsreferred', params, this.http).pipe(

@@ -7,11 +7,15 @@
     word-wrap: break-word;
 }
 
+.w75 {width: 75px;}
+.w90 {width: 90px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
-.w300 {width: 300px;}
+.w350 {width: 350px;}
 
 .cursorpointer {cursor: pointer;}
 
 .red {color: red;}
 .green  {color: green;}
+
+.btn {color:aliceblue}

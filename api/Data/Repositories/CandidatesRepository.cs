@@ -451,8 +451,6 @@ namespace api.Data.Repositories
                         att.Name = NextAppNo + "-" + att.Name;
                         att.UploadedLocation = Directory.GetCurrentDirectory();
                         att.UploadedbyUserName = Username;
-
-                        if(att.AttachmentType.ToLower()=="photograph") cand.PhotoUrl=att.UploadedLocation + "/" + att.Name;
                 }
                 cand.UserAttachments = registerDto.UserAttachments;
             }

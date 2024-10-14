@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { ToastRef, ToastrService } from 'ngx-toastr';
-import { filter, switchMap } from 'rxjs';
+import cloneDeep from 'lodash-es/cloneDeep';
+import { ToastrService } from 'ngx-toastr';
 import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
 import { IFeedback } from 'src/app/_models/hr/feedback';
 import { User } from 'src/app/_models/user';
@@ -43,10 +43,10 @@ export class FeedbackComponent implements OnInit {
     
     this.activatedRoute.data.subscribe({
       next: data => {
-        this.feedback = data['feedback'],
-        this.feedbackHistory = data['history'];
-  
+        this.feedback = data['feedback']
+        , this.feedbackHistory = data['history'];
         if(this.feedback) this.InitializeForm(this.feedback);
+        console.log('history:', this.feedbackHistory);
       }, 
       error: (err:any) => {
         console.log('error:', err);
@@ -58,6 +58,8 @@ export class FeedbackComponent implements OnInit {
   }
 
   InitializeForm(feedbk: IFeedback) {
+
+    console.log('feedbk:', feedbk);
 
     this.form = this.fb.group({
       id: feedbk.id,
@@ -72,15 +74,16 @@ export class FeedbackComponent implements OnInit {
       dateReceived: feedbk.dateReceived,
       gradeAssessedByClient: feedbk.gradeAssessedByClient,
       customerSuggestion: feedbk.customerSuggestion,
+      feedbackNo: feedbk.feedbackNo,
 
-      feedbackInputItems: this.fb.array(
+      feedbackItems: this.fb.array(
         feedbk.feedbackItems.map(x => (
           this.fb.group({
             id: x.id, customerFeedbackId: x.customerFeedbackId,
             feedbackGroup: x.feedbackGroup, 
             questionNo: x.questionNo,
             question: [x.question, Validators.required],
-            response: [x.response, Validators.required],
+            response: [x.response],   //Validators.required],
             prompt1: [x.prompt1, Validators.required],
             prompt2: [x.prompt2, Validators.required],
             prompt3: [x.prompt3],
@@ -93,13 +96,13 @@ export class FeedbackComponent implements OnInit {
     })
   }
 
-  get feedbackInputItems(): FormArray {
-    return this.form.get("feedbackInputItems") as FormArray
+  get feedbackItems(): FormArray {
+    return this.form.get("feedbackItems") as FormArray
   }
 
   newFeedbackItem(): FormGroup {
 
-    var lastItem = this.feedbackInputItems.at(this.feedbackInputItems.length-1);
+    var lastItem = this.feedbackItems.at(this.feedbackItems.length-1);
 
     return this.fb.group({
         id: 0, customerFeedbackId: this.feedback?.id,
@@ -113,62 +116,61 @@ export class FeedbackComponent implements OnInit {
   }
 
   addNewFeedbackItem() {
-    this.feedbackInputItems.push(this.newFeedbackItem)
+    this.feedbackItems.push(this.newFeedbackItem)
   }
 
-  removeFeedbackInput(index: number) {
+  removeFeedbackItem(index: number) {
       this.confirm.confirm("Are you sure you want to delete this record?", "confirm Delete")
         .subscribe({
           next: confirmed => {
             if(confirmed) {
-              this.feedbackInputItems.removeAt(index);
+              this.feedbackItems.removeAt(index);
             }
           }
         })
   }
-  
+
   updateFeedback() {
-      
-      var formdata = this.form.value;
-      console.log('formdata:', formdata);
-
-      const observableInner = formdata.id > 0 
-        ? this.service.updateFeedback(formdata) : this.service.saveNewFeedback(formdata);
-      
-      var confirmMsg = 'Do you want to update changes';
-
-      const observableOuter = this.confirm.confirm('confirm Update', confirmMsg);
-
-      observableOuter.pipe(
-          filter((confirmed) => confirmed),
-          switchMap(() => {
-            return observableInner
-          })
-      ).subscribe(response => {
-        if(response) {
-          this.toastr.success('Feedback successfully updated', 'Insertion successful');
-        } else {
-          this.toastr.error('Error in updating the Feedback Input', 'failed to update')
-        }
-      });
-
-  }
-
-  generatenew() {
-    if(this.feedback!.id !== 0) {
-      var msg = "This will replace the current feedback data with a new blank Feedback Object.  do you want to continue?";
-      this.confirm.confirm("Confirm replace current feedback", msg).subscribe({
-        next: (cnfm: boolean) => {
-          if(!cnfm) return;
-        }
-      })
+    if(this.form.get('feedbackNo')?.value ==='0') {
+      this.editFeedback();
+    } else {
+      this.saveNewFeedback();
     }
     
-    this.service.generatenewfeedback(this.feedback!.customerId).subscribe({
-      next: (response: IFeedback) => this.feedback = response
-    })
   }
   
+  editFeedback() {
+      
+      this.service.updateFeedback(this.form.value).subscribe({
+        next: (response: string) => {
+          if(Number(response)) {
+            this.toastr.success('Feedback updated', 'Success')
+          } else {
+            this.toastr.warning('Failed to update the feedback', 'Failed')
+          }
+        }, error: (err:any) => this.toastr.error(err.error.details, 'Error')
+      }
+    )
+
+  }
+
+  
+  saveNewFeedback() {
+
+    this.service.saveNewFeedback(this.form.value).subscribe({
+      next: (response: IFeedback) => {
+        if(response !==null) {
+          this.form.get('id')?.setValue(response.id);
+          this.form.get('feedbackNo')?.setValue(response.feedbackNo);
+          this.toastr.success('Feedback inserted into the database', 'Success')
+        } else {
+          this.toastr.warning('Failed to update the new feedback', 'Failed')
+        }
+      }, error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
+    })
+    
+}
+
   generateLinkForAddresses() {
 
   }
@@ -178,7 +180,7 @@ export class FeedbackComponent implements OnInit {
   }
 
   gradeChanged(index: number) {
-    var points =  this.feedbackInputItems.value.map((x:any) => +x.response).reduce((a:number, b: number) => a + b,0);
+    var points =  this.feedbackItems.value.map((x:any) => +x.response).reduce((a:number, b: number) => a + b,0);
     var grade = points! * 100/ +(this.feedback!.feedbackItems.length * 20);
     var gradeString = grade > 90 ? "A+" : grade > 80 ? "A" : grade > 70 ? "B+" : grade > 60 ? "B" : grade > 50 ? "C" : "D";
     this.form.get("gradeAssessedByClient")?.setValue(gradeString + "(" + Math.round(grade) + "%)");
@@ -199,13 +201,11 @@ export class FeedbackComponent implements OnInit {
 
   newFeedback() {
     if(this.feedback!.customerId === 0) return;
+    const feedbkCopy = cloneDeep(this.feedback);
+    feedbkCopy!.feedbackNo=0;
+    this.form.get('feedbackNo')?.setValue(0);
+    this.InitializeForm(feedbkCopy!);
 
-    this.service.getFeedbackObject(0, this.feedback!.customerId).subscribe({
-      next: response => {
-        this.feedback = response;
-        this.InitializeForm(this.feedback);
-      }
-    })
   }
 
   sendEmail() {

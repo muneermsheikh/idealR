@@ -38,6 +38,8 @@ export interface IEmployment
 	approved: boolean;
 	approvedByEmpId:number;
 	offerAcceptanceConcludedOn: Date;
+	offerAttachmentFileName: string;
+	offerAttachmentFullPath: string;
 
 }
 

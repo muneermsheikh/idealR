@@ -154,6 +154,8 @@ namespace api.Controllers
 
         }
 
+       
+
         [HttpGet("skilldatas")]
         public async Task<ActionResult<ICollection<SkillData>>> GetSkillDatas()
         {

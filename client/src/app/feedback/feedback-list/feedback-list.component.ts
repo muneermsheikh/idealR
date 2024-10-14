@@ -15,7 +15,6 @@ import { FeedbackService } from 'src/app/_services/feedback.service';
   styleUrls: ['./feedback-list.component.css']
 })
 export class FeedbackListComponent implements OnInit {
-
   
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
   
@@ -101,7 +100,7 @@ export class FeedbackListComponent implements OnInit {
   }
 
     editClicked(event: any) {   //emitted: IFeedback
-        this.navigateByUrl('/feedback/edit/' + event );
+        this.navigateByUrl('/feedback/edit/' + event + '/0' );
     }
 
     deleteClicked(event: any) {

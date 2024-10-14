@@ -1,0 +1,70 @@
+<div class="container">
+    <h4 class="stdd">Edit Member - logged-in user: {{user?.knownAs}}</h4>
+
+    <div class="stdd" *ngIf="!member">Member undefined</div>
+    <form #editForm="ngForm" id="editForm" >
+            <button class=" btn fa fa-save fa-2x" style="margin-left: 150px" 
+                 (click)="UpdateMember()" [disabled]="!editForm.dirty" ></button>
+            <button class="btn fa fa-window-close fa-2x mx-2" (click)="close()"></button>
+            <br><br>
+            <label class="stdd w100">User name</label>
+            <div class="stdd w150">{{member?.userName}}</div>
+        
+            <br><br>
+            <label class="stdd w100">Gender</label>
+            <input type="radio" value="m" [(ngModel)]="member!.gender" name="gender" 
+                class="inputcheck form-check-input"> <span class="stdd mx-2">Male</span>
+            <input type="radio" value="f" [(ngModel)]="member!.gender" name="gender" 
+                class="inputcheck form-check-input"> <span class="stdd mx-2">Female</span>
+
+            <br><label class="stdd w100">Known As</label>
+            <input type="text" class="stdd w150" [(ngModel)]="member!.knownAs"  name="knownAs">
+            <!-- <app-text-input
+                [label]="'KnownAs'" name="knownAs" [(ngModel)]="member!.knownAs" class="stdd w150"
+            ></app-text-input> -->
+            
+            <br>
+            <label class="stdd w100">Date of birth</label>
+            <input class="stdd w150" type="text" placeholder="Date of birth" 
+                [(ngModel)]="member!.dateOfBirth" name="dob"
+                bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+            
+            <br><br>
+            <label class="stdd w100">City</label>
+            <input class="stdd w150" [(ngModel)]="member!.city"  name="city">
+            <!-- <app-text-input
+                [label]="'City'" [(ngModel)]="member!.city" class="stdd w150" name="city"
+            ></app-text-input> -->
+            
+            <br>
+            <label class="stdd w100">Country</label>
+            <input class="stdd w150" [(ngModel)]="member!.country" name="country">
+            <!-- <app-text-input
+                [label]="'Country'" [(ngModel)]="member!.country" class="stdd w150" name="country"
+            ></app-text-input> -->
+            
+            <br>
+            <label class="stdd w100">Position</label>
+            <input class="stdd w200" [(ngModel)]="member!.position" name="position">
+            <!-- <app-text-input
+                [label]="'Position'" [(ngModel)]="member!.position" class="stdd w150" name="position"
+            ></app-text-input> -->
+            
+            <br>
+            <label class="stdd w100">Phone</label>
+            <input class="stdd w150" [(ngModel)]="member!.phoneNumber" name="phoneno">
+            <!-- <app-text-input
+                [label]="'Phone No'" [(ngModel)]="member!.phoneNumber" class="stdd w150" name="phoneno"
+            ></app-text-input> -->
+            
+            <br>
+            <label class="stdd w100">Email</label>
+            <input class="stdd w250" [(ngModel)]="member!.email" name="email">
+            <!-- <app-text-input
+                [label]="'Email'" [(ngModel)]="member!.email" class="stdd w200" name="email"
+            ></app-text-input> -->
+    
+    </form>
+    
+    
+</div>

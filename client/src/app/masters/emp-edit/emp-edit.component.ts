@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { IAppUserReturnDto } from 'src/app/_dtos/admin/appUserReturnDto';
 import { IEmployee } from 'src/app/_models/admin/employee';
 import { IIndustryType } from 'src/app/_models/admin/industryType';
 import { ISkillData } from 'src/app/_models/hr/skillData';
@@ -10,6 +11,7 @@ import { User } from 'src/app/_models/user';
 import { EmployeeService } from 'src/app/_services/admin/employee.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { FileService } from 'src/app/_services/file.service';
+import { MemberService } from 'src/app/_services/member.service';
 
 @Component({
   selector: 'app-emp-edit',
@@ -34,9 +36,7 @@ export class EmpEditComponent {
   skillLevels = [
     {"skillLevel": "Proficient"}, {"skillLevel": "Good"}, {"skillLevel": "Poor"}, {"skillLevel": "Unskilled"}
   ]
-
-
-  
+ 
   constructor(
       private toastr: ToastrService, 
       private service: EmployeeService, 
@@ -44,6 +44,7 @@ export class EmpEditComponent {
       private fb: FormBuilder, 
       private confirm: ConfirmService, 
       private router: Router,
+      private memberService: MemberService,
       private downloadService: FileService){
         let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
@@ -70,12 +71,11 @@ export class EmpEditComponent {
   }
 
   InitializeForm(emp: IEmployee) {
-    console.log('employee:', emp);
 
     this.form = this.fb.group({
-        id: [emp.id], gender: [emp.gender, Validators.required], firstName: [emp.firstName, Validators.required], 
-        secondName: [emp.secondName, Validators.required], familyName: [emp.familyName, Validators.required], 
-        knownAs: [emp.knownAs, Validators.required], displayName: [emp.displayName, Validators.required],
+        id: [emp.id], gender: [emp.gender], firstName: [emp.firstName, Validators.required], 
+        secondName: [emp.secondName], familyName: [emp.familyName, Validators.required], 
+        knownAs: [emp.knownAs, Validators.required], displayName: [emp.displayName],
         address: [emp.address], address2: [emp.address2], city: [emp.city, Validators.required], 
         email: [emp.email, Validators.required], phoneNo: [emp.phoneNo, [Validators.required, Validators.minLength(10)]], 
         phone2: [emp.phone2], dateOfBirth: [emp.dateOfBirth], dateOfJoining: [emp.dateOfJoining, Validators.required],
@@ -89,7 +89,7 @@ export class EmpEditComponent {
           emp.hrSkills.map(x =>  (
             this.fb.group({
               id: [x.id], employeeId: [x.employeeId, Validators.required], professionId: [x.professionId, Validators.required],
-              professionName: [x.professionName, Validators.required], industryId: [x.industryId],
+              professionName: [x.professionName], industryId: [x.industryId],
               skillLevelName: [x.skillLevelName, Validators.required]
             })
           ))
@@ -100,7 +100,7 @@ export class EmpEditComponent {
               this.fb.group({
                 id: [m.id], employeeId: [m.employeeId, Validators.required], 
                 skillDataId: [m.skillDataId, Validators.required],
-                skillLevel: [m.skillLevel, Validators.required], isMain: [m.isMain]
+                skillLevelName: [m.skillLevelName, Validators.required], isMain: [m.isMain]
               })
             ))
         ),
@@ -169,7 +169,20 @@ export class EmpEditComponent {
       //profn.get('professionName').set(prof.professionName);
     }
 
-  
+    generateAppUser() {
+      this.memberService.createNewMember("Employee", this.employee!.id).subscribe({
+        next: (response: IAppUserReturnDto) => {
+          if(response.error !== '' && response.error !== null) {
+            this.toastr.warning('Failed to create the app user - ' + response.error, 'Failure');
+          } else {
+            this.toastr.success('App user retrieved/created', 'Succcess');
+            this.form.get('userName')?.setValue(response.username);
+            this.form.get('appUserId')?.setValue(response.appUserId);
+          }
+        }, error : (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
+      })
+    }
+    
    /* validateEmailNotTaken(): AsyncValidatorFn {x
       return control => {
         //return timer(500).pipe(
@@ -188,7 +201,9 @@ export class EmpEditComponent {
       }
     }*/
 
-   
+   otherSkillChanged() {
+    this.form.markAsDirty();
+   }
   
   update = () => {
        

@@ -119,12 +119,14 @@ namespace api.Data.Repositories.Admin
                     var voucheritems = new List<VoucherEntry>
                     {
                         new() {TransDate = DateTime.Now,   //  dto.ConclusionDate, 
-                            CoaId = dto.coaDR.Id, AccountName = dto.coaDR.AccountName,
+                            CoaId = dto.coaDR.Id, 
+                            AccountName = dto.coaDR.AccountName,
                             Narration = "Service charges applied, post offer acceptance by candidate",
                             Dr = dto.Charges
                         },
                         new() {TransDate =DateTime.Now,     //VoucherId = voucher.Id,
-                            CoaId = dto.coaCR.Id, AccountName = dto.coaCR.AccountName, 
+                            CoaId = dto.coaCR.Id, 
+                            AccountName = dto.coaCR.AccountName, 
                             Narration = "Sales towards recruitment of the candidate",
                             Cr = dto.Charges
                         }                    
@@ -182,7 +184,7 @@ namespace api.Data.Repositories.Admin
                .AsNoTracking()
                .SingleOrDefaultAsync() ?? throw new Exception("The Employment object does not exist in the database");
             
-            var offerAcceptChanged = string.IsNullOrEmpty(existingObj.ConclusionStatus) || existingObj.OfferAccepted != model.OfferAccepted;
+            var offerAcceptChanged = existingObj.OfferAccepted != model.OfferAccepted;
 
             _context.Entry(existingObj).CurrentValues.SetValues(model);   //saves only the parent, not children
             _context.Entry(existingObj).State = EntityState.Modified; 

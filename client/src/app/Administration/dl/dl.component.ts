@@ -294,8 +294,9 @@ ngOnInit(): void {
           return observableInner
         })
       ).subscribe((response: any) => {       //the modal form updates the content
+          console.log('update DL response:', response);
           if(response !== null)   {
-            this.toastr.success('Updated the contract review item', 'Success');
+            this.toastr.success('Updated the contract review item - you must update this Demand Letter for the changes to take permanent effect', 'Success');
             this.orderItems.at(index).get('reviewItemStatus')?.setValue(response.reviewItemStatus);
           } else {
             this.toastr.warning('Failed to update the contract review', 'Failed')

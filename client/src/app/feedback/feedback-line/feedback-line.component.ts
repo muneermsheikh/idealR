@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IFeedbackDto } from 'src/app/_dtos/hr/feedbackDto';
-import { IFeedback, IFeedbackInput } from 'src/app/_models/hr/feedback';
+import { IFeedback } from 'src/app/_models/hr/feedback';
 import { FeedbackService } from 'src/app/_services/feedback.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class FeedbackLineComponent {
   }
 
   deleteClicked(fdbkId: number) {
-
+    this.deleteEvent.emit(fdbkId);
   }
 
   generateEmail(fdbkId: number) {

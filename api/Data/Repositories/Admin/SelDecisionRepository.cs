@@ -259,6 +259,7 @@ namespace api.Data.Repositories.Admin
             if(CVREF == null) return "Failed to retrieve CVRef record.  Cannot proceed with the deletion of selection";
 
             CVREF.SelectionStatus  = "";
+            CVREF.RefStatus = "Referred";
             var candidateId = CVREF.CandidateId;
             appno = await _context.GetApplicationNoFromCandidateId(candidateId);
         

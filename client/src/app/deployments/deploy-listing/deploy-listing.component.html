@@ -14,7 +14,7 @@
     ></pagination>
 </div>
 
-    <label style="display: inline-block; vertical-align: top; font-size: small; font-size: bold; margin-left: 5px;">Search Option:</label>
+    <label style="display: inline-block; vertical-align: top; font-size: small; font-size: bold; margin-left: 5px;">Search:</label>
     <ng-select 
         style="display: inline-block; vertical-align: top; width: 150px; font-size: small;margin-left: 20px; vertical-align: top;"
         [items]="searchOptions"
@@ -32,14 +32,15 @@
     <input (keyup.enter)="onSearch()" type="text" title="enter a value against the search option selected"
         class="stdd form-control w100" #search placeholder="Search Value" style="margin-left: 25px !important;">
 
-    <label style="font-size: smaller; display: inline-block; font-weight: bold; margin-left: 10px; vertical-align: top;">Status</label>
+    <label style="font-size: small; display: inline-block; font-weight: bold; margin-left: 10px; vertical-align: top;">Status</label>
+    
     <input type="radio" id="deployStatus" [(ngModel)]="deployStatus" value="concluded" checked="true"
             style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
-            class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: x-small;">Concluded</span>
+            class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: small;">Concluded</span>
 
     <input type="radio" id="deployStatus" [(ngModel)]="deployStatus" value="all"
         style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
-        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: x-small;">All</span>
+        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: small;">All</span>
 
     <button (click)="onSearch()"  style="color: aliceblue; vertical-align: top;" 
         class="btn mx-3 w20 fa fa-search fa-2x"></button>
@@ -60,6 +61,9 @@
         placeholder="Select a Status"
     ></ng-select>
 
+    <input class="stdd w110 mx-2" type="text" placeholder="Order Date" [(ngModel)]="transDate"
+    bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+    
     <button class="btn w20 fa fa-check fa-2x mx-1" style="color: aliceblue; display: inline-block;" 
         (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
  
@@ -71,7 +75,7 @@
     <button class="btn w20 fa fa-window-close fa-2x mx-2"  style="color: aliceblue; display: inline-block;" 
         title="return to Main Menu" routerLink="/" ></button>
     
-<div class="my-2" style="margin-left: 50px;">
+<div class="my-2" style="margin-left: 25px;">
     <label class="stdd w50">Sel</label>
     <label class="stdd w50">App#</label>
     <label class="stdd w150">Candidate Name</label>
@@ -80,8 +84,8 @@
     <label class="stdd w150">Category</label>
     <label class="stdd w75">Referred On</label>
     <label class="stdd w75">Selected On</label>
-    <label class="stdd w125">Current Dep Status</label>
-    <label class="stdd w125">Next Dep Status</label>
+    <label class="stdd w150 mx-2">Current Dep Status</label>
+    <label class="stdd w150">Next Dep Status</label>
     <label class="stdd w75">Estimated Dt</label>
 </div>
 
@@ -93,13 +97,13 @@
     <app-deploy-line
         [dep]="dep"
         (editDepEvent)="editDeploymentModal($event, dep)"
-        (deleteDepEvent)="deleteDeployment($event)"
         (selectedEvent)="selectionChanged($event)"
-        (showTicket)="displayCandidateTicket($event)"
+        (showTicket)="showTicketClicked($event)"
         (candidateFlightDeleteEvent)="candidateFlightDelete($event)"
         (candidteFlightEditEvent)="candidateFlightEdit($event)"
         (editAttachmentEvent)="editAttachmentModal($event, dep)"
         >   
     </app-deploy-line>
-
+<!--(deleteDepEvent)="deleteDeployment($event)"-->
 </div>
+<!--(showTicket)="displayCandidateTicket($event)"-->

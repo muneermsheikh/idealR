@@ -55,6 +55,7 @@ export class EmployeeService {
   }
 
   getEmployeeById(employeeid: number) {
+    console.log('employeeid:', employeeid);
     return this.http.get<IEmployee>(this.apiUrl + 'Employees/byId/' + employeeid);
     
   }

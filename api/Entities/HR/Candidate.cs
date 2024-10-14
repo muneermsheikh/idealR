@@ -33,7 +33,6 @@ namespace api.Entities.HR
         public int AppUserId {get; set;}
         public string Status {get; set;} = "NotReferred";
         public string Qualifications {get; set;}
-        public string PhotoUrl { get; set; }
         public ICollection<UserPhone> UserPhones {get; set;}
         public ICollection<UserProfession> UserProfessions {get; set;}
         public ICollection<UserExp> UserExperiences {get; set;}

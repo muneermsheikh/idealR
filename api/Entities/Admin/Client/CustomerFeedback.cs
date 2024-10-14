@@ -8,11 +8,12 @@ namespace api.Entities.Admin.Client
         public string City  { get; set; }
         public string Country { get; set; }
         public string OfficialName { get; set; }
-        public int OfficialAppUserId { get; set; }
+        public string OfficialUsername { get; set; }
         public string Designation { get; set; }
         public string Email { get; set; }
         public string PhoneNo { get; set; }
         public DateTime DateIssued { get; set; }
+        public DateTime? DateSent {get; set;}
         public DateTime DateReceived { get; set; }
         public string HowReceived { get; set; }
         public string GradeAssessedByClient { get; set; }

@@ -9,8 +9,10 @@ import { TaskParams } from 'src/app/_models/params/Admin/taskParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { TaskService } from 'src/app/_services/admin/task.service';
-import { TaskEditModalComponent } from '../task-edit-modal/task-edit-modal.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { EditModalComponent } from '../edit-modal/edit-modal.component';
+import { values } from 'lodash-es';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 
 @Component({
   selector: 'app-user-tasks',
@@ -22,12 +24,13 @@ export class UserTasksComponent implements OnInit {
   @ViewChild('search', {static: false}) searchTerm: ElementRef | undefined;
   
   user?: User;
+  lastStatus="";
 
   constructor(private activatedRoute: ActivatedRoute, 
       private accountService: AccountService, 
       private service: TaskService, 
       private toastr: ToastrService,
-      private bsModalService: BsModalService){
+      private bsModalService: BsModalService, private confirm: ConfirmService){
 
         this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
   }
@@ -37,24 +40,30 @@ export class UserTasksComponent implements OnInit {
   tasks: IApplicationTaskInBrief[]=[];
   
   sParams = new TaskParams();
+
   totalCount = 0;
 
   bsModalRef: BsModalRef | undefined;
 
   parameterCriteria='';
 
-  ngOnInit(): void {
+  taskStatuses = [{"status": "All Status", "Value": "allstatus"}, {"status": "Pending", "Value": "pending"},
+    {"status": "Canceled", "Value": "canceled"}, {"status": "All Users", "Value": "allusers"}, {"status": "only Admin", "Value": "admin"}];
+  
+  taskTypes = [{"type": "Customer Feedback", "Value": "CustomerFeedbackResponse"},
+    {"type": "CV Forward", "Value": "CVFwdTask"},
+    {"type": "Employment Acceptance", "Value": "EmploymentAcceptance"},
+    {"type": "Selection Followup", "Value": "SelectionFollowupWithClient"},
+    {"type": "Prospective Candidates", "Value": "Prospective"}, {"type": "Portal Task", "Value": "PortalTask"},
+    {"type": "Order Forward To HR", "Value":"OrderFwdToHR"}, {"type": "Assign Task To HR Exec", "Value": "AssignTaskToHRExec"},
     
-    /*this.activatedRoute.data.subscribe(data => { 
-      this.tasks = data['tasks'];
-    }) */
+  ]
 
-    if(this.user?.roles.includes("Admin") || this.user?.roles.includes("Admin Manager")) {
-      this.sParams.taskStatus.toLowerCase() !== "completed";
-    } else {
-        this.sParams.assignedByUsername = this.user?.userName!;
-        this.sParams.assignedToUsername = this.user?.userName!;
-    }
+  ngOnInit(): void {
+  
+    console.log('sParams', this.sParams);
+    this.sParams.taskStatus.toLowerCase() === "pending";
+
     this.getTasksPaged();
   }
 
@@ -74,11 +83,19 @@ export class UserTasksComponent implements OnInit {
 
   markAsCompleted(taskId: number) {
     this.service.completeTask(taskId).subscribe({
-      next: response => {
-        if(response) {
-          this.toastr.success('Task Marked as Completed', 'Task Completed')
+      next: (response: string) => {
+        if(response==='' || response === null) {
+          this.toastr.success('Task Marked as Completed', 'Task Completed');
+          var index=this.tasks.findIndex(x => x.id === taskId);
+          if(index !== -1) {
+            if(this.sParams.taskStatus==='Pending') {
+              this.tasks.splice(index, 1)
+            } else {
+              this.tasks[index].taskStatus='Completed';
+            }
+          } 
         } else {
-          this.toastr.warning('Failed to mark the task as completed', 'Failure')
+          this.toastr.warning(response, 'Failed to mark the task as completed')
         }
       },
       error: (err: any) => {
@@ -88,16 +105,29 @@ export class UserTasksComponent implements OnInit {
   }
 
   removeTask(taskId: number) {
-      this.service.deleteTask(taskId).subscribe({
-        next: response => {
-          if(response) {
-            this.toastr.success('Task Deleted', 'Success')
-          } else {
-            this.toastr.warning('Faileed to delete the task', 'Failure')
-          }
-        },
-        error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
-      })
+
+    var id= taskId;
+    var confirmMsg = 'confirm delete this Task. WARNING: this cannot be undone';
+
+    const observableInner = this.service.deleteTask(id);
+    const observableOuter = this.confirm.confirm('confirm Delete', confirmMsg);
+
+    observableOuter.pipe(
+        filter((confirmed) => confirmed),
+        switchMap(() => {
+          return observableInner
+        })
+    ).subscribe(response => {
+      console.log('response post delete', response);
+      if(response === '' || response === null) {
+        this.toastr.success('Task deleted', 'deletion successful');
+        var index = this.tasks.findIndex(x => x.id == taskId);
+        if(index !== -1) this.tasks.splice(index, 1);
+      } else {
+        this.toastr.error(response, 'failed to delete')
+      } error: (err: any) => this.toastr.error(err.error.details, 'Error enccountered')
+    });
+
   }
 
   onPageChanged(event: any){
@@ -113,7 +143,6 @@ export class UserTasksComponent implements OnInit {
     const params = this.service.getParams();
     params.search = this.searchTerm!.nativeElement.value;
     params.pageNumber = 1;
-    this.service.setParams(params);
     this.getTasksPaged();
   }
 
@@ -122,12 +151,22 @@ export class UserTasksComponent implements OnInit {
     this.sParams = new TaskParams();
     this.sParams.assignedByUsername = this.user?.userName!;
     this.sParams.assignedToUsername = this.user?.userName!;
-    this.service.setParams(this.sParams);
     this.getTasksPaged();
+  }
+
+  applyStatus() {
+    console.log('sParams.Status', this.sParams.taskStatus, 'laststatus:', this.lastStatus);
+    if(this.sParams.taskStatus===null || (this.lastStatus !== this.sParams.taskStatus)) {
+      this.lastStatus = this.sParams.taskStatus || "pending";
+      this.sParams.pageNumber=1;
+      this.getTasksPaged();
+    }
   }
 
   
  editDeploymentModal(task: IApplicationTask){
+
+  
 
   if(task === null) {
     this.toastr.warning('No Task object returned from Task line');
@@ -138,12 +177,13 @@ export class UserTasksComponent implements OnInit {
       class: 'modal-dialog-centered modal-lg',
       initialState: {
         task,
+        user: this.user
       }
     }
 
-    this.bsModalRef = this.bsModalService.show(TaskEditModalComponent, config);
+    this.bsModalRef = this.bsModalService.show(EditModalComponent, config);
 
-    const observableOuter =  this.bsModalRef.content.updateTaskEvent;
+    const observableOuter =  this.bsModalRef.content.updateEvent;
     
     observableOuter.pipe(
       filter((response: IApplicationTask) => response !==null),
@@ -162,6 +202,7 @@ export class UserTasksComponent implements OnInit {
     })
       
 }
+
 
 
 }

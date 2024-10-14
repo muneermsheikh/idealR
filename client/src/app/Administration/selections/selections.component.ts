@@ -14,6 +14,7 @@ import { EmploymentModalComponent } from './employment-modal/employment-modal.co
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
 import { SelectionModalComponent } from './selection-modal/selection-modal.component';
 import { IEmployment } from 'src/app/_models/admin/employment';
+import { isObject } from 'ngx-bootstrap/chronos/utils/type-checks';
 
 
 @Component({
@@ -172,7 +173,7 @@ export class SelectionsComponent implements OnInit {
     }
     
 
- displayEmploymentModal(employment: any, empItem: ISelDecisionDto){
+  displayEmploymentModal(employment: any, empItem: ISelDecisionDto){
 
     if(employment === null) {
       this.toastr.warning('No Employment data could be retrieved from the database');
@@ -196,28 +197,31 @@ export class SelectionsComponent implements OnInit {
       
       observableOuter.pipe(
         filter((response: any) => response !==null),
-        switchMap((response: IEmployment) =>  {
+        switchMap((response: any) =>  {
           
           var index = this.selections.findIndex(x => x.id == empItem.id);
-          if(index >= 0) {
-            this.selections[index].selectionStatus=response.offerAccepted;
+          if(index >= 0 && this.selections[index].selectionStatus !== response.selectionStatus) {
+            this.selections[index].selectionStatus=response.selectionStatus;
           }
           
           let result = new Date(response.offerAcceptanceConcludedOn);
           result.setHours(result.getHours() + 9);
           response.offerAcceptanceConcludedOn = result;
-            //bvz inexplicably, the date on reaching api is preponed by 8:30 hours, thereby making it a previous day
-          return this.service.updateEmployment(response)    //the modal form emits edited IEmployment object
+            //bcz inexplicably, the date on reaching api is preponed by 8:30 hours, thereby making it a previous day
+          return this.service.updateEmploymentWithUploads(response)    //the modal form emits edited IEmployment object + file uploaded, if any. 
         })
       ).subscribe((strError: string) => {
-  
-        if(strError==='') {
+        if(strError==='' || strError === null) {
           this.toastr.success('Employment updated', 'Success');
   
         } else {
-          this.toastr.warning(strError, 'Failure');
+            this.toastr.error(strError, 'error encountered' )
         }
         
+        error: (err: any) => { 
+          this.toastr.error(err.error.details, 'Error encountered')
+        }
+                
       })
         
   }
@@ -339,5 +343,6 @@ export class SelectionsComponent implements OnInit {
       }
     })
   }
+
   
 }

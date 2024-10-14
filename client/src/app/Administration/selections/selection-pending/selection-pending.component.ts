@@ -54,14 +54,14 @@ export class SelectionPendingComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    
+    this.sParams.selectionStatus="Pending";
     this.getPendingSelectionsPaged(false);
   }
 
   getPendingSelectionsPaged(useCache: boolean=true)
   {
     //this.sParams=sParams;
-    this.sParams.selectionStatus="";
+    //this.sParams.selectionStatus="";
     this.service.setParams(this.sParams);
 
     this.service.referredCVsPaginated().subscribe({

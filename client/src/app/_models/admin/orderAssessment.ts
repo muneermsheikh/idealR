@@ -7,6 +7,7 @@ export interface IOrderAssessment {
      customerName: string;
      orderId: number;
      orderNo: number;
+     dateDesigned: Date;
      orderAssessmentItems: IOrderAssessmentItem[];
 }
 
@@ -16,5 +17,5 @@ export interface IOrderAssessmentDto {
      customerName: string;
      orderId: number;
      orderNo: number;
-     
+     dateDesigned: Date;
 }

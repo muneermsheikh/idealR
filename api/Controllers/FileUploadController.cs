@@ -487,7 +487,7 @@ namespace api.Controllers
         }
  
        
-        [HttpPost("updateAndUploadAttachments")]
+        /*[HttpPost("updateAndUploadAttachments")]
         public async Task<ActionResult<ICollection<EmployeeAttachment>>> UploadAndUpdateAttachment()
         {
             var folderName = Path.Combine("Assets", "EmployeeAttachments");
@@ -523,14 +523,13 @@ namespace api.Controllers
                 }
                
                 return Ok(dtoErr.employeeAttachments);
-           /* }
+           }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal server error" + ex.Message);
             }
-            */
+            
         }
-   
-
-    }
+        */
+  }
 }

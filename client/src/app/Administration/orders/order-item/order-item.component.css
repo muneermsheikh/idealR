@@ -7,7 +7,7 @@
     vertical-align: top;
 }
 
-.cursorpointer {cursor:pointer; color: darkblue;}
+.cursorpointer {cursor:pointer;}
 
 .alignR {
     text-align: right;
@@ -23,8 +23,6 @@
 .w250 {width:250px;}
 .b { font-weight: bold;}
 
-.red { color: red;}
-.blue {color: blue;}
 .green {color: green}
 .vAlignMiddle {
     vertical-align: middle;

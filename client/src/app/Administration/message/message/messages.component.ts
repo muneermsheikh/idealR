@@ -2,9 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
+import { IMessageToSendDto } from 'src/app/_dtos/admin/messageToSendDto';
 import { Message } from 'src/app/_models/message';
 import { Pagination } from 'src/app/_models/pagination';
 import { messageParams } from 'src/app/_models/params/Admin/messageParams';
+import { IMessageType } from 'src/app/_models/params/Admin/messageType';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { MessageService } from 'src/app/_services/message.service';
 
@@ -24,11 +26,19 @@ export class MessageComponent implements OnInit {
   container = "Inbox";
   loading = false;
   messageSentOn: Date = new Date;
-  iMessageId: number=0;
+  dtMsgSentMoreThan2000: boolean=false;
 
+  iMessageId: number=0;
+  
   msgToDisplay: string='';
+  toEmailId='';
+  ccEmailId='';
+  subject='';
 
   lastContainer = "";
+  lastMessageType="";
+
+  msgTypes: IMessageType[]=[];
 
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -78,15 +88,22 @@ export class MessageComponent implements OnInit {
 };
 
   constructor(private service: MessageService, private toastr: ToastrService,
-      private confirm: ConfirmService) { }
+      private confirm: ConfirmService, ) {
+        this.msgTypes = this.service.getMessageTypes();
+       }
 
   ngOnInit(): void {
       //this.loadMessages()
   }
 
-  loadMessages(useCache: boolean=true) {
-    //if(this.container == this.lastContainer) return;
-    console.log('useccache:', useCache);
+  loadMessages(useCache: boolean=false) {
+    if(this.msgParams.messageType==='') {
+      this.toastr.warning('Please select the Message Type before selecting the container', 'Message Type Not Selected');
+      return; }
+
+   if(this.container === this.lastContainer && (this.msgParams.messageType === this.lastMessageType || this.lastMessageType==='')) return;
+    this.lastMessageType = this.msgParams.messageType;
+
     this.loading = true;
     this.service.setParams(this.msgParams);
 
@@ -99,11 +116,24 @@ export class MessageComponent implements OnInit {
     })
 
     this.lastContainer = this.container;
+    
   }
 
   deleteMessage(id: number) {
     this.service.deleteMessage(id).subscribe({
-      next: _ => this.messages?.splice(this.messages.findIndex(m => m.id === id), 1)
+      next: (response: string) => {
+        console.log('reponse:', response);
+        if(response==="Marked as Deleted") {
+          this.toastr.success("Message Marked as Deleted", "Success");
+        } else if (response === "Deleted") {
+          this.toastr.success("Message Deleted", "Success");
+        }
+
+        if(response==="Deleted" || response === "Marked as Deleted") {
+          var index =this.messages?.findIndex(x => x.id===id);
+          if(index !== -1) this.messages?.splice(index!, 1);
+        }
+      }, error: (err: any) => this.toastr.error(err.error?.details, "Error encountered")
     })
   }
 
@@ -115,10 +145,16 @@ export class MessageComponent implements OnInit {
     }
   }
 
-  msgClicked(messageId: number, msgText: string, messageSentOn: Date) {
-    this.msgToDisplay=msgText;
-    this.messageSentOn = new Date(messageSentOn);
-    this.iMessageId = messageId;
+  msgClicked(msg: Message) {
+    this.msgToDisplay=msg.content;
+    this.messageSentOn = msg.messageSent;
+    this.iMessageId = msg.id;
+
+    this.dtMsgSentMoreThan2000 = this.messageSentOn===undefined ? false : this.messageSentOn > new Date('2000-01-01');
+    
+    this.subject = msg.subject;
+    this.toEmailId = msg.recipientEmail;
+
   }
 
   removeMessage(msgId: number) {
@@ -153,6 +189,41 @@ export class MessageComponent implements OnInit {
 
   sendMessage() {
 
+    var msg = this.messages?.filter(x => x.id===this.iMessageId)[0];
+    if(!msg) {
+      this.toastr.warning('failed to retrieve the current message', 'cannot retrieve message');
+      return;
+    }
+    var thisMsg: IMessageToSendDto = {
+      senderUsername: msg.senderUsername, recipientUsername: msg.recipientUsername,
+      ccEmailAddress: "", subject: msg.subject, content: this.msgToDisplay, id: msg.id }
+
+    var confirmMsg = 'confirm send this Message. WARNING: this cannot be undone';
+
+    const observableInner = this.service.sendMessage(thisMsg);
+    const observableOuter = this.confirm.confirm('confirm Send Message', confirmMsg);
+
+    observableOuter.pipe(
+        filter((confirmed) => confirmed),
+        switchMap(() => {
+          return observableInner
+        })
+    ).subscribe({
+      next: (msg: Message) => {
+        if(msg !== undefined) {
+          this.toastr.success('Message sent', 'Success');
+          var index=this.messages?.findIndex(x => x.id == msg.id)!;
+          if(index !== -1 && this.messages && msg) {
+              this.messages.splice(index,1);
+
+            }
+        } else {
+          this.toastr.warning('Failed to send the message', 'failed to Send')
+        }
+      },
+      error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
+    })
+    
   }
 
   onSearchInUsernames() {
@@ -169,6 +240,12 @@ export class MessageComponent implements OnInit {
     params.pageNumber = 1;
     this.service.setParams(params);
     this.loadMessages();
+  }
+
+  updateToEmailId() {
+    
+    
+
   }
 
 }

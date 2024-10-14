@@ -6,6 +6,7 @@ export class messageParams {
      recipientEmail='';
      subject='';
      searchInContents='';
+     messageType='';
 
      pageNumber=1;
      pageSize=20;

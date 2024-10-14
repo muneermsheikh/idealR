@@ -15,9 +15,9 @@ namespace api.Interfaces.HR
         Task<CustomerFeedback> GetFeedbackWithItems(int feedbackId);
         Task<ICollection<FeedbackQ>> GetFeedbackStddQs();
         Task<string> EditFeedback(CustomerFeedback feedback);
-        Task<CustomerFeedback> SaveNewFeedback(FeedbackInput feedbackInput);
+        Task<CustomerFeedback> SaveNewFeedback(CustomerFeedback feedback);
         Task<bool> DeleteFeedback(int FeedbackId);
         Task<bool> DeleteFeedbackItem(int FeedbackItemId);
-        Task<string> SendFeedbackEmailToCustomer(int feedbackId, string url, string username);
+        Task<string> SendFeedbackEmailToCustomer(int feedbackId, string username);
     }
 }

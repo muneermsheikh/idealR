@@ -37,6 +37,15 @@
                 [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
         </div>
 
+        <br><br>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onFileInputChange($event)"
+        title="click to choose the Offer Letter to upload"  >
+        <label class="stdd b w175">Offer Attachment File Name</label>
+        <input type="text" formControlName="offerAttachmentFileName" class="stdd w200">
+        <br><label class="stdd b w175">Offer Attachment Full Path</label>
+        <input type="text" formControlName="offerAttachmentFullPath" class="stdd w200">
+        <button class="btn fa fa-download" (click)="download()" title="click to download the offer letter - disabled if not uploaded" [disabled]="form.get('offerAttachmentFullPath')?.value === ''" ></button>
+        
 
         <hr style="border: double; margin-top:2px; margin-bottom: 2px;">
         <label class="stdd w150 b">Currency & Salary</label> 

@@ -29,7 +29,7 @@ export class OrderItemComponent implements OnInit{
   constructor(private orderFwdService: OrderForwardService, private toastr: ToastrService, private intervwService: InterviewService) { }
 
   ngOnInit(): void {
-    
+
   }
 
   contractReviewClicked() {
@@ -57,23 +57,24 @@ export class OrderItemComponent implements OnInit{
   forwardOrderToHRDept() {
 
     if(this.order) {
-    
+        
         this.orderFwdService.forwarOrderToHR(this.order.id).subscribe({
-          next: (response: boolean) => {
-            if(response) {
-              this.toastr.success('task created for HR Dept', 'success')
+          next: (response: string) => {
+            if(response === '' || response === null) {
+              this.toastr.success('task created for HR Dept and message created and saved in drafts', 'success')
             } else {
-              this.toastr.warning('failed to forward the Order to HR Dept', 'failure')
+              this.toastr.warning(response, 'failure')
             }
           },
-          error: (err: any) => this.toastr.error(err.error.details, 'error encountered')
+          error: (err: any) => this.toastr.error(err?.error?.details, 'error encountered')
         });
     }
     
   }
   
-  
+
   dlForwardToAssociatesClicked() {
+    console.log('orderid in modal', this.order?.id);
     this.orderFwdToAssociatesEvent.emit(this.order?.id);
   }
 

@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { filter, switchMap } from 'rxjs';
 import { ICustomerBriefDto } from 'src/app/_dtos/admin/customerBriefDto';
-import { ICustomer } from 'src/app/_models/admin/customer';
-import { ICustomerReview } from 'src/app/_models/admin/customerReview';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 

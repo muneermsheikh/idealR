@@ -4,6 +4,7 @@ using api.DTOs.Customer;
 using api.Entities.Admin;
 using api.Entities.Admin.Order;
 using api.Helpers;
+using api.Interfaces.Messages;
 using api.Params.Orders;
 
 namespace api.Interfaces.Admin
@@ -21,5 +22,8 @@ namespace api.Interfaces.Admin
         Task<PagedList<OrderForwardCategory>> GetPagedList(OrderFwdParams fParams);
         Task<bool> DeleteOrderForwardCategory(int orderforwardcategoryid);
         Task<bool> DeleteOrderForwardCategoryOfficial(int orderFwdOfficialId);
+        Task<MessageWithError> ComposeMsg_AckToClient(int orderid);
+        Task<bool> UpdateOrderExtn(int orderid, string fieldName, string fieldVal);
+        Task<bool> UpdateOrderExtnDueToDelete(int orderid, string fieldName);
     }
 }

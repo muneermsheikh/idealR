@@ -4,6 +4,8 @@
 .w90 {width: 90px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
 
 .mL120 {margin-left: 120px;}
 
@@ -12,8 +14,8 @@
     font-size: small;
     margin-right: 2px;
     margin-left: 2px;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 2px;
+    margin-bottom: 2px;
     font-weight: bold;
     font-size: smaller;
     vertical-align: middle;
@@ -27,8 +29,8 @@
     font-size: smaller;
     margin-right: 2px;
     margin-left: 2px;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 2px;
+    margin-bottom: 2px;
     word-wrap: normal;
 }
 

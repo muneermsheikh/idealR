@@ -18,6 +18,7 @@
         class="stdd form-control fSmall w75" style="margin-left: 20px;" #search placeholder="Order No">
     <button type="button" (click)="onSearch()" class="stdd btn fa fa-search mx-1"></button>
     
+    <input type="radio" value="Pending" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Selections Pending
     <input type="radio" value="" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">all Status
     <input type="radio" value="Selected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Selected
     <input type="radio" value="Rejected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Rejected

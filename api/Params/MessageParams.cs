@@ -9,6 +9,7 @@ namespace api.Params
         public string SenderUsername { get; set; }
         public string RecipientUsername { get; set; }
         public string SearchInContents { get; set; }   
+        public string MessageType { get; set; }
     }
 
 }

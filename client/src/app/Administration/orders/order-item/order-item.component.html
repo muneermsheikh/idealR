@@ -13,12 +13,12 @@
           <div *ngIf="order.status != 'concluded'" class="stdd w200" (click)="editClicked()" >
                {{order.customerName}}
           </div>
-          <div class="stdd w80">{{order.cityOfWorking}}</div>
+          <div class="stdd w150">{{order.cityOfWorking}}</div>
           
           <div class="stdd w100 cursorpointer" 
                title="click to conduct Contract Review of this Order" 
-               [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'red' 
-                    : order.contractReviewStatus==='regretted' ? 'red' : 'green'" 
+               [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'b' 
+                    : order.contractReviewStatus==='regretted' ? 'b' : ''" 
                (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
           
           <div class="stdd w100" title="click for technical & commercial review of this order" 

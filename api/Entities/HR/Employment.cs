@@ -30,8 +30,10 @@ namespace api.Entities.HR
         public bool OfferAccepted { get; set; }
         public DateTime OfferAcceptedOn { get; set; }
         public string OfferConclusionRegisteredByUsername { get; set; }
-        public string OfferAttachmentUrl { get; set; }
-        public string OfferAcceptanceUrl { get; set; }
+        [MaxLength(100)]
+        public string OfferAttachmentFileName { get; set; }
+        [MaxLength(250)]
+        public string OfferAttachmentFullPath { get; set; }
        
     }
 }

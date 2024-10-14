@@ -24,7 +24,7 @@ import { CallRecordItemToCreateDto } from "../_dtos/hr/callRecordItemToCreateDto
 import { FeedbackParams } from "../_models/params/hr/feedbackParams";
 import { customerParams } from "../_models/params/Admin/customerParams";
 import { HttpParamsWithStringDto } from "../_dtos/admin/HttpParamsWithStringDto";
-import { inject } from "@angular/core";
+import { CandidateFlightParams } from "../_models/params/process/CandidateFlightParams";
 
 export function getPaginatedResult<T>(url: string, params: HttpParams, http: HttpClient) {
  
@@ -51,11 +51,11 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 
     if (oParams.agentId !== 0) params = params.append('agentId', oParams.agentId!.toString());
     //if (oParams.professionId !== 0) params = params.append('professionId', oParams.professionId!.toString());
-    if (oParams.applicationNo !== 0) params = params.append('agentId', oParams.applicationNo!.toString());
+    if (oParams.applicationNo !== 0) params = params.append('applicationNo', oParams.applicationNo!.toString());
     if (oParams.candidateId !== 0) params = params.append('candidateId', oParams.candidateId!.toString());
     if (oParams.orderId !== 0) params = params.append('orderId', oParams.orderId.toString());
     if (oParams.orderNo !== 0) params = params.append('orderNo', oParams.orderNo.toString());
-    if(oParams.selectionStatus !== '') params = params.append('selectionStatus', oParams.selectionStatus);
+    params = params.append('selectionStatus', oParams.selectionStatus);
     //if (oParams.orderItemId !== 0) params = params.append('orderItemId', oParams.orderItemId!.toString());
     
     //if (oParams.search) params = params.append('search', oParams.search);
@@ -223,8 +223,12 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     let params = new HttpParams();
 
     params = params.append('pageNumber', userParams.pageNumber);
-    params = params.append('pageSize', userParams.pageSize)
+    params = params.append('pageSize', userParams.pageSize);
 
+    if(userParams.email !== '') params = params.append('email', userParams.email);
+    if(userParams.knownAs !== '') params = params.append('email', userParams.knownAs);
+    if(userParams.phoneNumber !== '') params = params.append('email', userParams.phoneNumber);
+    
     if(userParams.gender !== '') params = params.append('gender', userParams.gender);
     if(userParams.orderBy !== '') params = params.append('orderBy', userParams.orderBy);
     
@@ -434,6 +438,22 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     return params;
   }
 
+  export function GetHttpParamsForCandidateFlightHdr(dParams: CandidateFlightParams) {
+    let params = new HttpParams();
+
+    params = params.append('pageNumber', dParams.pageNumber);
+    params = params.append('pageSize', dParams.pageSize)
+   
+    //if(dParams.dateOfFlight.toString() !== '') 
+     // params = params.append('dateOfFlight', dParams.dateOfFlight.toString());
+    
+    if(dParams.airineName !== '') params = params.append('airlineName', dParams.airineName);
+    if(dParams.airportOfBoarding !== '') params = params.append('airportOfBoarding', dParams.airportOfBoarding);
+    if(dParams.flightNo !== '') params = params.append('flightNo', dParams.flightNo);
+
+    return params;
+  }
+
   export function GetHttpParamsForDepProcess(dParams: deployParams) {
 
     let params = new HttpParams();
@@ -460,6 +480,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     } else if (dParams.candidateName !== '') {
       params = params.append('candidateName', dParams.candidateName);
     }
+
+    if(dParams.status !== '') params=params.append('status', dParams.status);
 
     /*if(dParams.selectedOn.getFullYear() > 2000) 
         params = params.append('selectedOn', dParams.selectedOn.toString());

@@ -20,36 +20,35 @@
     <div class="form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w200" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
-        <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
+        <button (click)="onSearch()" class="btn btn-outline-primary matContrast fa fa-search mx-1"></button>
+        <button (click)="onReset()" class="btn btn-outline-success matContrast fa fa-refresh mx-1"></button>
         <!-- <button (click)="sendReminders()" [disabled]="selectionsSelected.length === 0" 
             title="send Acceptance reminders to all selected candidates" class="btn fa fa-bell"></button> -->
     </div>
     
-    <button class="btn fa fa-house fa-2x mx-2" (click)="DoHousekeeping()">HK</button>
-    <button class="btn fa fa-window-close fa-2x mx-2" routerLink="/administration" ></button>
+    <button class="btn matContrast fa fa-house mx-2" title="align values in CVRef with Selections" (click)="DoHousekeeping()">HK</button>
+    <button class="btn matContrast fa fa-window-close fa-2x mx-2" routerLink="/" ></button>
     
 </div>
 
-
-<label class="stdd w50">App No</label>
-<label class="stdd w150">Candidate Name</label>
-<label class="stdd w200">Customer Name</label>
-<label class="stdd w200">Category Ref</label>
-<label class="stdd w100">Referred On</label>
-<label class="stdd w150">Selection Status</label>
-<label class="stdd w100">Sel/Rej<br>Date</label>
-<label class="stdd w50">Employmt<br>available</label>
-
-<div class="row" *ngFor="let item of selections">
-    <app-selection-line
-        [selection]="item"
-        (editEmploymentEvent)="displayEmploymentModal($event, item)"
-        (deleteSelectionEvent)="deleteSelection($event)"
-        (editSelectionEvent)="displaySelectionModal($event, item)"
-        (remindCandidateForDecisionEvent)="sendReminders($event)"
-    ></app-selection-line>
+<div style="margin-left: 15px;">
+    <label class="stdd w50">App No</label>
+    <label class="stdd w150">Candidate Name</label>
+    <label class="stdd w200">Customer Name</label>
+    <label class="stdd w200">Category Ref</label>
+    <label class="stdd w100">Referred On</label>
+    <label class="stdd w150">Selection Status</label>
+    <label class="stdd w100">Sel/Rej<br>Date</label>
+    <label class="stdd w50">Employmt<br>available</label>
+    
+    <div class="row" *ngFor="let item of selections">
+        <app-selection-line
+            [selection]="item"
+            (editEmploymentEvent)="displayEmploymentModal($event, item)"
+            (deleteSelectionEvent)="deleteSelection($event)"
+            (editSelectionEvent)="displaySelectionModal($event, item)"
+            (remindCandidateForDecisionEvent)="sendReminders($event)"
+        ></app-selection-line>
+    </div>
+    
 </div>
-
-
-

@@ -53,6 +53,7 @@ namespace api.Data
         public DbSet<OrderForwardCategory> OrderForwardCategories {get; set;}   
         public DbSet<OrderForwardCategoryOfficial> OrderForwardCategoryOfficials {get; set;}    
         public DbSet<Order> Orders {get; set;}
+        public DbSet<OrderExtn> OrderExtns {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
         public DbSet<OrderAssessment> OrderAssessments {get; set;}
         //public DbSet<OrderAssessmentItem> rderAssessmentItems {get; set;}
@@ -63,6 +64,8 @@ namespace api.Data
         public DbSet<Remuneration> Remunerations {get; set;}
         public DbSet<FlightDetail> FlightDetails {get; set;}
         public DbSet<CandidateFlight> CandidateFlights {get; set;}
+        public DbSet<CandidateFlightGrp> CandidateFlightGrps{get; set;}
+        public DbSet<CandidateFlightItem> CandidateFlightItems {get; set;}
        // public DbSet<FlightData> FlightDatas {get; set;}
         //public DbSet<CandidateFlightDetail> CandidateFlightDetails {get; set;}
        
@@ -116,9 +119,6 @@ namespace api.Data
         
 
         //Process
-        public DbSet<Deployment> Deployments {get; set;}        //unable to delete this, as it throws Index error
-        public DbSet<Process> Processes {get; set;}
-        public DbSet<ProcessItem> ProcessItems {get; set;}
         public DbSet<Dep> Deps { get; set; }
         public DbSet<DepItem> DepItems {get; set;}
         public DbSet<DeployStatus> DeployStatuses {get; set;}
@@ -206,7 +206,7 @@ namespace api.Data
                 .HasForeignKey<ContractReview>(x => x.OrderId);
             builder.Entity<Order>().HasIndex(x => new {
                 x.CustomerId, x.OrderDate, x.CityOfWorking}).IsUnique();
-            
+            builder.Entity<OrderExtn>().HasIndex(x => x.OrderId).IsUnique();
             builder.Entity<OrderForwardToHR>().HasIndex(x => new {x.OrderId, x.DateOnlyForwarded}).IsUnique();
 
             builder.Entity<ContractReview>().HasIndex(x => x.OrderId).IsUnique();
@@ -227,8 +227,12 @@ namespace api.Data
                 //.IsUnique();
 
             builder.Entity<FlightDetail>().HasIndex(x => x.FlightNo).IsUnique();
-            builder.Entity<CandidateFlight>().HasIndex(x => x.CvRefId).IsUnique();
+            //builder.Entity<CandidateFlight>().HasIndex(x => x.CvRefId).IsUnique();
+
             //builder.Entity<CandidateFlight>().HasOne(x => x.CandidateFlightDetail).WithOne().IsRequired();
+            builder.Entity<CandidateFlightGrp>().HasIndex(x => x.FlightNo);
+            builder.Entity<CandidateFlightGrp>().HasMany(x => x.CandidateFlightItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<CandidateFlightItem>().HasIndex(x => x.CvRefId).IsUnique().HasFilter("CvRefId != 0");
 
             builder.Entity<SelectionDecision>().HasIndex(x => x.CvRefId).IsUnique();
             //builder.Entity<SelectionDecision>().HasOne(x => x.Employment).WithOne().OnDelete(DeleteBehavior.Cascade);

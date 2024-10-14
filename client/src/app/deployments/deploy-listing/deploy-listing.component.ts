@@ -10,19 +10,20 @@ import { IDep } from 'src/app/_models/process/dep';
 import { User } from 'src/app/_models/user';
 import { DeployService } from 'src/app/_services/deploy.service';
 import { DeployEditModalComponent } from '../deploy-edit-modal/deploy-edit-modal.component';
-import { Subject, catchError, distinct, filter, from, of, switchMap, tap } from 'rxjs';
+import { Subject, catchError, filter, of, switchMap, tap } from 'rxjs';
 import { DeployAddModalComponent } from '../deploy-add-modal/deploy-add-modal.component';
 import { IDepItem } from 'src/app/_models/process/depItem';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { IDepItemToAddDto } from 'src/app/_dtos/process/depItemToAddDto';
 import { ChooseFlightModalComponent } from '../choose-flight-modal/choose-flight-modal.component';
-import { IDepItemWithFlightDto } from 'src/app/_models/process/depItemsWithFlight';
-import { ICandidateFlight } from 'src/app/_models/process/candidateFlight';
-import { FlightDetailModalComponent } from '../flight-detail-modal/flight-detail-modal.component';
-import { ICandidateFlightData } from 'src/app/_models/process/candidateFlightData';
 import { IDeploymentStatus } from 'src/app/_models/masters/deployStatus';
 import { DepAttachmentModalComponent } from '../dep-attachment-modal/dep-attachment-modal.component';
-import { Title } from '@angular/platform-browser';
+import { IDeploymentPendingBriefDto } from 'src/app/_dtos/process/deploymentPendingBriefDto';
+import { IFlightdata } from 'src/app/_models/process/flightData';
+import { IDepItemsAndCandFlightsToAddDto } from 'src/app/_dtos/process/DepItemsToAddAndCandFlightsToAddDto';
+import { ICandidateFlightGrp } from 'src/app/_models/process/candidateFlightGrp';
+import { ICandiateFlightItem } from 'src/app/_models/process/candidateFlightItem';
+
 
 @Component({
   selector: 'app-deploy-listing',
@@ -42,9 +43,10 @@ export class DeployListingComponent implements OnInit{
   currentStatus='';
   deployStatus = '';
 
-  deploys: IDeploymentPendingDto[]=[];
-  deploysSelected: IDeploymentPendingDto[]=[]; 
-
+  deploys: IDeploymentPendingBriefDto[]=[];
+  deploysSelected: IDeploymentPendingBriefDto[]=[]; 
+  FlightSelected: IFlightdata | undefined;
+  candFlight: ICandidateFlightGrp | undefined;
   pagination: Pagination | undefined;
 
   routeId: string='';
@@ -52,7 +54,7 @@ export class DeployListingComponent implements OnInit{
   
   depStatuses: IDeploymentStatus[]=[];
   statusNameAndSeq: IDeployStatusAndName[]=[];
-
+  transDate: Date=new Date;
   sequenceSelected: number=0;
 
   bsModalRef: BsModalRef | undefined;
@@ -62,6 +64,7 @@ export class DeployListingComponent implements OnInit{
   dParams = new deployParams();
 
   newSequence: Subject<number> = new Subject<number>();
+  bsValueDate: Date = new Date();
 
   optionSelected='';
   
@@ -83,7 +86,21 @@ export class DeployListingComponent implements OnInit{
     {name:'By Employer Desc', value:'employerdesc'}
   ]
 
- 
+ SEQUENCE_SELECTED = 100;
+ SEQUENCE_DOCUMENTS_ATTESTATION=200;
+  SEQUENCE_MED_REFERRED=300;
+SEQUENCE_MED_FIT=400;
+ SEQUENCE_MED_UNFIT=500;
+ SEQUENCE_VISA_DOC_SUBMITTED=600;
+ SEQUENCE_VISA_ISSUED=700;
+ SEQUENCE_VISA_REJECTED=800;
+ SEQUENCE_EMIG_APP_LODGED=900;
+ SEQUENCE_EMIG_DOC_LODGED=1000;
+ SEQUENCE_EMIG_CLEARED=1100;
+ SEQUENCE_EMIG_DENIED=1200;
+ SEQUENCE_TRAVEL_BOOKED=1300;
+ SEQUENCE_TRAVELED=1500;
+
   constructor(
       private toastr: ToastrService, private confirm: ConfirmService
       , private bsModalService: BsModalService, private activatedRoute: ActivatedRoute
@@ -102,6 +119,7 @@ export class DeployListingComponent implements OnInit{
     }
 
   ngOnInit(): void {
+    this.deploysSelected=[];
     this.getDeployments();
 
     this.activatedRoute.data.subscribe({
@@ -125,7 +143,6 @@ export class DeployListingComponent implements OnInit{
     });
   }
 
-
   onPageChanged(event: any){
     const params = this.service.getParams();
     if (params.pageNumber !== event) {
@@ -139,6 +156,7 @@ export class DeployListingComponent implements OnInit{
   getDeployments() {
   
   var params = this.service.getParams();
+  console.log('params from service:', params);
    this.service.getDeploymentPagedList(params)?.subscribe({
     next: response => {
       if(response !== undefined && response !== null) {
@@ -157,13 +175,12 @@ export class DeployListingComponent implements OnInit{
     this.currentCVRefId=0;    //closes the app-deployments selector
   }
   
-  deleteDeployment(event: any) {
+  deletDeployment(event: any) {
     
     var id = event;
 
     const observableOuter = this.confirm.confirm('confirm Delete', 
-      'Are you sure you want to delete this deployment?  All related transactions will also be deleted'
-    );
+      'Are you sure you want to delete this deployment?  All related transactions will also be deleted');
 
     observableOuter.pipe(
       filter((response) => response),
@@ -182,16 +199,14 @@ export class DeployListingComponent implements OnInit{
         })
       ))
     ).subscribe(
-      () => this.toastr.success('deployment deleted', 'success')
+      () => this.toastr.success('deployment deleted in subscribe', 'success')
     )
   }
       
   onSearch() {
     const params = this.service.getParams();
     var search = this.searchTerm!.nativeElement.value;
-    console.log('currentSearchValue:',this.currentSearchValue, 'search=', search, 'option selected', 
-      this.optionSelected, 'current option:', this.currentOption, 'currentStatus:', this.deployStatus);
-
+   
     if(this.currentSearchValue == search && this.optionSelected == this.currentOption
         && this.currentStatus == this.deployStatus ) {
           this.toastr.warning('No valid selection', 'Bad Request');
@@ -253,7 +268,7 @@ export class DeployListingComponent implements OnInit{
     this.getDeployments();
   }
   
- editDeploymentModal(dep: any, item: IDeploymentPendingDto){
+  editDeploymentModal(dep: any, item: IDeploymentPendingBriefDto){
 
     if(dep === null) {
       this.toastr.warning('No Deployment object returned from the modal form');
@@ -280,10 +295,12 @@ export class DeployListingComponent implements OnInit{
         switchMap((response: IDep) =>  {
           return this.service.updateDeployment(response)
         })
-      ).subscribe((response: string) => {
+      ).subscribe((response: IDeploymentPendingBriefDto) => {
   
-        if(response==='') {
+        if(response !== null) {
           this.toastr.success('Deployment updated', 'Success');
+          var index=this.deploys.findIndex(x => x.depId===response.depId);
+          if(index !== -1) this.deploys[index]=response;
   
         } else {
           this.toastr.warning(response, 'Failure');
@@ -328,23 +345,23 @@ export class DeployListingComponent implements OnInit{
   }
 
   
- editAttachmentModal(dep: any, item: IDeploymentPendingDto){
+  editAttachmentModal(dep: any, item: IDeploymentPendingBriefDto){
 
-  if(dep === null) {
-    this.toastr.warning('No Deployment object returned from the modal form');
-    return;
-  }  
+    if(dep === null) {
+      this.toastr.warning('No Deployment object returned from the modal form');
+      return;
+    }  
 
-  const config = {
-      class: 'modal-dialog-centered modal-lg',
-      initialState: {
-        dep,
-        depStatusAndNames: this.statusNameAndSeq,
-        candidateName: item.applicationNo + '-' + item.candidateName,
-        categoryRef: item.categoryName,
-        companyName: item.customerName
+    const config = {
+        class: 'modal-dialog-centered modal-lg',
+        initialState: {
+          dep,
+          depStatusAndNames: this.statusNameAndSeq,
+          candidateName: item.applicationNo + '-' + item.candidateName,
+          categoryRef: item.categoryName,
+          companyName: item.customerName
+        }
       }
-    }
 
     this.bsModalRef = this.bsModalService.show(DepAttachmentModalComponent, config);
 
@@ -354,16 +371,53 @@ export class DeployListingComponent implements OnInit{
     
 }
 
-  verifyNextSequence(existingSeq: number, nextSeqProposed: number, ecnr: boolean): string {
+  verifyNextSequence(existingSeq: number, nextSeqProposed: number): string {
     
     var thisStage = this.depStatuses.filter(x => x.sequence == existingSeq)[0];
     var nextStageProposed = this.depStatuses.filter(x => x.sequence == nextSeqProposed)[0];
-    if(thisStage.nextSequence === nextStageProposed.sequence) return '';
-    console.log('thisStage:', thisStage, 'nextStage:', nextStageProposed);
-    if(ecnr && thisStage.sequence === 700 && nextSeqProposed === 1300) return '';
+    var ecnrs = this.deploysSelected.filter(x => x.ecnr);
     
-    return "Deployment Stage '" + thisStage.statusName + "' should follow with '" + 
-      this.depStatuses.filter(x => x.sequence==thisStage.nextSequence).map(x => x.statusName) + "'";
+    var err="";
+    switch(thisStage.sequence) {
+        case this.SEQUENCE_MED_REFERRED:
+            err = nextSeqProposed===this.SEQUENCE_MED_FIT || nextSeqProposed===this.SEQUENCE_MED_UNFIT
+              ? "" : "Valid Sequence after Medical Referred is: MEDICALLY FIT or MEDICALLY UNFIT";
+            break;
+          
+        case this.SEQUENCE_MED_FIT:
+          err = nextSeqProposed === this.SEQUENCE_VISA_DOC_SUBMITTED 
+            ? "Sequence after Medical Fitness is Visa Documents submision": "";
+          break;
+          
+        case this.SEQUENCE_VISA_ISSUED:  //next: Emig or Tkt
+            err = nextSeqProposed===this.SEQUENCE_EMIG_APP_LODGED && ecnrs.length > 0 
+              ? "Atleast one of the selected candidates are ECNR, and does not need Emigration formalities"
+              : nextSeqProposed===this.SEQUENCE_TRAVEL_BOOKED && ecnrs.length === 0 
+              ? "Emigration Clearance can be bye-passed only for ECNR candidates"
+              : "";
+
+            break;
+          
+        case this.SEQUENCE_EMIG_APP_LODGED:
+            err = nextSeqProposed !== this.SEQUENCE_EMIG_DOC_LODGED 
+              ? "Sequence to follow Emigration application Lodgement is"
+              : "EMIGRATION Documents Lodgement"
+            break;
+        
+        case this.SEQUENCE_EMIG_DOC_LODGED:
+            err = nextSeqProposed === this.SEQUENCE_EMIG_CLEARED || nextSeqProposed === this.SEQUENCE_EMIG_DENIED
+              ? ""
+              : "Sequence after Emigration Document Lodgement is eithr Emigration Cleared Or Emigration Denied"
+            
+            break;
+        case this.SEQUENCE_TRAVEL_BOOKED:
+            err = nextSeqProposed === this.SEQUENCE_TRAVELED ? "" : "Sequence after Travel booked is TRAVELED";
+            break;
+        default:
+          break;
+    }
+    
+    return err;
   }
 
   navigateByRoute(id: number, routeString: string, editable: boolean, obj: any[]) {
@@ -390,9 +444,7 @@ export class DeployListingComponent implements OnInit{
   getSequenceForNextTransaction(dep: IDeploymentPendingDto): number {
 
     var currentSeq = this.findMaxSeq(dep);
-
     var seqForNextTrasaction = this.depStatuses.find(x => x.sequence == currentSeq)?.nextSequence;
-    console.log('next sequence:', seqForNextTrasaction);
     return seqForNextTrasaction ?? 0;    
   }
   
@@ -413,8 +465,6 @@ export class DeployListingComponent implements OnInit{
   }
 
   selectionChanged(item: any) {
-
-    console.log('selection change:', item);
     
     if(item === undefined) {
         return;
@@ -431,122 +481,165 @@ export class DeployListingComponent implements OnInit{
     
   }
 
-  applyTransactions() {
+  getTravellingTicket(): IFlightdata | undefined {
+      
+    var dt = new Date();
+    dt.setDate(dt.getDate()+4);
+    var flight: IFlightdata = {eTD_Boarding:dt, eTA_Destination:dt, airlineName:"Air India", 
+        airportOfBoarding: "Mumbai", airportOfDestination: "Jeddah", flightNo: "AI-823",
+        eTA_Via:null, eTD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
+        eTA_DestinationString:'', eTD_BoardingString:'', eTA_ViaString: '', eTD_ViaString:''};
+    
+    const config = {
+        class: 'modal-dialog-centered modal-lg',
+        initialState: {
+          flightData: flight
+        }
+    }
+ 
+    this.bsModalRef = this.bsModalService.show(ChooseFlightModalComponent, config);
 
-    if(this.sequenceSelected === 0 ) {
-      this.toastr.warning('Deployment Stage not selected', 'Please select the deployment transaction you want to apply');
-      return;
-    }
-    if(this.deploysSelected.length ===0) {
-      this.toastr.warning('Deployment items not selected', 'Please select the items that you want to apply the transactions');
-      return;
-    }
+    this.bsModalRef.content.candidateFlightEvent.subscribe({
+      next: (response: IFlightdata|undefined) => {
+        return response;
+      },
+      error: (err: any) => {
+        console.log(err);
+        return undefined;
+      }
+    })
+    return undefined;
+  }
+
+  verifyTransactionData(): string {
+
+    var str = "";
+
+    if(this.sequenceSelected === 0 ) return 'Please select the deployment transaction you want to apply';
+    
+    if(this.deploysSelected.length ===0) return 'Please select the items that you want to apply the transactions';
+    
     //verify items selected carry same deployment sequence
     const distinctCurrentSeqs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
-    if(distinctCurrentSeqs.length > 1) {
-      this.toastr.warning("You can apply a common next sequence to items having same current sequence", "error in selections");
-      return of(null);
-    }
-
+  
+    if(distinctCurrentSeqs.length > 1) return "You can apply a common next sequence to items having same current sequence";
+    
     const distinctCurrentECNRs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
-    if(distinctCurrentECNRs.length > 1) {
-        this.toastr.warning("You may not select items having different values of ECNR - if an item has ECNR = true, then there are different yard stick available for next sequence applicability", "Error");
-        return of(null);
-    }
-
+    
+    if(distinctCurrentECNRs.length > 1) return "You may not select items having different values of ECNR - if an item has ECNR = true, then there are different yard stick available for next sequence applicability";
+    
     //verify sequence selected is valid - there is a specific order of sequences allowed in table deploysselected;
-    var err = this.verifyNextSequence(distinctCurrentSeqs[0], this.sequenceSelected, this.deploysSelected[0].ecnr);
-    if(err !== ''){
-      this.toastr.warning(err, 'Invalid next transaction selected');
-      return of(null);
+    var err = this.verifyNextSequence(distinctCurrentSeqs[0], this.sequenceSelected);
+    if(err !== '') return err;
+
+    var cities = [... new Set(this.deploysSelected.map(x => x.cityOfWorking))];
+
+    if(this.sequenceSelected===1300 && cities.length > 1) return 'The deployment items selected by you have more than one destination airports to travel to.' 
+      + ' Pl select the group with common destination airport, with common airport of Departure also.  Else, ' 
+      + 'choose one candidate at a time';
+
+    //TRANSACTION DATE FOLLOWS LAST TRANSACTION DATE?
+   
+    const lastTDt = new Date(Math.max(...this.deploysSelected.map(x => x.transactionDate.getTime())));
+    err = lastTDt > this.transDate
+      ? "The selected Transaction date '" + this.transDate + "' is earlier than the last recorded transaction date " + 
+        " of " + lastTDt
+      : "";
+
+    return err;
+
+  }
+
+  constructDepItemsToAdd(): IDepItemToAddDto[] {
+    
+    var depItemsToInsert: IDepItemToAddDto[]=[];
+
+    this.deploysSelected.forEach(x => {
+      var depitem: IDepItemToAddDto = {
+        id: 0, depId: x.depId, transactionDate : this.transDate,
+        sequence : this.sequenceSelected, nextSequence: 0,
+        fullPath: ''};
+
+      depItemsToInsert.push(depitem);
+    })
+    return depItemsToInsert;
+  }
+
+  applyTransactions(): string {
+  
+    var errStr = this.verifyTransactionData();
+    if(errStr !== '') {
+      this.toastr.warning(errStr, 'Error in the proposed transactions');
+      return errStr;
     }
 
     //all checks done, now call api.  the Api will further verify if nextSequence applied is valid.  it is not supposed to trust the client
-    let depItemsToInsert: IDepItemToAddDto[]=[];
-
-    this.deploysSelected.forEach(x => {
-        var depitem: IDepItemToAddDto = {
-          id: 0, depId: x.depId, transactionDate : new Date(),
-          sequence : this.sequenceSelected, nextSequence: 0,
-          fullPath: ''};
-
-        depItemsToInsert.push(depitem);
-    })
+    let depItemsToInsert: IDepItemToAddDto[]=this.constructDepItemsToAdd();
     
-    if(this.sequenceSelected === 1300) {    //tkt booked
-        
-      var cities = [... new Set(this.deploysSelected.map(x => x.cityOfWorking))];
+    if(depItemsToInsert===null || depItemsToInsert.length===0) return 'failed to construct Dep Items';
 
-      if(cities.length > 1) {
-        this.toastr.warning('The deployment items selected by you have more than one destination airports to travel to.' + 
-          ' Pl select the group with common destination airport, with common airport of Departure also.  Else, ' +
-          'choose one candidate at a time','Incorrect selections for travel booking');
+    if(this.sequenceSelected===this.SEQUENCE_TRAVEL_BOOKED) {    //ticket booking
+        var flightItems: ICandiateFlightItem[]=[];
         
-        return;
-      }
+        this.deploysSelected.forEach(x => {
+          var fltItem: ICandiateFlightItem={candidateName:x.candidateName, applicationNo: x.applicationNo,
+              depId: x.depId, cvRefId: x.cvRefId, customerName: x.customerName, customerCity: x.cityOfWorking,
+              id:0, depItemId:0, categoryName: x.categoryName};
 
-        const config = {
-          class: 'modal-dialog-centered modal-lg',
-          initialState: {
-            destinationAirport: cities[0],
+          flightItems.push(fltItem);
+          })
+      
+          //var tkt: IFlightdata|undefined;
+          var dt = this.transDate;
+          //dt.setDate(dt.getDate()+4);
+          var flight: IFlightdata = {eTD_Boarding:dt, eTA_Destination:dt, airlineName:"Air India", 
+              airportOfBoarding: "Mumbai", airportOfDestination: this.deploysSelected[0].cityOfWorking, 
+              flightNo: "AI-823", eTA_Via:null, eTD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
+              eTA_DestinationString:'', eTD_BoardingString:'', eTA_ViaString:'', eTD_ViaString:''};
+
+          const config = {
+              class: 'modal-dialog-centered modal-lg',
+              initialState: {
+                flightData: flight
+              }
           }
-        }
-
-        this.bsModalRef = this.bsModalService.show(ChooseFlightModalComponent, config);
-
-        const observableOuter =  this.bsModalRef.content.updateFlight;    //returns a sngle object, not collection
+  
+          this.bsModalRef = this.bsModalService.show(ChooseFlightModalComponent, config);
+          const observableOuter =  this.bsModalRef.content.candidateFlightEvent;
 
         observableOuter.pipe(
-          filter((response: ICandidateFlightData) => response !== undefined),
-          switchMap((response: ICandidateFlightData) => {
-            //console.log('response in listing:', response);
-            if(response !==undefined) {
-              var itemsWithflight: IDepItemWithFlightDto[]=[];
-              var candidateFlights: ICandidateFlight[]=[];
+          filter((tkt:IFlightdata) => tkt !==null),
+          switchMap((tkt: IFlightdata) => {
+            console.log('flightdata received back from modal:', tkt);
+            this.deploysSelected.forEach(x => {
+              var candFlight: ICandidateFlightGrp = {
+                  id: 0, dateOfFlight: tkt!.eTD_Boarding, airlineName: tkt!.airlineName, flightNo: tkt!.flightNo, 
+                  airportOfBoarding: tkt!.airportOfBoarding, 
+                  airportOfDestination: tkt!.airportOfDestination, eTA_Destination: tkt!.eTA_Destination, 
+                  fullPath: '', fileToUpload: null, orderNo: x.orderNo, candidateFlightItems: flightItems,
+                  customerId: 0, 
+                  eTD_Boarding: tkt!.eTD_Boarding, eTD_BoardingString: tkt!.eTD_BoardingString, 
+                  eTA_DestinationString: tkt!.eTA_DestinationString, flightNoVia: tkt!.flightNoVia, 
+                  airportVia: tkt!.airportVia, eTA_Via: tkt!.eTD_Via, 
+                  eTA_ViaString:tkt!.eTA_ViaString, eTD_ViaString:tkt.eTD_ViaString};
+              this.candFlight = candFlight;
+          });
 
-              depItemsToInsert.forEach(x => {
-                let depitem: IDepItem = {id: 0, depId: x.depId, sequence: x.sequence, 
-                    nextSequence: x.nextSequence, transactionDate: x.transactionDate, 
-                    nextSequenceDate: new Date(), fullPath: x.fullPath};
-                                  
-                let candFlightData: ICandidateFlight = {
-                  id: 0, depId: x.depId, depItemId: 0, cvRefId: 0, applicationNo: 0, candidateName: '', customerName: '', customerCity: '', 
-                  dateOfFlight: response.dateOfFlight, flightNo: response.flightNo, airportOfBoarding: response.airportOfBoarding,
-                  airportOfDestination: response.airportOfDestination, eTD_Boarding: response.eTD_Boarding, 
-                  eTA_Destination: response.eTA_Destination, airportVia: response.airportVia, flightNoVia: response.flightNoVia,
-                  eTA_Via: response.eTA_Via, eTD_Via: response.eTD_Via
-                }
+          var depitemsandcandcandidateFlt: IDepItemsAndCandFlightsToAddDto = {
+            candFlightToAdd: this.candFlight!,
+            depItemsToAdd: depItemsToInsert
+          };
 
-                candidateFlights.push(candFlightData);
-                
-                let item: IDepItemWithFlightDto = {depItem: depitem, candidateFlight: candFlightData };
-                itemsWithflight.push(item);
-              })
-  
-              return this.service.insertDepItemsWithTravelBooked(itemsWithflight)
-            } else {
-              return of(undefined)
-            }
-            
-          })
-        ).subscribe((response: IDeploymentPendingDto[]) => {
-            if(response !== null) {
-              for(const x of response) {
-                var index = this.deploys.findIndex(x => x.depId == x.depId);
-                this.deploys[index] = x;  // Object.assign({}, x);
-                this.newSequence.next(x.deploySequence);
-            }
-            this.toastr.success('Success', 'Inserted ' + response.length + ' number of deployment transactions');
-            return;
-            } else {
-              return;
-            }
+          return this.service.InsertDepItemsAndCandFlights(depitemsandcandcandidateFlt)
         })
-      //updateFlight: IFlightdata
-    } else {
+        ).subscribe((response: IDeploymentPendingBriefDto[]) => {
+            if(response.length > 1) this.UpdateDeploymentDOM(response);
+        }) 
+      
+      } else {
+        //console.log('depitemstoinsert', depItemsToInsert);
         this.service.InsertDepItems(depItemsToInsert).subscribe({
-          next: (itemsAdded:IDeploymentPendingDto[]) => {
-   
+          next: (itemsAdded:IDeploymentPendingBriefDto[]) => {
             if(itemsAdded === null || itemsAdded.length === 0) {      //returns DeploymentPendngDto[]
                 this.toastr.warning('Failed to insert', 'Failed to insert any dep Transaction');
                 this.sequenceSelected = -1;
@@ -555,55 +648,47 @@ export class DeployListingComponent implements OnInit{
                 this.deploys.forEach(element => {
                   element.checked===false;
                 }); 
-                
-            } else {
-                for(const x of itemsAdded) {
-                    var index = this.deploys.findIndex(y => y.depId == x.depId);
-                    if(index !==-1) {
-                      this.deploys[index] = x;  // Object.assign({}, x);
-                      this.newSequence.next(x.deploySequence);
-                      x.checked=false;
-                    }
-                }
-                this.toastr.success('Success', 'Inserted ' + itemsAdded + ' number of deployment transactions');
-            }
-          }, error: (err: any) => {
-            this.toastr.error(err.error.details, 'Error encountered while adding deployment transaction')
-          }
-          
-        })
-    }
     
-    return of(null);
+                return "failed to insert dep transaactions";
+          
+              } else {
+                  this.UpdateDeploymentDOM(itemsAdded);
+                  return "";
+              }
+            }, error: (err:any) => this.toastr.error(err.error.details, 'Error encountered')
+          
+          })
+      }
+
+    return "";
+
+  }
+  
+  UpdateDeploymentDOM(briefDto: IDeploymentPendingBriefDto[]) {
+    for(const x of briefDto) {
+      var index = this.deploys.findIndex(y => y.depId == x.depId);
+      if(index !==-1) {
+        this.deploys[index]=x;
+        
+        this.newSequence.next(x.deploySequence);
+        x.checked=false;
+      }
+    }
+
+    this.deploysSelected=[];
+    this.sequenceSelected=-1;
+
+    this.toastr.success('Success', 'Inserted ' + briefDto.length + ' number of deployment transactions');
   }
 
   selected(value:any):void {
     this.sequenceSelected = value;
   }
 
-  public displayCandidateTicket(event: any) {   //value emitted is CVRefId
-
-    var id=event;
-    const observableOuter = this.service.getCandidateFlight(id);
+  showTicketClicked(event: any) {   //value emitted is CVRefId
     
-    observableOuter.pipe(
-      filter((response) => response !==undefined && response !==null),
-      switchMap((response) => {
-        const config = {
-          class: 'modal-dialog-centered modal-md',
-          initialState: {
-            flight: response
-          }
-        }
-
-        this.bsModalRef = this.bsModalService.show(FlightDetailModalComponent, config);
-        const observableInner = this.bsModalRef.content.candidateFlightDelete;
-        return observableInner
-      })
-    ).subscribe((response) => {
-      console.log('inner response:', response );
-    })
   }
+
 
   candidateFlightDelete(candidateFlightId: any) {
     var id: number = candidateFlightId;

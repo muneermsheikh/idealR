@@ -63,7 +63,7 @@ export class TaskService {
     
   }
   
-  getTask(id: number) {
+  getTaskWithItems(id: number) {
     return this.http.get<IApplicationTask>(this.apiUrl + 'task/taskbyid/' + id);
   }
 
@@ -103,7 +103,7 @@ export class TaskService {
   
     
   completeTask(taskid: number) {
-    return this.http.put(this.apiUrl + 'Task/completeTask/' + taskid, {} );
+    return this.http.put<string>(this.apiUrl + 'Task/completeTask/' + taskid, {} );
   }
 
   //following not updated wrt url

@@ -1,4 +1,4 @@
-<div *ngIf="selection">
+<div *ngIf="selection" style="margin-left: 15px;">
     <!-- <input type="checkbox" style="margin-left: 10px;border-color: black;"
             class="form-check-input w20 hAlignCenter"
             [(ngModel)]="selection.checked"
@@ -16,9 +16,9 @@
         title="Employment data not generated for this candidate. Click to generate new">No</div>
     <div class="stdd w50 cursorPointer" *ngIf="selection.employmentId > 0"  (click)="displayEmployment()"
         title="Click to view the employment details of this candidate">Yes</div>
-    <button class="btn fa fa-pencil" title="edit selection detais of this candidate"
-    (click)="editSelection()"></button>
-    <button class="btn fa fa-trash fa-sm red" title="delete this selection data"
+    <button class="btn matContrast fa fa-pencil" title="edit selection detais of this candidate"
+        (click)="editSelection()"></button>
+    <button class="btn matContrast fa fa-trash fa-sm red" title="delete this selection data"
         (click)="deleteSelection()"></button>
 </div>
 

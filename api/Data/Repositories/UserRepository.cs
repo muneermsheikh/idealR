@@ -1,12 +1,10 @@
-using api.DTOs;
+using api.DTOs.Admin;
 using api.DTOs.HR;
+using api.Entities.HR;
 using api.Entities.Identity;
-using api.Helpers;
 using api.Interfaces;
-using api.Params;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -15,8 +13,10 @@ namespace api.Data.Repositories
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public UserRepository(DataContext context, IMapper mapper)
+        private readonly UserManager<AppUser> _userManager;
+        public UserRepository(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
         {
+            _userManager = userManager;
             _mapper = mapper;
             _context = context;
         }
@@ -81,6 +81,108 @@ namespace api.Data.Repositories
         {
             _context.Entry(user).State = EntityState.Modified;
 
+        }
+
+        public async Task<bool> DeleteMember(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return false;
+
+            _context.Remove(user);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<AppUserReturnDto> CreateAppUser(string userType, int userTypeValue)
+        {
+            var dtoErr = new AppUserReturnDto();
+
+            var appuser = new AppUser();
+            string role="";
+
+            switch (userType.ToLower()) {
+                case "employee":
+                    var emp = await _context.Employees.FindAsync(userTypeValue);
+                    if(emp == null) {
+                        dtoErr.Error = "Employee Not on record";
+                        return dtoErr;
+                    }
+                    if(string.IsNullOrEmpty(emp.Email)) {
+                        dtoErr.Error = "Email not available";
+                        return dtoErr;
+                    }
+                    var app = await _userManager.FindByNameAsync(emp.UserName);
+                    if(app != null)  {
+                        dtoErr.AppUserId=app.Id;
+                        dtoErr.Username = app.UserName;
+                        return dtoErr;
+                    }
+
+                    appuser = new AppUser{Gender=emp.Gender, KnownAs = emp.KnownAs, UserName = emp.UserName ?? emp.Email,
+                        DateOfBirth = emp.DateOfBirth, Created = DateTime.UtcNow, City = emp.City, Position = emp.Position};
+
+                    role="Employee";
+                    break;
+                
+                case "official":
+                    var off = await _context.CustomerOfficials.FindAsync(userTypeValue);
+                    if(string.IsNullOrEmpty(off.Email)) {
+                        dtoErr.Error = "official not on record";
+                        return dtoErr;
+                    }
+                    appuser = await _context.Users.Where(x => x.Email == off.Email).FirstOrDefaultAsync();
+                    if(appuser != null) {
+                        dtoErr.AppUserId = appuser.Id;
+                        dtoErr.Username = appuser.UserName;
+                        return dtoErr;
+                    }
+
+                    appuser = new AppUser{Gender=off.Gender, KnownAs=off.OfficialName, PhoneNumber = off.PhoneNo,
+                        Email = off.Email, Created = DateTime.UtcNow, UserName=off.Email};
+                    role = "Official";
+
+                    break;
+
+                case "candidate":
+                    var cand =  await _context.Candidates.FindAsync(userTypeValue);
+                    if(cand == null) {
+                        dtoErr.Error = "Candidate Not on record";
+                        return dtoErr;
+                    }
+                    if(string.IsNullOrEmpty(cand.Email)) {
+                        dtoErr.Error = "Candidate not on record";
+                        return dtoErr;
+                    } 
+                    appuser = await _context.Users.Where(x => x.Email == cand.Email).FirstOrDefaultAsync();
+                    if(appuser != null) {
+                        dtoErr.AppUserId = appuser.Id;
+                        dtoErr.Username = appuser.UserName;
+                        return dtoErr;
+                    }
+
+                    appuser = new AppUser{Gender = cand.Gender, KnownAs = cand.KnownAs, Email = cand.Email,
+                    PhoneNumber = cand.UserPhones.Where(x => x.IsMain && x.IsValid).Select(x => x.MobileNo).FirstOrDefault(),
+                    City = cand.City, Country = cand.Country, DateOfBirth = Convert.ToDateTime(cand.DOB),
+                    Created = DateTime.UtcNow, UserName = cand.Email};
+
+                    role = "Candidate";
+                    break;
+                default:
+                    break;
+            }
+
+            var created = await _userManager.CreateAsync(appuser, "Pa$$w0rd");
+            if(created.Succeeded) {
+                var roleUpdated = await _userManager.AddToRoleAsync(appuser, role);
+            } else if(!created.Succeeded) {
+                dtoErr.Error = created.Errors.FirstOrDefault().Description;
+                return dtoErr;
+            }
+
+            dtoErr.AppUserId = appuser.Id;
+            dtoErr.Username = appuser.UserName;
+
+            return dtoErr;
         }
     }
 }

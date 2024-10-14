@@ -8,7 +8,7 @@ import { EmployeeService } from "../_services/admin/employee.service";
     route: ActivatedRouteSnapshot,
   ) => {
     var id = route.paramMap.get('id');
-    console.log('employeefromidresolver', id);
+
     if (id===null || id==='' || id === '0') return of(new Employee);
     return inject(EmployeeService).getEmployeeById(+id!);
   };

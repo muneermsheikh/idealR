@@ -274,12 +274,133 @@ namespace api.Data.Migrations
                     b.Property<string>("FlightNo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullPath")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CvRefId")
-                        .IsUnique();
-
                     b.ToTable("CandidateFlights");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CandidateFlightGrp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AirlineName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AirportOfBoarding")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AirportOfDestination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AirportVia")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfFlight")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ETA_Destination")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ETA_DestinationString")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
+
+                    b.Property<DateTime?>("ETA_Via")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ETA_ViaString")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
+
+                    b.Property<DateTime>("ETD_Boarding")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ETD_BoardingString")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
+
+                    b.Property<DateTime?>("ETD_Via")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ETD_ViaString")
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
+
+                    b.Property<string>("FightNoVia")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FlightNo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FullPath")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlightNo");
+
+                    b.ToTable("CandidateFlightGrps");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CandidateFlightItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CandidateFlightGrpId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CandidateName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateFlightGrpId");
+
+                    b.HasIndex("CvRefId")
+                        .IsUnique()
+                        .HasFilter("CvRefId != 0");
+
+                    b.ToTable("CandidateFlightItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.AcknowledgeToClient", b =>
@@ -460,6 +581,9 @@ namespace api.Data.Migrations
                     b.Property<DateTime>("DateReceived")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DateSent")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Designation")
                         .HasColumnType("nvarchar(max)");
 
@@ -475,10 +599,10 @@ namespace api.Data.Migrations
                     b.Property<string>("HowReceived")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OfficialAppUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("OfficialName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficialUsername")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNo")
@@ -689,7 +813,6 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Response")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -854,32 +977,49 @@ namespace api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Airline")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("AirlineVia")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("AirportOfBoarding")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("AirportOfDestination")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("AirportVia")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<TimeSpan>("ETA_Destination")
-                        .HasColumnType("time");
+                    b.Property<string>("ETA_Destination")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<TimeSpan>("ETA_Via")
-                        .HasColumnType("time");
+                    b.Property<string>("ETA_Via")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<TimeSpan>("ETD_Boarding")
-                        .HasColumnType("time");
+                    b.Property<string>("ETD_Boarding")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.Property<TimeSpan>("ETD_Via")
-                        .HasColumnType("time");
+                    b.Property<string>("ETD_Via")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("FightNoVia")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("FlightNo")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
@@ -1428,6 +1568,9 @@ namespace api.Data.Migrations
                     b.Property<string>("CustomerName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateDesigned")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DesignedByUsername")
                         .HasColumnType("nvarchar(max)");
 
@@ -1540,6 +1683,46 @@ namespace api.Data.Migrations
                         .HasFilter("[Question] IS NOT NULL");
 
                     b.ToTable("OrderAssessmentItemQs");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderExtn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AcknowledgedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AssessmentDesignedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ContractReviewId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ContractReviewedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ContratReviewResult")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ForwardedToHROn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("OrderExtns");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
@@ -1925,88 +2108,6 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeployStatuses");
-                });
-
-            modelBuilder.Entity("api.Entities.Deployments.Deployment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NextSequence")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("NextSequenceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Deployments");
-                });
-
-            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CurrentStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("SelectedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CVRefId");
-
-                    b.ToTable("Processes");
-                });
-
-            modelBuilder.Entity("api.Entities.Deployments.ProcessItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("NextSequence")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("NextSequenceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProcessId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProcessId");
-
-                    b.ToTable("ProcessItems");
                 });
 
             modelBuilder.Entity("api.Entities.Finance.COA", b =>
@@ -2473,9 +2574,6 @@ namespace api.Data.Migrations
                     b.Property<bool>("NotificationDesired")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PhotoUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Pin")
                         .HasColumnType("nvarchar(max)");
 
@@ -2714,8 +2812,8 @@ namespace api.Data.Migrations
                     b.Property<int>("SkillDataId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SkillLevel")
-                        .HasColumnType("int");
+                    b.Property<string>("SkillLevelName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -2771,17 +2869,19 @@ namespace api.Data.Migrations
                     b.Property<int>("LeavePerYearInDays")
                         .HasColumnType("int");
 
-                    b.Property<string>("OfferAcceptanceUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("OfferAccepted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OfferAcceptedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OfferAttachmentUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("OfferAttachmentFileName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("OfferAttachmentFullPath")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("OfferConclusionRegisteredByUsername")
                         .HasColumnType("nvarchar(max)");
@@ -3565,17 +3665,20 @@ namespace api.Data.Migrations
                     b.Property<int>("CvRefId")
                         .HasColumnType("int");
 
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsMessageSent")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("MessageComposedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("MessageSentOn")
+                    b.Property<DateTime>("MessageSentOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("MessageType")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RecipientAppUserId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("bit");
@@ -3588,9 +3691,6 @@ namespace api.Data.Migrations
 
                     b.Property<string>("RecipientUsername")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SenderAppUserId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("SenderDeleted")
                         .HasColumnType("bit");
@@ -3639,33 +3739,6 @@ namespace api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MessageComposeSources");
-                });
-
-            modelBuilder.Entity("api.Entities.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.AppTask", b =>
@@ -3822,6 +3895,15 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Admin.CallRecord", null)
                         .WithMany("CallRecordItems")
                         .HasForeignKey("CallRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CandidateFlightItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.CandidateFlightGrp", null)
+                        .WithMany("CandidateFlightItems")
+                        .HasForeignKey("CandidateFlightGrpId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -4048,26 +4130,6 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Deployments.Dep", null)
                         .WithMany("DepItems")
                         .HasForeignKey("DepId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
-                {
-                    b.HasOne("api.Entities.HR.CVRef", "CVRef")
-                        .WithMany()
-                        .HasForeignKey("CVRefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CVRef");
-                });
-
-            modelBuilder.Entity("api.Entities.Deployments.ProcessItem", b =>
-                {
-                    b.HasOne("api.Entities.Deployments.Process", null)
-                        .WithMany("ProcessItems")
-                        .HasForeignKey("ProcessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -4304,17 +4366,6 @@ namespace api.Data.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("api.Entities.Photo", b =>
-                {
-                    b.HasOne("api.Entities.Identity.AppUser", "AppUser")
-                        .WithMany("photos")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
                 {
                     b.HasOne("api.Entities.Tasks.AppTask", null)
@@ -4327,6 +4378,11 @@ namespace api.Data.Migrations
             modelBuilder.Entity("api.Entities.Admin.CallRecord", b =>
                 {
                     b.Navigation("CallRecordItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.CandidateFlightGrp", b =>
+                {
+                    b.Navigation("CandidateFlightItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Client.Customer", b =>
@@ -4422,11 +4478,6 @@ namespace api.Data.Migrations
                     b.Navigation("DepItems");
                 });
 
-            modelBuilder.Entity("api.Entities.Deployments.Process", b =>
-                {
-                    b.Navigation("ProcessItems");
-                });
-
             modelBuilder.Entity("api.Entities.Finance.FinanceVoucher", b =>
                 {
                     b.Navigation("VoucherAttachments");
@@ -4489,8 +4540,6 @@ namespace api.Data.Migrations
             modelBuilder.Entity("api.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("UserRoles");
-
-                    b.Navigation("photos");
                 });
 
             modelBuilder.Entity("api.Entities.Master.Help", b =>

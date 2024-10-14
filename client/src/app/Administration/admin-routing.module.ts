@@ -26,13 +26,9 @@ import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-m
 import { CustomerReviewResolver } from '../_resolvers/customerReviewResolver';
 import { OrderItemReviewComponent } from './orders/order-item-review/order-item-review.component';
 import { ContractReviewResolver } from '../_resolvers/admin/contractReviewResolver';
-import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
 import { FeedbackListComponent } from '../feedback/feedback-list/feedback-list.component';
 import { MessageComponent } from './message/message/messages.component';
 import { DLComponent } from './dl/dl.component';
-import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
-import { FeedbackComponent } from '../feedback/feedback/feedback.component';
-import { FeedbackHistoryResolver } from '../_resolvers/admin/feedbackHistoryResolver';
 import { CvsreferredComponent } from '../profiles/cvsreferred/cvsreferred.component';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 
@@ -80,12 +76,6 @@ const routes = [
     }
   },
 
-  {path: 'orderReview/:id', component: ContractRvwComponent,
-    resolve: {
-      orderReview: ContractReviewResolver
-    }
-  },
-  
   {path: 'orderassessment/:id', component: OrderAssessmentComponent,
     resolve: {
       orderAssessment: OrderAssessmentResolver
@@ -118,12 +108,12 @@ const routes = [
 
   {path: 'feedbacklist', component: FeedbackListComponent},
   
-  {path: 'feedback/:id/:customerId', component: FeedbackComponent,      //id and customerid are exclusive of each other
+  /*{path: 'feedback/:id/:customerId', component: FeedbackComponent,      //id and customerid are exclusive of each other
     resolve: {
       feedback: FeedbackInputResolver,
       history: FeedbackHistoryResolver
     }
-  },
+  },*/
 
   {path: 'messages', component: MessageComponent},
   

@@ -1,24 +1,25 @@
-<div *ngIf="dep !== undefined" style="margin-left: 5px;">
+<div *ngIf="dep !== undefined" >
        
-    <input type="checkbox" style="margin-left: 50px;"
+    <input type="checkbox" style="margin-left: 25px; margin-right: 25px;"
             class="form-check-input w20 hAlignCenter"
             [(ngModel)]="dep.checked"
             (click)="selectedClicked()"
     >
-    <div class="w50" style="display: inline-block; margin-left: 25px;">{{dep.applicationNo}}</div>
+    <div class="w50" style="display: inline-block; margin-left: 5px;">{{dep.applicationNo}}</div>
 
     <div class="stdd w150" >{{dep.candidateName}}</div>
-    <div class="stdd w150">{{dep.customerName}}</div>
+    <div class="stdd w150 ">{{dep.customerName}}</div>
     <div class="stdd w50">{{dep.orderNo}}</div>
     <div class="stdd w150">{{dep.categoryName}} </div>
     <!-- <div class="stdd w75">{{dep.referredOn | date: 'ddMMMyy'}}</div> -->
     <div class="stdd w75" >{{dep.referredOn | date: 'dd-MMM'}}</div> 
     <div class="stdd w75" >{{dep.selectedOn | date: 'dd-MMM'}}</div> 
 
-    <div class="stdd w125 cursorPointer" (click)="showFlight()" 
-        title="if ticket booked, press this to display flight details" >{{dep.deploySequence | depStatus}}</div>
+    <div *ngIf="dep.deploySequence!==1300" class="stdd w150 mx-2" >{{dep.deploySequence | depStatus}}</div>
+    <div *ngIf="dep.deploySequence===1300" class="stdd w150 mx-2 cursorPointer" (click)="showFlight()" 
+        title="Press this to display flight details">{{dep.deploySequence | depStatus}}</div>
     
-    <div class="stdd w125">{{dep.nextSequence | depStatus}}</div>
+    <div class="stdd w150">{{dep.nextSequence | depStatus}}</div>
     <div class="stdd w75">{{dep.nextStageDate | date :'dd-MMM'}}</div>
 
     <button class="btn fa fa-pencil fa-sm"  style="color: aliceblue;" (click)="editDep()" title="edit Deployment Transactions.  This option also provides for addition of a transaction"></button>

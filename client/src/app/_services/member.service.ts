@@ -7,6 +7,7 @@ import { UserParams } from '../_models/params/userParams';
 import { AccountService } from './account.service';
 import { map, of, take } from 'rxjs';
 import { getHttpParamsForUserParams, getPaginatedResult} from './paginationHelper';
+import { IAppUserReturnDto } from '../_dtos/admin/appUserReturnDto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,31 +17,35 @@ export class MemberService {
   baseUrl = environment.apiUrl;
   members: Member[] = [];
   user?: User | null;
-  userParams: UserParams | undefined;
+  uParams = new UserParams(); // | undefined;
 
-  memberCache = new Map();
+  cache = new Map();
 
   constructor(private http: HttpClient, private accountService: AccountService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user)
-          this.userParams = new UserParams();
+          this.uParams = new UserParams();
           this.user = user;
       }
     })
    }
 
 
-  getMembers(userParams: UserParams) {
+  getMembers(useCache: boolean=true) {
 
-    const response = this.memberCache.get(Object.values(userParams).join('-'));
-    if(response) return of(response);
+    var userparams = this.uParams;
+    
+    if(useCache) {
+      const response = this.cache.get(Object.values(userparams).join('-'));
+      if(response) return of(response);
+    }
+    
+    let params = getHttpParamsForUserParams(userparams!);
 
-    let params = getHttpParamsForUserParams(userParams);
-
-    return getPaginatedResult<Member[]>(this.baseUrl + 'users', params, this.http).pipe(
+    return getPaginatedResult<Member[]>(this.baseUrl + 'Admin/pagedlist', params, this.http).pipe(
       map(response => {
-        this.memberCache.set(Object.values(userParams).join('-'), response);
+        this.cache.set(Object.values(userparams).join('-'), response);
         return response;
       })
     )
@@ -49,7 +54,7 @@ export class MemberService {
   
   getMember(username: string) {
     
-    const member = [...this.memberCache.values()]
+    const member = [...this.cache.values()]
       .reduce((arr,elem) => arr.concat(elem.result), [])
       .find((member: Member) => member.userName === username);
     
@@ -62,47 +67,39 @@ export class MemberService {
     return this.http.get<Member>(this.baseUrl + 'users/byusername' + '/' + username);
   }
 
+  createNewMember(userType: string, idvalue: number) {
+    return this.http.post<IAppUserReturnDto>(this.baseUrl + 'users/newappuser/' + userType + '/' + idvalue, {});
+  }
 
   getUserParams() {
-    return this.userParams;
+    return this.uParams;
   }
 
   setUserParams(userParams: UserParams) {
-    this.userParams = userParams;
+    this.uParams = userParams;
   }
 
   resetUserParams() {
     if (this.user) {
-      this.userParams = new UserParams();
-      return this.userParams;
+      this.uParams = new UserParams();
+      return this.uParams;
     }
     return;
   }
 
-  addLike(username: string) {
-    return this.http.post(this.baseUrl + 'likes/' + username, {})
-  }
-
-  getLikes(predicate: string, pageNumber: number, pageSize: number) {
-
-    var hParams = new UserParams();
-    hParams.pageNumber = pageNumber;
-    hParams.pageSize = pageSize;
-
-    let params = getHttpParamsForUserParams(hParams);
-    params = params.append('predicate', predicate);
-
-    return getPaginatedResult<Member[]>(this.baseUrl + 'likes', params, this.http);
-  }
-
   updateMember(member: Member) {
-    return this.http.put(this.baseUrl + 'users', member).pipe(
+    return this.http.put<boolean>(this.baseUrl + 'admin', member);
+    /*.pipe(
       map(() => {
         const index = this.members.indexOf(member);
         this.members[index] = {...this.members[index], ...member};
       })
-    )
+    )*/
   }
 
+  deleteMember(id: number) {
+
+    return this.http.delete<boolean>(this.baseUrl + 'users/delete/' + id);
+  }
 
 }

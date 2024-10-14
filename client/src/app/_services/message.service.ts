@@ -6,6 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { messageParams } from '../_models/params/Admin/messageParams';
 import { map, of } from 'rxjs';
 import { IMessage } from '../_models/admin/message';
+import { IMessageToSendDto } from '../_dtos/admin/messageToSendDto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,20 @@ export class MessageService {
 
   cache = new Map();
 
+  msgTypes = [
+    {"MessageType" : "EmigrationClearanceAdviseByEmail"}, {"MessageType" : "MedicalFitnessAdviseByEmail"},
+    {"MessageType" : "MedicalUnfitnessAdvise"}, {"MessageType" : "TravelAdviseToClient"},
+    {"MessageType" : "VisaIssueAdviseByMail"}, {"MessageType" : "VisaRejectionAdviseByMail"},
+    {"MessageType" : "CustomerFeedback"}, {"MessageType": "AdviseToHRDeptHead"}
+  ]
+
   constructor(private http: HttpClient) { }
 
   
-  
+  getMessageTypes() {
+    return this.msgTypes
+  }
+
   getMessages(useCache: boolean=true) {
 
     var msgparams = this.msgParams;
@@ -40,7 +51,7 @@ export class MessageService {
     if(msgparams.senderEmail !== '') params = params.append('senderEmail', msgparams.senderEmail);
     if(msgparams.recipientUsername !=='') params = params.append('recipientUsername', msgparams.recipientUsername);
     if(msgparams.senderUsername !=='') params = params.append('senderUsername', msgparams.senderUsername);
-
+    if(msgparams.messageType !=='') params = params.append('messageType', msgparams.messageType);
     
     return getPaginatedResult<Message[]>(this.baseUrl + 'Messages', params, this.http).pipe(
       map(response => {
@@ -60,9 +71,9 @@ export class MessageService {
   }
   */
 
-  sendMessage(username: string, content: string) {
-    return this.http.post<Message>(this.baseUrl + 'messages', 
-      {recipientUsername: username, content} );
+  sendMessage(message: IMessageToSendDto) {
+    return this.http.post<Message>(this.baseUrl + 'messages/sendMessage', message)
+      //{recipientUsername: username, content} );
   }
 
   deleteMessage(id: number) {

@@ -1,3 +1,4 @@
+using api.DTOs.Orders;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Errors;
@@ -43,12 +44,12 @@ namespace api.Controllers
         
         //OrderAssessmentItem
         [HttpGet("orderassessmentitem/{orderItemId}")]
-        public async Task<ActionResult<OrderAssessmentItem>> GetOrderItemAssessment(int orderItemId)
+        public async Task<ActionResult<OrderAssessmentItemDto>> GetOrderItemAssessment(int orderItemId)
         {
             var assessment = await _repo.GetOrCreateOrderAssessmentItem(orderItemId, User.GetUsername());
             if(!string.IsNullOrEmpty(assessment.Error)) return BadRequest(new ApiException(400, "Error in getting OrderAssessmentItem", assessment.Error));
             
-            return Ok(assessment.orderAssessmentItem);
+            return Ok(assessment.orderAssessmentItemDto);
         }
 
         [HttpGet("orderAssessment/{orderId}")]

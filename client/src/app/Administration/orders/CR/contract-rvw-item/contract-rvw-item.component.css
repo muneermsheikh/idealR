@@ -9,6 +9,7 @@
 .w250 {width: 250px;}
 .w450 {width: 450px;}
 
+.btn {color:aliceblue}
 
 .stdd {
     display: inline-block;
@@ -20,7 +21,7 @@
 
 .b {font-weight: bold;}
 .vAlignM {vertical-align: middle;}
-.cursorPointer {cursor:pointer; color: darkblue;}
+.cursorPointer {cursor:pointer}
 
 .checkbox{
     margin-left: 10px;

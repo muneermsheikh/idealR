@@ -4,14 +4,9 @@ import { IContractReviewItemQ } from "src/app/_models/orders/contractReviewItemQ
 export interface IContractReviewItemDto
 {
     id: number; 
-    
-    orderId: number; 
-    orderNo: number;
-    orderDate: Date;
-    customerName: string;
-
     contractReviewId: number; 
     orderItemId: number; 
+    orderId: number; 
     professionName: string; 
     quantity: number;
     ecnr: boolean; 
@@ -20,6 +15,10 @@ export interface IContractReviewItemDto
     charges: number;
     hrExecUsername: string;
     reviewItemStatus: string;
-   
     contractReviewItemQs: IContractReviewItemQ[];
+
+    orderDate: Date;
+    customerName: string;
+    orderNo: number;
+    
 }

@@ -1,3 +1,4 @@
+using api.Data.Repositories.Orders;
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
@@ -9,6 +10,7 @@ using api.Interfaces;
 using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,13 +37,12 @@ namespace api.Data.Repositories.Admin
         }
 
         public async Task<MessageWithError> ComposeEmailMsgForDLForwardToHRHead(ICollection<OrderItemBriefDto> OrderItems, 
-            string senderUsername, string recipientUsername)
+            string senderUsername, AppUser recipientObject)
         {
             var dtoErr = new MessageWithError();
 
-            var dto = OrderItems.Select(x => new {x.CustomerName, x.AboutEmployer, x.OrderNo, x.OrderDate}).FirstOrDefault();
+            var dto = OrderItems.Select(x => new {x.CustomerName, x.AboutEmployer, x.OrderNo, x.OrderDate, x.CityOfEmployment}).FirstOrDefault();
             var senderObject = await _userManager.FindByNameAsync(senderUsername);
-            var recipientObject = await _userManager.FindByNameAsync(recipientUsername);
             if( recipientObject == null) {
                 dtoErr.ErrorString = "Recipient Object is not defined";
                 return dtoErr;
@@ -49,27 +50,29 @@ namespace api.Data.Repositories.Admin
 
             string AboutEmployer = dto!.AboutEmployer;
             string CustomerName = dto.CustomerName;
-
-            string Subject = "Order No.:" + dto.OrderNo + " dated " + dto.OrderDate + " from " + CustomerName + " availabe for your work";
-
+            
             var TableBody = ComposeCategoryTableForEmail(OrderItems);
-            
-            string IntroductoryBody = "Following Requirement is tasked to you. <br><br><b>Country of requirement</b>:";
-            
-            var msgBody = _dateToday + "<br><br>" + recipientObject.KnownAs + ", " + 
+                        
+            var msgBody = string.Format("{0: dd-MMM-yyyy}", _dateToday) + "<br><br>" + 
+                recipientObject.Gender=="male" ? "Mr. " : "Ms. " + recipientObject.KnownAs + ", " + 
                 recipientObject.Position + "<br>eMail: " + recipientObject.Email + 
-                "<br>Mobile:" + recipientObject.PhoneNumber  + "<br><br>Dear Sir: <br><br>" +
-                "<br>Employer Known As: " + CustomerName + "<br>About Employer: " + AboutEmployer + 
-                "<br><br>" + IntroductoryBody + "<br><br>Requirement details<br>:";
+                "<br>Phone No:" + recipientObject.PhoneNumber  + "<br><br>Dear Sir: <br><br>";
+           
+            msgBody += "<u><b>Order No.:" + dto.OrderNo + " dated " + string.Format("{0: dd-MMM-yyyy}", dto.OrderDate) + 
+                "<br>Customer:" + CustomerName + ", City of Employment" + dto.CityOfEmployment + "</b></u>";
+            msgBody += (!string.IsNullOrEmpty(AboutEmployer)) ? "<br>About Employer: " + AboutEmployer : "";
 
-            msgBody +=  TableBody +  "<br><br>Regards<br><br>" + senderObject.KnownAs + "/" + 
+            msgBody += "<br><br>Following requirement is forwarded to you to execute as per details given.<br><br>Requirement details:<br>";
+   
+            msgBody +=  TableBody +  "Regards<br><br>" + senderObject.KnownAs + "/" + 
                 senderObject.Position + "<br>Phone:" + senderObject.PhoneNumber ?? "undefined";
             msgBody += "<br><b>" + _RAName + "</b>";
             
             var msg =new Message{MessageType = "AdviseToHRDeptHead", 
-                SenderAppUserId = senderObject.Id, RecipientAppUserId = recipientObject.Id, 
+                //SenderAppUserId = senderObject.Id, RecipientAppUserId = recipientObject.Id, 
                 RecipientEmail = recipientObject.Email, SenderUsername = senderObject.UserName, 
-                RecipientUsername = recipientObject.UserName, Subject = Subject, Content = msgBody};
+                RecipientUsername = recipientObject.UserName, MessageComposedOn = _dateToday,
+                Subject = "Order Forward to HR Head - Order No. " + dto.OrderNo, Content = msgBody};
             
             _context.Messages.Add(msg);
             dtoErr.Messages.Add(msg);
@@ -103,8 +106,12 @@ namespace api.Data.Repositories.Admin
                 .Where(x => x.Id == orderid)
                 .FirstOrDefaultAsync();
 
-            var projManagerId = order.ProjectManagerId == 0 ? Convert.ToInt32(_config["DocControllerAdminAppUserId"]) : order.ProjectManagerId;
-            
+            var projManagerId = order.ProjectManagerId == 0 ? Convert.ToInt32(_config["DocControllerAdminEmpId"]) : order.ProjectManagerId;
+            if(order.ProjectManagerId==0) {
+                projManagerId = Convert.ToInt32(_config["DocControllerAdminEmpId"]);
+            } else {
+                projManagerId=order.ProjectManagerId;
+            }
             if(projManagerId == 0) return null;
             var projManagerAppUserId =  await _context.GetAppUserIdOfEmployee(projManagerId);
             if(projManagerAppUserId == 0) projManagerAppUserId = Convert.ToInt32(_config["HRSupAppuserId"] ?? "0");
@@ -194,8 +201,9 @@ namespace api.Data.Repositories.Admin
 
             var msg = new Message{MessageType = "DesignOrderItemAssessmentQ", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
-                    RecipientAppUserId = recipientObj.Id, RecipientEmail = recipientObj.Email, SenderAppUserId = senderObj.Id,
-                        SenderUsername = senderObj.UserName, Subject = "Designing of Order Item Assessment Questions"};
+                   // RecipientAppUserId = recipientObj.Id, 
+                    RecipientEmail = recipientObj.Email, //SenderAppUserId = senderObj.Id,
+                    SenderUsername = senderObj.UserName, Subject = "Designing of Order Item Assessment Questions"};
             var msgs = new List<Message> {msg};
             msgWithErr.Messages = msgs;
 
@@ -274,8 +282,10 @@ namespace api.Data.Repositories.Admin
                 
                 msgs.Add(new Message{MessageType = "forwardToAssociate", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
-                    RecipientAppUserId = recipientObj.Id, RecipientEmail = recipientObj.Email ?? "", 
-                    SenderAppUserId = senderObj.Id, SenderUsername = senderObj.UserName, Subject = subject});
+                    //RecipientAppUserId = recipientObj.Id, 
+                    RecipientEmail = recipientObj.Email ?? "", 
+                    //SenderAppUserId = senderObj.Id, 
+                    SenderUsername = senderObj.UserName, Subject = subject});
             }
             
             return msgs;
@@ -307,7 +317,7 @@ namespace api.Data.Repositories.Admin
         private static string ComposeCategoryTableForEmail(ICollection<OrderItemBriefDto> orderItems)
         {
             int srno = 0;
-            string TableBody = "<Table><TH width='25'>Sr<br>No</TH><TH width='300'>Cat Ref</TH><TH width='40'>Quantity</TH><TH width='250'>Job Description</TH><TH width='250'>Remuneration</TH><TH width='150'>Remarks</TH>";
+            string TableBody = "<Table><TH width='25'>Sr<br>No</TH><TH width='300'>Cat Ref</TH><TH width='40'>Qnty</TH><TH width='250'>Job Description</TH><TH width='250'>Remuneration</TH><TH width='150'>Remarks</TH>";
             string jd = "";
             string remun = "";
             foreach (var item in orderItems)
@@ -341,9 +351,12 @@ namespace api.Data.Repositories.Admin
                     if (item.Remuneration.OtherAllowance > 0) remun += "; Other Allowance: " + item.Remuneration.OtherAllowance;
 
                 }
-                TableBody += "<TR><TD>" + ++srno + "</TD><TD>" + item.OrderNo + "-" + item.SrNo + "-" + 
-                    item.ProfessionName + "</TD><TD>" + item.Quantity + "</TD>" +
-                    "<TD></TD><TD></TD></TR>";
+                TableBody += "<TR><TD  style='vertical-align: top;'>" + ++srno + 
+                    "</TD><TD style='vertical-align: top;'>" + item.OrderNo + "-" + item.SrNo + "-" + 
+                    item.ProfessionName + "</TD><TD style='vertical-align: top;'>" + 
+                    item.Quantity + "</TD><TD style='vertical-align: top;'>" +
+                    jd + "</TD><TD style='vertical-align: top;'>" + remun + 
+                    "</TD><TD style='vertical-align: top;'></TD></TR>";
             }
 
             TableBody += "</TABLE><BR>";
@@ -411,8 +424,10 @@ namespace api.Data.Repositories.Admin
 
                 var msg = new Message{MessageType = "DesignOrderItemAssessmentQ", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
-                    RecipientAppUserId = recipientObj.Id, RecipientEmail = recipientObj.Email, 
-                    SenderAppUserId = senderObject.Id, SenderUsername = senderObject.UserName, 
+                    //RecipientAppUserId = recipientObj.Id, 
+                    RecipientEmail = recipientObj.Email, 
+                    //SenderAppUserId = senderObject.Id, 
+                    SenderUsername = senderObject.UserName, 
                     Subject = "Task to source complying Candidates"};
                 msgs.Add(msg);
             }

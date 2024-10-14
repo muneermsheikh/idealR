@@ -7,13 +7,13 @@
         [
             {
                 "SrNo": 1, "ProfessionId": 35, "SourceFrom": "India", "Quantity": 15, 
-                "MinCVs": 30, "MaxCVs": 60, "Ecnr": false, "Charges": 25000,
+                "MinCVs": 30, "MaxCVs": 60, "Ecnr": 0, "Charges": 25000,
                 "Remuneration": 
                     {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided":false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided":false, "TransportProvidedFree": true, 
-                    "TransportAllowance": 0, "TransportNotProvided":false,"OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided":0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided":0, "TransportProvidedFree": 1, 
+                    "TransportAllowance": 0, "TransportNotProvided":0,"OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription": {
                     "JobDescInBrief": "job desc one", 
@@ -22,13 +22,13 @@
             },
             {
                 "SrNo": 2, "ProfessionId": 36, "SourceFrom": "India", "Quantity": 5, 
-                "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, "Charges": 25500,
+                "MinCVs": 15,"MaxCVs": 30, "Ecnr": 0, "Charges": 25500,
                 "Remuneration":{
                     "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided":false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided":false, "TransportAllowance": 0, 
-                    "TransportProvidedFree":true,"TransportNotProvided":false,"OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided":0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided":0, "TransportAllowance": 0, 
+                    "TransportProvidedFree":1,"TransportNotProvided":0,"OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription": {
                     "JobDescInBrief": "job desc two", 
@@ -47,13 +47,13 @@
         [
             {
                 "SrNo": 1, "ProfessionId": 36, "SourceFrom": "India", "Quantity": 5, 
-                "MinCVs": 15, "MaxCVs": 20, "Ecnr": false, "Charges": 35000,
+                "MinCVs": 15, "MaxCVs": 20, "Ecnr": 0, "Charges": 35000,
                 "Remuneration":{
                     "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided":false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided": false, "TransportProvidedFree": true, 
-                    "TransportAllowance": 0, "TransportNotProvided":false, "OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided":0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided": 0, "TransportProvidedFree": 1, 
+                    "TransportAllowance": 0, "TransportNotProvided":0, "OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription": {
                     "JobDescInBrief": "job desc two A order 1004", "QualificationDesired": "Qualification desired two A", 
@@ -61,13 +61,13 @@
             },
             {
                 "SrNo": 2, "ProfessionId": 37, "SourceFrom": "India", "Quantity": 4, 
-                "MinCVs": 8,"MaxCVs": 12, "Ecnr": true, "Charges": 45500,
+                "MinCVs": 8,"MaxCVs": 12, "Ecnr": 1, "Charges": 45500,
                 "Remuneration":{
                     "WorkHours": 8,"SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided":false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided":false, "TransportProvidedFree": true, 
-                    "TransportNotProvided":false,"TransportAllowance": 0, "OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided":0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided":0, "TransportProvidedFree": 1, 
+                    "TransportNotProvided":0,"TransportAllowance": 0, "OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription": {"JobDescInBrief": "job desc two B", 
                     "QualificationDesired": "Qualification desired two B order 1004", 
@@ -84,13 +84,13 @@
         [
             {
                 "SrNo": 1, "ProfessionId": 38, "SourceFrom": "India", "Quantity": 1, 
-                "MinCVs": 3, "MaxCVs": 6,"Ecnr": false, "Charges": 25500,
+                "MinCVs": 3, "MaxCVs": 6,"Ecnr": 0, "Charges": 25500,
                 "Remuneration":{
                     "WorkHours": 8,"SalaryCurrency": "SAR", "SalaryMin": 2200, 
-                    "SalaryMax": 2500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided": false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided": false, "TransportProvidedFree": true, 
-                    "TransportAllowance": 0, "TransportNotProvided":false, "OtherAllowance": 0, 
+                    "SalaryMax": 2500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided": 0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided": 0, "TransportProvidedFree": 1, 
+                    "TransportAllowance": 0, "TransportNotProvided":0, "OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription":{"JobDescInBrief": "job desc one", 
                     "QualificationDesired": "Qualification desired one order 1002", 
@@ -98,13 +98,13 @@
             },
             {
                 "SrNo": 2, "ProfessionId": 38, "SourceFrom": "India", "Quantity": 5, 
-                "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, "Charges": 15000,
+                "MinCVs": 15,"MaxCVs": 30, "Ecnr": 0, "Charges": 15000,
                 "Remuneration":{
                     "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1100, 
-                    "SalaryMax": 1200, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided":false, "FoodProvidedFree": false, 
-                    "FoodAllowance": 400, "FoodNotProvided": false, "TransportProvidedFree": true, 
-                    "TransportNotProvided":false,"TransportAllowance": 0, "OtherAllowance": 200, 
+                    "SalaryMax": 1200, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided":0, "FoodProvidedFree": 0, 
+                    "FoodAllowance": 400, "FoodNotProvided": 0, "TransportProvidedFree": 1, 
+                    "TransportNotProvided":0,"TransportAllowance": 0, "OtherAllowance": 200, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 12},
                     "JobDescription": {"JobDescInBrief": "job desc three A", 
                         "QualificationDesired": "Qualification desired three A ordr 1002", 
@@ -121,13 +121,13 @@
         [
             {
                 "SrNo": 1, "ProfessionId": 39, "SourceFrom": "India", "Quantity": 15, 
-                "MinCVs": 30, "MaxCVs": 60, "Ecnr": false, "Charges": 0,
+                "MinCVs": 30, "MaxCVs": 60, "Ecnr": 0, "Charges": 0,
                 "Remuneration":{
                     "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided": false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided": false, "TransportProvidedFree": true, 
-                    "TransportNotProvided":false,"TransportAllowance": 0, "OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided": 0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided": 0, "TransportProvidedFree": 1, 
+                    "TransportNotProvided":0,"TransportAllowance": 0, "OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24 },
                 "JobDescription": {"JobDescInBrief": "job desc three B", 
                     "QualificationDesired": "Qualification desired THREE b order 1003", 
@@ -135,13 +135,13 @@
             },
             {
                 "SrNo": 2, "ProfessionId": 40, "SourceFrom": "India", "Quantity": 5, 
-                "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, "Charges": 12500,
+                "MinCVs": 15,"MaxCVs": 30, "Ecnr": 0, "Charges": 12500,
                 "Remuneration": {
                     "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
-                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, 
-                    "HousingAllowance": 0, "HousingNotProvided": false, "FoodProvidedFree": true, 
-                    "FoodAllowance": 0, "FoodNotProvided": false, "TransportProvidedFree": true,
-                    "TransportAllowance": 0, "TransportNotProvided": false, "OtherAllowance": 0, 
+                    "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": 1, 
+                    "HousingAllowance": 0, "HousingNotProvided": 0, "FoodProvidedFree": 1, 
+                    "FoodAllowance": 0, "FoodNotProvided": 0, "TransportProvidedFree": 1,
+                    "TransportAllowance": 0, "TransportNotProvided": 0, "OtherAllowance": 0, 
                     "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24},
                 "JobDescription":{"JobDescInBrief": "job desc three B", 
                     "QualificationDesired": "Qualification desired three B order 1003", 

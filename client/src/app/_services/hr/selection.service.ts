@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
@@ -111,18 +111,14 @@ export class SelectionService {
     return this.http.get<IEmployment>(this.apiUrl + 'selection/employmentfromSelId/' + id);
   }
 
-   getorGenerateEmploymentFromSelDecisionId(id: number) {
+  getorGenerateEmploymentFromSelDecisionId(id: number) {
     return this.http.get<IEmployment>(this.apiUrl + 'employment/employmentfromSelId/' + id);
   }
 
-  updateEmployment(emp: IEmployment) {
-    if(emp.id===0) {
-      return this.http.post<string>(this.apiUrl + 'employment/employment', emp);
-    } else {
-      return this.http.put<string>(this.apiUrl + 'employment/employment', emp);
-    }
-    
+  updateEmploymentWithUploads(emp: any) {
+    return this.http.post<string>(this.apiUrl + 'employment/savewithupload', emp);
   }
+
 
   getSelectionDtoByOrderNo(orderno: number) {
     
@@ -140,6 +136,7 @@ export class SelectionService {
     return this.http.post<string>(this.apiUrl + 'selection/acceptancereminders', cvrefids);
   }
 
+  
   Housekeeping() {
     return this.http.get<string>(this.apiUrl + 'selection/housekeepingcvrefandsel');
   }

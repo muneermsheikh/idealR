@@ -17,7 +17,7 @@ import { SelectionService } from 'src/app/_services/hr/selection.service';
 export class EmploymentModalComponent {
 
   @Input() emp: IEmployment | undefined;      //retrieved by selection-line
-  @Input() updateEmp = new EventEmitter<IEmployment>(); //to be returned to calling program, selections.component
+  @Input() updateEmp = new EventEmitter<FormData>(); //to be returned to calling program, selections.component
   //@Input() offerAcceptedEvent = new EventEmitter<number>();
   //@Input() OfferRejectedEvent = new EventEmitter<number>();
 
@@ -33,7 +33,8 @@ export class EmploymentModalComponent {
 
   form: FormGroup = new FormGroup({});
   
-  
+  formData = new FormData();
+
   statuses = [{status: 'Accepted'}, 
     {status: 'Declined - Salary Low'},
     {status: 'Declined - Company history suspicious'}, 
@@ -65,6 +66,10 @@ export class EmploymentModalComponent {
 
         selectedOn: [emp.selectedOn],
         charges: [emp.charges],
+
+        offerAttachmentFileName: [emp.offerAttachmentFileName],
+        offerAttachmentFullPath: [emp.offerAttachmentFullPath],
+
         salaryCurrency: [emp.salaryCurrency, Validators.required],
         salary: [emp.salary, Validators.required],
         contractPeriodInMonths: [emp.contractPeriodInMonths, Validators.required],
@@ -113,13 +118,55 @@ export class EmploymentModalComponent {
       this.toastr.warning(strErr, 'Invalid data');
       return;
     }
+
+    this.formData.append('data', JSON.stringify(formdata));
+
       
-      this.updateEmp.emit(formdata);
+      this.updateEmp.emit(this.formData);
       this.bsModalRef.hide();
   }
 
   close() {
       this.bsModalRef.hide();
   }
+
+
+  onFileInputChange(event: Event) {
+
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    const f = files[0];
+    
+    if(f.size > 0) {
+      this.formData.append('file', f, f.name);
+      this.form.get('offerAttachmentFileName')?.setValue(f.name);
+    }  
+  }
+  
+  download() {
+
+    var fullpath = this.form.get('offerAttachmentFullPath')?.value;
+
+    if(fullpath===null || fullpath ==='') return;
+    
+    this.service.downloadAttachment(fullpath).subscribe({
+      next: (blob: Blob) => {
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        var i=fullpath.lastIndexOf('\\');
+        if(i !== -1) {
+          a.download = fullpath.substring(i+1);
+        } else {
+          a.download = 'filename.ext'
+        }
+        
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+      }
+      , error: (err: any) => this.toastr.error(err.error.details, 'Error encountered while downloading the file ')
+    })
+  }
+
 
 }

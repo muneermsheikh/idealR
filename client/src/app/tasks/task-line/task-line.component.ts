@@ -29,7 +29,7 @@ export class TaskLineComponent {
   editClicked() {
     
     if(this.task) {
-      this.service.getTask(this.task?.id).subscribe({
+      this.service.getTaskWithItems(this.task?.id).subscribe({
         next: (response: IApplicationTask) => {
           if(response) {
             this.editEvent.emit(response)

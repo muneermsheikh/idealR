@@ -2,6 +2,7 @@ export interface Message
 {
     id: number;
     cvRefId: number;
+    flightId: number;
     senderAppUserId: number;
     senderUsername: string;
     senderEmail: string;
@@ -16,4 +17,5 @@ export interface Message
     content: string;
     //dateRead?: Date;
     messageSent: Date
+    isMessageSent: boolean;
 }

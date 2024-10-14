@@ -17,7 +17,7 @@ namespace api.Interfaces.Admin
         Task<ICollection<Message>> ComposeSelectionStatusMessagesForCandidate(ICollection<SelectionMessageDto> selDto, 
            string Username);
         Task<MessageWithError> AdviseRejectionStatusToCandidateByEmail(ICollection<SelectionMessageDto> rejectionsDto, string loggedInUserName);
-        Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string Url, string username);
+        Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string username);
     }
 
 }

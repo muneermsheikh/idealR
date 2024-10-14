@@ -9,11 +9,13 @@ import { DepNextSeqPipe } from './dep-next-seq.pipe';
 import { SharedModule } from '../_modules/shared.module';
 import { DeploymentRoutingModule } from './deployment-routing.module';
 import { ChooseFlightModalComponent } from './choose-flight-modal/choose-flight-modal.component';
-import { FlightDetailModalComponent } from './flight-detail-modal/flight-detail-modal.component';
 import { DeployStatusListComponent } from './deploy-status-list/deploy-status-list.component';
 import { DepNextSeqNamePipe } from './dep-next-seq-name.pipe';
 import { DepAttachmentModalComponent } from './dep-attachment-modal/dep-attachment-modal.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CandidateFlightsComponent } from './candidate-flights/candidate-flights.component';
+import { CandidateFlightHeaderComponent } from './candidate-flight-header/candidate-flight-header.component';
+import { CandidateFlightItemComponent } from './candidate-flight-item/candidate-flight-item.component';
 
 
 
@@ -26,10 +28,12 @@ import { MatIconModule } from '@angular/material/icon';
     DepStatusPipe,
     DepNextSeqPipe,
     ChooseFlightModalComponent,
-    FlightDetailModalComponent,
     DeployStatusListComponent,
     DepNextSeqNamePipe,
     DepAttachmentModalComponent,
+    CandidateFlightsComponent,
+    CandidateFlightHeaderComponent,
+    CandidateFlightItemComponent,
   ],
   imports: [
     CommonModule,

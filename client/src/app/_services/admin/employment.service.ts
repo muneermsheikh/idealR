@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { employmentParams } from 'src/app/_models/params/Admin/employmentParam';
@@ -51,6 +51,14 @@ export class EmploymentService {
   deleteEmployment(empid: number) {
     return this.http.delete<boolean>(this.apiUrl + 'employment/' + empid);
   }
+
+  downloadAttachment(fullpath: string) {
+    let params = new HttpParams();
+    params = params.append('fullpath', fullpath);
+
+    return this.http.get(this.apiUrl + 'FileUpload/downloadfile', {params, responseType: 'blob'});
+  }
+
 
   setEParams(params: employmentParams) {
     this.eParams = params;

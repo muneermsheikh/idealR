@@ -5,6 +5,9 @@ import { RouterModule } from '@angular/router';
 import { DeployStatusAndSeqResolver } from '../_resolvers/deploys/deployStatusAndSeqResolver';
 import { DeployStatusListComponent } from './deploy-status-list/deploy-status-list.component';
 import { DeploymentStatusResolver } from '../_resolvers/deploys/deploymentStatusResolver';
+import { CandidateFlightsComponent } from './candidate-flights/candidate-flights.component';
+import { CandidateFlightResolver } from '../_resolvers/deploys/candidateFlightResolver';
+import { CandidateFlightHeaderComponent } from './candidate-flight-header/candidate-flight-header.component';
 
 
 const routes = [
@@ -14,6 +17,15 @@ const routes = [
       statusNameAndSeq: DeployStatusAndSeqResolver
     }
   },
+
+  /*{path: 'candidateFlight:/id', component: CandidateFlightsComponent, 
+    resolve: {
+      cFlight: CandidateFlightResolver
+    }
+  },
+*/
+  
+  {path: 'candidateflights', component: CandidateFlightHeaderComponent},
 
   {path: 'deployStatus', component: DeployStatusListComponent,
       resolve: {

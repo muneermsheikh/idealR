@@ -80,19 +80,14 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteMessage(int id)
+        public async Task<ActionResult<string>> DeleteMessage(int id)
         {
 
             var strErr = await _messageRepository.DeleteMessage(id, User.GetUsername());
 
-            switch (strErr.ToLower()) {
-                case "unauthorized": 
-                    return BadRequest(new ApiException(400, "Unauthorized", "The message can only be deleted by the sender or the Recipient"));
-                case null: case "deleted": case "marked as deleted":
-                    return Ok("");
-                default:
-                    return BadRequest(new ApiException(400, "Bad Request", strErr));
-            }
+            if(strErr == "Deleted" || strErr == "Marked as Deleted") return Ok(strErr);
+            return  BadRequest(new ApiException(400, "Bad Request", strErr));
+            
         }
             
         public async Task<ActionResult<string>> ComposeMsgsToForwardOrdersToAgents(ICollection<OrderForwardCategory> categoryForwards)
@@ -105,5 +100,15 @@ namespace api.Controllers
 
             return Ok("Order Forarding Messages composed. These messages are available for edit in the Messages section");
         }
+    
+        [HttpPost("sendMessage")]
+        public async Task<ActionResult<bool>> SendMessage(Message msg)
+        {
+            var sent = await _messageRepository.SendMessage(msg);
+            if(!sent) return BadRequest(new ApiException(400, "Failed to send the mesage", "bad request"));
+
+            return Ok(true);
+        }
+    
     }       
 }

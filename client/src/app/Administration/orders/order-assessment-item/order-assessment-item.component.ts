@@ -23,6 +23,7 @@ export class OrderAssessmentItemComponent implements OnInit {
   professionId = 0;
 
   totalMarks = 0;
+  bsValueDate = new Date();
   
   constructor(private fb: FormBuilder, private router: Router,
     private activatedRoute: ActivatedRoute, private confirmService: ConfirmService,
@@ -65,6 +66,7 @@ export class OrderAssessmentItemComponent implements OnInit {
         professionId: [item.professionId, Validators.required],
         professionName: [item.professionName, Validators.required],
         designedBy: [item.designedBy],
+        dateDesigned: [item.dateDesigned],
         approvedBy: [item.approvedBy],
 
         orderAssessmentItemQs: this.fb.array(

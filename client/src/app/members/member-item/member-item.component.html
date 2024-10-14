@@ -1,0 +1,12 @@
+<div *ngIf="member" style="margin-left: 15px;">
+    <div class="stdd w150">{{member.userName}}</div>
+    <div class="stdd w100">{{member.knownAs}}</div>
+    <div class="stdd w75">{{member.age > 100 ? '--' : member.age}}</div>
+    <div class="stdd w75">{{member.city}}</div>
+    <div class="stdd w100">{{member.phoneNumber}}</div>
+    <div class="stdd w150">{{member.email}}</div>
+    <!-- <div class="stdd w100" *ngFor="let role of member.roles">{{role}} - </div> -->
+     <div class="stdd w150">{{member.roles.flat()}}</div>
+    <button class="btn fa fa-pencil" (click)="editClicked()"></button>
+    <button class="btn fa fa-trash" (click)="deleteClicked()" ></button>
+</div>

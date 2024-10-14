@@ -1,3 +1,4 @@
+using System.Net;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin.Client;
@@ -59,9 +60,9 @@ namespace api.Controllers
         public async Task<ActionResult<string>> EditFeedbackAsync(CustomerFeedback feedback)
         {
             var sError = await _repo.EditFeedback(feedback);
-            if(!string.IsNullOrEmpty(sError)) return BadRequest(new ApiException(400, sError, "Not Found"));
+            if(int.TryParse(sError, out _)) return Ok(sError);
 
-            return Ok("");
+            return BadRequest(new ApiException(400, sError, "Not Found"));
         }
 
         [HttpGet("newfeedback/{feedbackId}/{customerid}")]
@@ -89,11 +90,11 @@ namespace api.Controllers
         }
 
         [HttpPost("saveFeedback")]
-        public async Task<CustomerFeedback> SaveFeedback(FeedbackInput feedbkInput)
+        public async Task<CustomerFeedback> SaveFeedback(CustomerFeedback feedbk)
         {
-            if(feedbkInput.FeedbackInputItems==null) return null;
+            if(feedbk.FeedbackItems==null) return null;
             
-            return await _repo.SaveNewFeedback(feedbkInput);
+            return await _repo.SaveNewFeedback(feedbk);
         }
 
         [HttpGet("stddqs")]
@@ -105,8 +106,7 @@ namespace api.Controllers
         [HttpGet("sendfeedback/{id}")]
         public async Task<ActionResult<string>> sendFeedbackToClientOnline(int id)
         {
-            var urlstring = "sample string";
-            var err = await _repo.SendFeedbackEmailToCustomer(id, urlstring, User.GetUsername());
+            var err = await _repo.SendFeedbackEmailToCustomer(id, User.GetUsername());
 
             if(string.IsNullOrEmpty(err)) return Ok("");
 

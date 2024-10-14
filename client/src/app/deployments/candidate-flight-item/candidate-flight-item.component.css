@@ -1,0 +1,27 @@
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: top;
+}
+
+.cand {
+    display: inline-block;
+    font-size: smaller;
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: top;
+    color:aqua;
+}
+
+.w15 {width: 15px;}
+.w25 {width: 25px;}
+.w100 {width: 100px;}
+.w120 {width: 120px;}
+.w150 {width: 150px;}
+
+.mL50 {margin-left: 50px !important;}
+.mL100 {margin-left: 10ppx !important;}
+
+.b {font-weight: bold;}

@@ -1,7 +1,9 @@
 using System.Data.Common;
+using System.Globalization;
 using api.DTOs;
 using api.DTOs.Admin;
 using api.Entities.Admin.Client;
+using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Helpers;
 using api.Interfaces.Admin;
@@ -9,26 +11,35 @@ using api.Interfaces.Messages;
 using api.Params;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
 
 namespace api.Data.Repositories
 {
     public class MessageRepository : IMessageRepository
     {
+        private readonly UserManager<AppUser> _userManager;
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        private readonly ITaskRepository _taskRepo;
+        //private readonly ITaskRepository _taskRepo;
         private readonly IComposeMessagesAdminRepository _msgAdminRepo;
-        public MessageRepository(DataContext context, IMapper mapper, IConfiguration config, 
-            ITaskRepository taskRepo, IComposeMessagesAdminRepository msgAdminRepo)
+        public MessageRepository(UserManager<AppUser> userManager,
+            DataContext context, IMapper mapper, IConfiguration config
+            //, ITaskRepository taskRepo
+            , IComposeMessagesAdminRepository msgAdminRepo)
         {
             _msgAdminRepo = msgAdminRepo;
-            _taskRepo = taskRepo;
+            //_taskRepo = taskRepo;
             _config = config;
             _mapper = mapper;
+            _userManager = userManager;
             _context = context;
-
         }
        
         public async Task<MessageWithError> GenerateMessageForCVForward(ICollection<CandidatesAssessedButNotRefDto> candidatesNotRefDto,
@@ -173,8 +184,8 @@ namespace api.Data.Repositories
                  qry = mParams.Container switch
                 {
                     "Inbox" => qry = qry.Where(x => x.RecipientDeleted == false),
-                    "Outbox" => qry = qry.Where(x => x.SenderDeleted == false),
-                    _ => qry = qry.Where(x => x.RecipientDeleted == false)
+                    "Outbox" => qry = qry.Where(x => x.SenderDeleted == false && x.IsMessageSent) ,
+                    _ => qry = qry.Where(x => x.RecipientDeleted == false && !x.IsMessageSent)
                 };
 
             } else {
@@ -183,22 +194,38 @@ namespace api.Data.Repositories
                     "Inbox" => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && 
                         x.RecipientDeleted == false),
                     "Outbox" => qry = qry.Where(x => x.SenderUsername.ToLower() == loggedinUsername.ToLower() && 
-                        x.SenderDeleted == false),
+                        x.SenderDeleted == false && x.IsMessageSent),
                     _ => qry = qry.Where(x => x.RecipientUsername.ToLower() == loggedinUsername.ToLower() && 
-                        x.RecipientDeleted == false)
+                        x.RecipientDeleted == false && !x.IsMessageSent)
                 };
             }
             
             if(!string.IsNullOrEmpty(mParams.Search)) qry = qry
                 .Where(x => x.SenderUsername.ToLower().Contains(mParams.Search) || x.RecipientUsername.ToLower().Contains(mParams.Search) );
-            if(!string.IsNullOrEmpty(mParams.SearchInContents)) qry = qry
-                .Where(x => x.Content.Contains(mParams.SearchInContents));
+            
+            if(!string.IsNullOrEmpty(mParams.MessageType)) qry = qry
+                .Where(x => x.MessageType.ToLower()==mParams.MessageType.ToLower());
+            
             qry = mParams.Container == "Outbox" 
                 ? qry.OrderByDescending(x => x.MessageComposedOn) 
                 : qry.OrderByDescending(x => x.MessageSentOn);
+            if(!string.IsNullOrEmpty(mParams.MessageType)) 
+                qry.Where(x => x.MessageType.ToLower()==mParams.MessageType.ToLower());
 
             var paged = await PagedList<Message>.CreateAsync(qry.AsNoTracking(), mParams.PageNumber, mParams.PageSize);
             
+            foreach(var msg in paged)
+            {
+                if(string.IsNullOrEmpty(msg.RecipientEmail) && !string.IsNullOrEmpty(msg.RecipientUsername)) {
+                    var recipient = await _userManager.FindByNameAsync(msg.RecipientUsername);
+                    if(recipient != null) {
+                        msg.RecipientEmail = recipient.Email;
+                        _context.Entry(msg).State = EntityState.Modified;
+                    }
+                }
+            }
+
+            if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
             return paged;
         }
 
@@ -220,6 +247,41 @@ namespace api.Data.Repositories
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> SendMessage(Message msg)
+        {
+
+           // create email message
+            var email = new MimeMessage();
+
+            try{
+                email.From.Add(MailboxAddress.Parse(msg.RecipientEmail);    // "munir.sheikh@live.com"));
+                email.To.Add(MailboxAddress.Parse(msg.RecipientEmail));    // "munir.sheikh@live.com"));
+                email.Subject = msg.Subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = msg.Content };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("munir.sheikh@live.com", "zaReenMail*058");
+                var sendResult = smtp.Send(email);
+                smtp.Disconnect(true);
+
+                msg.MessageSentOn = DateTime.Now;
+                msg.SenderEmail = "munir.sheikh@live.com";
+                msg.IsMessageSent = true;
+                _context.Entry(msg).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            } catch (Exception ex) {
+                throw new Exception("error in sending emails - " + ex.Message);
+            }
+
+
+
         }
     }
 }

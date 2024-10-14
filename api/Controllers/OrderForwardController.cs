@@ -1,4 +1,3 @@
-using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.DTOs.Customer;
 using api.Entities.Admin.Order;
@@ -50,7 +49,7 @@ namespace api.Controllers
         public async Task<ActionResult<string>> UpdateOrderForwardedToHR(int orderid)
         {
             var errorString = await _orderFwdRepo.UpdateForwardOrderToHR(orderid, User.GetUsername());
-            if(string.IsNullOrEmpty(errorString)) return Ok();
+            if(string.IsNullOrEmpty(errorString)) return Ok("");
             
             return BadRequest(new ApiException(404, "Failed to forward Order to HR Dept", errorString));
         }

@@ -13,3 +13,5 @@
     <button class="btn fa fa-trash red" title="delete this feedback.  It cannot be deleted if it is already sent to the client" 
         (click)="deleteClicked(fdbk.id)" ></button>
 </div>
+
+<!-- disable delete when fdbk.dateSent !== null-->

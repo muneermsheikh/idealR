@@ -30,7 +30,6 @@ import { CustomerEditComponent } from './customer-edit/customer-edit.component';
 import { CustomerReviewComponent } from './customer-review/customer-review.component';
 import { CustomerReviewModalComponent } from './customer-review-modal/customer-review-modal.component';
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
-import { ContractRvwComponent } from './orders/CR/contract-rvw/contract-rvw.component';
 import { ContractRvwItemComponent } from './orders/CR/contract-rvw-item/contract-rvw-item.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MessageComponent } from './message/message/messages.component';
@@ -68,7 +67,6 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
     CustomerReviewComponent,
     CustomerReviewModalComponent,
     CustRvwEditModalComponent,
-    ContractRvwComponent,
     ContractRvwItemComponent,
     MessageComponent,
     DLComponent,

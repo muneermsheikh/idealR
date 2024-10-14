@@ -16,7 +16,7 @@ namespace api.Entities.Identity
         //public string LookingFor { get; set; }
         //public String Introduction { get; set; }
 
-        public List<Photo> photos { get; set; }=new();
+        //public List<Photo> photos { get; set; }=new();
         //public List<UserLike> LikedByUsers { get; set; }
         //public List<UserLike> LikedUsers { get; set; }
         //public List<Message> MessagesSent {get; set;}

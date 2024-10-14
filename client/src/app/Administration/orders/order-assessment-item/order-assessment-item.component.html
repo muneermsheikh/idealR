@@ -2,15 +2,10 @@
     autocomplete="off" *ngIf="orderAssessmentItem">
 
     <h4 style="font-weight: bold;">Order Assessment - design questions for Order Item Category</h4>
-    <label class="lbl b w100">Order No</label>
-
-    <div *ngIf="orderAssessmentItem.orderAssessmentId === 0">
-        this form cannot be edited because the data is not retrieved from database.  Create a OrderAssessment for the Order
-        and thereafter try to edit individual assessment items for the order
-    </div>
-
-    
+ 
+        <label class="lbl b 100">Order No.:</label>
         <app-text-input [label]="'Order No'" formControlName="orderNo" class="stdd w75" > </app-text-input>
+        <div class="stdd w100">{{orderAssessmentItem.orderNo}} </div>
 
         <label class="lbl w100">Customer Name</label>
         <div class="stdd w250">{{orderAssessmentItem.customerName}}</div>
@@ -22,6 +17,10 @@
         <label class="lbl w100">Designed By</label>
         <app-text-input [label]="'Designed By'" formControlName="designedBy" class="stdd w100" > </app-text-input>
         
+        <label class="lbl w50 hAlignR">On</label>
+        <input type="text" class="stdd w100" placeholder="designed On" formControlName="dateDesigned"
+            bsDatepicker [bsValue]="bsValueDate"[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        
         <label class="lbl w100">Approved By</label>
         <input type="text" class="stdd w75" formControlName="approvedBy" (dblclick)="updateApprovedBy()" >
         
@@ -31,7 +30,7 @@
         <button class="btn fa fa-download" title="imports custom assessment questions matching the profession" 
             (click)="populateCustomAssessmentQuestions(professionId)"></button>
     
-        <button class="btn fa fa-save" title="Save this data" 
+        <button class="btn fa fa-save fa-2x" title="Save this data" 
             (click)="update()"></button>
     
         <button class="btn fa fa-window-close fa-2x" title="close this form and return to the calling program" 

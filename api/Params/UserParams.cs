@@ -2,11 +2,12 @@ namespace api.Params
 {
     public class UserParams: PaginationParams
     {
-        public string CurrentUsername { get; set; }
+        public string Username { get; set; }
         public string Gender { get; set; }
-        public int MinAge { get; set; }
-        public int MaxAge { get; set; }
-        public string   OrderBy { get; set; } = "LastActive";
+        public string KnownAs { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
     }
 
 }

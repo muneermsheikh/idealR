@@ -6,7 +6,7 @@ import { User } from '../_models/user';
 import { Pagination } from '../_models/pagination';
 import { FeedbackParams } from '../_models/params/hr/feedbackParams';
 import { GetHttpParamsForFeedback, getPaginatedResult } from './paginationHelper';
-import { IFeedback, IFeedbackInput } from '../_models/hr/feedback';
+import { IFeedback } from '../_models/hr/feedback';
 import { IFeedbackDto } from '../_dtos/hr/feedbackDto';
 import { IFeedbackHistoryDto } from '../_dtos/admin/feedbackAndHistoryDto';
 
@@ -47,14 +47,15 @@ export class FeedbackService {
 
  
   updateFeedback(fdback: IFeedback) {
-    return this.http.put<IFeedback>(this.apiUrl + 'Feedback', fdback);
+    console.log('updatefeedback service:', fdback);
+    return this.http.put<string>(this.apiUrl + 'Feedback', fdback);
   }
 
   deleteFeedback(fdbackId: number) {
     return this.http.delete<boolean>(this.apiUrl + 'Feedback/delete/' + fdbackId);
   }
 
-  saveNewFeedback(feedback: IFeedbackInput) {
+  saveNewFeedback(feedback: IFeedback) {
     return this.http.post<IFeedback>(this.apiUrl + 'Feedback/saveFeedback', feedback);
   }
 
@@ -64,19 +65,18 @@ export class FeedbackService {
 
   getFeedbackObject(feedbackId: number, customerId: number) {
     
-    return this.http.get<IFeedback>(this.apiUrl + 'Feedback/newfeedback/' + feedbackId + '/' + customerId  );
+    return this.http.get<IFeedback>(this.apiUrl + 'Feedback/newfeedback/' + feedbackId + '/' + customerId);
   }
 
-  generatenewfeedback(customerid: number) {
+  /*generatenewfeedback(customerid: number) {
     return this.http.get<IFeedback>(this.apiUrl + 'Feedback/generatenewfeedback/' + customerid);
-  }
+  }*/
   
   getFeedbackHistory(customerId: number) {
     return this.http.get<IFeedbackHistoryDto[]>(this.apiUrl + 'Feedback/history/' + customerId);
   }
 
   sendFeedbackMail(id: number) {
-    console.log('entered service', id);
     return this.http.get<string>(this.apiUrl + 'Feedback/sendfeedback/' + id );
   }
 

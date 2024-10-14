@@ -17,13 +17,13 @@
 <div class="stdd" *ngIf="feedbacks">
     <input (keyup.enter)="onSearch()" type="text" title="enter text to search" 
          class="stdd form-control w300" style="margin-left: 20px;" #search placeholder="Search">
-    <button type="button" (click)="onSearch()" class="stdd btn btn-outline-primary">Search</button>
+    <button type="button" (click)="onSearch()" class="btn fa fa-find fa-2x"></button>
      
-    <button type="button" (click)="onReset()" class="stdd btn btn-outline-success mx-3" >
-         Reset
-    </button>
-    
-    <h6 class="stdd">To add a new feedback, go to the customers listing, click a button to the right against a customer name</h6>
+    <button type="button" (click)="onReset()" class="btn  fa fa-refresg fa-2x mx-3" > </button>
+    <button type="button" routerLink="/" class="btn fa fa-window-close fa-2x mx-3" ></button>
+   
+    <h6 class="stdd w300">To add a new feedback, go to the customers listing, " + 
+        "click a button to the right against a customer name in Customer Index</h6>
 </div>
 
 <hr class="my-0">

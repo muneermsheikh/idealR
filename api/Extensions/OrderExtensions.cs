@@ -1,7 +1,10 @@
 using api.Data;
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
+using api.DTOs.Process;
 using api.Entities.Admin.Order;
+using api.Entities.HR;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 
@@ -168,13 +171,39 @@ namespace api.Extensions
 
         }
 
-        public async static Task<OrderDetailIdCVRefIdCandidateIdDto> GetOrderDetailIdCVRefIdCandIdFromDepId(this DataContext context, int DepId)
+        public async static Task<ICollection<DeploymentPendingBriefDto>> GetDepPendingBriefDtoFromDepItemIds(this DataContext context, ICollection<int> DepItemIds)
         {
-            var query = await (from dep in context.Deps  where dep.Id == DepId 
+            var query = await (from depItem in context.DepItems  where DepItemIds.Contains(depItem.Id)  
+                join dep in context.Deps on depItem.DepId equals dep.Id
                 join cvref in context.CVRefs on dep.CvRefId equals cvref.Id
-                select new OrderDetailIdCVRefIdCandidateIdDto {
-                    CandidateId = cvref.CandidateId, OrderItemId = cvref.OrderItemId,
-                    CvRefId = cvref.Id
+                join orderitem in context.OrderItems on cvref.OrderItemId equals orderitem.Id
+                join order in context.Orders on orderitem.OrderId equals order.Id
+                join cand in context.Candidates on cvref.CandidateId equals cand.Id
+                select new DeploymentPendingBriefDto {
+                    DepId=dep.Id, ReferredOn=cvref.ReferredOn, SelectedOn=dep.SelectedOn, ApplicationNo=cand.ApplicationNo,
+                    CandidateName=cand.FullName, OrderNo=order.OrderNo, CustomerName=order.Customer.KnownAs, 
+                    CityOfWorking=order.CityOfWorking, CategoryName=orderitem.Profession.ProfessionName,
+                    DeploySequence = depItem.Sequence, NextSequence=depItem.NextSequence, NextStageDate=depItem.NextSequenceDate,
+                    Ecnr = cand.Ecnr == "true"
+                }).ToListAsync();
+    
+            return query;
+        }
+
+        public async static Task<DeploymentPendingBriefDto> GetDepPendingBriefDtoFromDepId(this DataContext context, int depId)
+        {
+            var query = await (from dep in context.Deps where dep.Id==depId
+                join depitem in context.DepItems on dep.Id equals depitem.DepId orderby depitem.Sequence descending
+                join cvref in context.CVRefs on dep.CvRefId equals cvref.Id
+                join orderitem in context.OrderItems on cvref.OrderItemId equals orderitem.Id
+                join order in context.Orders on orderitem.OrderId equals order.Id
+                join cand in context.Candidates on cvref.CandidateId equals cand.Id
+                select new DeploymentPendingBriefDto {
+                    DepId=dep.Id, ReferredOn=cvref.ReferredOn, SelectedOn=dep.SelectedOn, ApplicationNo=cand.ApplicationNo,
+                    CandidateName=cand.FullName, OrderNo=order.OrderNo, CustomerName=order.Customer.KnownAs, 
+                    CityOfWorking=order.CityOfWorking, CategoryName=orderitem.Profession.ProfessionName,
+                    DeploySequence = depitem.Sequence, NextSequence=depitem.NextSequence, NextStageDate=depitem.NextSequenceDate,
+                    Ecnr = cand.Ecnr == "true"
                 }).FirstOrDefaultAsync();
     
             return query;

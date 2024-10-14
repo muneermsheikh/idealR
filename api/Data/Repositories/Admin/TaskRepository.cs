@@ -245,7 +245,8 @@ namespace api.Data.Repositories.Admin
 
             _context.Entry(task).State = EntityState.Deleted;
 
-            return await _context.SaveChangesAsync() > 0 ? "": "Failed to delete the task";
+            var ret =  await _context.SaveChangesAsync() > 0 ? "": "Failed to delete the task";
+            return ret;
         }
 
         public AppTask GenerateTask(AppTask task)
@@ -258,15 +259,60 @@ namespace api.Data.Repositories.Admin
             throw new NotImplementedException();
         }
 
-        public async Task<AppTask> EditTask(AppTask task)
+        public async Task<AppTask> EditTask(AppTask newObject)
         {
-            var existing = await _context.Tasks.FindAsync(task.Id);
+            var existing = await _context.Tasks.Include(x => x.TaskItems).Where(x => x.Id == newObject.Id).FirstOrDefaultAsync();
 
             if(existing==null) return null;
 
-            _context.Entry(existing).CurrentValues.SetValues(task);
+            _context.Entry(existing).CurrentValues.SetValues(newObject);
 
-            return await _context.SaveChangesAsync() > 0 ? existing : null;
+             //delete records in existingObject that are not present in new object
+            foreach (var existingItem in existing.TaskItems.ToList())
+            {
+                if(!newObject.TaskItems.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                {
+                    _context.TaskItems.Remove(existingItem);
+                    _context.Entry(existingItem).State = EntityState.Deleted; 
+                }
+            }
+
+            foreach(var newItem in newObject.TaskItems)
+            {
+                var existingItem = existing.TaskItems
+                    .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
+                
+                if(existingItem != null)    //update navigation record
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    _context.Entry(existingItem).State = EntityState.Modified;
+                } else {    //insert new TaskItem
+                    var itemToInsert = new TaskItem
+                    {
+                        AppTaskId = existing.Id,
+                        TransactionDate=newItem.TransactionDate,
+                        TaskStatus = newItem.TaskStatus,
+                        TaskItemDescription = newItem.TaskItemDescription,
+                        UserName=newItem.UserName,
+                        NextFollowupOn=newItem.NextFollowupOn,
+                        NextFollowupByName=newItem.NextFollowupByName
+                    };
+
+                    existing.TaskItems.Add(itemToInsert);
+                    _context.Entry(itemToInsert).State = EntityState.Added;
+                }
+            
+            }
+
+            _context.Entry(existing).State = EntityState.Modified;
+
+            try {
+                await _context.SaveChangesAsync();
+                return existing;
+            } catch (Exception ex) {
+                throw new Exception(ex.Message, ex);
+            }
+
         }
 
         public async Task<PagedList<TaskInBriefDto>> GetPagedList(TaskParams taskParams)

@@ -76,8 +76,8 @@ namespace api.Data.Repositories.Admin
                     var message = new Message
                     {
                         SenderUsername=senderUsername,
-                        RecipientAppUserId=recipientObj.Id,
-                        SenderAppUserId=senderObj.Id,
+                        //RecipientAppUserId=recipientObj.Id,
+                        //SenderAppUserId=senderObj.Id,
                         SenderEmail=senderObj.Email ?? "",
                         RecipientUsername = recipientObj.UserName ?? "",
                         RecipientEmail = recipientObj.Email ?? "",
@@ -142,8 +142,8 @@ namespace api.Data.Repositories.Admin
                     Recipient = recipientObj,
                     SenderUsername=senderObj.UserName,
                     RecipientUsername = recipientObj.UserName ?? "",
-                    RecipientAppUserId=recipientObj.Id,
-                    SenderAppUserId=senderObj.Id,
+                    //RecipientAppUserId=recipientObj.Id,
+                    //SenderAppUserId=senderObj.Id,
                     SenderEmail=senderObj.Email ?? "",
                     RecipientEmail = recipientObj.Email ?? "",
                     CCEmail = HRSupobj?.Email ?? "",
@@ -349,7 +349,7 @@ namespace api.Data.Repositories.Admin
                 .FirstOrDefaultAsync();
             
             if (obj==null) {
-                msgWithErr.ErrorString = "failed to retrieve customer data for customer";
+                msgWithErr.ErrorString = "failed to retrieve Order data for customer";
                 return msgWithErr;
             }
                 
@@ -371,6 +371,16 @@ namespace api.Data.Repositories.Admin
             var projectManagerId = obj.ProjectManagerId == 0 ? 8 : order.ProjectManagerId;
             var senderObj = await _userManager.GetAppUserObjFromEmployeeId(_context, projectManagerId);
             var recipientObj = await _userManager.GetAppUserObjFromCustomerOfficial(_context, official.Id);
+
+            if(senderObj==null) {
+                msgWithErr.ErrorString = "cannot retrieve sender object data - Project Manager Id defined has no equivalent AppUser";
+                return msgWithErr;
+            }
+            if(recipientObj==null) {
+                msgWithErr.ErrorString = "cannot retrieve Recipient object data - Customer Official defined has no equivalent AppUser";
+                return msgWithErr;
+            }
+            
             var messageType = "OrderAcknowledgement";
             
             var ackn = new AcknowledgeToClient{OrderId = obj.Id, CustomerId = obj.CustomerId, CustomerName = obj.Customer.CustomerName,
@@ -412,8 +422,8 @@ namespace api.Data.Repositories.Admin
                 Subject = subject,
                 Content = msg,
                 MessageType = messageType,
-                RecipientAppUserId =recipientObj.AppUserId,
-                SenderAppUserId = senderObj.AppUserId
+                //RecipientAppUserId =recipientObj.AppUserId,
+                //SenderAppUserId = senderObj.AppUserId
             };
             var msgs = new List<Message>();
             msgs.Add(emailMessage);
@@ -454,9 +464,10 @@ namespace api.Data.Repositories.Admin
             msg += "<br><br>Task for this requirement is also assigned to you.<br><br>" + senderObj.KnownAs +
                 "<br>Project Manager-Order" + order.OrderNo;
 
-            var emailMsg = new Message {MessageType="forwardToHR", SenderAppUserId= senderObj.Id,
+            var emailMsg = new Message {MessageType="forwardToHR", //SenderAppUserId= senderObj.Id,
                 SenderUsername = senderObj.UserName, SenderEmail = senderObj.Email, 
-                RecipientAppUserId = recipientObj.Id, MessageComposedOn=_today,
+                //RecipientAppUserId = recipientObj.Id, 
+                MessageComposedOn=_today,
                 RecipientUsername = recipientObj.UserName, RecipientEmail= recipientObj.Email,
                 Subject = "New Requirement No. " + order.OrderNo, Content = msg};
             
@@ -502,8 +513,8 @@ namespace api.Data.Repositories.Admin
                             MessageType="cv forward", 
                             SenderUsername = Username, 
                             SenderEmail=senderObj.Email,
-                            RecipientAppUserId = recipientappuserid, 
-                            SenderAppUserId=senderObj.AppUserId,
+                            //RecipientAppUserId = recipientappuserid, 
+                            //SenderAppUserId=senderObj.AppUserId,
                             RecipientUsername=recipientObj.Username,
                             RecipientEmail=recipientObj.Email, 
                             Subject="CVs Forwarded against your requirement",
@@ -535,9 +546,12 @@ namespace api.Data.Repositories.Admin
             msg += concludingMsg;
             email = new Message{
                 MessageType="cv forward", SenderUsername = Username, SenderEmail=senderObj.Email,
-                RecipientAppUserId = recipientappuserid, RecipientUsername=recipientObj.Username,
+                //RecipientAppUserId = recipientappuserid, 
+                RecipientUsername=recipientObj.Username,
                 RecipientEmail=recipientObj.Email, Subject="CVs Forwarded against your requirement",
-                Content=msg, SenderAppUserId = senderObj.AppUserId, MessageComposedOn = _today, 
+                Content=msg, 
+                //SenderAppUserId = senderObj.AppUserId, 
+                MessageComposedOn = _today, 
                 CvRefId = lastCVRef.CvRefId
             };
 
@@ -592,9 +606,11 @@ namespace api.Data.Repositories.Admin
             var message = new Message
             {
                 MessageType = "SelectionReminderToClient",
-                SenderAppUserId = senderAppUserDetails.AppUserId, MessageComposedOn = _today,
+                //SenderAppUserId = senderAppUserDetails.AppUserId, 
+                MessageComposedOn = _today,
                 SenderUsername = senderAppUserDetails.Username, SenderEmail = senderAppUserDetails.Email,
-                RecipientAppUserId = recipientAppUserDetails.AppUserId, RecipientUsername = recipientAppUserDetails.Username,
+                //RecipientAppUserId = recipientAppUserDetails.AppUserId, 
+                RecipientUsername = recipientAppUserDetails.Username,
                 RecipientEmail = recipientAppUserDetails.Email, Subject = "Request for decision on selection of Profiles",
                 Content = msg
             };
@@ -602,15 +618,17 @@ namespace api.Data.Repositories.Admin
             return message;
         }
 
-        public async Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string Url, string username)
+        public async Task<MessageWithError> ComposeFeedbackMailToCustomer(int feedbackId, string username)
         {
             var msgWithErr = new MessageWithError();
             AppUser senderObj, recipientObj;
-
+            //souce for hyperiink - https://stackoverflow.com/questions/13959864/inserting-a-valid-html-link-into-a-string-for-an-email
+            var Url = String.Format("{0}", "<a href=\"https://localhost:4200/feedback/edit/" +  feedbackId + "/0\">link</a>");
+           
             var fdbk = await _context.CustomerFeedbacks.Include(x => x.FeedbackItems)
                 .Where(x => x.Id == feedbackId).FirstOrDefaultAsync();
 
-            if(fdbk.OfficialAppUserId==0) {
+            if(string.IsNullOrEmpty(fdbk.OfficialUsername)) {
                 var customerid=fdbk.CustomerId;
                 var officials = await _context.CustomerOfficials
                     .Where(x => x.CustomerId == fdbk.CustomerId).ToListAsync();
@@ -624,7 +642,7 @@ namespace api.Data.Repositories.Admin
                     recipientObj = await _custRepo.CreateAppUserForCustomerOfficial(official);
                 }
             } else {
-                recipientObj = await _userManager.FindByIdAsync(fdbk.OfficialAppUserId.ToString());
+                recipientObj = await _userManager.FindByNameAsync(fdbk.OfficialUsername);
             }
 
             if(recipientObj==null) {
@@ -645,15 +663,15 @@ namespace api.Data.Repositories.Admin
             }
 
             
-            string msg=_today + "<br><br>Mr. " + fdbk.OfficialName + 
+            string msg= string.Format("{0: dd-MMMM-yyyy}", fdbk.DateIssued) + "<br><br>Mr. " + fdbk.OfficialName + 
                 "<br>" + fdbk.Designation +"<br>" + fdbk.CustomerName + 
                 "<br>" + fdbk.City + "<br>" + fdbk.Country + "<br>Email: " + fdbk.Email +
                 "<br><br>Dear Sir:<br><br>";
             
             msg +="As per requirements of ISO:9001-2015 certification, we are required to compile customer " +
                 "feedbacks to analyse their appreciations as well as grievances, so as to upgrade our systems " +
-                "to improve our customer satisfaction index. Please " + 
-                "Click <a href='" + Url + "'>here</a> to open the page containing the feedback questionnaire. " +
+                "to improve our customer satisfaction index. Please Click " + Url + 
+                " to open the page containing the feedback questionnaire. " +
                 "If for some reason you are not able to access the link, a hard copy is attached, which will require " + 
                 "it to be printed, filled-in, scanned and send back to us.  The online version will be quite convenient to you, "+
                 "but we leave it to your convenience. <br><br>We thank you for your cooperation, which will certainly " +
@@ -664,9 +682,11 @@ namespace api.Data.Repositories.Admin
             var message = new Message
             {
                 MessageType = "CustomerFeedback",
-                SenderAppUserId = senderObj.Id, MessageComposedOn = _today,
+                //SenderAppUserId = senderObj.Id, 
+                MessageComposedOn = fdbk.DateIssued,
                 SenderUsername = senderObj.UserName, SenderEmail = senderObj.Email,
-                RecipientAppUserId = recipientObj.Id, RecipientUsername = recipientObj.UserName,
+                //RecipientAppUserId = recipientObj.Id, 
+                RecipientUsername = recipientObj.UserName,
                 RecipientEmail = recipientObj.Email, Subject = "Customer Feedback as per ISO-9001:2015",
                 Content = msg
             };

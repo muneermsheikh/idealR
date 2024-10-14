@@ -4,6 +4,7 @@ using api.DTOs.Admin.Orders;
 using api.DTOs.Finance;
 using api.DTOs.HR;
 using api.DTOs.Order;
+using api.DTOs.Orders;
 using api.DTOs.Process;
 using api.Entities;
 using api.Entities.Admin;
@@ -18,6 +19,7 @@ using api.Entities.Messages;
 using api.Entities.Tasks;
 using api.Extensions;
 using AutoMapper;
+using AutoMapper.Execution;
 
 
 namespace api.Helpers
@@ -37,10 +39,17 @@ namespace api.Helpers
             
             CreateMap<MemberUpdateDto, MemberDto>(); */    //dimmy
             
+            CreateMap<AppUser, MemberDto>()
+                .ForMember(dest => dest.Age, 
+                    opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
+            
+            //CreateMap<MemberDto, MemberDto>();
+            
+            
             CreateMap<RegisterDto, AppUser>();
-            CreateMap<Message, MessageDto>()
+            /*CreateMap<Message, MessageDto>()
                 .ForMember(d => d.SenderPhotoUrl, o => o.MapFrom(s => s.Sender.photos.FirstOrDefault(x => x.IsMain).Url))
-                .ForMember(d => d.RecipientPhotoUrl, o => o.MapFrom(s => s.Recipient.photos.FirstOrDefault(x => x.IsMain).Url));
+                .ForMember(d => d.RecipientPhotoUrl, o => o.MapFrom(s => s.Recipient.photos.FirstOrDefault(x => x.IsMain).Url)); */
             CreateMap<Customer, CustomerDto>();
             CreateMap<CreateCustomerDto, Customer>();
             CreateMap<Candidate, CandidateBriefDto>();
@@ -49,10 +58,11 @@ namespace api.Helpers
             CreateMap<ProspectiveCandidate, ProspectiveBriefDto>();
 
             CreateMap<CustomerFeedback, FeedbackDto>();
-            CreateMap<FeedbackInputItem, FeedbackItem>();
-            CreateMap<FeedbackItem, FeedbackInputItem>();
+            //CreateMap<FeedbackInputItem, FeedbackItem>();
+            //CreateMap<FeedbackItem, FeedbackInputItem>();
 
             CreateMap<Order, OrderBriefDto>();
+            CreateMap<OrderBriefDto, OrderBriefDto>();
             CreateMap<Order, OrderDisplayDto>();
             CreateMap<OrderItem, OrderItemDisplayDto>();
             CreateMap<OrderItem, OrderItemBriefDto>();
@@ -60,6 +70,7 @@ namespace api.Helpers
             CreateMap<Order, OrderDisplayWithItemsDto>();
             
             //CreateMap<OrderForwardToAgent, OrderForwardToAgentDto>();
+            CreateMap<OrderForwardCategory, OrderForwardCategory>();
             CreateMap<OrderForwardCategory, OrderForwardToAgentDto>();
                 //.ForMember(s=>s.OrderForwardCategoriesDto, o => o.MapFrom(x => x.OrderForwardCategories));
             CreateMap<OrderForwardCategoryOfficial, OrderForwardToOfficialDto>();
@@ -69,6 +80,7 @@ namespace api.Helpers
             
             CreateMap<ContractReviewItemQ, ContractReviewItemStddQ>();
             CreateMap<ContractReview, ContractReviewDto>();
+            CreateMap<ContractReviewItem, ContractReviewItemDto>(); //add OrderDate, CustomerName, OrderNo
 
             CreateMap<ChecklistHR, ChecklistHRDto>();
             CreateMap<ChecklistHRDto, ChecklistHR>();
@@ -78,7 +90,8 @@ namespace api.Helpers
             CreateMap<CVRefDto, CVRefDto>();
 
             CreateMap<Intervw, InterviewBriefDto>();
-            
+            CreateMap<OrderAssessmentItemDto, OrderAssessmentItem>();
+            CreateMap<OrderAssessmentItem, OrderAssessmentItemDto>();
             CreateMap<OrderAssessmentItemQ, CandidateAssessmentItem>();
 
             CreateMap<CandidateAssessment, CandidateAssessedDto>();
@@ -104,6 +117,8 @@ namespace api.Helpers
             CreateMap<DeploymentPendingTempDto, DeploymentPendingDto>();
 
             CreateMap<Dep, DeploymentPendingDto>();
+            CreateMap<DeploymentPendingDto, DeploymentPendingDto>();
+            CreateMap<CandidateFlightGrp, CandidateFlightGrpDto>();
 
             CreateMap<CreateCustomerDto, Customer>();
             CreateMap<Customer, CustomerAndOfficialsDto>();
@@ -126,7 +141,11 @@ namespace api.Helpers
             //CreateMap<COA, COA>();
             //CreateMap<Voucher, Voucher>();
             CreateMap<PendingDebitApprovalDto, VoucherEntry>();
-                            
+
+            //DateTime difference between dates retrieved from DB and generated from code
+            CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
+            CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : null);
+
         }
 
     }

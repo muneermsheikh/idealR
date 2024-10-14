@@ -38,6 +38,7 @@ export class DeployEditModalComponent implements OnInit {
   constructor(public bsModalRef: BsModalRef, private toastr:ToastrService, 
     private confirmService: ConfirmService, private fb: FormBuilder 
     , private service: DeployService, private activatedRoute: ActivatedRoute) {
+      
       /*this.service.getDepStatusAndNames().subscribe({
         next: (response:IDeployStatusAndName[]) => this.depStatusAndNames = response
       })
@@ -107,7 +108,7 @@ export class DeployEditModalComponent implements OnInit {
     msg += " transactions that are after the date of this transaction. " +
         " THE DELETION WILL TAKE EFFECT ONLY AFTER YOU UPDATE THIS FORM"
     
-        this.confirmService.confirm("Confirm Delete", msg).subscribe({next: confirmed => {
+    this.confirmService.confirm("Confirm Delete", msg).subscribe({next: confirmed => {
         if(confirmed) {
           for(let i=+index+1; i--; i <= index) {   //depItems is in desc order
             console.log(index, i);
@@ -119,12 +120,37 @@ export class DeployEditModalComponent implements OnInit {
   }
 
   updateDeployment() {
+      
+    /*var err='';
+    var items = this.form.get('depItems');
+    const depitems = items!.pipe(map((x:IDepItem) => x.sort((a: { transactionDate: number; }, b: { transactionDate: number; }) => a.transactionDate - b.transactionDate)));
 
-    var formdata = this.form.value;
-
-    this.updateDep.emit(formdata);
-    this.bsModalRef.hide();
-
+    for(let i=1; i< depitems.length; i++) {
+      const tDate1 = depitems.at(i-1).transactionDate;
+      const tDate2 = depitems.at(i).transactionDate;
+      const seq1 = this.service.getDeployStatusOfASequence(depitems.at(i-1).sequence);
+      const seq2 = this.service.getDeployStatusOfASequence(depitems.at(i).sequence);
+  
+      if(tDate1 > tDate2) {
+        console.log(seq1 + ' at ' +  tDate1 +  ' is earlier than ' + seq2 + ' at ' + tDate2);  
+        
+        err = seq1 + ' is prior to sequence ' + seq2 + ' but is dated later';
+          break;
+        }
+    }
+    if(err !== '') {
+      this.toastr.warning(err, 'transaction dates not in order');
+      return;
+    }
+      */
+    if(this.form.dirty) {
+      this.toastr.info('toaster info', 'testing');
+      var formdata = this.form.value;
+      this.updateDep.emit(formdata);
+      this.bsModalRef.hide();
+    } else {
+      this.toastr.warning('form is not dirty', 'no changes made', {"closeButton": true, "timeOut": 0, "extendedTimeOut":0});
+    }
   }
 
   download(index: number) {

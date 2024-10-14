@@ -13,7 +13,7 @@
     margin: 0 2px 0 2px;
 }
 
-.cursorpointer {cursor: pointer; color: darkblue; font-weight: bold;}
+.cursorpointer {cursor: pointer; font-size: smaller; font-weight: bold;}
 
 .red {color: red;}
 .yellow {color: yellow;}

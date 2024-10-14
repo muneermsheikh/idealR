@@ -1,13 +1,16 @@
 using System.Security.Claims;
 using api.DTOs;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Identity;
+using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
 using api.Params;
 using API.Helpers;
 using AutoMapper;
+using AutoMapper.Execution;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,23 +45,7 @@ namespace api.Controllers
             return await _userRepository.GetUserByUserNameAsync(username);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberupdateDto)
-        {
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
-            var user = await _userRepository.GetUserByUserNameAsync(username);
-
-            if (user==null) return NotFound("User not found");
-
-            _mapper.Map(memberupdateDto, user);
-           
-            if(await _userRepository.SaveAllAsync()) return NoContent();
-
-            //if (await _userServices.UpdateMember(user)) return NoContent();
-
-            return BadRequest("failed to update the database");
-        }
-
+       
         [HttpGet("candidatesmatchingprof/{professionid}")]
         public async Task<ActionResult<CVsMatchingProfAvailableDto>> GetMatchingCandidates(int professionid)
         {
@@ -66,5 +53,22 @@ namespace api.Controllers
 
             return Ok(obj);
         }
+
+        [HttpDelete("delete/{memberid}")]
+        public async Task<ActionResult<bool>> DeleteMember(int memberid)
+        {
+            return await _userRepository.DeleteMember(memberid);
+
+        }
+
+        [HttpPost("newappuser/{usertype}/{usertypevalue}")]
+        public async Task<ActionResult<AppUserReturnDto>> CreateAppUser(string usertype, int usertypevalue)
+        {
+            var dtoErr = await _userRepository.CreateAppUser(usertype, usertypevalue);
+            if(!string.IsNullOrEmpty(dtoErr.Error)) return BadRequest(new ApiException(400, dtoErr.Error, "Failed to create the App User"));
+
+            return dtoErr;
+        }
+
     }
 }

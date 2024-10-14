@@ -8,6 +8,7 @@ namespace api.DTOs.Admin.Orders
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
+        public string CityOfEmployment { get; set; }
         public string AboutEmployer { get; set; }   //
         public int OrderNo { get; set; }
         public DateTime OrderDate { get; set; }

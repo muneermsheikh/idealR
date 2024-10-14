@@ -118,7 +118,7 @@ namespace api.Data.Repositories.Master
             //OtherSkills
             foreach (var existingItem in existing.EmployeeOtherSkills.ToList())
             {
-                if (!model.HRSkills.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
+                if (!model.EmployeeOtherSkills.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
                 {
                     _context.EmployeeOtherSkills.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted;
@@ -136,7 +136,7 @@ namespace api.Data.Repositories.Master
                 else            //insert children as new record
                 {
                     var newItem = new EmployeeOtherSkill{ EmployeeId=model.Id, SkillDataId = modelItem.SkillDataId,
-                        IsMain = modelItem.IsMain, SkillLevel = modelItem.SkillLevel};
+                        IsMain = modelItem.IsMain, SkillLevelName = modelItem.SkillLevelName};
                     
                     existing.EmployeeOtherSkills.Add(newItem);
                     _context.Entry(newItem).State = EntityState.Added;

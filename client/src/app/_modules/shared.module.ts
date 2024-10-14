@@ -32,11 +32,12 @@ import { HasRoleDirective } from '../_directives/has-role.directive';
     }),
     BsDatepickerModule.forRoot(),
     ToastrModule.forRoot(),
-    /* ToastrModule.forRoot({
-      positionClass: 'toastr-top-right',
-      preventDuplicates: true,
+    /*ToastrModule.forRoot({
+      "closeButton":true,
+      "positionClass": 'toastr-top-right',
+      "preventDuplicates": true,
       
-    }), */
+    }),*/
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
     TimeagoModule.forRoot(),

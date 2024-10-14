@@ -5,8 +5,9 @@ namespace api.DTOs.Admin
         public int Id { get; set; }
         public int Identity { get; set; }
         public string TaskType { get; set; }
+        public int OrderItemId {get; set;}
         public DateTime TaskDate { get; set; }
-        public string TaskOwnerUsername { get; set; }
+        public string AssignedByUsername { get; set; }
         public string AssignedToUsername { get; set; }
         public int OrderNo { get; set; }
         public int ApplicationNo { get; set; }

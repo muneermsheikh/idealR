@@ -12,6 +12,6 @@ namespace api.Entities.Deployments
         public int NextSequence { get; set; }
         public DateTime NextSequenceDate { get; set; }
         public string FullPath { get; set; }
-        //public Dep Dep { get; set; }
+   
     }
 }

@@ -7,6 +7,7 @@ namespace api.Entities.Admin.Order
         public DateTime OrderDate { get; set; }
         public string CustomerName { get; set; }
         public string DesignedByUsername { get; set; }
+        public DateTime DateDesigned {get; set;}
         public ICollection<OrderAssessmentItem> OrderAssessmentItems { get; set; }
     }
 }

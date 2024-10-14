@@ -14,32 +14,52 @@
         lastText="&raquo;">
     ></pagination>
 
-    <div class="stdd w300 mx-5">{{parameterCriteria}}</div>
-
-    <label class="lbl w100 mx-2">Choose Status</label>
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="allstatus">all Status
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="pending`" >Pending
-    <input type="radio" class="stdd mx-2" [(ngModel)]="sParams.taskStatus" value="canceled" >Canceled
-    <input type="radio" class="stdd mx-2" [disabled]="user!.roles.includes('Admin') || user!.roles.includes('Admin Manager')" 
-        [(ngModel)]="sParams.taskStatus" value="allusers">All Users
-
-    <div class="stdd form-inline" style="margin-left: 50px !important;" >
+    <!-- <div class="stdd w300 mx-5">{{parameterCriteria}}</div> -->
+    <div class="stdd form-inline" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w200" #search placeholder="Search">
         <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
         <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
-        <button class="btn fa fa-window-close fa-2x mx-2" style="display: inline-block;" routerLink="/tasks" ></button>
     </div>
     
+    <label class="lbl w100 mx-2" style="text-align: right;">Choose Task Type</label>
+    <ng-select 
+        class="stdd w150" 
+        [items]="taskTypes"
+        bindLabel="type"
+        bindValue="value"
+        labelForId="type"
+        clearAllText="Clear"
+        [(ngModel)]="sParams.taskType"
+    ></ng-select>
+
+    <br><label class="lbl w100 mx-2" style="text-align: right;">Choose Status</label>
+    <ng-select 
+        class="stdd w100" 
+        [items]="taskStatuses"
+        bindLabel="status"
+        bindValue="value"
+        labelForId="status"
+        clearAllText="Clear"
+        [(ngModel)]="sParams.taskStatus"
+    ></ng-select>
+
+    <button class="btn fa fa-check fa-2x mx-2" style="display: inline-block;" 
+        title="recalculate data based on task status selected" (click)="applyStatus()" ></button>
+      
+    <button class="btn fa fa-window-close fa-2x pull-right" style="display: inline-block;" routerLink="/" ></button>
+  
 </div>
 
 <div class="container">
     <label class="lbl w100">Date</label>
-    <label class="lbl w125">Assigned By</label>
-    <label class="lbl w125">Assigned To</label>
-    <label class="lbl w300">Task Description</label>
-    <label class="lbl w125">Complete By</label>
-    <label class="lbl w125">Status</label>
+    <label class="lbl w75">Assigned By</label>
+    <label class="lbl w75">Assigned To</label>
+    <label class="lbl w90">Task Type</label>
+    <div class="stdd w75">Order Item<br>Id</div>
+    <label class="lbl w350">Task Description</label>
+    <label class="lbl w100">Complete By</label>
+    <label class="lbl w100">Status</label>
     
     <div *ngIf="!tasks">No tasks on record matching the criteria</div>
 

@@ -109,7 +109,7 @@ namespace api.Extensions
             var obj = email.appuserid == 0 
                 ? await userManager.FindByIdAsync(email.appuserid.ToString())         
                 : await userManager.FindByEmailAsync(email.AppUserEmail);
-
+            if(obj == null) return null;
             return  new AppUserBriefDto { KnownAs = obj.KnownAs, AppUserId=EmployeeId, Username= obj.UserName, AppUserEmail=obj.Email,
                 Position=email.Position, Name=email.Name};
         }
@@ -126,7 +126,7 @@ namespace api.Extensions
             var obj = email.appuserid == 0 
                 ? await userManager.FindByIdAsync(email.appuserid.ToString())         
                 : await userManager.FindByEmailAsync(email.Email);
-
+            if(obj == null) return null;
             return  new AppUserBriefDto { KnownAs = obj.KnownAs, AppUserId=OfficialId, Username= obj.UserName, 
                 AppUserEmail=obj.Email, Name=email.Name, Position=email.Position};
         }

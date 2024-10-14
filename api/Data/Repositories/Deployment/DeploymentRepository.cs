@@ -1,8 +1,8 @@
 using System.Data.Common;
-using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.DTOs.Process;
 using api.Entities.Admin;
+using api.Entities.Admin.Order;
 using api.Entities.Deployments;
 using api.Entities.Identity;
 using api.Entities.Messages;
@@ -14,6 +14,7 @@ using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using api.Params.Deployments;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,7 +49,7 @@ namespace api.Data.Repositories.Deployment
         private async Task<bool> UpdateDepStatus(int depId, bool save) {
                 
                 var dep = await _context.Deps.Include(x => x.DepItems).Where(x => x.Id == depId).FirstOrDefaultAsync();
-                var lastSeq = dep.DepItems.OrderByDescending(x => x.Sequence).Select(x => x.NextSequence).FirstOrDefault();
+                var lastSeq = dep.DepItems.OrderByDescending(x => x.Sequence).Select(x => x.Sequence).FirstOrDefault();
 
                 if(lastSeq == 5000) {       //concluded
                     dep.CurrentStatus = "Concluded";
@@ -62,16 +63,34 @@ namespace api.Data.Repositories.Deployment
 
                 return true;
         }
-        public async Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItemToAddDto> dto, 
-            string Username)
+
+        private async Task<DeploymentPendingBriefDto> GetDepPendingDto(int depId) {
+
+            var qry = await (from dp in _context.Deps where dp.Id==depId
+                join depitem in _context.DepItems on dp.Id equals depitem.DepId orderby depitem.Sequence descending
+                join orderitem in _context.OrderItems on dp.OrderItemId equals orderitem.Id
+                join cat in _context.Professions on orderitem.ProfessionId equals cat.Id 
+                join order in _context.Orders on orderitem.OrderId equals order.Id
+                join cvref in _context.CVRefs on dp.CvRefId equals cvref.Id
+                join cand in _context.Candidates on cvref.CandidateId equals cand.Id 
+                select new DeploymentPendingBriefDto {
+                    DepId = dp.Id, ApplicationNo=cand.ApplicationNo, CandidateName=cand.FullName, 
+                    CategoryName=cat.ProfessionName, CityOfWorking=order.CityOfWorking,
+                    CustomerId=order.CustomerId, CustomerName=order.Customer.CustomerName, 
+                    CvRefId=cvref.Id, DeploySequence=depitem.Sequence, Ecnr=cand.Ecnr=="true",
+                    NextSequence=depitem.NextSequence, NextStageDate=depitem.NextSequenceDate,
+                    OrderDate=order.OrderDate, OrderItemId=orderitem.Id, OrderNo=order.OrderNo,
+                    ReferredOn=cvref.ReferredOn, SelectedOn=dp.SelectedOn
+                }).FirstOrDefaultAsync();
+            
+            return qry;
+        }
+        public async Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItem> dto, string Username)
         {
-            string strErr="";
             int itemsWithErr=0, itemsSucceeded=0;
             int SeqToCompare=0;
-            var items = new List<DepItem>();
+            var DepItemsAdded = new List<DepItem>();
             var candDetail = new CandidateAdviseDto();
-            var msgWithErr = new MessageWithError();
-            var OdIdCandId = new OrderDetailIdCVRefIdCandidateIdDto(); 
 
             var returnDto = new DepPendingDtoWithErr();
 
@@ -79,61 +98,46 @@ namespace api.Data.Repositories.Deployment
 
             foreach(var item in dto) {
 
-                msgWithErr = new MessageWithError();
-
-                OdIdCandId = await _context.GetOrderDetailIdCVRefIdCandIdFromDepId(item.DepId);
-
                 //create candidateObject for composing msgs at the endof this loop
                 
                 switch(item.Sequence) {
-                    case _mEDICALLY_FIT:
-                    case _mEDICALLY_UNFIT:
-                    case _vISA_REJECTED:
-                    case _vISA_ISSUED:
-                    case _eMIGRATION_CLEARED:
-                    case _eMIGRATION_DENIED:
-                    case _tICKET_BOOKED:
-                    case _oFFER_ACCEPTED:
-                    var candidateAppUserId = await _context.GetAppUserIdOfCandidate(OdIdCandId.CandidateId);
-                    var recipientObj = await _userManager.FindByIdAsync(candidateAppUserId.ToString());
-                    
-                    if(recipientObj == null) {
-                        msgWithErr.ErrorString = "Failed to retrieve User Identity of the candidate";
-                        return null;        //*TODO* - incorporate error strng in return object
-                    }
+                    case _mEDICALLY_FIT: case _mEDICALLY_UNFIT: case _vISA_REJECTED: case _vISA_ISSUED:
+                    case _eMIGRATION_CLEARED: case _eMIGRATION_DENIED: case _tICKET_BOOKED: case _oFFER_ACCEPTED:
+                        var candidateAppUsername = await _context.GetAppUsernameFromDepId(item.DepId);
+                        var recipientObj = await _userManager.FindByNameAsync(candidateAppUsername);
+                        
+                        if(recipientObj == null) {
+                            returnDto.ErrorString = "Failed to retrieve User Identity of the candidate";
+                            return returnDto;       
+                        }
 
-                    var HRExecUsername = await _context.GetHRExecUsernameFromOrderItemId(OdIdCandId.OrderItemId);
-                    var CustomerName = await _context.GetCustomerNameFromOrderItemId(OdIdCandId.OrderItemId);
-                    var senderObj = await _userManager.FindByNameAsync(HRExecUsername);
-                    if(senderObj==null) continue;
-
-                    candDetail = await (from cvref in _context.CVRefs where cvref.Id == OdIdCandId.CvRefId
-                        join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId               
-                        join rvw in _context.ContractReviewItems on cvref.OrderItemId equals rvw.OrderItemId
-                        join dep in _context.Deps on cvref.Id equals dep.CvRefId
-                        //join cand in _context.Candidates on cvref.CandidateId equals cand.Id
-                        select new CandidateAdviseDto {
-                            RecipientObj = recipientObj, SenderObj = senderObj, CVRefId = OdIdCandId.CvRefId,
-                            ApplicationNo = sel.ApplicationNo, CandidateId = sel.CandidateId,
-                            CandidateTitle = sel.Gender == "F" ? "Ms. " : "Mr. ",
-                            CandidateName = sel.CandidateName, CandidateGender=sel.Gender ?? "M",
-                            CandidateEmail = recipientObj.Email, 
-                            CustomerName = CustomerName,
-                            SelectedAs = sel.SelectedAs ?? rvw.ProfessionName, HrExecEmail= senderObj.Email,
-                            TransactionDate = DateOnly.FromDateTime(item.TransactionDate)
-                        }).FirstOrDefaultAsync();
-        
+                        candDetail = await (from dep in _context.Deps where dep.Id == item.DepId
+                            join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
+                            join sel in _context.SelectionDecisions on cvref.Id equals sel.CvRefId               
+                            join rvw in _context.ContractReviewItems on cvref.OrderItemId equals rvw.OrderItemId
+                            join cand in _context.Candidates on cvref.CandidateId equals cand.Id
+                            select new CandidateAdviseDto {
+                                RecipientObj = recipientObj, CVRefId = cvref.Id,
+                                ApplicationNo = sel.ApplicationNo, CandidateId = sel.CandidateId,
+                                CandidateTitle = sel.Gender == "F" ? "Ms. " : "Mr. ",
+                                CandidateName = sel.CandidateName, CandidateGender=sel.Gender ?? "M",
+                                CandidateEmail = recipientObj.Email, CandidateUsername=cand.Username,
+                                CustomerName = dep.CustomerName,
+                                SelectedAs = sel.SelectedAs ?? rvw.ProfessionName, HrExecEmail= cand.Email,
+                                TransactionDate = DateOnly.FromDateTime(item.TransactionDate)
+                            }).FirstOrDefaultAsync();
+                        candDetail.SenderObj=await _userManager.FindByNameAsync(candDetail.CandidateUsername);
+                        if(candDetail.SenderObj==null) continue;
                         break;
                     default:
                         break;
                 }//end of loop
 
-                var lastDepItem = await _context.DepItems.Where(x => x.DepId==item.DepId)
-                    .OrderByDescending(x => x.Sequence).FirstOrDefaultAsync();
+                var lastDepItem = await _context.DepItems.Where(x => x.DepId==item.DepId).OrderByDescending(x => x.Sequence).FirstOrDefaultAsync();
                 var SequenceShdBe = _deployStatuses.Where(x => x.Sequence == lastDepItem.Sequence).Select(x => x.NextSequence).FirstOrDefault();
                 
                 SeqToCompare = lastDepItem.Sequence;        //The sequence to compare with proposed sequence in the DepItem
-
+                
                 do {
                     var status = _deployStatuses
                         .Where(x => x.Sequence == SeqToCompare)
@@ -148,29 +152,45 @@ namespace api.Data.Repositories.Deployment
                 } while (SequenceShdBe==0);
                 
                 if(SequenceShdBe != item.Sequence) {
-                    strErr += ", item with sequence " + item.Sequence + " - Sequence Expected is: " + SequenceShdBe;
-                    itemsWithErr +=1;
-                } else if (lastDepItem.TransactionDate >= item.TransactionDate) {
-                    strErr += ", New Transaction item date " + item.TransactionDate 
-                        + " cannot be dated earlier than last Transaction Date " + lastDepItem.TransactionDate;
-                } else {
-                    var depStatus = _deployStatuses.Where(x => x.Sequence == SequenceShdBe).FirstOrDefault();   // await _context.GetNextDepStatus(item.Sequence);
-                    var depitem = new DepItem{
-                        DepId = item.DepId, Sequence = item.Sequence, NextSequence = depStatus.NextSequence,
-                        TransactionDate = item.TransactionDate, 
-                        NextSequenceDate = item.TransactionDate.AddDays(depStatus.WorkingDaysReqdForNextStage)
-                    };
-                    items.Add(depitem);
+                    int nextSq = _deployStatuses.Where(x => x.Sequence == item.Sequence).Select(x => x.Sequence).FirstOrDefault();
+                    if(nextSq == 0) {
+                        returnDto.ErrorString = "Failed to get Dep Stage for Next Sequence";
+                        continue;
+                    }
+                    var nextSeqStage =_deployStatuses.Where(x => x.Sequence==nextSq).Select(x => new {x.Sequence, x.isOptional}).FirstOrDefault();
+                    if(nextSeqStage==null) {
+                        returnDto.ErrorString = "Failed to get the next Deployment stage";
+                        continue;
+                    }
+
+                    if(nextSeqStage.isOptional && nextSeqStage.Sequence==SequenceShdBe+100) {   //negative Seq is always 100 + earlier +ve status
+                            SequenceShdBe +=100;
+                    } else {
+                
+                        if(SequenceShdBe != item.Sequence) {
+                            returnDto.ErrorString += ", item with sequence " + item.Sequence + " - Sequence Expected is: " + SequenceShdBe;
+                            itemsWithErr +=1;
+                        } else if (lastDepItem.TransactionDate >= item.TransactionDate) {
+                            returnDto.ErrorString += ", New Transaction item date " + item.TransactionDate 
+                                + " cannot be dated earlier than last Transaction Date " + lastDepItem.TransactionDate;
+                        }
+                    }
                 }
 
-                if(!string.IsNullOrEmpty(strErr)) {
-                    returnDto.ErrorString=strErr;
-                    return returnDto;
-                }
+                var depStatus = _deployStatuses.Where(x => x.Sequence == SequenceShdBe).FirstOrDefault();   // await _context.GetNextDepStatus(item.Sequence);
+                var depitem = new DepItem{
+                    DepId = item.DepId, Sequence = item.Sequence, NextSequence = depStatus.NextSequence,
+                    TransactionDate = item.TransactionDate, 
+                    NextSequenceDate = item.TransactionDate.AddDays(depStatus.WorkingDaysReqdForNextStage)
+                };
+                
+                DepItemsAdded.Add(depitem);
+                 
+                if(!string.IsNullOrEmpty(returnDto.ErrorString)) return returnDto;
 
                 //post save actions - created now, but saved after saveAsync();
                 //still inside the loop - item in Dto
-                msgWithErr = await PostDeploymentTransaction(candDetail, item.Sequence, item.TransactionDate);
+                var msgWithErr = await PostDeploymentTransaction(candDetail, item.Sequence, item.TransactionDate);
                 if(msgWithErr?.Messages?.Count > 0) {
                     foreach(var msg in msgWithErr.Messages)
                     _context.Messages.Add(msg);
@@ -179,85 +199,43 @@ namespace api.Data.Repositories.Deployment
 
             }       //end of oop item in dto
             
-            foreach(var d in items) {
+            foreach(var d in DepItemsAdded) {
                 _context.Entry(d).State = EntityState.Added;
             }
 
-            var DepItemIdsInserted = new List<DepItemAndDepIdDto>();
+            var DepItemIdsInserted = new List<DepItemInsertedIdDto>();
             
             try{
                 itemsSucceeded = await _context.SaveChangesAsync();
 
-                var ids =  items
-                    .Select(x => new DepItem { Id = x.Id, DepId = x.DepId})
-                    .ToList();
-
-                foreach(var id in ids) {
-                    DepItemIdsInserted.Add(new DepItemAndDepIdDto{DepId=id.DepId, DepItemId=id.Id});
-                }
-                
-                var depIds = items.Select(x => x.DepId).Distinct().ToList();
+                var depIds = DepItemsAdded.Select(x => x.DepId).Distinct().ToList();
                 foreach(var depid in depIds) {
                     await UpdateDepStatus(depid, true);       //dep.CurrentStatus Entry.Status is modified, but not saved
                 }
+                
+                foreach(var d in DepItemsAdded) {
+                    DepItemIdsInserted.Add(new DepItemInsertedIdDto{
+                        DepId=d.DepId, DepItemId=d.Id, NextSequence=d.NextSequence, Sequence = d.Sequence, NextSequenceDate=d.NextSequenceDate });
+                };
+
+                returnDto.DeploymentPendingBriefDtos = await _context
+                    .GetDepPendingBriefDtoFromDepItemIds(DepItemsAdded.Select(x => x.Id).ToList());
+
+                
             } catch(DbException ex) {
                 if(ex.Message.Contains("IX_DepItem")) {
-                    strErr = "Unique Index violation - CVRefId + Sequence";
+                    returnDto.ErrorString = "Unique Index violation - CVRefId + Sequence";
                 } else {
-                    strErr = ex.Message;
+                    returnDto.ErrorString = ex.Message;
                 }
                 
             } catch(Exception ex) {
-                strErr = ex.Message;
+                returnDto.ErrorString = ex.Message;
             }
 
-            var query = await GetDeploymentPendings();
-
-            var dtoToReturn = new List<DeploymentPendingDto>();
-
-            foreach(var item in dto ) {
-                var foundItem = query.Where(x => x.DepId == item.DepId).FirstOrDefault();
-                if(foundItem != null) dtoToReturn.Add(foundItem);
-            }
-
-            returnDto.deploymentPendingDtos=dtoToReturn;
-            returnDto.DepItemIdsInserted=DepItemIdsInserted;
             return returnDto;
 
         }
-
-        private async Task<ICollection<DeploymentPendingDto>> GetDeploymentPendings()
-        {
-            
-            var query = await (from dep in _context.Deps where dep.CurrentStatus != "Concluded"
-                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
-                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id
-                join order in _context.Orders on item.OrderId equals order.Id
-                
-                select new DeploymentPendingDto {
-                    DepId = dep.Id,
-                    ApplicationNo = cv.ApplicationNo,
-                    CandidateName = cv.FullName,
-                    CategoryName = item.Profession.ProfessionName,
-                    CustomerName = order.Customer.KnownAs,
-                    CvRefId = cvref.Id,
-                    SelectedOn = cvref.SelectionStatusDate,
-                    ReferredOn = cvref.ReferredOn,
-                    OrderNo = order.OrderNo,
-                    OrderDate = order.OrderDate,
-                    DeploySequence =dep.DepItems.OrderByDescending(x => x.Sequence)
-                        .Select(x => x.Sequence).FirstOrDefault(), 
-                    NextSequence =dep.DepItems.OrderByDescending(x => x.NextSequence)
-                        .Select(x => x.NextSequence).FirstOrDefault(), 
-                    OrderItemId = item.Id,
-                    NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
-                        .Select(x => x.NextSequenceDate).FirstOrDefault()
-                }).ToListAsync();
-            
-            return query;
-        }
-
         private async Task<MessageWithError> PostDeploymentTransaction(CandidateAdviseDto candDetail, int Sequence, DateTime TransactionDate) 
         {
             
@@ -316,7 +294,6 @@ namespace api.Data.Repositories.Deployment
 
             return strErr;
         }
-
         public async Task<string> DeleteDepItem(int depItemId)
         {
             string strErr="";
@@ -357,7 +334,6 @@ namespace api.Data.Repositories.Deployment
 
             return strErr;
         }
-        
         public async Task<bool> DeleteDeploymentAttachment(string fullPath) {
             var depitem = await _context.DepItems.Where(x => x.FullPath.ToLower()==fullPath.ToLower()).FirstOrDefaultAsync();
             if(depitem == null) return false;
@@ -394,16 +370,21 @@ namespace api.Data.Repositories.Deployment
 
         }
 
-        public async Task<string> EditDeployment(Dep model)
+        public async Task<DepPendingDtoWithErr> EditDeployment(Dep model)
         {
-            string strErr="";
+            var dto = new DepPendingDtoWithErr();
+            var depitems = new List<DepItem>();
+            var depBriefDto = new List<DeploymentPendingBriefDto>();
             
             var existing = await _context.Deps.Include(x => x.DepItems)
                 .Where(x => x.Id == model.Id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-            if (existing == null) return "Deployment Object does not exist";
+            if (existing == null) {
+                dto.ErrorString="No deployment record exists to edit";
+                return dto;
+            }
 
             _context.Entry(existing).CurrentValues.SetValues(model);
 
@@ -421,8 +402,6 @@ namespace api.Data.Repositories.Deployment
                     }
                     _context.DepItems.Remove(existingItem);
                     _context.Entry(existingItem).State = EntityState.Deleted; 
-
-                    
                 }
             }
 
@@ -439,6 +418,7 @@ namespace api.Data.Repositories.Deployment
 
                     _context.Entry(existingItem).CurrentValues.SetValues(newItem);
                     _context.Entry(existingItem).State = EntityState.Modified;
+                    depitems.Add(existingItem);
                 } else {    //insert new record
                     var itemToInsert = new DepItem
                     {
@@ -450,25 +430,28 @@ namespace api.Data.Repositories.Deployment
                     };
 
                     existing.DepItems.Add(itemToInsert);
-
+                    depitems.Add(itemToInsert);
                     _context.Entry(itemToInsert).State = EntityState.Added;
                 }
 
                 _context.Entry(existing).State = EntityState.Modified;
             }
-            
-            await UpdateDepStatus(model.Id, false);
 
             try 
             {
                 await _context.SaveChangesAsync();
+                var depPendingDtos = await _context.GetDepPendingBriefDtoFromDepId(model.Id);
+                dto.DeploymentPendingBriefDtos = new List<DeploymentPendingBriefDto> {depPendingDtos};
+                
             } catch (DbException ex) {
-                strErr = "Database Error: " + ex.Message;
+                dto.ErrorString=ex.Message;
             } catch (Exception ex) {
-                strErr = ex.Message;
+                dto.ErrorString=ex.Message;
             }
-
-            return strErr;
+            
+            await UpdateDepStatus(model.Id, false);
+            
+            return dto;
         }
 
         public async Task<Dep> GetDeploymentByCVRefId(int cvrefid)
@@ -521,8 +504,8 @@ namespace api.Data.Repositories.Deployment
 
         public async Task<PagedList<DeploymentPendingDto>> GetDeployments(DeployParams depParams)
         {
-            
-            var query = (from dep in _context.Deps where dep.CurrentStatus != "Concluded"
+            var query = (from dep in _context.Deps 
+                join depitem in _context.DepItems on dep.Id equals depitem.DepId orderby depitem.Sequence descending
                 join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id
@@ -531,9 +514,12 @@ namespace api.Data.Repositories.Deployment
                 select new DeploymentPendingDto {
                     DepId = dep.Id,
                     ApplicationNo = cv.ApplicationNo,
+                    TransactionDate = depitem.TransactionDate,
                     CandidateName = cv.FirstName + " " + cv.FamilyName,
                     CategoryName = item.Profession.ProfessionName,
                     CustomerName = order.Customer.KnownAs,
+                    Ecnr = cv.Ecnr == "true",
+                    CustomerId = order.CustomerId,
                     CvRefId = cvref.Id,
                     SelectedOn = cvref.SelectionStatusDate,
                     ReferredOn = cvref.ReferredOn,
@@ -566,12 +552,17 @@ namespace api.Data.Repositories.Deployment
                 query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
             }
 
-            if(!string.IsNullOrEmpty(depParams.Status)) query = query.Where(x => x.CurrentStatus.ToLower() == "concluded");
+            var st = depParams.Status ?? "Concluded";
+
+            query = query.Where(x => x.CurrentStatus.ToLower() == st.ToLower());
 
             var paged = await PagedList<DeploymentPendingDto>.CreateAsync(query.AsNoTracking()
-                //.ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
                 , depParams.PageNumber, depParams.PageSize);
-        
+
+            var depids = paged.Select(x => x.DepId).ToList();
+            var depitems = await _context.DepItems.Where(x => depids.Contains(x.DepId)).ToListAsync();
+
             return paged;
         }
 
@@ -595,118 +586,6 @@ namespace api.Data.Repositories.Deployment
             var obj = await _context.Deps.Include(x => x.DepItems.OrderByDescending(m => m.TransactionDate))
                 .Where(x => x.Id == depid)
                 .FirstOrDefaultAsync();
-
-            return obj;
-        }
-
-        public async Task<ICollection<FlightDetail>> GetFlightData()
-        {
-            var obj = await _context.FlightDetails
-                .OrderBy(x => x.AirportOfBoarding)
-                .ThenBy(x => x.AirportOfDestination)
-                .ThenBy(x => x.ETD_Boarding)
-                .ToListAsync();
-            
-            return obj;
-        }
-
-        public async Task<DepPendingDtoWithErr> InsertDepItemsWithFlights(ICollection<DepItemWithFlightDto> depItemsWithFlight, string username)
-        {
-            var dtoToReturn = new DepPendingDtoWithErr();
-
-            var depItemToAddDto = new List<DepItemToAddDto>();
-            var candFlights = new List<CandidateFlight>();
-
-            foreach(var depitem in depItemsWithFlight) {
-                var item = depitem.DepItem;
-                depItemToAddDto.Add(new DepItemToAddDto{DepId = item.DepId, Sequence = item.Sequence, TransactionDate=item.TransactionDate });
-            }
-
-            var dto = await AddDeploymentItems(depItemToAddDto, username);
-            if(dto == null) {
-                dtoToReturn.ErrorString = "Failed to insert deployment items";
-                return dtoToReturn;
-            }
-
-            var depidAndItemIds = dto.DepItemIdsInserted;
-
-            //after DepItems are writen toDB, retrieve candidateflight details
-            if(!string.IsNullOrEmpty(dto.ErrorString)) return dto;
-            
-            var flight = depItemsWithFlight.Select(x => x.candidateFlight).FirstOrDefault();
-            //var recordCount = await GenerateCandidateFlightHeadersFromDepItemId(depItemsWithFlight, dto.DepItemIdsInserted, flight);
-            
-            var depids = depidAndItemIds.Select(x => x.DepId).ToList();
-
-            var cands = await (from dep in _context.Deps where depids.Contains(dep.Id)
-                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
-                join cand in _context.Candidates on cvref.CandidateId equals cand.Id
-                select new CandidateFlight {
-                    DepId = dep.Id, CvRefId=dep.CvRefId, ApplicationNo=cand.ApplicationNo,
-                    CandidateName = cand.FullName, CustomerCity=dep.CityOfWorking, 
-                    CustomerName = dep.CustomerName
-                }).ToListAsync();
-
-            if(cands.Count == 0) return null;
-
-            foreach(var flt in depItemsWithFlight) {
-                var candidate = cands.Where(x => x.DepId == flt.DepItem.DepId).FirstOrDefault();
-                if(candidate != null) {
-                    flt.candidateFlight.ApplicationNo = candidate.ApplicationNo;
-                    flt.candidateFlight.CandidateName=candidate.CandidateName;
-                    flt.candidateFlight.CustomerCity = candidate.CustomerCity;
-                    flt.candidateFlight.CustomerName = candidate.CustomerName;
-                    flt.candidateFlight.CvRefId = candidate.CvRefId;
-                    flt.candidateFlight.DepItemId = depidAndItemIds
-                        .Where(x => x.DepId == flt.DepItem.DepId).Select(x => x.DepItemId).FirstOrDefault();
-                }
-                
-                _context.CandidateFlights.Add(flt.candidateFlight);
-            }
-
-            var ct = await _context.SaveChangesAsync();
-            return dto;
-        }
-
-        public async Task<string> DeleteCandidateFlight(int candidateFlightId)
-        {
-            var obj = await _context.CandidateFlights.FindAsync(candidateFlightId);
-            if (obj == null) return "The object to delete does not exist";
-
-            _context.Entry(obj).State = EntityState.Deleted;
-
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to delete";
-        }
-
-        public async Task<string> EditCandidateFlight(CandidateFlight model )
-        {
-            var strErr="";
-
-            var existing = await _context.CandidateFlights
-                .AsNoTracking().FirstOrDefaultAsync();
-            
-            if(existing==null) return "The Object to delete does not exist";
-
-            _context.Entry(existing).CurrentValues.SetValues(model);
-
-            _context.Entry(existing).State=EntityState.Modified;
-            
-             try 
-            {
-                await _context.SaveChangesAsync();
-            } catch (DbException ex) {
-                strErr = "Database Error: " + ex.Message;
-            } catch (Exception ex) {
-                strErr = ex.Message;
-            }
-
-            return strErr;
-            
-        }
-
-        public async Task<CandidateFlight> GetCandidateFlightFromCVRefId(int cvRefId)
-        {
-            var obj = await _context.CandidateFlights.Where(x => x.CvRefId == cvRefId).FirstOrDefaultAsync();
 
             return obj;
         }

@@ -23,12 +23,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-30T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 2,
@@ -37,12 +37,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 3,
@@ -51,12 +51,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-28T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           }
       ]
     },
@@ -83,12 +83,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-19T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 2,
@@ -97,12 +97,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 3,
@@ -111,12 +111,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-06-17T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 4,
@@ -125,12 +125,12 @@
               "Quantity": 1,
               "MinCVs": 4,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-20T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -157,12 +157,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-06-21T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 2,
@@ -171,12 +171,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 3,
@@ -185,12 +185,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-19T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -217,12 +217,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-19T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 2,
@@ -231,12 +231,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 3,
@@ -245,12 +245,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-17T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 4,
@@ -259,12 +259,12 @@
               "Quantity": 3,
               "MinCVs": 12,
               "MaxCVs": 9,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-07-05T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -291,12 +291,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-20T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 2,
@@ -305,12 +305,12 @@
               "Quantity": 4,
               "MinCVs": 12,
               "MaxCVs": 12,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 3,
@@ -319,12 +319,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-18T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -351,12 +351,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-06-21T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 1,
@@ -365,12 +365,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 2,
@@ -379,12 +379,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-19T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -411,12 +411,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-07-05T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 2,
@@ -425,12 +425,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 3,
@@ -439,12 +439,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-07-03T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -471,12 +471,12 @@
               "Quantity": 4,
               "MinCVs": 12,
               "MaxCVs": 12,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-06-14T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 2,
@@ -485,12 +485,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 3,
@@ -499,12 +499,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-12T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -531,12 +531,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "0",
+              "Ecnr": false,
               "CompleteBefore": "2023-06-15T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 2,
@@ -545,12 +545,12 @@
               "Quantity": 3,
               "MinCVs": 9,
               "MaxCVs": 9,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           },
           {
               "SrNo": 3,
@@ -559,12 +559,12 @@
               "Quantity": 2,
               "MinCVs": 6,
               "MaxCVs": 6,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-06-13T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": true
           }
       ]
     },
@@ -591,12 +591,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-05-19T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 2,
@@ -605,12 +605,12 @@
               "Quantity": 5,
               "MinCVs": 15,
               "MaxCVs": 15,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "0001-01-01T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           },
           {
               "SrNo": 3,
@@ -619,12 +619,12 @@
               "Quantity": 1,
               "MinCVs": 3,
               "MaxCVs": 3,
-              "Ecnr": "1",
+              "Ecnr": true,
               "CompleteBefore": "2023-05-17T00:00:00",
               "Status": "Not Started",
-              "Checked": "0",
+              "Checked": false,
               "ReviewItemStatus": "NotReviewed",
-              "RequireAssessment": "0"
+              "RequireAssessment": false
           }
       ]
       },
@@ -651,12 +651,12 @@
                   "Quantity": 1,
                   "MinCVs": 3,
                   "MaxCVs": 3,
-                  "Ecnr": "1",
+                  "Ecnr": true,
                   "CompleteBefore": "2023-05-19T00:00:00",
                   "Status": "Not Started",
-                  "Checked": "0",
+                  "Checked": false,
                   "ReviewItemStatus": "NotReviewed",
-                  "RequireAssessment": "0"
+                  "RequireAssessment": false
               },
               {
                   "SrNo": 2,
@@ -665,12 +665,12 @@
                   "Quantity": 5,
                   "MinCVs": 15,
                   "MaxCVs": 15,
-                  "Ecnr": "1",
+                  "Ecnr": true,
                   "CompleteBefore": "0001-01-01T00:00:00",
                   "Status": "Not Started",
-                  "Checked": "0",
+                  "Checked": false,
                   "ReviewItemStatus": "NotReviewed",
-                  "RequireAssessment": "0"
+                  "RequireAssessment": false
               },
               {
                   "SrNo": 3,
@@ -679,12 +679,12 @@
                   "Quantity": 1,
                   "MinCVs": 3,
                   "MaxCVs": 3,
-                  "Ecnr": "1",
+                  "Ecnr": true,
                   "CompleteBefore": "2023-05-17T00:00:00",
                   "Status": "Not Started",
-                  "Checked": "0",
+                  "Checked": false,
                   "ReviewItemStatus": "NotReviewed",
-                  "RequireAssessment": "0"
+                  "RequireAssessment": false
               }
           ]	
       },
@@ -712,12 +712,12 @@
                   "Quantity": 3,
                   "MinCVs": 9,
                   "MaxCVs": 9,
-                  "Ecnr": "0",
+                  "Ecnr": false,
                   "CompleteBefore": "0001-01-01T00:00:00",
                   "Status": "Not Started",
-                  "Checked": "0",
+                  "Checked": false,
                   "ReviewItemStatus": "NotReviewed",
-                  "RequireAssessment": "0"
+                  "RequireAssessment": false
               }
           ]
           

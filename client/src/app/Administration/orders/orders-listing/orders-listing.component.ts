@@ -92,12 +92,12 @@ export class OrdersListingComponent implements OnInit {
           this.orders = response.result;
           this.pagination = response.pagination;
           this.totalCount = response.count;
+          
         }
       },
       error: error => console.log(this.orders)
     });
 
-    console.log('orders:', this.orders);
   }
 
 
@@ -188,6 +188,7 @@ export class OrdersListingComponent implements OnInit {
       filter((response: IOfficialAndCustomerNameDto[]) => response.length > 0),
       switchMap((response: IOfficialAndCustomerNameDto[]) => {
         var orderid = event;
+        console.log('event from SelectAssociatesModal', event);
         return this.orderFwdService.forwardOrderToSelectedAgents(response, orderid)
       })
     /*).subscribe(

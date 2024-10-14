@@ -68,6 +68,7 @@ namespace api.Extensions
             services.AddScoped<IFinanceRepository, FinanceRepository>();
             services.AddScoped<ISelDecisionRepository, SelDecisionRepository>();
             services.AddScoped<IDeploymentRepository, DeploymentRepository>();
+            services.AddScoped<ICandidateFlightRepository, CandidateFlightRepository>();
             services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
             services.AddScoped<IOrderForwardRepository, OrderForwardRepository>();
             services.AddScoped<ICallRecordRepository, CallRecordRepository>();

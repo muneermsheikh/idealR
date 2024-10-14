@@ -1,17 +1,14 @@
 .stdd {
     display: inline-block;
     font-size: small;
-    margin-left: 3px;
-    margin-right: 3px;
-    color: white;
+    margin: 0 3px 0 3px;
 }
 
 .lbl {
     display: inline-block;
     font-size: small;
     font-weight: bold;
-    margin-left: 3px;
-    margin-right: 3px;
+    margin: 0 3px 0 3px;
 }
 
 .btn {color: aliceblue; margin: 2px;}
@@ -26,3 +23,5 @@
 .b {font-weight: bold;}
 .blue{color: blue;}
 .red {color: red;}
+
+.hAlignR {text-align: right;}

@@ -1,7 +1,7 @@
 [
   {
     "Gender": "f",  "FirstName": "Lisa",  "FamilyName": "Anderson", "KnownAs": "Lisa", "Username": "lisaanderson",
-    "Source": "walk-in", "DOB": "1982-09-07T00:00:00", "PpNo": "J324555", "Ecnr": false, "City": "Greenbush",
+    "Source": "walk-in", "DOB": "1982-09-07T00:00:00", "PpNo": "J324555", "Ecnr": "false", "City": "Greenbush",
     "Country": "Martinique", "Pin": "A998494", "Nationality": "Indian", "Email": "lisaanderson@rediffmail.com",
     "Status": "NotReferred"
   },
@@ -84,7 +84,7 @@
   { "Gender": "M", "FirstName": "Varun", "FamilyName": "Alapati","KnownAs": "Varun Alapati","Username": "VarunA",
     "Source": "Database", "Ecnr": "true", "City": "Bengaluru", "Email": "mail2krishna51@gmail.com", "Status": "NotReferred" },
   { "Gender": "M",  "FirstName": "Manthanr", "FamilyName": "sharavanan", "KnownAs": "Manthanr", "Username": "Manthanr",
-    "Source": "walk-in", "Ecnr": null, "City": "Ahmedabad", "Email": "manthan1_parikh@yahoo.co.in", "Status": "NotReferred"},
+    "Source": "walk-in", "Ecnr": "false", "City": "Ahmedabad", "Email": "manthan1_parikh@yahoo.co.in", "Status": "NotReferred"},
   { "Gender": "M", "FirstName": "Satish Kumar", "FamilyName": "Sarvapalli", "KnownAs": "SatishKumar", "Username": "Satishkumar",
     "Source": "TimesJobs", "Ecnr": "true", "City": "Pathankot", "Email": "satishur007@gmail.com" }
 ]

@@ -1,4 +1,4 @@
-<h6 class="stdd">Edit Customer</h6>
+<h6 class="stdd">Edit Employee</h6>
 <button class="btn btn-success fa fa-save" [disabled]="!form.valid && form.dirty" (click)="update()" style="margin-left: 200px;"  ></button>
 <button class="btn fa fa-window-close fa-2x" routerLink="/masters/employees"></button>
 
@@ -11,14 +11,21 @@
         <label class="lbl w100 hAlignR">Family Name:</label> 
         <app-text-input [label]="'Family Name'" formControlName="familyName" class="stdd w150"></app-text-input>
     
-        <label class="lbl w80 hAlignR">Known As:</label> 
+        <br><label class="lbl w100 fSmall">Known As:</label> 
         <app-text-input [label]="'Known As'" formControlName="knownAs" class="stdd w150"></app-text-input>
-        
-        <br><label class="lbl w100">Address:</label> 
+        <label class="lbl w100 hAlignR">Joined On:</label> 
+        <input class="stdd w100" type="text" placeholder="Joined On" formControlName="dateOfJoining"
+            bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <label class="lbl w100 hAlignR">Department:</label> 
+        <app-text-input [label]="'Dept'" formControlName="department" class="stdd w100"></app-text-input>
+        <label class="lbl w100 hAlignR">Position:</label> 
+        <app-text-input [label]="'Position'" formControlName="position" class="stdd w200"></app-text-input>
+
+        <br> <label class="lbl w100">Address:</label> 
         <app-text-input [label]="'Address'" formControlName="address" class="stdd w250" ></app-text-input>
         <app-text-input [label]="'Address2'" formControlName="address2" class="stdd w250 ml-5" ></app-text-input>
 
-        <label class="lbl w100 hAlignR">City:</label> 
+        <label class="lbl w50 hAlignR">City:</label> 
         <app-text-input [label]="'City'" formControlName="city" class="stdd w100 fSmall"></app-text-input>
         
         <br><label class="lbl w100 fSmall">email:</label> 
@@ -32,107 +39,122 @@
         <label class="lbl w100 hAlignR">Aadhar No:</label> 
         <app-text-input [label]="'Aadhar No'" formControlName="aadharNo" class="stdd w125" ></app-text-input>
         
-        <br><label style="display: inline-block; vertical-align: top; width: 100px">Introduction:</label> 
-        <textarea name="intro" id="intro" rows="2" cols="70" style="display: inline-block; margin-left: 10px;" formControlName="introduction"></textarea>
-        <label class="lbl w100 hAlignR">Qualification:</label> 
-        <app-text-input [label]="'Address'" formControlName="qualification" class="stdd w150" ></app-text-input>
-        <label class="lbl w100">Status:</label> 
-        <app-text-input [label]="'Status'" formControlName="status" class="stdd w100" ></app-text-input>
-        
-        <br><div class="b my-2" style="margin-left: 10px;">HR Skills</div>            
-        <hr class="my-1">
-        <label class="fSmaller w300" style="margin-left: 50px;">Profession</label>
-        <!-- <label class="fSmaller w200">Industry</label> -->
-        <label class="fSmaller w100">Skill Level</label>
-        <button class="btn fa fa-plus" (click)="addHRSkill()" ></button>
-        
-        <hr class="my-0" style="border-style: double;">
-        
-        <div formArrayName="hrSkills" style="margin-left: 50px;">
-            <div *ngFor="let sk of hrSkills.controls; let i=index">
-                <div [formGroupName]="i">
-                    <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 300px;" 
-                        [items]="professions" 
-                        [searchable]=true 
-                        bindLabel = "professionName"
-                        bindValue = "id"
-                        formControlName="professionId"
-                        (change)="professionChanged($event,i)"
-                        >
-                    </ng-select>
-                    <!-- <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 300px;" 
-                        [items]="industries" 
-                        [searchable]=true 
-                        bindLabel = "industryName"
-                        bindValue = "id"
-                        formControlName="industryId"
-                        >
-                        </ng-select>
-                    -->
-                    <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 150px;" 
-                        [items]="skillLevels" 
-                        [searchable]=true 
-                        bindLabel = "skillLevel"
-                        bindValue = "skillLevel"
-                        formControlName="skillLevelName"
-                        >
-                    </ng-select>    
-                
-                    <button class="btn fa fa-trash red" (click)="removeHRSkill(i)" ></button>
+        <div class="col-5" style="display: inline-block; vertical-align: top; border: blanchedalmond;" >
+            <label style="display: inline-block; vertical-align: top; width: 100px">Introduction:</label> 
+            <textarea name="intro" id="intro" rows="2" cols="60" style="display: inline-block; margin-left: 10px;" formControlName="introduction"></textarea>
+        </div>
+        <div class="col-5" style="display: inline-block; vertical-align: top;">
+            <label class="lbl w100">Qualification:</label> 
+            <app-text-input [label]="'Address'" formControlName="qualification" class="stdd w150" ></app-text-input>
+            <label class="lbl w50">Status:</label> 
+            <app-text-input [label]="'Status'" formControlName="status" class="stdd w100" ></app-text-input>
+            <br><label class="lbl w100">App User Id</label> 
+            <div class="stdd w50" >{{employee?.appUserId}}</div> 
+            <label class="lbl w75">Username</label> 
+            <div class="stdd w150" >{{employee?.userName}}</div> 
+            <button class="btn fa fa-user stdd" (click)="generateAppUser()" title="click to generate new App User"
+                [disabled]="employee?.appUserId !== 0 || employee?.id ===0"></button>
+        </div>
+        <br>
+        <div class="col-xs-6" style="display: inline-block; vertical-align: top;">
+            <div class="main-container mt-2">
+                <div class="container my-0">
+                    <div class="b my-0" >HR Skills</div>            
+                    <br><label class="fSmaller w300" style="margin-left: 50px;">Profession</label>
+                    <label class="fSmaller w100">Skill Level</label>
+                    <button class="btn fa fa-plus" (click)="addHRSkill()" ></button>
+                    
+                    <div formArrayName="hrSkills" style="margin-left: 50px;">
+                        <div *ngFor="let sk of hrSkills.controls; let i=index">
+                            <div [formGroupName]="i">
+                                <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 300px;" 
+                                    [items]="professions" 
+                                    [searchable]=true 
+                                    bindLabel = "professionName"
+                                    bindValue = "id"
+                                    formControlName="professionId"
+                                    (change)="professionChanged($event,i)"
+                                    >
+                                </ng-select>
+                                <!-- <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 300px;" 
+                                    [items]="industries" 
+                                    [searchable]=true 
+                                    bindLabel = "industryName"
+                                    bindValue = "id"
+                                    formControlName="industryId"
+                                    >
+                                    </ng-select>
+                                -->
+                                <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 150px;" 
+                                    [items]="skillLevels" 
+                                    [searchable]=true 
+                                    bindLabel = "skillLevel"
+                                    bindValue = "skillLevel"
+                                    formControlName="skillLevelName"
+                                    >
+                                </ng-select>    
+                            
+                                <button class="btn fa fa-trash red" (click)="removeHRSkill(i)" ></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <br><div class="b my-2" style="margin-left: 10px;">Other Skills</div>            
-        <hr class="my-1">
-        <label class="fSmaller w300" style="margin-left: 50px;">Skill</label>
-        <!-- <label class="fSmaller w200">Industry</label> -->
-        <label class="fSmaller w100">Skill Level</label>
-        <button class="btn fa fa-plus" (click)="addEmployeeOtherSkill()" ></button>
-   
-        <div formArrayName="employeeOtherSkills" style="margin-left: 50px;">
-            <div *ngFor="let sk of employeeOtherSkills.controls; let j=index">
-                <div [formGroupName]="j">
-                    <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 300px;" 
-                        [items]="professions" 
-                        [searchable]=true 
-                        bindLabel = "professionName"
-                        bindValue = "id"
-                        formControlName="professionId"
-                        (change)="professionChanged($event, j)"
-                        >
-                    </ng-select>
-                    <!-- <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 300px;" 
-                        [items]="industries" 
-                        [searchable]=true 
-                        bindLabel = "industryName"
-                        bindValue = "id"
-                        formControlName="industryId"
-                        >
-                        </ng-select>
-                    -->
-                    <ng-select   
-                        style="display: inline-block; font-size: smaller;width: 100px;" 
-                        [items]="skillLevels" 
-                        [searchable]=true 
-                        bindLabel = "skillLevel"
-                        bindValue = "skillLevel"
-                        formControlName="skillLevelName"
-                        >
-                    </ng-select>    
-                
-                    <button class="btn fa fa-trash red" (click)="removeHRSkill(j)" ></button>
+        <div class="col-xs-6" style="display: inline-block; vertical-align: top;">
+            <div class="main-container mt-2">
+                <div class="container my-0">
+                    <div class="b my-0" >Other Skills</div>            
+                    <br><label class="fSmaller w300" style="margin-left: 50px;">Skill</label>
+                    <label class="fSmaller w100">Skill Level</label>
+                    <button class="btn fa fa-plus" (click)="addEmployeeOtherSkill()" ></button>
+            
+                    <div formArrayName="employeeOtherSkills" style="margin-left: 50px;">
+                        <div *ngFor="let sk of employeeOtherSkills.controls; let j=index">
+                            <div [formGroupName]="j">
+                                <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 300px;" 
+                                    [items]="skillDatas" 
+                                    [searchable]=true 
+                                    bindLabel = "skillName"
+                                    bindValue = "id"
+                                    formControlName="skillDataId"
+                                    (change)="professionChanged($event, j)"
+                                    >
+                                </ng-select>
+                                <!-- <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 300px;" 
+                                    [items]="industries" 
+                                    [searchable]=true 
+                                    bindLabel = "industryName"
+                                    bindValue = "id"
+                                    formControlName="industryId"
+                                    >
+                                    </ng-select>
+                                -->
+                                <ng-select   
+                                    style="display: inline-block; font-size: smaller;width: 150px;" 
+                                    [items]="skillLevels" 
+                                    [searchable]=true 
+                                    bindLabel = "skillLevel"
+                                    bindValue = "skillLevel"
+                                    formControlName="skillLevelName"
+                                    (change)="otherSkillChanged()"
+                                    >
+                                </ng-select>    
+                            
+                                <button class="btn fa fa-trash red" (click)="removeHRSkill(j)" ></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        
-     
     </form>
 <!-- </div> -->
-<div>{{form.value | json}}</div>
+<!-- <div>{{form.value | json}}</div> -->

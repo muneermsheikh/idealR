@@ -23,6 +23,7 @@ namespace api.DTOs.HR
 		
 		//public int CandidateAppUserId { get; set; }
 		public string HrExecEmail {get; set;}
+		public string CandidateUsername {get; set;}
 		public DateOnly TransactionDate { get; set; }
     }
 }

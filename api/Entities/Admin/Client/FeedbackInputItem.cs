@@ -16,7 +16,7 @@ namespace api.Entities.Admin.Client
         public string Prompt3 { get; set; }
         public string Prompt4 { get; set; }
 
-        [Required, MaxLength(15)]
+        [MaxLength(15)]
         public string Response { get; set; }
         public string Remarks { get; set; }
     }

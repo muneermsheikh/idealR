@@ -1,8 +1,8 @@
 export interface IMessage {
      id: number;
      messageGroup: string;
-     messageTypeId: number;
-     senderId: number;
+     messageType: string;
+     //senderId: number;
      senderEmailAddress: string;
      senderUserName: string;
      recipientUserName: string;
@@ -16,15 +16,15 @@ export interface IMessage {
      messageSentOn?: Date;
      senderDeleted: boolean;
      recipientDeleted: boolean;
-     recipientId: number;
+     //recipientId: number;
 
 }
 
 export class message {
      id: number=0;
      messageGroup: string='';
-     messageTypeId: number=0;
-     senderId: number=0;
+     messageType: string='';
+     //senderId: number=0;
      senderEmailAddress: string='';
      senderUserName: string='';
      recipientUserName: string='';
@@ -38,5 +38,5 @@ export class message {
      messageSentOn?: Date=new Date('1900-01-01');
      senderDeleted: boolean=false;
      recipientDeleted: boolean=false;
-     recipientId: number=0;
+     //recipientId: number=0;
 }

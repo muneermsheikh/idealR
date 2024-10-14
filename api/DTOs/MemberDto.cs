@@ -7,14 +7,17 @@ namespace api.DTOs
         public string UserName { get; set; }
         public string KnownAs { get; set; }
         public int  Age { get; set; }
-        public DateTime Created { get; set; }=DateTime.UtcNow;
-        public DateTime LastActive { get; set; }=DateTime.UtcNow;
+        public DateTime DateOfBirth { get; set; }
+        //public DateTime Created { get; set; }=DateTime.UtcNow;
+        // <summary>
+        //public DateTime LastActive { get; set; }=DateTime.UtcNow;
+        // </summary>
         public string City { get; set; }
         public string Country { get; set; }
-        public string Interests { get; set; }
-        public string LookingFor { get; set; }
-        public String Introduction { get; set; }
-        public string photoUrl { get; set; }
-        public List<PhotoDto> Photos { get; set; }
-        }
+        public string Position { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public ICollection<string> Roles { get; set; }
+        
+    }
 }

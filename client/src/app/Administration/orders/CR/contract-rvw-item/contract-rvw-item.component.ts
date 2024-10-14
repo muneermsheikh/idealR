@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { filter, switchMap } from 'rxjs';
+import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
 import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
+import { IContractReviewItemStddQ } from 'src/app/_models/admin/contractReviewItemStddQ';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { IContractReviewItemQ } from 'src/app/_models/orders/contractReviewItemQ';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
@@ -11,12 +14,14 @@ import { EmployeeService } from 'src/app/_services/admin/employee.service';
   templateUrl: './contract-rvw-item.component.html',
   styleUrls: ['./contract-rvw-item.component.css']
 })
-export class ContractRvwItemComponent {
+export class ContractRvwItemComponent implements OnInit {
 
-  @Input() item: IContractReviewItem | undefined;
-  @Output() itemSaveEvent = new EventEmitter<IContractReviewItem>();
+  @Input() item: IContractReviewItemDto | undefined;
+  @Output() itemSaveEvent = new EventEmitter<IContractReviewItemDto>();
 
+  stddQs: IContractReviewItemStddQ[]=[]
   toggle: boolean=false;
+  itemQsExist:boolean=false;
 
   empIdAndNames: IEmployeeIdAndKnownAs[]=[];
   
@@ -30,6 +35,9 @@ export class ContractRvwItemComponent {
     empService.getEmployeeIdAndKnownAs().subscribe({next: response => this.empIdAndNames=response});
   }
 
+  ngOnInit(): void {
+    this.itemQsExist = this.item!.contractReviewItemQs.length > 0
+  }
   responseChanged(q: IContractReviewItemQ) {
     q.response=true;
   }
@@ -42,7 +50,7 @@ export class ContractRvwItemComponent {
       var err='';
       if(this.item?.hrExecUsername === '') err = 'HR Executive not assigned';
       if(this.item?.contractReviewId === 0) err += '- Contract Review Id undefined';
-      if(this.item?.requireAssess === '') err += '- Require Assess not defined';
+      if(this.item?.requireAssess ) err += '- Require Assess not defined';
       if(this.item?.reviewItemStatus === '') err += '- Status not selected';
       
       this.item?.contractReviewItemQs.forEach(x =>{
@@ -61,16 +69,19 @@ export class ContractRvwItemComponent {
     }
 
     this.itemSaveEvent.emit(this.item);
+ }
 
-    /*
-    if(this.item !== undefined) {
-        this.service.updateContractReviewItem(this.item).subscribe({
-          next: response => {
-            this.toastr.success('Updated the contract review item')
-          }
-        }) 
-    }
-        */
+  addItemQs(orderitemid: number) {
+
+    this.service.InsertContractReviewItemFromOrderItemId(orderitemid).subscribe({
+      next: (response: IContractReviewItemDto) => {
+        if(response !== null) {
+          this.item = response;
+          this.itemQsExist=response.contractReviewItemQs.length > 0;
+        }
+      }
+    })
   }
+
 
 }

@@ -130,7 +130,7 @@ namespace api.Controllers
 
             if(!string.IsNullOrEmpty(err)) return BadRequest(new ApiException(400, "Bad Request", err));
 
-            return Ok("updated");
+            return Ok("");
         }
 
         [HttpGet("prospectivetaskForResumeId/{resumeid}")]

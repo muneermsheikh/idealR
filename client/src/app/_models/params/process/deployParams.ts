@@ -15,5 +15,5 @@ export class deployParams
 	
 	search = '';
 	pageNumber = 1;
-	pageSize = 10;
+	pageSize = 15;
 }

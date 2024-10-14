@@ -3,17 +3,17 @@ using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.DTOs.Customer;
 using api.Entities.Admin.Order;
+using api.Entities.Identity;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.Admin;
+using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using api.Params.Orders;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace api.Data.Repositories.Orders
 {
@@ -24,9 +24,14 @@ namespace api.Data.Repositories.Orders
         private readonly IComposeMessagesHRRepository _msgRep;
         private readonly IMapper _mapper;
         private readonly ICustomerRepository _custRepo;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IComposeMessagesAdminRepository _msgAdminRepo;
         public OrderForwardRepository(DataContext context, ICustomerRepository custRepo, 
-            IConfiguration config, IComposeMessagesHRRepository msgRep, IMapper mapper)
+            UserManager<AppUser> userManager, IConfiguration config, IMapper mapper,
+            IComposeMessagesHRRepository msgRep, IComposeMessagesAdminRepository msgAdminRepo)
         {
+            _msgAdminRepo = msgAdminRepo;
+            _userManager = userManager;
             _custRepo = custRepo;
             _mapper = mapper;
             _msgRep = msgRep;
@@ -77,7 +82,8 @@ namespace api.Data.Repositories.Orders
 
             var fwdCats = await _context.OrderForwardCategories.Where(x => orderitems.Select(y => y.Id).ToList().Contains(x.OrderItemId)).ToListAsync();
             if(fwdCats.Count == 0) {
-                fwdCats = await (from item in _context.OrderItems where orderitems.Select(x=>x.Id).ToList().Contains(item.Id)
+
+                fwdCats = await _mapper.ProjectTo<OrderForwardCategory>(from item in _context.OrderItems where orderitems.Select(x=>x.Id).ToList().Contains(item.Id)
                     join order in _context.Orders on item.OrderId equals order.Id 
                     join cust in _context.Customers on order.CustomerId equals cust.Id
                     join cat in _context.Professions on item.ProfessionId equals cat.Id
@@ -96,6 +102,26 @@ namespace api.Data.Repositories.Orders
                         OrderForwardCategoryOfficials = officials
                 }).ToListAsync();
                 
+                /*fwdCats = await (from item in _context.OrderItems where orderitems.Select(x=>x.Id).ToList().Contains(item.Id)
+                    join order in _context.Orders on item.OrderId equals order.Id 
+                    join cust in _context.Customers on order.CustomerId equals cust.Id
+                    join cat in _context.Professions on item.ProfessionId equals cat.Id
+                    join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId into rvwitems 
+                        from rvwitem in rvwitems.DefaultIfEmpty()
+                    select new OrderForwardCategory {
+                        OrderId=orderid,
+                        OrderNo=order.OrderNo, 
+                        OrderDate = order.OrderDate,
+                        CustomerName=cust.CustomerName,
+                        CustomerCity = cust.City,
+                        OrderItemId = item.Id,
+                        ProfessionId = item.ProfessionId,
+                        ProfessionName = cat.ProfessionName,
+                        Charges = rvwitem.Charges,
+                        OrderForwardCategoryOfficials = officials
+                }).ToListAsync(); */
+                
+                //var postSummary = await mapper.ProjectTo<PostSummaryDto>(dbContext.Posts, null).ToListAsync();
                 foreach(var cat in fwdCats) {
                     _context.OrderForwardCategories.Add(cat); 
                 }
@@ -302,14 +328,21 @@ namespace api.Data.Repositories.Orders
             if(fwdToHR != null) return "Order forwarded to HR Dept on " + fwdToHR.DateOnlyForwarded;
             
             var recipientUsername = _config["HRSupUsername"];
+            //verify recipientUsername exists
+            var recipientAppUser = await _userManager.FindByNameAsync(recipientUsername);
+            if(recipientAppUser==null) return "Recipient Username undefined";
 
             var fwd = await _context.Orders.Where(x => x.Id == orderid)
                 .Select(x => new OrderForwardToHR {
-                    OrderId = x.Id, DateOnlyForwarded=DateTime.Now,RecipientUsername = recipientUsername})
+                    OrderId = x.Id, DateOnlyForwarded=DateTime.UtcNow,RecipientUsername = recipientUsername})
                 .FirstOrDefaultAsync();
             if(fwd == null) return "Order Id submitted is invalid";
 
             _context.Entry(fwd).State = EntityState.Added;
+
+            var o = await _context.Orders.FindAsync(orderid);
+            o.ForwardedToHRDeptOn = DateTime.UtcNow;
+            _context.Entry(o).State = EntityState.Modified;
 
             //ICollection<OrderItemBriefDto> OrderItems, int senderAppUserId, int recipientAppUserId
             var dataToComposeMsg = await (from order in _context.Orders where order.Id == orderid
@@ -322,7 +355,7 @@ namespace api.Data.Repositories.Orders
                     JobDescription = item.JobDescription, Remuneration=item.Remuneration,Status=item.Status
                 }).ToListAsync();
 
-            var msgs = await _msgRep.ComposeEmailMsgForDLForwardToHRHead(dataToComposeMsg, Username, recipientUsername);
+            var msgs = await _msgRep.ComposeEmailMsgForDLForwardToHRHead(dataToComposeMsg, Username, recipientAppUser);
             
             if(string.IsNullOrEmpty(msgs.ErrorString)) {
                 foreach(var msg in msgs.Messages) { _context.Messages.Add(msg);}
@@ -330,16 +363,110 @@ namespace api.Data.Repositories.Orders
                 return msgs.ErrorString;
             }
 
+
             try {
                 await _context.SaveChangesAsync();
+                await UpdateOrderExtn(orderid, "ForwardedToHR", DateTime.UtcNow.ToString());
+                return "";
             } catch (DbException ex) {
                 return ex.Message;
             } catch (Exception ex){
                 return ex.Message;
             }
 
-            return "";
+
+
         }
- }
+
+   
+        public async Task<MessageWithError> ComposeMsg_AckToClient(int orderid)
+        {
+            await UpdateOrderExtn(orderid, "acknowledgement", DateTime.UtcNow.ToString());
+
+            var order = await _context.Orders.FindAsync(orderid);
+            var msgs = await _msgAdminRepo.AckEnquiryToCustomerWithoutSave(order);
+            if(!string.IsNullOrEmpty(msgs.ErrorString) && msgs.Messages != null) {
+                foreach(var msg in msgs.Messages) {
+                    _context.Entry(msg).State = EntityState.Added;
+                }
+                await _context.SaveChangesAsync();
+            }
+            
+            return msgs;
+        }
+
+
+        //fieldName values: "contractreview", "acknowledgement", "forwardedtohr", "assessmentdesigned"
+        public async Task<bool> UpdateOrderExtn(int orderid, string fieldName, string fieldVal)
+        {
+            var newRec=false;
+
+            var extn = await _context.OrderExtns.Where(x => x.OrderId == orderid).FirstOrDefaultAsync();
+
+            if(extn == null) {
+                newRec=true;
+                extn = new OrderExtn{OrderId = orderid};
+            }
+            
+            switch (fieldName.ToLower()) {
+                case "contractreview":
+                    var crvw = await _context.ContractReviews.Where(x => x.OrderId==orderid).FirstOrDefaultAsync();
+                    if(crvw != null) {
+                        extn.ContractReviewedOn = crvw.ReviewedOn;
+                        extn.ContractReviewId = crvw.Id;
+                        extn.ContratReviewResult = crvw.ReviewStatus;
+                        _context.Entry(extn).State = newRec ? EntityState.Added : EntityState.Modified;
+                    }
+                    break;
+                case "acknowledgement":
+                    extn.AcknowledgedOn = Convert.ToDateTime(fieldVal);
+                    _context.Entry(extn).State = newRec ? EntityState.Added : EntityState.Modified;
+                    break;
+                case "forwardedtohr":
+                    extn.ForwardedToHROn = Convert.ToDateTime(fieldVal);
+                    _context.Entry(extn).State = newRec ? EntityState.Added : EntityState.Modified;
+                    break;
+                case "assessmentdesigned":
+                    extn.AssessmentDesignedOn = Convert.ToDateTime(fieldVal);
+                    _context.Entry(extn).State = newRec ? EntityState.Added : EntityState.Modified;
+                    break;
+                default:
+                    break;
+            }
+            
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateOrderExtnDueToDelete(int orderid, string fieldName)
+        {
+            var extn = await _context.OrderExtns.Where(x => x.OrderId == orderid).FirstOrDefaultAsync();
+
+            if (extn == null) return false;
+
+            switch (fieldName.ToLower()) {
+                case "contractreview":
+                    extn.ContractReviewedOn = null;
+                    extn.ContractReviewId = 0;
+                    extn.ContratReviewResult = "";
+                    break;
+                case "acknowledgement":
+                    extn.AcknowledgedOn = null;
+                    break;
+                case "forwardedtohr":
+                    extn.ForwardedToHROn = null;
+                    break;
+                case "assessmentdesigned":
+                    extn.AssessmentDesignedOn = null;
+                    break;
+                default:
+                    break;
+            }
+
+            _context.Entry(extn).State = EntityState.Modified;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+    }
 }
 

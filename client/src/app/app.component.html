@@ -39,9 +39,6 @@
         <button mat-icon-button matTooltip="Notifications">
             <mat-icon>notifications</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="My Account" [matMenuTriggerFor]="userAccountMenu">
-            <mat-icon>account_circle</mat-icon>
-        </button>
         <mat-menu #userAccountMenu [overlapTrigger]="false" yPosition="below">
             <button mat-menu-item routerLink="#" matTooltip="Settings">
                 <mat-icon>settings</mat-icon><span></span>
@@ -50,10 +47,10 @@
                 <mat-icon>help</mat-icon><span></span>
             </button>
             <div *ngIf="(accountService.currentUser$|async)" style="display: inline-block;">
-                <button mat-menu-item routerLink="#" matTooltip="My Account">
+                <button mat-menu-item (click)="editLoggedinMember()" matTooltip="My Account">
                     <mat-icon>person</mat-icon><span></span>
                 </button>
-                
+                 
                 <button mat-menu-item (click)="logout()" matTooltip="Logout">
                     <mat-icon>exit_to_app</mat-icon>
                 </button>
@@ -110,10 +107,6 @@
                             <a mat-list-item routerLink="/administration/ordersforwarded" matTooltip="Orders already forwarded to Associates" >
                                 <span class="sidenav">Orders Forwarded</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/selections" matTooltip="list of candidates selected" >
-                                <span class="sidenav">Selected candidates</span>
-                            </a>
-                            
                            
                         </mat-nav-list>
                     </mat-expansion-panel>
@@ -125,11 +118,8 @@
                             <a mat-list-item routerLink="/administration/customers" matTooltip="Customers, Vendors, Associates" >
                                 <span class="sidenav">Customers</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/feedback" matTooltip="Listing of feedbacks from Customers, Candidates or Vendors" >
+                            <a mat-list-item routerLink="/administration/feedbacklist" matTooltip="Listing of feedbacks from Customers, Candidates or Vendors" >
                                 <span class="sidenav">Feedbacks</span>
-                            </a>
-                            <a mat-list-item routerLink="/tasks" matTooltip="Tasks" >
-                               <span class="sidenav">Tasks</span>
                             </a>
                             <a mat-list-item routerLink="/masters/employees" matTooltip="Employees" >
                                 <span class="sidenav">Employees</span>
@@ -146,14 +136,26 @@
                             <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
                                 <span class="sidenav" >Messages</span>
                             </a>
-                            <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
-                                <span class="sidenav">Authorities & Roles</span>
-                            </a>
-                     
+                       
                             <a mat-list-item (click)="exportExcelProspectives()" matTooltip="reads from PROSPECTIVE CANDIDATES Excel Sheet and copies the data to database" >
                                 <span class="sidenav">Excel Conversion</span>
                             </a>
 
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Selections</mat-expansion-panel-header>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/administration/pendingSelections"
+                                matTooltip="presents all pending selections to conclude"
+                            >
+                                <span>Selections Pending</span>
+                            </a>
+                            <a mat-list-item routerLink="/administration/selections" 
+                                matTooltip="selections as well as Rejections finalized">
+                                <span>Selections finalized</span>
+                            </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
 
@@ -165,6 +167,12 @@
                             >
                                 <!--<mat-icon>airplanemode_active</mat-icon> -->
                                 <span>Active Deployments</span>
+                            </a>
+                            <a mat-list-item routerLink="/deployment/candidateflights"
+                                matTooltip="presents candidate flights"
+                            >
+                                <!--<mat-icon>airplanemode_active</mat-icon> -->
+                                <span>Candidate Flights</span>
                             </a>
                             <a mat-list-item routerLink="/deployment/deployStatus" 
                                 matTooltip="deployment statuses">
@@ -189,6 +197,37 @@
                                 matTooltip="presents cash and bank transactions pending realization" >
                                 <span>confirm funds realization</span>
                             </a>
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+                    
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Members</mat-expansion-panel-header>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/members" matTooltip="List of members" >
+                                <span class="sidenav">Member List</span>
+                            </a>
+                     
+                            <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
+                                <span class="sidenav">Authorities & Roles</span>
+                            </a>
+                     
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+                    
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Tasks</mat-expansion-panel-header>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/tasks/loggedInUserTasks" 
+                                matTooltip="Tasks pending for logged-in user" >
+                                <span class="sidenav">Pending Tasks - {{user?.knownAs}}</span>
+                            </a>
+                     
+                            <a mat-list-item routerLink="/tasks/tasksforadmin" 
+                                matTooltip="all tasks pending - only for administrators" >
+                                <span class="sidenav">Pending Tasks of all users</span>
+                            </a>
+                            
+                    
                         </mat-nav-list>
                     </mat-expansion-panel>
                   </div>

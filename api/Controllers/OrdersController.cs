@@ -4,6 +4,7 @@ using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.Admin;
 using api.Interfaces.Orders;
 using api.Params.Orders;
 using Microsoft.AspNetCore.Authorization;
@@ -16,8 +17,12 @@ namespace api.Controllers
     {
         private readonly IOrdersRepository _repo;
         private readonly IJDAndRemunRepository _jdAndRemunRepo;
-        public OrdersController(IOrdersRepository repo, IJDAndRemunRepository jdAndRemunRepo)
+        private readonly IContractReviewRepository _rvwRepo;
+        private readonly IOrderForwardRepository _orderFwdRepo;
+        public OrdersController(IOrdersRepository repo, IJDAndRemunRepository jdAndRemunRepo, IOrderForwardRepository orderFwdRepo, IContractReviewRepository rvwRepo)
         {
+            _orderFwdRepo = orderFwdRepo;
+            _rvwRepo = rvwRepo;
             _jdAndRemunRepo = jdAndRemunRepo;
             _repo = repo;
         }
@@ -74,7 +79,7 @@ namespace api.Controllers
         [HttpGet("ackToClient/{orderid}")]
         public async Task<ActionResult<bool>> GenerateOrderAcknowledgement(int orderid)
         {
-            var MsgWithErr =  await _repo.ComposeMsg_AckToClient(orderid);
+            var MsgWithErr =  await _orderFwdRepo.ComposeMsg_AckToClient(orderid);
             
             if(!string.IsNullOrEmpty(MsgWithErr.ErrorString)) 
                 return BadRequest(new ApiException(402, "Failed to generate email", MsgWithErr.ErrorString));
@@ -268,6 +273,15 @@ namespace api.Controllers
             var deleted = await _jdAndRemunRepo.DeleteRemuneration(remunerationId);
             if(deleted)  return Ok(deleted);
             return BadRequest("Failed to delete the remuneration");
+        }
+
+        [HttpGet("insertreviewitem/{orderitemid}")]
+        public async Task<ActionResult<ContractReviewItem>> InsertReviewItem(int orderitemid)
+        {
+          var obj = await _rvwRepo.InsertContractRvwItemFromOrderItemAndContractRvwId(orderitemid);
+            if(obj == null) return BadRequest(new ApiException(400, "Failed to insert the contract review item", "Bad Request"));
+
+            return Ok(obj);
         }
 
     }

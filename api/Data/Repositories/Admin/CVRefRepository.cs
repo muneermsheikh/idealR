@@ -196,9 +196,11 @@ namespace api.Data.Repositories.Admin
             if(refParams.CandidateId != 0) query = query.Where(x => x.CandidateId == refParams.CandidateId);
             //if(!string.IsNullOrEmpty(refParams.RefStatus)) 
                 //query = query.Where(x => x.RefStatus.ToLower() == refParams.RefStatus.ToLower());
-            var selStatus = refParams.SelectionStatus;
+            var selStatus = refParams.SelectionStatus ?? "";
             if(!string.IsNullOrEmpty(selStatus))  {
-                if(selStatus== "Rejected") {
+                if(selStatus == "Pending") {
+                    query = query.Where(x => x.RefStatus.ToLower()=="referred");
+                } else if(selStatus== "Rejected") {
                     query = query.Where(x => x.SelectionStatus.ToLower().Contains("rejected"));
                 } else {
                     query = query.Where(x => x.SelectionStatus.ToLower() == refParams.SelectionStatus.ToLower());
@@ -236,7 +238,7 @@ namespace api.Data.Repositories.Admin
                     join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
                     join o in _context.Orders on item.OrderId equals o.Id
                     join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
-                    join dep in _context.Processes on cvref.Id equals dep.CVRefId
+                    join dep in _context.Deps on cvref.Id equals dep.CvRefId
            
                     select new CVRefWithDepDto{
                         CVRefId = cvref.Id,

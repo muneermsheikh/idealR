@@ -43,6 +43,10 @@ export class ContractReviewService {
     return this.http.get<IContractReviewItem[]>(this.apiUrl + 'contractreview/reviewitems/' + orderid);
   }
 
+  InsertContractReviewItemFromOrderItemId(orderitemid: number) {
+    return this.http.get<IContractReviewItemDto>(this.apiUrl + 'Orders/insertreviewitem/' + orderitemid);
+  }
+  
   updateContractReviewItem(model: IContractReviewItem) 
   {
     return this.http.put<IContractReviewItem>(this.apiUrl + 'ContractReview/reviewitem', model);

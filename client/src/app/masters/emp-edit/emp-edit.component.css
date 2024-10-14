@@ -1,22 +1,16 @@
 .lbl {
     display: inline-block;
-    margin-right: 2px;
-    margin-left: 2px;
+    margin: 0 2px 0 2px;
     font-size: small;
     font-weight: bold;
     vertical-align: middle;
-    margin-top: 0px;
-    margin-bottom: 0px;
     vertical-align: top;
 }
 
 .stdd {
     display: inline-block;
-    margin-right: 2px;
-    margin-left: 2px;
+    margin: 0 2px 0 2px;
     font-size: small;
-    margin-top: 0px;
-    margin-bottom: 0px;
     vertical-align: top;
 }
 
@@ -28,11 +22,8 @@ btn {color: aliceblue !important; width: 25px;}
 
 .stdd1px {
     display: inline-block;
-    margin-right: 1px;
-    margin-left: 1px;
+    margin: 0 1px 0 1px;
     font-size: smaller;
-    margin-top: 0px;
-    margin-bottom: 0px;
 }
 
 .w25 {width: 25px;}
@@ -50,8 +41,6 @@ btn {color: aliceblue !important; width: 25px;}
 .w300 {width: 300px;}
 
 .fSmall {font-size: small;}
-.fSmaller {
-    font-size: smaller;
-}
+.fSmaller {font-size: smaller;}
 
-
+.btn {color:aliceblue}

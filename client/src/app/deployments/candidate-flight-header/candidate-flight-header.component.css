@@ -1,0 +1,24 @@
+.lbl {
+    display: inline-block;
+    font-size: small;
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.stdd {
+    display: inline-block;
+    font-size: small;
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+.w25 {width: 25px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w120 {width: 120px;}
+.w150 {width: 150px;}
+
+.mL25 {margin-left: 25px;}

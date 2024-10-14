@@ -177,7 +177,5 @@ export class DepAttachmentModalComponent {
       this.toastr.warning('No file upload data available', 'Bad Request');
       return;
     }
-
-
   }
 }

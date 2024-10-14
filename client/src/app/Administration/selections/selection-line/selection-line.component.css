@@ -10,7 +10,7 @@
     vertical-align: top;
 }
 
-.cursorPointer{cursor:pointer; color: darkblue;}
+.cursorPointer{cursor:pointer; font-weight: bolder;}
 
 .green {color: darkgreen}
 .red {color: red}
@@ -22,3 +22,6 @@
 .w200 {width: 200px;}
 
 .mL80 {margin-left: 80px !important;}
+
+.matContrast{color:aliceblue;}
+

@@ -1,5 +1,10 @@
 
 <div *ngIf="jd !== null && jd !== undefined" class="mx-2 my-1">
+
+     <div class="modal-footer">
+          <button type="button" class="btn btn-success fa fa-save" (click)="confirm()"></button>
+          <button type="button" class="btn btn-secondary btn-danger fa fa-close" (click)="decline()"></button>
+     </div>
     <div class="mx-2">
          <div>
               <strong>Customer: </strong> {{jd.customerName}}
@@ -46,9 +51,6 @@
               </form>
     
     </div>
-    <div class="modal-footer">
-         <button type="button" class="btn btn-success fa fa-save" (click)="confirm()"></button>
-         <button type="button" class="btn btn-secondary btn-danger fa fa-close" (click)="decline()"></button>
-    </div>
+   
     
 </div>

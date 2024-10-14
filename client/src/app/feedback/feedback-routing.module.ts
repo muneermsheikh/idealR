@@ -6,6 +6,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackMenuComponent } from './feedback-menu/feedback-menu.component';
 import { FeedbackStddQsComponent } from './feedback-stdd-qs/feedback-stdd-qs.component';
 import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
+import { FeedbackHistoryResolver } from '../_resolvers/admin/feedbackHistoryResolver';
 
 
 const routes = [
@@ -13,7 +14,8 @@ const routes = [
   {path: 'list', component: FeedbackListComponent},
   {path: 'edit/:id/:customerId', component: FeedbackComponent,
       resolve: {
-        fdbackInput: FeedbackInputResolver 
+        feedback: FeedbackInputResolver,
+        history: FeedbackHistoryResolver
       }
   },
   {path: 'stddQs', component: FeedbackStddQsComponent}

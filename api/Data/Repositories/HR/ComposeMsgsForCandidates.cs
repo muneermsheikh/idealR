@@ -47,8 +47,8 @@ namespace api.Data.Repositories.HR
                 var message = new Message
                 {
                     SenderUsername=candDetail.SenderObj.UserName,
-                    RecipientAppUserId=candDetail.RecipientObj.Id,
-                    SenderAppUserId=candDetail.SenderObj.Id,
+                    //RecipientAppUserId=candDetail.RecipientObj.Id,
+                    //SenderAppUserId=candDetail.SenderObj.Id,
                     SenderEmail=candDetail.SenderObj.Email ?? "",
                     RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                     RecipientEmail = candDetail.RecipientObj.Email ?? "",
@@ -87,8 +87,8 @@ namespace api.Data.Repositories.HR
                 var message = new Message
                 {
                     SenderUsername=candDetail.SenderObj.UserName,
-                    RecipientAppUserId=candDetail.RecipientObj.Id,
-                    SenderAppUserId=candDetail.SenderObj.Id,
+                    //RecipientAppUserId=candDetail.RecipientObj.Id,
+                    //SenderAppUserId=candDetail.SenderObj.Id,
                     SenderEmail=candDetail.SenderObj.Email ?? "",
                     RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                     RecipientEmail = candDetail.RecipientObj.Email ?? "",
@@ -131,8 +131,8 @@ namespace api.Data.Repositories.HR
                 var message = new Message
                 {
                     SenderUsername=candDetail.SenderObj.UserName,
-                    RecipientAppUserId=candDetail.RecipientObj.Id,
-                    SenderAppUserId=candDetail.SenderObj.Id,
+                    //RecipientAppUserId=candDetail.RecipientObj.Id,
+                    //SenderAppUserId=candDetail.SenderObj.Id,
                     SenderEmail=candDetail.SenderObj.Email ?? "",
                     RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                     RecipientEmail = candDetail.RecipientObj.Email ?? "",
@@ -178,8 +178,8 @@ namespace api.Data.Repositories.HR
             var message = new Message
             {
                 SenderUsername=candDetail.SenderObj.UserName,
-                RecipientAppUserId=candDetail.RecipientObj.Id,
-                SenderAppUserId=candDetail.SenderObj.Id,
+                //RecipientAppUserId=candDetail.RecipientObj.Id,
+                //SenderAppUserId=candDetail.SenderObj.Id,
                 SenderEmail=candDetail.SenderObj.Email ?? "",
                 RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                 RecipientEmail = candDetail.RecipientObj.Email ?? "",
@@ -217,8 +217,8 @@ namespace api.Data.Repositories.HR
                 var message = new Message
                 {
                     SenderUsername=candDetail.SenderObj.UserName,
-                    RecipientAppUserId=candDetail.RecipientObj.Id,
-                    SenderAppUserId=candDetail.SenderObj.Id,
+                    //RecipientAppUserId=candDetail.RecipientObj.Id,
+                    //SenderAppUserId=candDetail.SenderObj.Id,
                     SenderEmail=candDetail.SenderObj.Email ?? "",
                     RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                     RecipientEmail = candDetail.RecipientObj.Email ?? "",
@@ -257,8 +257,8 @@ namespace api.Data.Repositories.HR
                 var message = new Message
                 {
                     SenderUsername=candDetail.SenderObj.UserName,
-                    RecipientAppUserId=candDetail.RecipientObj.Id,
-                    SenderAppUserId=candDetail.SenderObj.Id,
+                    //RecipientAppUserId=candDetail.RecipientObj.Id,
+                    //SenderAppUserId=candDetail.SenderObj.Id,
                     SenderEmail=candDetail.SenderObj.Email ?? "",
                     RecipientUsername = candDetail.RecipientObj.UserName ?? "",
                     RecipientEmail = candDetail.RecipientObj.Email ?? "",

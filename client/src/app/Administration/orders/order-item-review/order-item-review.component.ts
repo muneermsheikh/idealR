@@ -4,10 +4,14 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
 import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
+import { IContractReviewItemStddQ } from 'src/app/_models/admin/contractReviewItemStddQ';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
+import { IContractReviewItemQ } from 'src/app/_models/orders/contractReviewItemQ';
 import { User } from 'src/app/_models/user';
 import { ContractReviewService } from 'src/app/_services/admin/contract-review.service';
 import { EmployeeService } from 'src/app/_services/admin/employee.service';
+import { ConfirmService } from 'src/app/_services/confirm.service';
+
 
 @Component({
   selector: 'app-order-item-review',
@@ -28,10 +32,12 @@ export class OrderItemReviewComponent {
   empIdAndNames: IEmployeeIdAndKnownAs[]=[];
 
   skills: string[]=[];
+  stddQs: IContractReviewItemStddQ[]=[];
+  itemQsExist:boolean=false;
 
   constructor(public bsModalRef: BsModalRef, private empService: EmployeeService,
     private fb: FormBuilder, private router: Router, private activatedRoute: ActivatedRoute,
-    private service: ContractReviewService ) { 
+    private service: ContractReviewService, private confirm: ConfirmService ) { 
       let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
       if (nav?.extras && nav.extras.state) {
@@ -47,7 +53,6 @@ export class OrderItemReviewComponent {
     if(this.reviewItem) this.createAndInitializeForm(this.reviewItem);
 
   }
-
 
   createAndInitializeForm(rvw: IContractReviewItemDto) {
       this.form = this.fb.group({
@@ -74,12 +79,61 @@ export class OrderItemReviewComponent {
           ))
         )        
       })
-  }
 
+      var username = this.form.get('hrExecUsername')!.value;
+      console.log('username:', username, 'empIdAndNames', this.empIdAndNames);
+      if (username) {
+        var idandname = this.empIdAndNames.filter(x => x.username===username)[0];
+        console.log('idandname', idandname);
+        this.skills = idandname?.hrSkills?.map((x: any) => x.professionName);
+      }
+  }
 
   get contractReviewItemQs() : FormArray {
     return this.form.get("contractReviewItemQs") as FormArray
   }
+
+  addQ() {
+    this.contractReviewItemQs.push(this.newQ());
+  }
+
+  removeQ(index: number) {
+    this.contractReviewItemQs.removeAt(index);
+    this.contractReviewItemQs.markAsDirty();
+    this.contractReviewItemQs.markAsTouched();
+  }
+
+
+  confirmUpdate() {
+    this.service.updateContractReviewItem(this.form.value)
+      .subscribe(response => {
+        this.updateModalReview.emit(response);
+      })
+        
+    this.bsModalRef.hide();
+  }
+
+  decline() {
+    this.bsModalRef.hide();
+  }
+
+  employeeChanged(event: any) {
+    console.log('emplotyeecanged event:', event);
+    this.skills = event.hrSkills.map((x: any) => x.professionName);
+  }
+
+  /*InsertStddReviewQs() {
+
+    this.service.InsertContractReviewItemFromOrderItemId(this.reviewItem!.orderItemId).subscribe({
+      next: (response: IContractReviewItemDto) => {
+        if(response !== null) {
+          this.reviewItem = response;
+          this.itemQsExist=response.contractReviewItemQs.length > 0;
+        }
+      }
+    })
+
+  }*/
 
   newQ(): FormGroup {
     var maxSrNo = this.contractReviewItemQs.length===0 ? 1 
@@ -95,32 +149,5 @@ export class OrderItemReviewComponent {
       })
   }
 
-  addQ() {
-    this.contractReviewItemQs.push(this.newQ());
-  }
-
-  removeQ(index: number) {
-    this.contractReviewItemQs.removeAt(index);
-    this.contractReviewItemQs.markAsDirty();
-    this.contractReviewItemQs.markAsTouched();
-  }
-
-
-  confirm() {
-    this.service.updateContractReviewItem(this.form.value)
-      .subscribe(response => {
-        this.updateModalReview.emit(response);
-      })
-        
-    this.bsModalRef.hide();
-  }
-
-  decline() {
-    this.bsModalRef.hide();
-  }
-
-  employeeChanged(event: any) {
-    this.skills = event.hrSkills.map((x: any) => x.professionName);
-  }
-
+  
 }

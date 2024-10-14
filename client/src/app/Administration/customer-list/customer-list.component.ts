@@ -78,7 +78,7 @@ export class CustomerListComponent implements OnInit{
 
     onPageChanged(event: any){
       const params = this.service.getParams();
-      if (params.pageNumber !== event) {
+      if (params.pageNumber !== event.page) {
         params.pageNumber = event.page;
         this.service.setParams(params);
 
@@ -150,7 +150,7 @@ export class CustomerListComponent implements OnInit{
  
       if(id === undefined)   return;
       
-      this.router.navigate( ['/administration/feedback/0/' + id ], 
+      this.router.navigate( ['/feedback/edit/0/' + id ], 
         { state: { user: this.user,  returnUrl: '/administration/customers' } }
       );
       

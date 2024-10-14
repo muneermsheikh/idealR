@@ -73,8 +73,12 @@ namespace api.Data.Repositories.HR
                 
                 if(existingItem != null)    //update existing item, by copying model item
                 {
-                    _context.Entry(existingItem).CurrentValues.SetValues(newItem);
-                    _context.Entry(existingItem).State = EntityState.Modified;
+                    //if(_context.Entry(existingItem).State==EntityState.Modified) _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                    if(newItem.Response!=existingItem.Response) {
+                        _context.Entry(existingItem).CurrentValues.SetValues(newItem);
+                        _context.Entry(existingItem).State=EntityState.Modified;
+                    }
+                    //_context.Entry(existingItem).State = EntityState.Modified;
                 } else {    //insert new navigation record
                     var itemToInsert = new FeedbackItem
                     {
@@ -95,8 +99,7 @@ namespace api.Data.Repositories.HR
             }
 
             _context.Entry(existing).State = EntityState.Modified;  
-            
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to update the Feedback object";
+            return await _context.SaveChangesAsync() > 0 ? existing.FeedbackNo.ToString() : "Failed to update the Feedback object";
 
         }
 
@@ -137,8 +140,8 @@ namespace api.Data.Repositories.HR
                 
                 fdbk = await (from cust in _context.Customers where cust.Id == CustomerId
                     join off in _context.CustomerOfficials on cust.Id equals off.CustomerId 
-                    where off.Status == "Active" && off.Divn=="HR"
-                    orderby off.PriorityHR
+                    where off.Status == "Active" //&& off.Divn=="HR"
+                    orderby off.Divn descending
                     select new CustomerFeedback{
                         CustomerId = CustomerId, CustomerName = cust.CustomerName, City=cust.City,
                         OfficialName=off.OfficialName, Designation = off.Designation,
@@ -240,13 +243,13 @@ namespace api.Data.Repositories.HR
         }
 
         private async Task<int> NewFeedbackNo() {
-            var newno = await _context.CustomerFeedbacks.MaxAsync(x => x.FeedbackNo);
+            var newno = await _context.CustomerFeedbacks.MaxAsync(x => x.FeedbackNo) +1;
             if(newno==0) newno=1001;
             return newno;
         }
-        public async Task<CustomerFeedback> SaveNewFeedback(FeedbackInput fInput)
+        public async Task<CustomerFeedback> SaveNewFeedback(CustomerFeedback fInput)
         {
-            var responses = fInput.FeedbackInputItems;
+            var responses = fInput.FeedbackItems;
 
             var items = new List<FeedbackItem>();
 
@@ -275,11 +278,11 @@ namespace api.Data.Repositories.HR
             return await _context.SaveChangesAsync() > 0 ? feedback : null;
         }
 
-        public async Task<string> SendFeedbackEmailToCustomer(int feedbackId, string Url, string username)
+        public async Task<string> SendFeedbackEmailToCustomer(int feedbackId, string username)
         {
             var strErr="";
 
-            var msgWithErr = await _msgRep.ComposeFeedbackMailToCustomer(feedbackId, Url, username);
+            var msgWithErr = await _msgRep.ComposeFeedbackMailToCustomer(feedbackId, username);
             
             if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) {
                 strErr = msgWithErr.ErrorString;

@@ -75,7 +75,7 @@ export class OrderForwardService {
   }
 
   forwarOrderToHR(orderid: number) {
-    return this.http.post<boolean>(this.apiUrl + 'OrderForward/updateOrderFwdToHR/' + orderid, {});
+    return this.http.post<string>(this.apiUrl + 'OrderForward/updateOrderFwdToHR/' + orderid, {});
   }
 
 

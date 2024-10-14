@@ -42,6 +42,7 @@ const routes: Routes = [
       {path: 'tasks', loadChildren: () => import('./tasks/task.module').then(mod => mod.TaskModule)},
       
       {path: 'finance', loadChildren:() => import('./finance/finance.module').then(mod => mod.FinanceModule) },
+      {path: 'members', loadChildren:() => import('./members/member.module').then(mod => mod.MemberModule)},
       
       {path: 'callRecords', loadChildren: () => import('./callRecords/call-record.module').then(mod => mod.CallRecordModule)},
 

@@ -6,6 +6,7 @@ using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Extensions;
 using api.Interfaces;
+using api.Interfaces.Admin;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,10 @@ namespace api.Data.Repositories
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly DateTime _todaydate;
-        public OrderAssessmentRepository(DataContext context, IMapper mapper)
+        private readonly IOrderForwardRepository _orderFwdRepo;
+        public OrderAssessmentRepository(DataContext context, IOrderForwardRepository orderFwdRepo, IMapper mapper)
         {
+            _orderFwdRepo = orderFwdRepo;
             _mapper = mapper;
             _context = context;
             _todaydate = DateTime.UtcNow;
@@ -27,7 +30,13 @@ namespace api.Data.Repositories
         {
             _context.OrderAssessments.Add(orderAssessment);
 
-            return await _context.SaveChangesAsync() > 0 ? orderAssessment : null;
+            var ct = await _context.SaveChangesAsync();
+            
+            if(ct==0) return null;
+
+            await _orderFwdRepo.UpdateOrderExtn(orderAssessment.OrderId, "AssessmentDesigned", orderAssessment.DateDesigned.ToString() );
+            
+            return  orderAssessment;
         }
 
         public async Task<bool> DeleteOrderAssessmentItem(int orderItemId)
@@ -222,6 +231,9 @@ namespace api.Data.Repositories
                     }
                 }
             }
+
+            if(existingObject.OrderAssessmentId==0) existingObject.OrderAssessmentId = 
+                await GetOrderAssessmentIdFromOrderItemId(newObject.OrderItemId);
             
             _context.Entry(existingObject).State = EntityState.Modified;
             try{
@@ -233,6 +245,26 @@ namespace api.Data.Repositories
             return true;
         }
 
+        private async Task<int> GetOrderAssessmentIdFromOrderItemId(int orderitemid)
+        {
+            var order = await (from item in _context.OrderItems where item.Id==orderitemid
+                join o in _context.Orders on item.OrderId equals o.Id
+                select new {OrderId=o.Id, OrderNo = o.OrderNo, CustomerName=o.Customer.CustomerName, 
+                OrderDate=o.OrderDate}).FirstOrDefaultAsync();
+            
+            var assessmt = await _context.OrderAssessments.Where(x => x.OrderId == order.OrderId).FirstOrDefaultAsync();
+            if(assessmt == null) {
+                assessmt = new OrderAssessment{ CustomerName=order.CustomerName, OrderDate = order.OrderDate,
+                OrderId = order.OrderId, OrderNo = order.OrderNo};
+                
+                _context.Entry(assessmt).State = EntityState.Added;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return assessmt.Id;
+            
+        }
         private async Task<OrderAssessment> GenerateOrderAssessmentFromOrderId(int orderId, string username) {
             
             var orderassessment = await _context.OrderAssessments
@@ -290,9 +322,9 @@ namespace api.Data.Repositories
 
             return await _context.SaveChangesAsync() > 0 ? orderassessment : null;
         }
-        private async Task<OrderAssessmentItemWithErrDto> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedInUserName)
+        private async Task<OrderAssessmentItemWithErr> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedInUserName)
         {   
-            var dtoErr = new OrderAssessmentItemWithErrDto();
+            var dtoErr = new OrderAssessmentItemWithErr();
 
             //ascertain the record does not exist;
             var assessmtItem = await _context.OrderAssessmentItems.Where(x => x.OrderItemId==orderItemId).FirstOrDefaultAsync();
@@ -321,7 +353,6 @@ namespace api.Data.Repositories
                 });
             }
 
-
             var newAssessmentItem = new OrderAssessmentItem{
                 OrderItemId = orderItemId,
                 CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemId),
@@ -333,6 +364,7 @@ namespace api.Data.Repositories
             };
 
             //if ordderassessment exists, get the id to use in orderassessmentitem
+            Thread.Sleep(1000);     //without this, flg statement raises error A SECOND OPERATION WAS STARTED ON THIS CONTEXT INSTANCE BEFORE A PREVIOUS OPERATION COMPLETED
             var orderassessment = await _context.OrderAssessments.Where(x => x.OrderId==order.Id).FirstOrDefaultAsync();
             if(orderassessment != null) {
                 newAssessmentItem.OrderAssessmentId=orderassessment.Id;
@@ -345,6 +377,8 @@ namespace api.Data.Repositories
                     OrderAssessmentItems = new List<OrderAssessmentItem>{newAssessmentItem}
                 };
                 _context.Entry(orderassessmt).State=EntityState.Added;
+                await _context.SaveChangesAsync();
+                newAssessmentItem.OrderAssessmentId = orderassessmt.Id;
             }
             
             try {
@@ -397,48 +431,78 @@ namespace api.Data.Repositories
     
         public async Task<OrderAssessmentItemWithErrDto> GetOrCreateOrderAssessmentItem(int orderItemId, string loggedInUserName)
         {
-            
-            var dtoErr = new OrderAssessmentItemWithErrDto();
+            var errDto = new OrderAssessmentItemWithErrDto();
+
+            var order = await (from item in _context.OrderItems where item.Id==orderItemId
+                join o in _context.Orders on item.OrderId equals o.Id 
+                select new {
+                    OrderId = o.Id, OrderNo = o.OrderNo, OrderDate = o.OrderDate, CustomerName = o.Customer.CustomerName
+                }).FirstOrDefaultAsync();
 
             var assessmtItem = await _context.OrderAssessmentItems
                 .Include(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
-                .Where(x => x.OrderItemId == orderItemId)
-                .FirstOrDefaultAsync();   // ?? await GenerateOrderAssessmentItemFromStddQ(orderItemId, loggedInUserName);
-            if(assessmtItem == null) {
-                var assitemDto = await GenerateOrderAssessmentItemFromStddQ(orderItemId, loggedInUserName);
-                if(string.IsNullOrEmpty(assitemDto.Error)) {
-                    dtoErr.orderAssessmentItem = assitemDto.orderAssessmentItem;
+                .Select (x => new OrderAssessmentItem {
+                    OrderId=order.OrderId, CustomerName = order.CustomerName,
+                    //, OrderDate = order.OrderDate, orderAssessmentId = x.OrderAssessmentId,
+                    OrderAssessmentItemQs = x.OrderAssessmentItemQs
+                    , OrderNo = order.OrderNo, Id = x.Id, OrderItemId = x.OrderItemId, 
+                    ProfessionId = x.ProfessionId, ProfessionName = x.ProfessionName
+                }).FirstOrDefaultAsync();   // ?? await GenerateOrderAssessmentItemFromStddQ(orderItemId, loggedInUserName);
+
+            if(assessmtItem != null) {
+                if(string.IsNullOrEmpty(assessmtItem.DesignedBy)) assessmtItem.DesignedBy=loggedInUserName;
+                
+                var assessmtItemDto = _mapper.Map<OrderAssessmentItemDto>(assessmtItem);
+                
+                assessmtItemDto.CustomerName = await _context.GetCustomerIdAndNameFromOrderId(assessmtItem.OrderId);
+                assessmtItemDto.OrderNo=await _context.GetOrderNoFromOrderItemId(assessmtItem.OrderItemId);
+                assessmtItemDto.professionId=await _context.GetProfessionIdFromOrderItemId(assessmtItem.OrderItemId);
+                assessmtItem.ProfessionName=await _context.GetProfessionNameFromId(assessmtItem.ProfessionId);
+
+                if(assessmtItemDto.orderAssessmentItemQs.Count==0) {
+                    var stddQs = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
+
+                    var assessmentItemQs =new List<OrderAssessmentItemQ>();     //part of OrderAssessmentItem
+                    foreach (var q in stddQs)
+                    {
+                        assessmentItemQs.Add(new OrderAssessmentItemQ{
+                            OrderAssessmentItemId = assessmtItem.Id,
+                            QuestionNo = q.QuestionNo,
+                            Question=q.Question,
+                            Subject=q.Subject,
+                            MaxPoints = q.MaxPoints,
+                            IsMandatory=q.IsMandatory
+                        });
+                    }
+
+                    assessmtItemDto.orderAssessmentItemQs = assessmentItemQs;
                 }
-            }
-            
-            if(string.IsNullOrEmpty(assessmtItem.CustomerName)) 
-                assessmtItem.CustomerName = await _context.GetCustomerIdAndNameFromOrderId(assessmtItem.OrderId);
-            if(string.IsNullOrEmpty(assessmtItem.DesignedBy)) assessmtItem.DesignedBy=loggedInUserName;
-            if(assessmtItem.OrderNo==0) assessmtItem.OrderNo=await _context.GetOrderNoFromOrderItemId(assessmtItem.OrderItemId);
-            if(assessmtItem.ProfessionId==0) assessmtItem.ProfessionId=await _context.GetProfessionIdFromOrderItemId(assessmtItem.OrderItemId);
-            if(string.IsNullOrEmpty(assessmtItem.ProfessionName)) assessmtItem.ProfessionName=await _context.GetProfessionNameFromId(assessmtItem.ProfessionId);
 
-            if(assessmtItem.OrderAssessmentItemQs.Count==0) {
-                var stddQs = await _context.AssessmentQStdds.OrderBy(x => x.QuestionNo).ToListAsync();
-
-                var assessmentItemQs =new List<OrderAssessmentItemQ>();     //part of OrderAssessmentItem
-                foreach (var q in stddQs)
-                {
-                    assessmentItemQs.Add(new OrderAssessmentItemQ{
-                        OrderAssessmentItemId = assessmtItem.Id,
-                        QuestionNo = q.QuestionNo,
-                        Question=q.Question,
-                        Subject=q.Subject,
-                        MaxPoints = q.MaxPoints,
-                        IsMandatory=q.IsMandatory
-                    });
-                }
-
-                assessmtItem.OrderAssessmentItemQs = assessmentItemQs;
+                errDto.orderAssessmentItemDto = assessmtItemDto;
+                
+                return errDto;
             }
 
-            dtoErr.orderAssessmentItem = assessmtItem;
-            return dtoErr;
+            var assitem = await GenerateOrderAssessmentItemFromStddQ(orderItemId, loggedInUserName);
+                //returns OrderAssessmentItemDto, without values of OrderNo, OrderDate, etc.
+            if(!string.IsNullOrEmpty(assitem.Error)) {
+                errDto.Error = assitem.Error;
+                return errDto;
+            }
+
+            assitem.orderAssessmentItem.OrderNo = order.OrderNo;
+            assitem.orderAssessmentItem.CustomerName = order.CustomerName;
+           
+            _context.Entry(assitem.orderAssessmentItem).State = EntityState.Added;
+
+            await _context.SaveChangesAsync();
+ 
+            errDto.orderAssessmentItemDto = _mapper.Map<OrderAssessmentItemDto>(assitem.orderAssessmentItem);
+            errDto.orderAssessmentItemDto.OrderDate = order.OrderDate; 
+            errDto.orderAssessmentItemDto.OrderNo=order.OrderNo; 
+            errDto.orderAssessmentItemDto.CustomerName=order.CustomerName;
+
+            return errDto;
         }
 
         public async Task<OrderAssessmentItem> SaveOrderAssessmentItem(OrderAssessmentItem orderItemAssessment)

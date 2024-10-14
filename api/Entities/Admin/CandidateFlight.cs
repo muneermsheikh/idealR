@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using api.Entities.Deployments;
 
 namespace api.Entities.Admin
@@ -5,8 +6,8 @@ namespace api.Entities.Admin
     public class CandidateFlight: BaseEntity
     {
         public int DepId { get; set; }
-        public int CvRefId { get; set; }
         public int DepItemId { get; set; }
+        public int CvRefId { get; set; }
         public int ApplicationNo { get; set; }
         public string CandidateName { get; set; }
         public string CustomerName { get; set; }
@@ -22,6 +23,7 @@ namespace api.Entities.Admin
         public string FightNoVia { get; set; }
         public DateTime? ETA_Via { get; set; }
         public DateTime? ETD_Via { get; set; }
-        
+        [MaxLength(250)]
+        public string FullPath {get; set;}
     }
 }

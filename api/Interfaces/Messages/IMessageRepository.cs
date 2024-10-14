@@ -1,7 +1,5 @@
-using System.Text.RegularExpressions;
 using api.DTOs;
 using api.DTOs.Admin;
-using api.Entities;
 using api.Entities.Messages;
 using api.Helpers;
 using api.Params;
@@ -19,5 +17,6 @@ namespace api.Interfaces.Messages
         Task<ICollection<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName);
         //Task<Group> GetMessageGroup(string groupName);
         Task<bool> SaveAllAsync();
+        Task<bool> SendMessage(Message msg);
     }
 }

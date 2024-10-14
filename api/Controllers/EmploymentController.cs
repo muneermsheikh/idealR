@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Text.Json;
 using api.DTOs.Admin;
 using api.Entities.HR;
 using api.Errors;
@@ -45,29 +47,62 @@ namespace api.Controllers
         }
 
 
-        [HttpPost("employment")]
-        public async Task<ActionResult<string>> InsertNewEmployment(Employment dto)
+        [HttpPost("savewithupload")]
+        public async Task<ActionResult<string>> UploadAndUpdateInterviewItem()
         {
-            var strErr = await _employmentRepo.SaveNewEmployment(dto);
+            var folderName = Path.Combine("Assets", "Employments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
 
-            if(!string.IsNullOrEmpty(strErr)) 
-                return BadRequest(new ApiException(400, "Failed to update the employment", strErr));
-            
-            return Ok("");
+            try
+            {
+                var modelData = JsonSerializer.Deserialize<Employment>(Request.Form["data"],  
+                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+               
+                var memoryStream = new MemoryStream();
+
+                var file=files[0];
+
+                if (file.Length > 0) {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    
+                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                    if(System.IO.File.Exists(fullPath)) {
+                        return BadRequest(new ApiException(400, "File already exists", "The file already exists at location " 
+                            + pathToSave + ". Please choose another file or delete the file at the existing location"));
+                    }
+
+                    var dbPath = Path.Combine(folderName, fileName); 
+
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    file.CopyTo(stream);
+                    modelData.OfferAttachmentFullPath=fullPath;
+                }
+                var errString="";
+                
+                if(modelData.Id==0) {
+                    errString = await _employmentRepo.SaveNewEmployment(modelData);
+                } else {
+                    errString = await _employmentRepo.EditEmployment(modelData, User.GetUsername());
+                }
+
+                if(!string.IsNullOrEmpty(errString)) {
+                    throw new Exception ( errString);
+                }
+               
+                return "";  
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+
+
         }
 
-
-        [HttpPut("employment")]
-        public async Task<ActionResult<string>> UpdateEmployment(Employment dto)
-        {
-            var strErr = await _employmentRepo.EditEmployment(dto, User.GetUsername());
-
-            if(!string.IsNullOrEmpty(strErr)) 
-                return BadRequest(new ApiException(400, "Failed to update the employment", strErr));
-            
-            return Ok("");
-        }
-
+       
         [HttpDelete("{employmentid}")]
         public async Task<ActionResult<bool>> DeleteEmployment(int employmentid)
         {

@@ -14,13 +14,13 @@
          nextText="&rsaquo;"
          firstText="&laquo;"
          lastText="&raquo;">
-    ></pagination>
+    ></pagination> <span style="vertical-align: middle;">of {{pagination!.totalItems}} </span>
 
     <div class="form-inline" style="margin-left: 50px !important;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w300" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn btn-outline-primary mx-1">Search</button>
-        <button (click)="onReset()" class="btn btn-outline-success mx-1">Reset</button>
+        <button (click)="onSearch()" class="btn matContrast btn-outline-primary mx-1">Search</button>
+        <button (click)="onReset()" class="btn matContrast btn-outline-success mx-1">Reset</button>
 
         <div class="stdd w200 mx-2" title="Choose the rejection Status.  Press the UPDATE SELECTION button to save these changes">
             <ng-select 
@@ -36,10 +36,10 @@
         </div>
     </div>
     
-    <button class="btn btn-outline-success fa fa-check mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
+    <button class="btn matContrast btn-outline-success fa fa-check mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
         title="update the selections/rejections" (click)="UpdateSelections()" >
     </button>
-    <button class="btn btn-outline-close fa fa-window-close fa-2x mx-5" routerLink="/administration" title="return to Administration Menu" ></button>
+    <button class="btn matContrast btn-outline-close fa fa-window-close fa-2x mx-5" routerLink="/" title="return to Administration Menu" ></button>
 
 </div>
 
