@@ -11,6 +11,16 @@
     vertical-align: middle;
 }
 
+.stddML60 {
+    
+.stdd {
+    display: inline-block;
+    margin: 0 2px 0 30px;
+    font-size: small;
+    vertical-align: middle;
+}
+
+}
 .lbl {
     display: inline-block;
     margin: 0 2px 0 2px;

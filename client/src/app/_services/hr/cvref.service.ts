@@ -13,6 +13,8 @@ import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
+import { ISelectionStatus } from 'src/app/_models/admin/selectionStatus';
+import { ISelectionStatusDto } from 'src/app/_dtos/admin/selectionStatusDto';
 
 
 @Injectable({
@@ -32,6 +34,11 @@ export class CvrefService {
   cacheReferred = new Map();
 
   cvRefParams = new CVRefParams();
+
+  selectionStatuses: ISelectionStatusDto[] =[
+    { name: 'Selected'}, {name: 'Rejected-High Salary Expectation'}, {name: 'Rejected-Low Exp'}, {name: 'Rejected-irrelevant Exp'},
+    {name: 'Rejected-other reasons'}
+  ]
 
   constructor(private activatedRoute: ActivatedRoute, 
       private accountService: AccountService,

@@ -1,0 +1,12 @@
+<p>objective reports</p>
+
+<h4>Analyses of Time taken to organize Medical Tests - from </h4>
+<input type="text" class="stdd w100" ((ngModel))="medParams.fromDate" >
+    
+<label class="stdd w100">Date Upto</label>
+<input type="text" class="stdd w100" ((ngModel))="medParams.uptoDate" >
+
+<button class="btn fa fa-check fa-2x" (click)="displayReport()" ></button>
+<button class="btn fa fa-window-close fa-2x mx-3" style="display: inline-block;" routerLink="/tasks/objectives" ></button>
+
+

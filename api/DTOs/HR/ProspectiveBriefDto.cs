@@ -7,6 +7,7 @@ namespace api.DTOs.HR
         public string Source { get; set; }
         public string PersonType { get; set; }
         public string PersonId { get; set; }
+        public int ProspectiveCandidateId { get; set; }
         public string Nationality { get; set; }
         public DateTime DateRegistered { get; set; }
         public string CandidateName { get; set; }

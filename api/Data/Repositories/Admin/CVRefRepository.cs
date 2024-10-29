@@ -408,6 +408,7 @@ namespace api.Data.Repositories.Admin
             //4 - create task to Doc Controller to send the email to the client
             //5 - create selectionTasks
             //6 - compose cv forward message
+            //7 - Update HR Exec Task concerning tasks to HR Exec
 
             var dateTimeNow = DateTime.UtcNow;
             string ErrorString ="";     //candidateAssessments are already present in MakeReferrals, consider using that 
@@ -500,7 +501,20 @@ namespace api.Data.Repositories.Admin
                     }};
                 _context.Entry(selTask).State = EntityState.Added;
 
-                //**todo - update the CVRef object with actual date cv sent - call back from email sent 
+                //7 - HRExecTask
+                var tasksHRExec = await _context.Tasks.Where(x => 
+                    x.TaskType == "AssignTaskToHRExec" && x.TaskStatus !="Completed" && 
+                        candidatesNotRefDto.Select(x => x.OrderItemId).ToList().Contains(x.OrderItemId)).ToListAsync();
+                foreach(var t in tasksHRExec) {
+                    t.TaskStatus = "Completed";
+                    t.CompletedOn = DateTime.UtcNow;
+
+                    t.TaskItems.Add(new () { TaskItemDescription="CV No. " + t.ApplicationNo + ", " + 
+                        _context.GetCandidateNameFromCandidateId(t.CandidateId) + " referred to client on " + DateTime.UtcNow,
+                         AppTaskId = t.Id, TaskStatus = "Completed", TransactionDate=DateTime.UtcNow, UserName=Username});
+                    _context.Entry(t).State = EntityState.Modified;
+                }
+
             }
 
             try {

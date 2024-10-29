@@ -24,6 +24,7 @@ namespace api.Data
         }
 
         //Admin
+        public DbSet<IdTable> idTables { get; set; }
         public DbSet<Employee> Employees {get; set;}
         public DbSet<EmployeeAttachment> EmployeeAttachments {get; set;}
         public DbSet<Message> Messages {get; set;}
@@ -100,13 +101,15 @@ namespace api.Data
         public DbSet<UserQualification> UserQualifications {get; set;}
 
         //interviews
-        public DbSet<Interview> Interviews {get; set;}
-        public DbSet<InterviewItem> InterviewItems {get; set;}
+        //public DbSet<Interview> Interviews {get; set;}
+        //public DbSet<InterviewItem> InterviewItems {get; set;}
        
         public DbSet<Intervw> Intervws {get; set;}
         public DbSet<IntervwItem> IntervwItems {get; set;}
         public DbSet<IntervwItemCandidate> IntervwItemCandidates{get; set;}
         //public DbSet<IntervwCandAttachment> IntervwCandAttachments {get; set;}
+        public DbSet<IntervwAttendance> IntervwAttendances {get; set;}
+        public DbSet<AttendanceStatus> AttendanceStatuses {get; set;}
 
         //Master
         public DbSet<CategoryAssessmentQBank> CategoryAssessmentQBanks {get;set;}
@@ -169,19 +172,24 @@ namespace api.Data
             builder.Entity<CVRef>().HasIndex(i => new {i.OrderItemId, i.CandidateId}).IsUnique();
 
             //interviews
-            builder.Entity<Interview>().HasMany(o => o.InterviewItems);
+            /*builder.Entity<Interview>().HasMany(o => o.InterviewItems);
             builder.Entity<Interview>().HasIndex(x => x.OrderId).IsUnique();
-            builder.Entity<InterviewItem>().HasIndex(x => x.OrderItemId).IsUnique();
+            builder.Entity<InterviewItem>().HasIndex(x => x.OrderItemId).IsUnique(); */
 
-            builder.Entity<Intervw>().HasMany(o => o.InterviewItems);
+            
             builder.Entity<Intervw>().HasIndex(o => o.OrderId).IsUnique();
-            builder.Entity<IntervwItem>().HasMany(o => o.InterviewItemCandidates);
             builder.Entity<IntervwItem>().HasIndex(x => x.OrderItemId).IsUnique();
             builder.Entity<IntervwItemCandidate>().HasIndex(x => new{x.CandidateId, x.InterviewItemId})
                 .HasFilter("CandidateId <> 0").IsUnique();
+            builder.Entity<Intervw>().HasMany(o => o.InterviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<IntervwItem>().HasMany(o => o.InterviewItemCandidates).WithOne().OnDelete(DeleteBehavior.Cascade);
             //builder.Entity<IntervwCandAttachment>().HasIndex(x => new {x.CandidateId, x.FileName}).IsUnique();
             //builder.Entity<AgencySpecialty>().HasIndex(i => new {i.CustomerId, i.IndustryId, i.ProfessionId}).IsUnique();
-            
+            builder.Entity<IntervwAttendance>().HasIndex(o => o.IntervwItemCandidateId);
+            builder.Entity<IntervwAttendance>().HasIndex(o => new {o.IntervwItemCandidateId, o.Status}).IsUnique();
+            builder.Entity<AttendanceStatus>().HasIndex(o => o.Status).IsUnique();
+            builder.Entity<AttendanceStatus>().HasIndex(o => o.StatusId).IsUnique();
+
             builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderItem>().HasOne(x => x.Remuneration).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderItem>().HasOne(x => x.JobDescription).WithOne()

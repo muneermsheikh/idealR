@@ -34,7 +34,7 @@ export class EditComponent implements OnInit{
     ngOnInit(): void {
         this.activatedRoute.data.subscribe(data => {
           this.interview = data['interview'];
-          console.log('interview: ', this.interview);
+          //console.log('interview: ', this.interview);
           //this.Initialize(this.interview!);
           //if(this.interview) this.patchValue();
         })

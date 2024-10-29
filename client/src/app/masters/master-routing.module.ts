@@ -7,9 +7,7 @@ import { QualificationsComponent } from './qualifications/qualifications.compone
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from '../Administration/industries/industries.component';
 import { RouterModule } from '@angular/router';
-import { CategoryResolver } from '../_resolvers/admin/categoryResolver';
 import { SkillDataResolver } from '../_resolvers/hr/skillDataResolver';
-import { CustomerResolver } from '../_resolvers/admin/customerResolver';
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
 

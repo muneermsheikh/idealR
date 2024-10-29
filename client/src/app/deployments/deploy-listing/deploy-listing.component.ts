@@ -611,7 +611,7 @@ SEQUENCE_MED_FIT=400;
           filter((tkt:IFlightdata) => tkt !==null),
           switchMap((tkt: IFlightdata) => {
             console.log('flightdata received back from modal:', tkt);
-            this.deploysSelected.forEach(x => {
+            this.deploysSelected.forEach(x => {     //candidate flight is same, except candidate details differ with each object
               var candFlight: ICandidateFlightGrp = {
                   id: 0, dateOfFlight: tkt!.eTD_Boarding, airlineName: tkt!.airlineName, flightNo: tkt!.flightNo, 
                   airportOfBoarding: tkt!.airportOfBoarding, 

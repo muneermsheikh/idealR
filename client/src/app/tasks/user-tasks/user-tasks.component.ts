@@ -166,8 +166,6 @@ export class UserTasksComponent implements OnInit {
   
  editDeploymentModal(task: IApplicationTask){
 
-  
-
   if(task === null) {
     this.toastr.warning('No Task object returned from Task line');
     return;
@@ -203,6 +201,10 @@ export class UserTasksComponent implements OnInit {
       
 }
 
+  medicalObjectives() {
+    this.service.getMedicalObjectives(new Date('6-1-2024').toISOString(), new Date('8-8-2024').toISOString()).subscribe({
+      next: (response: any) => console.log(response)    })
+  }
 
 
 }

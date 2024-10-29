@@ -7,6 +7,7 @@ import { messageParams } from '../_models/params/Admin/messageParams';
 import { map, of } from 'rxjs';
 import { IMessage } from '../_models/admin/message';
 import { IMessageToSendDto } from '../_dtos/admin/messageToSendDto';
+import { MessageType } from '@microsoft/signalr';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class MessageService {
     {"MessageType" : "EmigrationClearanceAdviseByEmail"}, {"MessageType" : "MedicalFitnessAdviseByEmail"},
     {"MessageType" : "MedicalUnfitnessAdvise"}, {"MessageType" : "TravelAdviseToClient"},
     {"MessageType" : "VisaIssueAdviseByMail"}, {"MessageType" : "VisaRejectionAdviseByMail"},
-    {"MessageType" : "CustomerFeedback"}, {"MessageType": "AdviseToHRDeptHead"}
+    {"MessageType" : "CustomerFeedback"}, {"MessageType": "AdviseToHRDeptHead"}, {"MessageType": "AssignTaskToHRExec"},
+    {"MessageType" : "CVFwdTask"}, {"MessageType": "OrderFwdToHR"}
   ]
 
   constructor(private http: HttpClient) { }

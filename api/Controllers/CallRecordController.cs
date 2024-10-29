@@ -1,5 +1,4 @@
 using api.DTOs.Admin;
-using api.DTOs.HR;
 using api.Entities.Admin;
 using api.Errors;
 using api.Extensions;

@@ -1,8 +1,10 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
+import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
 import { CvsMatchingProfAvailableDto } from 'src/app/_dtos/hr/cvsMatchingProfAvailableDto';
 import { IntervwCandAttachment } from 'src/app/_models/hr/intervwCandAttachment';
 import { IIntervwItem } from 'src/app/_models/hr/intervwItem';
@@ -19,6 +21,9 @@ import { DisplayTextModalComponent } from 'src/app/modals/display-text-modal/dis
 export class EditScheduleComponent implements OnInit{
 
   @Input() interviewItem: IIntervwItem | undefined;
+  @Input() interviewDateFrom: Date | undefined;
+  @Input() interviewDateUpto: Date | undefined;
+
   lastTimeCalled: number= Date.now();
   userFiles: File[] = [];
   attachment: IntervwCandAttachment | undefined;
@@ -39,7 +44,11 @@ export class EditScheduleComponent implements OnInit{
   bsValueDate = new Date();
 
   ngOnInit(): void {
-     
+    if(this.interviewDateFrom) {
+      var dt = new Date(this.interviewDateFrom);
+      this.interviewDateFrom = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),10,30);
+    }
+    console.log('interviewDateFrom in NgONInit', this.interviewDateFrom);
       this.InitializeForm(this.interviewItem!);
   }
 
@@ -50,7 +59,7 @@ export class EditScheduleComponent implements OnInit{
       this.form = this.fb.group({
 
           id: item.id,
-          interviewId: item.intervwId,
+          intervwId: item.intervwId,
           orderItemId: [item.orderItemId, Validators.required],
           professionId: [item.professionId,Validators.required],
           professionName: [item.professionName, Validators.required],
@@ -64,6 +73,7 @@ export class EditScheduleComponent implements OnInit{
               id: cand.id,
               intervwItemId: [cand.intervwItemId ?? item.id, Validators.required],
               candidateId: [cand.candidateId,Validators.required],
+              persosnId: [cand.personId],
               applicationNo: cand.applicationNo,
               candidateName: [cand.candidateName, Validators.required],
               passportNo: cand.passportNo,
@@ -143,9 +153,9 @@ export class EditScheduleComponent implements OnInit{
     formData.append('data', JSON.stringify(this.form.value));
 
     this.service.editOrInsertInterviewItemWithFile(formData).subscribe({
-      next: (response: any) => {
-        if(response.errorMessage !== '') {
-          this.toastr.error('failed to save the interview data', response.errorMessage)
+      next: (response: IInterviewItemWithErrDto) => {
+        if(response.error !== '') {
+          this.toastr.error(response.error, 'failed to save the interview data')
         } else {
           this.toastr.success('interview saved', 'success')
         }
@@ -208,7 +218,10 @@ export class EditScheduleComponent implements OnInit{
 
   downloadattachment(index: number) {
     const fullpath = this.interviewItemCandidates.at(index).get('attachmentFileNameWithPath')?.value;
-    if(fullpath === '' || fullpath === undefined) this.toastr.warning('no file exists for downloading', 'Bad Request');
+    if(fullpath === '' || fullpath === undefined || fullpath===null) {
+       this.toastr.warning('no file exists for downloading', 'Bad Request');
+       return;
+    }
     this.service.downloadInterviewerCommentFile(fullpath).subscribe({
       next: (blob: Blob) => {
         const a = document.createElement('a');
@@ -244,6 +257,10 @@ export class EditScheduleComponent implements OnInit{
 
   }
   
+  registerReportedAt(index: number) {
+    this.interviewItemCandidates.at(index).get('reportedAt')?.setValue(formatDate(new Date(), 'MM-dd-yyyyTHH:mm', 'en'));
+  }
+
   getMatchingCVs(item:IIntervwItem) {
 
     var profid=item.professionId;
@@ -252,7 +269,33 @@ export class EditScheduleComponent implements OnInit{
       this.toastr.warning('No Task object returned from Task line');
       return;
     }  
-  
+
+    if(this.interviewDateFrom === undefined || new Date(this.interviewDateFrom).getFullYear() < 2000) {
+        this.toastr.warning('Interview Begin and End Dates not defined', 'Interview dates not defined');
+        return;
+    }
+
+    console.log('interviewDateFrom', this.interviewDateFrom);
+
+    var venue = this.form.get('interviewVenue')?.value;
+    var interviewer = this.form.get('interviewerName')?.value;
+    if(venue === '' || venue === 'To Be Annoounced'|| interviewer === '' || interviewer === 'To Be Announced') {
+      this.toastr.warning('Interview Venue and Interviewer Name not provided');
+      return;
+    }
+      
+    if(this.interviewItemCandidates.length > 0) console.log(this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value);
+    console.log('interviewDateFrom def', interviewBeginDateTime);
+    var interviewBeginDateTime = this.interviewItemCandidates.length === 0 ? this.interviewDateFrom 
+      : this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value;
+
+    //interviewBeginDateTime=addHours(interviewBeginDateTime, 10);
+
+    
+    console.log('interviewDateFrom updated', interviewBeginDateTime);
+    //**todo** instead of last index, find max value of the scheduledFrom column
+    var interviewDuration=30; //minutes
+
     const config = {
         class: 'modal-dialog-centered modal-lg',
         initialState: {
@@ -261,8 +304,8 @@ export class EditScheduleComponent implements OnInit{
       }
   
       this.bsModalRef = this.bsModalService.show(CandidatesAvailableModalComponent, config);
-  
-      this.bsModalRef.content.emittedEvent.subscribe({
+      console.log('interviewBeginDateTime', interviewBeginDateTime);
+      this.bsModalRef.content.emittedEvent.subscribe({      //calls interview.service.getMatchingCandidates based on profession selected
         next: (response: CvsMatchingProfAvailableDto[]) => {
           if(response !== null) {
               response.forEach(x => {
@@ -270,17 +313,20 @@ export class EditScheduleComponent implements OnInit{
                 this.interviewItemCandidates.push(
                 this.fb.group({
                   id: 0,
-                  intervwItemId: this.interviewItem?.id,
-                  candidateId: [x.candidateId, Validators.required],
+                  intervwItemId: this.interviewItem?.id ?? 0,
+                  candidateId: [x.candidateId ?? 0, Validators.required],
                   applicationNo: x.applicationNo,
                   candidateName: [x.fullName, Validators.required],
                   passportNo: '',
-                  scheduledFrom: [new Date, Validators.required],
-                  reportedAt: '',
-                  interviewedAt: '',
+                  scheduledFrom: [interviewBeginDateTime, Validators.required],
+                  reportedAt: null,
+                  interviewedAt: null,
                   interviewStatus: ['Not Interviewed', Validators.required],
-                  interviewerRemarks: ''
+                  interviewerRemarks: '',
+                  prospectiveCandidateId: [x.prospectiveCandidateId]
                 }))
+                interviewBeginDateTime = addMinutes(interviewBeginDateTime, interviewDuration);
+                console.log('interviewbegindate', interviewBeginDateTime);
               })
               this.toastr.success(response.length + ' candidates assigned.  Pl note the form needs to be saved for changes to take effect', 'Success');
           } else {
@@ -292,6 +338,17 @@ export class EditScheduleComponent implements OnInit{
       })
     }
   
-
 }
+function addMinutes(date: Date, minutes: number): Date {
+  let result = new Date(date);
+  result.setMinutes(result.getMinutes() + minutes);
+  return result;
+}
+
+function addHours(date: Date, hours: number): Date {
+  let result = new Date(date);
+  result.setHours(result.getHours() + hours);
+  return result;
+}
+
 

@@ -3,6 +3,7 @@ import { computed, Injectable } from '@angular/core';
 import { BehaviorSubject, map, take } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment.development';
+import { IReturnStringsDto } from '../_dtos/admin/returnStringsDto';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +60,7 @@ export class AccountService {
 
 
   copyProspectiveXLSFileToDB(model: any) {
-    return this.http.post<string>(this.baseUrl + 'FileUpload/prospectiveXLS', model);
+    return this.http.post<IReturnStringsDto>(this.baseUrl + 'FileUpload/prospectiveXLS', model);
   }
 
   copyCustomerXLSFileToDB(model: any) {

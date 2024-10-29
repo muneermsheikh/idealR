@@ -1,7 +1,4 @@
-using System.Diagnostics;
-using System.Security.Cryptography.Xml;
 using System.Text.Json;
-using api.DTOs.Admin.Orders;
 using api.Entities.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.Admin.Order;
@@ -14,7 +11,6 @@ using api.Entities.Tasks;
 using api.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace api.Data
 {
@@ -92,6 +88,17 @@ namespace api.Data
             }   
             
             //recruitment entities
+            if(!await context.AttendanceStatuses.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/AttendanceStatusSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<AttendanceStatus>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.AttendanceStatuses.Add(item);
+                }
+             }
+
             if(!await context.SkillDatas.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/SkillSeedData.json");
                 _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };

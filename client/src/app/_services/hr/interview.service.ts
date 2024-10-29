@@ -11,6 +11,7 @@ import { IInterviewItemDto } from 'src/app/_models/hr/interviewItemDto';
 import { IIntervw } from 'src/app/_models/hr/intervw';
 import { CvsMatchingProfAvailableDto } from 'src/app/_dtos/hr/cvsMatchingProfAvailableDto';
 import { IIntervwItem } from 'src/app/_models/hr/intervwItem';
+import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +65,10 @@ export class InterviewService {
       return this.http.post<IIntervw>(this.apiUrl + 'interview/savenew', model);
     }
 
+    updateInterviewHeader(model: IIntervw) {
+      return this.http.put<IIntervw>(this.apiUrl + 'interview/interviewheader', model);
+    }
+
     updateInterview(model: IIntervw) {
       return this.http.put<IIntervw>(this.apiUrl + 'interview/Intervw', model);
     }
@@ -73,7 +78,7 @@ export class InterviewService {
     }
 
     editOrInsertInterviewItemWithFile(model: any) {
-      return this.http.post<string>(this.apiUrl + 'FileUpload/interviewitem', model);
+      return this.http.post<IInterviewItemWithErrDto>(this.apiUrl + 'FileUpload/interviewitem', model);
     }
     
     insertInterviewItem(model: IIntervwItem) {
@@ -93,7 +98,7 @@ export class InterviewService {
     }
 
     deleteInterview(id: number) {
-      return this.http.delete<boolean>(this.apiUrl + 'interview/deleteInterviewbyid/' + id);
+      return this.http.delete<boolean>(this.apiUrl + 'interview/interview/' + id);
     }
 
     deleteInterviewItem(interviewitemid: number) {

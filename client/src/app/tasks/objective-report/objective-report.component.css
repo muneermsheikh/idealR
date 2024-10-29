@@ -1,0 +1,42 @@
+
+.inputCheck {
+    margin-right: 5px;
+    width: 40px;
+    margin-left: 10px;
+    border: 2px;
+    border-color: #000000;
+}
+
+input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #fff;
+	border-radius: 50%;
+	margin-right: 10px;
+	background-color: rgb(195, 177, 177);
+	position: relative;
+}
+
+input[type="radio"]:checked::before {
+	content: "";
+	display: block;
+	width: 12px;
+	height: 12px;
+	background-color: #4a0fec;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: appear 0.8s;
+}
+
+.stdd {
+    display: inline;
+    font-size: medium;
+    margin: 0 2px 0 2px;
+}
+
+.w100 {width: 100px;}

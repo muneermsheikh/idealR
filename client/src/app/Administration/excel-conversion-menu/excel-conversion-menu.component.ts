@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 
@@ -43,14 +44,10 @@ export class ExcelConversionMenuComponent {
 
   exportProspectiveFile() {
     this.accountService.copyProspectiveXLSFileToDB(this.formData).subscribe({
-      next: (response: string) => {
+      next: (response: IReturnStringsDto) => {
         //console.log('exportprospective: response:', response);
-        if(response === '' || response === null) {
-          this.toastr.success(response + ' Prospective file(s) copied to database', 'success');
-          this.uploadCustomerExcel=false;
-          } else {
-            this.toastr.warning(response, 'Failed to copy the excel data to database')
-          }
+        if(response.errorString !== '') this.toastr.warning(response.errorString, 'Warning')
+        if(response.successString !== '') this.toastr.success(response.successString, 'Success');
       }
       , error: (err: any) => {
         console.log(err.error.text, 'Error encountered');

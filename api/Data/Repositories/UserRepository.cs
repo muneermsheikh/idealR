@@ -38,15 +38,17 @@ namespace api.Data.Repositories
                     orderby cv.ApplicationNo
                     select new CVsMatchingProfAvailableDto {
                         ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
-                        CandidateId = Convert.ToString(cv.Id), Gender=  cv.Gender, Checked = false, 
-                        ProfessionName = prof.ProfessionName, Source="Candidates", MobileNo=ph.MobileNo
+                        PersonId = "", CandidateId = cv.Id, Gender=  cv.Gender, Checked = false, 
+                        ProfessionName = prof.ProfessionName, Source="Candidates", MobileNo=ph.MobileNo,
+                        ProspectiveCandidateId = 0
                     }).ToListAsync();
 
             var query = await (from prosp in _context.ProspectiveCandidates where prosp.ProfessionId==professionid
                 select new CVsMatchingProfAvailableDto {
-                    CandidateId = prosp.PersonId, City = prosp.CurrentLocation, FullName = prosp.CandidateName,
-                    Gender = prosp.Gender, Checked=false, Source = "Prospectives", 
-                    ProfessionName=prosp.ProfessionName, MobileNo = prosp.PhoneNo
+                    PersonId = prosp.PersonId, City = prosp.CurrentLocation, FullName = prosp.CandidateName,
+                    CandidateId = 0, Gender = prosp.Gender, Checked=false, Source = "Prospectives", 
+                    ProfessionName=prosp.ProfessionName, MobileNo = prosp.PhoneNo,
+                    ProspectiveCandidateId = prosp.Id
                 }).ToListAsync();
             
             foreach(var q in query) {

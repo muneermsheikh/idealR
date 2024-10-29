@@ -213,7 +213,6 @@ export class DeployService {
   }
 
   InsertDepItemsAndCandFlights(model: IDepItemsAndCandFlightsToAddDto) {
-    console.log('calling api', model);
     return this.http.post<IDeploymentPendingBriefDto[]>(this.apiUrl + 'Deployment/depItemsAndCandFlight', model);
   }
 

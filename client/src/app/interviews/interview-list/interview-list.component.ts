@@ -48,15 +48,23 @@ export class InterviewListComponent implements OnInit {
         this.totalCount = response.totalCount;
       }
     })
+    //console.log('interviews:', this.interviews)
   }
 
 
   interviewEdit(orderno: number) {    //intervw emitted from line
     this.router.navigateByUrl('/interviews/editintervw/' + orderno);
+    
+  }
+
+  attendance(orderid:number) {
+    this.router.navigateByUrl('/interviews/attendance/' + orderid)
   }
 
   interviewDelete(event: any) {
-    var id=event!.id;
+    var id=event;
+
+    console.log('interview id:', id);
     var confirmMsg = 'confirm delete this Interview. ' +
       'WARNING: If there are more than one venues for this interview, then only the interview for the venue selected will be deleted.  This cannot be undone';
 
@@ -71,8 +79,8 @@ export class InterviewListComponent implements OnInit {
     ).subscribe(response => {
       if(response) {
         this.toastr.success('Interview deleted', 'deletion successful');
-        console.log('subscribed response:', response);
-        this.bsModalRef!.hide();
+        var index = this.interviews.findIndex(x => x.id === id);
+        if(index !== -1) this.interviews.splice(index,1);
       } else {
         this.toastr.error('Error in deleting the checklist', 'failed to delete')
       }

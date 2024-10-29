@@ -84,6 +84,7 @@ namespace api.Extensions
             services.AddScoped<ICustomerReviewRepository, CustomerReviewRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IInterviewRepository, InterviewRepository>();
+            services.AddScoped<IComposeMsgForIntrviews, ComposeMsgsForInterviews>();
             
             return services;
         }

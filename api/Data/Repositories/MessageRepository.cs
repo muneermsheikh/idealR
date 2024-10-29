@@ -256,23 +256,36 @@ namespace api.Data.Repositories
             var email = new MimeMessage();
 
             try{
-                email.From.Add(MailboxAddress.Parse(msg.RecipientEmail);    // "munir.sheikh@live.com"));
-                email.To.Add(MailboxAddress.Parse(msg.RecipientEmail));    // "munir.sheikh@live.com"));
+                email.From.Add(MailboxAddress.Parse("muneer.m.sheikh@gmail.com"));    // "munir.sheikh@live.com"));
+                email.To.Add(MailboxAddress.Parse("munir.sheikh@live.com"));    // "munir.sheikh@live.com"));
+                if(msg.RecipientEmail != null) email.Bcc.Add(MailboxAddress.Parse(msg.RecipientEmail));
                 email.Subject = msg.Subject;
                 email.Body = new TextPart(TextFormat.Html) { Text = msg.Content };
 
                 // send email
                 using var smtp = new SmtpClient();
-                smtp.Connect("smtp-mail.outlook.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("munir.sheikh@live.com", "zaReenMail*058");
-                var sendResult = smtp.Send(email);
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("muneer.m.sheikh@gmail.com", "farHeenMail*058");
+                smtp.Send(email);
                 smtp.Disconnect(true);
 
-                msg.MessageSentOn = DateTime.Now;
-                msg.SenderEmail = "munir.sheikh@live.com";
+                msg.MessageSentOn = DateTime.UtcNow;
+                msg.IsMessageSent=true;
+                msg.SenderEmail = "muneer.m.sheikh@gmail.com";
                 msg.IsMessageSent = true;
                 _context.Entry(msg).State = EntityState.Modified;
 
+                //update CVRef.
+                var taskDocController = await _context.Tasks.Where(x => 
+                    x.TaskType == "CVFwdTask" && x.CVRefId == msg.CvRefId && x.TaskStatus != "Completed").FirstOrDefaultAsync();
+                if(taskDocController != null) {
+                    taskDocController.TaskStatus="Completed";
+                    taskDocController.CompletedOn=DateTime.UtcNow;
+                    taskDocController.TaskItems.Add(new() {TaskItemDescription="CV Forward Email sent to client on " +
+                    string.Format("{0: dd-MMM-yyyy}", DateTime.UtcNow), AppTaskId=taskDocController.Id, TaskStatus="Completed", 
+                    TransactionDate = DateTime.UtcNow});
+                    _context.Entry(taskDocController).State = EntityState.Modified;
+                }
                 await _context.SaveChangesAsync();
 
                 return true;

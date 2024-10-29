@@ -90,6 +90,9 @@ namespace api.Helpers
             CreateMap<CVRefDto, CVRefDto>();
 
             CreateMap<Intervw, InterviewBriefDto>();
+            CreateMap<InterviewAttendanceDto, InterviewAttendanceDto>();
+            CreateMap<InterviewCandidateInviteDataDto, InterviewCandidateInviteDataDto>();
+
             CreateMap<OrderAssessmentItemDto, OrderAssessmentItem>();
             CreateMap<OrderAssessmentItem, OrderAssessmentItemDto>();
             CreateMap<OrderAssessmentItemQ, CandidateAssessmentItem>();
@@ -115,6 +118,7 @@ namespace api.Helpers
             CreateMap<PendingDebitApprovalDto, PendingDebitApprovalDto>();
 
             CreateMap<DeploymentPendingTempDto, DeploymentPendingDto>();
+            CreateMap<DepItem, DepItem>();
 
             CreateMap<Dep, DeploymentPendingDto>();
             CreateMap<DeploymentPendingDto, DeploymentPendingDto>();

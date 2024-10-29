@@ -1,11 +1,14 @@
+using System.Globalization;
 using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
+using api.Entities.Deployments;
 using api.Entities.Identity;
 using api.Entities.Tasks;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Interfaces.Orders;
 using api.Params.Admin;
+using api.Params.Objectives;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
@@ -388,6 +391,86 @@ namespace api.Data.Repositories.Admin
             _context.Entry(obj).State = EntityState.Deleted;
 
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to delete the task item";
+        }
+   
+        public async Task<ICollection<TaskInBriefDto>> GetTaskSummary(string TaskType, string AssignedToUsername, DateTime FromDate, DateTime UptoDate)
+        {
+            var tasks = await (from task in _context.Tasks where 
+                task.TaskType==TaskType && task.AssignedByUsername==AssignedToUsername
+            join item in _context.TaskItems on task.Id equals item.AppTaskId 
+                where FromDate >= item.TransactionDate && UptoDate <= item.TransactionDate
+            orderby task.Id, item.TransactionDate descending
+            select new TaskInBriefDto{
+                TaskType=task.TaskType, ApplicationNo=Convert.ToInt32(task.ApplicationNo), 
+                AssignedToUsername=task.AssignedToUsername, AssignedByUsername=task.AssignedByUsername, 
+                OrderItemId=task.OrderItemId, CompleteBy=task.CompleteBy, OrderNo=Convert.ToInt32(task.OrderNo), 
+                TaskDate = task.TaskDate,  TaskDescription=task.TaskDescription, TaskStatus=task.TaskStatus, Id=task.Id}
+            ).ToListAsync();
+
+            return tasks;
+        }
+
+        public async Task<PagedList<MedicalObjective>> GetMedicalObjectives(string fromdate, string uptodate) 
+        {
+            var seqs = new List<int>{ 300, 400, 500, 100};
+
+            var objectives = new List<MedicalObjective>();
+            DateTime.ParseExact(fromdate, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture);
+            DateTime.ParseExact(uptodate, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture);
+
+            var depQuery = _context.DepItems.OrderBy(x => x.DepId)
+                .Select(x =>  new {
+                    DepId=x.DepId, TransactionDate=x.TransactionDate, Sequence=x.Sequence})
+            .AsQueryable();
+
+            depQuery = depQuery.Where(x => seqs.Contains(x.Sequence));
+            depQuery = depQuery.Where(x => 
+                x.TransactionDate >= Convert.ToDateTime(fromdate) && 
+                x.TransactionDate <= Convert.ToDateTime(uptodate));
+
+            var depitems = await depQuery.ToListAsync();
+ 
+            var uniqeDepIds = depitems.Select(x => x.DepId).Distinct();
+            foreach(var uniq in uniqeDepIds)
+            {
+                var filtered = depitems.Where(x => x.DepId == uniq).ToList();
+                var objective = new MedicalObjective{DepId=uniq};
+                foreach(var item in filtered) {
+                    if(item.Sequence==100) objective.DateSelected=item.TransactionDate;
+                    
+                    if(item.Sequence==300) objective.RefForMedicals=item.TransactionDate;
+                    if(item.Sequence==400 || item.Sequence==500) objective.MedicalResult=item.TransactionDate;
+                }
+
+                //dateRange may exclude some sequences, so get those sequences from db
+                if(objective.DateSelected.Year < 2000) {
+                    var sq = await _context.DepItems.Where(x => x.DepId==uniq && x.Sequence==100).FirstOrDefaultAsync();
+                    if(sq!=null) objective.DateSelected=sq.TransactionDate;
+                }
+                    
+                objectives.Add(objective);
+            }
+
+            var depids = depitems.Select(x => x.DepId).ToList();
+            var query = await (
+                    from dep in _context.Deps where depids.Contains(dep.Id)
+                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
+                join cand in _context.Candidates on cvref.CandidateId equals cand.Id
+                orderby dep.Id
+                select new MedicalObjective {
+                    DepId=dep.Id, ApplicationNo=cand.ApplicationNo,
+                    CandidateName = cand.FullName, CustomerName = dep.CustomerName
+                }).ToListAsync();
+                       
+            foreach(var obj in objectives) {
+                var qry = query.Where(x => x.DepId == obj.DepId).FirstOrDefault();
+                obj.ApplicationNo=qry.ApplicationNo; obj.CustomerName=qry.CustomerName;
+                obj.CandidateName = qry.CandidateName;
+            }
+           
+           
+           return (PagedList<MedicalObjective>)query;
+            
         }
     }
 }

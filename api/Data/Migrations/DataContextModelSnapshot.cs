@@ -110,6 +110,32 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.AttendanceStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status")
+                        .IsUnique()
+                        .HasFilter("[Status] IS NOT NULL");
+
+                    b.HasIndex("StatusId")
+                        .IsUnique();
+
+                    b.ToTable("AttendanceStatuses");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.CallRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -1030,7 +1056,7 @@ namespace api.Data.Migrations
                     b.ToTable("FlightDetails");
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.Interview", b =>
+            modelBuilder.Entity("api.Entities.Admin.IdTable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1038,102 +1064,12 @@ namespace api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CustomerName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("InterviewDateFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("InterviewDateUpto")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InterviewStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderNo")
+                    b.Property<int>("TableId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Interviews");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.InterviewItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationNo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CandidateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CandidateName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InterviewId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InterviewMode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InterviewStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InterviewVenue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("InterviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InterviewerName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InterviewerRemarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfessionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProfessionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReportedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ScheduledFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ScheduledUpto")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InterviewId");
-
-                    b.HasIndex("OrderItemId")
-                        .IsUnique();
-
-                    b.ToTable("InterviewItems");
+                    b.ToTable("idTables");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Intervw", b =>
@@ -1179,6 +1115,37 @@ namespace api.Data.Migrations
                     b.ToTable("Intervws");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.IntervwAttendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AttendanceStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IntervwItemCandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("StatusDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IntervwItemCandidateId");
+
+                    b.HasIndex("IntervwItemCandidateId", "Status")
+                        .IsUnique()
+                        .HasFilter("[Status] IS NOT NULL");
+
+                    b.ToTable("IntervwAttendances");
+                });
+
             modelBuilder.Entity("api.Entities.Admin.IntervwItem", b =>
                 {
                     b.Property<int>("Id")
@@ -1209,6 +1176,21 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProfessionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SitePhoneNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SiteRepName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VenueAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VenueAddress2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VenueCityAndPIN")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1247,7 +1229,7 @@ namespace api.Data.Migrations
                     b.Property<string>("InterviewStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("InterviewedAt")
+                    b.Property<DateTime?>("InterviewedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InterviewerRemarks")
@@ -1256,7 +1238,13 @@ namespace api.Data.Migrations
                     b.Property<int?>("IntervwItemId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReportedAt")
+                    b.Property<string>("PersonId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProspectiveCandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReportedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ScheduledFrom")
@@ -3023,7 +3011,8 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.Property<string>("PersonType")
                         .HasColumnType("nvarchar(max)");
@@ -3968,15 +3957,6 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.Admin.InterviewItem", b =>
-                {
-                    b.HasOne("api.Entities.Admin.Interview", null)
-                        .WithMany("InterviewItems")
-                        .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("api.Entities.Admin.IntervwItem", b =>
                 {
                     b.HasOne("api.Entities.Admin.Intervw", null)
@@ -3990,7 +3970,8 @@ namespace api.Data.Migrations
                 {
                     b.HasOne("api.Entities.Admin.IntervwItem", null)
                         .WithMany("InterviewItemCandidates")
-                        .HasForeignKey("IntervwItemId");
+                        .HasForeignKey("IntervwItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
@@ -4233,13 +4214,11 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.HR.EmployeeOtherSkill", b =>
                 {
-                    b.HasOne("api.Entities.Admin.Employee", "Employee")
+                    b.HasOne("api.Entities.Admin.Employee", null)
                         .WithMany("EmployeeOtherSkills")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("api.Entities.HR.Employment", b =>
@@ -4411,11 +4390,6 @@ namespace api.Data.Migrations
                     b.Navigation("EmployeeOtherSkills");
 
                     b.Navigation("HRSkills");
-                });
-
-            modelBuilder.Entity("api.Entities.Admin.Interview", b =>
-                {
-                    b.Navigation("InterviewItems");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Intervw", b =>

@@ -1,5 +1,6 @@
 <div *ngIf="interview">
     <h4 style="display: inline-block;">Interview Schedule</h4>
+    <button class="btn fa fa-save fa-2x" (click)="updateInterview()" ></button>
     <button type="button" class="btn fa fa-window-close fa-2x mx-5" routerLink="/interviews" style="color: aliceblue;" ></button>
     <hr style="margin: 0; padding: 0; border-width: thick; border-color: beige;">
     <label class="lbl w100 mx-2">Customer Name</label> 
@@ -14,10 +15,12 @@
     <label class="lbl w75 mx-2">Upto:</label>
     <input name="interviewDateUpto" class="stdd w100" type="text" placeholder="Date Upto" [(ngModel)]="interview.interviewDateUpto" 
         bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-
+    
     <div *ngFor="let intw of interview.interviewItems">
         <app-edit-schedule
             [interviewItem]="intw"
+            [interviewDateFrom]="interview.interviewDateFrom"
+            [interviewDateUpto]="interview.interviewDateUpto"
         ></app-edit-schedule>
     </div>
 </div>

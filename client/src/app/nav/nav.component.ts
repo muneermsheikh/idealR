@@ -134,35 +134,5 @@ export class NavComponent implements OnInit{
     this.navigateByRoute(0, "/candidates/prospective", false);
   }
  
-  onFileInputChange(event: Event) {
-      var formData = new FormData();
-      const target = event.target as HTMLInputElement;
-      const files = target.files as FileList;
-      const f = files[0];
-
-      if(f.size > 0) 
-      {
-          formData.append('file', f, f.name);
-          
-          this.accountService.copyProspectiveXLSFileToDB(formData).subscribe({
-            next: (response: string) => {
-              if(response === '') {
-                this.toastr.success(response + ' file(s) copied to database', 'success')
-                } else {
-                  this.toastr.warning(response, 'Failed to copy the excel data to database')
-                }
-            }
-            , error: (err: any) => {
-              console.log(err.error.text, 'Error encountered');
-              this.toastr.error(err.error.text, 'Error in copying the excel data to database');
-            }
-          })
-          
-          //make the FILE INPUT button invisible
-          this.uploadExcel=false;
-      }
-    }
-
-
 }
 

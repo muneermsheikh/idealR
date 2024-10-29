@@ -5,6 +5,7 @@ export interface IProspectiveCandidate
      source: string;
      personType: string;
      personId: string;
+     prospectiveCandidateId: number;
      nationality: string;
      address: string;
      city: string;

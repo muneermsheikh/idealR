@@ -15,6 +15,7 @@ export class InterviewLineComponent {
   @Output() deleteEvent = new EventEmitter<number>();
 
   @Output() editEvent = new EventEmitter<number>();
+  @Output() attendanceEvent = new EventEmitter<number>();
   
   constructor(private service: InterviewService, private toastr: ToastrService){}
 
@@ -27,6 +28,8 @@ export class InterviewLineComponent {
       this.deleteEvent.emit(this.interview!.id);
   }
 
-  
+  attendanceClicked() {
+    this.attendanceEvent.emit(this.interview?.id)
+  }
 
 }

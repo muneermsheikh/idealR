@@ -78,7 +78,7 @@
   
     <button class="btn" title="retrieves Email Id from database" (click)="updateToEmailId()" 
         [disabled]="toEmailId !== null || toEmailId !== ''"></button>
-    <button (click)="sendMessage()" [disabled]="dtMsgSentMoreThan2000 || iMessageId===0 || toEmailId=== '' || toEmailId === null" 
+    <button (click)="sendMessage()" [disabled]="dtMsgSentMoreThan2000 || toEmailId=== ''" 
         style="color: aliceblue; background-color: grey;" class="stdd pull-right btn fa fa-paper-plane mx-1"
         title="send the message to the addressee" ></button>
     

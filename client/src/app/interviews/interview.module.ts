@@ -9,7 +9,10 @@ import { InterviewRoutingModule } from './interview-routing.module';
 
 import { EditComponent } from './edit/edit.component';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
-
+import { InterviewAttendanceComponent } from './interview-attendance/interview-attendance.component';
+import { AttendanceLineComponent } from './attendance-line/attendance-line.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({
@@ -19,11 +22,15 @@ import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
     InterviewAssignmentComponent,
     InterviewEditComponent,
     EditComponent,
-    EditScheduleComponent
+    EditScheduleComponent,
+    InterviewAttendanceComponent,
+    AttendanceLineComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    MatStepperModule,
+    //BrowserAnimationsModule,
     InterviewRoutingModule
   ]
 })

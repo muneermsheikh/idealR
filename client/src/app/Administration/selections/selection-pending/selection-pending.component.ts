@@ -3,6 +3,7 @@ import { Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
+import { ISelectionStatusDto } from 'src/app/_dtos/admin/selectionStatusDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { Pagination } from 'src/app/_models/pagination';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
@@ -29,6 +30,7 @@ export class SelectionPendingComponent implements OnInit{
   
   cvsSelected: ISelPendingDto[]=[];
   sParams = new CVRefParams();  // new SelDecisionParams();
+  rejectionStatuses: ISelectionStatusDto[]=[];
 
   pageIndex=1;
   totalCount=0;
@@ -36,12 +38,6 @@ export class SelectionPendingComponent implements OnInit{
   title='Selections pending';
 
   todayDate = new Date(Date.now());
-
-  rejectionStatuses =[
-    { name: 'Selected'}, {name: 'Rejected-Low Salary'}, {name: 'Rejected-Low Exp'}, {name: 'Rejected-irrelevant Exp'},
-    {name: 'Rejected-other reasons'}
-  ]
-
 
   constructor(private service: CvrefService, private toastr: ToastrService, private router: Router){
     let nav: Navigation|null = this.router.getCurrentNavigation() ;
@@ -54,6 +50,8 @@ export class SelectionPendingComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.rejectionStatuses = this.service.selectionStatuses;
+
     this.sParams.selectionStatus="Pending";
     this.getPendingSelectionsPaged(false);
   }

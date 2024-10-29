@@ -16,12 +16,16 @@ namespace api.DTOs
         [Required] public string Gender { get; set; }
         public string AadharNo { get; set; }
         public string PpNo { get; set; }
+        public bool Ecnr { get; set; }
         public DateTime? DateOfBirth { get; set; } // Note this must be optional or the required validator will not work
+        public string Address { get; set; }
         [Required] public string City { get; set; }
         public string Pin { get; set; }
         public string Country { get; set; } = "India";
         /*[Required, StringLength(8, MinimumLength = 4)]
         public string Password { get; set; }*/
+        public string Source { get; set; }
+        
         public ICollection<UserPhone> UserPhones { get; set; }
         public ICollection<UserProfession> UserProfessions { get; set; }
         public ICollection<UserQualification> UserQualifications { get; set; }

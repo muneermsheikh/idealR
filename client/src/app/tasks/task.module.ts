@@ -7,6 +7,8 @@ import { TaskMenuComponent } from './task-menu/task-menu.component';
 import { TaskLineComponent } from './task-line/task-line.component';
 import { PendingTasksComponent } from './pending-tasks/pending-tasks.component';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
+import { ObjectiveReportComponent } from './objective-report/objective-report.component';
+import { MedObjectivesComponent } from './med-objectives/med-objectives.component';
 
 
 
@@ -16,7 +18,9 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
     TaskMenuComponent,
     TaskLineComponent,
     PendingTasksComponent,
-    EditModalComponent
+    EditModalComponent,
+    ObjectiveReportComponent,
+    MedObjectivesComponent
   ],
   imports: [
     CommonModule,

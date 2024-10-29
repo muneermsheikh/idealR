@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin;
 using api.Entities.HR;
@@ -8,6 +9,7 @@ using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces.HR;
+using api.Params.Admin;
 using api.Params.HR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +52,13 @@ namespace api.Controllers
             return Ok(obj.intervw);
         }
 
+        [HttpPut("interviewheader")]
+        public async Task<ActionResult<Intervw>> UpdateInterviewHeader(Intervw intervw)
+        {
+            var obj = await _repo.UpdateInterviewHeader(intervw);
+
+            return obj;
+        }
  
         [HttpPost("savenew")]
         public async Task<ActionResult<Intervw>> SaveNewInterview(Intervw interview)
@@ -64,13 +73,26 @@ namespace api.Controllers
         [HttpPost("intervwitem")]
         public async Task<ActionResult<Intervw>> SaveNewInterviewItem(IntervwItem interviewitem)
         {
-            var obj = await _repo.SaveNewInterviewItem(interviewitem);
+            var obj = await _repo.SaveNewInterviewItem(interviewitem, User.GetUsername());
 
             if(!string.IsNullOrEmpty(obj.Error)) return BadRequest(new ApiException(400, "Bad Request", obj.Error));
 
             return Ok(obj.intervwItem);
         }
 
+        [HttpDelete("interview/{id}")]
+        public async Task<ActionResult<bool>> DeleteInterview(int id)
+        {
+            var deleted = await _repo.DeleteInterview(id);
+            return Ok(deleted);
+
+        }
+
+        [HttpDelete("deleteinterviewItemCandidate/{interviewItemCandidateId}")]
+        public async Task<ActionResult<bool>> DeleteInterviewItemCandidate(int interviewItemCandidateId)
+        {
+            return await _repo.DeleteInterviewItemCandidate(interviewItemCandidateId);
+        }
 
         [HttpPost("intervwitemWithFiles"), DisableRequestSizeLimit]
         public async Task<ActionResult<IntervwItem>> Upload()
@@ -108,7 +130,7 @@ namespace api.Controllers
 
                 var dtoErr = new InterviewItemWithErrDto();
                 if(modelData.Id==0) {
-                    dtoErr = await _repo.SaveNewInterviewItem(modelData);
+                    dtoErr = await _repo.SaveNewInterviewItem(modelData, User.GetUsername());
                 } else {
                     dtoErr = await _repo.EditInterviewItem(modelData);
                 }
@@ -131,7 +153,7 @@ namespace api.Controllers
         [HttpPost("intervwitemWithFiles")]
         public async Task<ActionResult<Intervw>> SaveNewInterviewItemWithFiles(IntervwItem interviewitem)
         {
-            var obj = await _repo.SaveNewInterviewItem(interviewitem);
+            var obj = await _repo.SaveNewInterviewItem(interviewitem, User.GetUsername());
 
             if(!string.IsNullOrEmpty(obj.Error)) return BadRequest(new ApiException(400, "Bad Request", obj.Error));
 
@@ -157,6 +179,58 @@ namespace api.Controllers
 
             return Ok(obj.intervwItem);
         }
+
+        [HttpGet("pagedAttendance")]
+        public async Task<ActionResult<PagedList<InterviewAttendanceDto>>> GetInterviewAttendance([FromQuery] AttendanceParams aParams)
+        {
+            var obj = await _repo.GetInterviewAttendancePagedList(aParams);
+            
+            if(obj == null) return BadRequest(new ApiException(400, "No records found", "No rcords found"));
+
+            
+            Response.AddPaginationHeader(new PaginationHeader(obj.CurrentPage, aParams.PageSize, 
+                obj.TotalCount, obj.TotalPages));
+
+            return Ok(obj);
+        }
+
+        [HttpPut("updateAttendance")]
+        public async Task<ActionResult<ICollection<InterviewAttendanceToUpdateDto>>> UpdateInterviewAttendance(ICollection<InterviewAttendanceToUpdateDto> updateDtos)
+        {
+            var dtos = await _repo.UpdateInterviewAttendance(updateDtos);
+
+            if(dtos.Count == 0) return BadRequest(new ApiException(400, "Bad Request", "Failed to update the attendances"));
+
+            return Ok(dtos);
+        }
+
+        [HttpGet("candidateattendances/{intereviewCandidateId}")]
+        public async Task<ActionResult<ICollection<IntervwAttendance>>> GetCandidateAttendances(int intereviewCandidateId)
+        {
+            var attendances = await _repo.GetAttendanceOfACandidate(intereviewCandidateId);
+            if(attendances == null) return BadRequest(new ApiException(400, "No Records found", "No records found"));
+
+            return Ok(attendances);
+        }
+
+        [HttpGet("attendancestatusdata")]
+        public async Task<ActionResult<ICollection<AttendanceStatus>>> GetAttendanceStatus()
+        {
+            var attendances = await _repo.GetAttendanceStatusData();
+
+            if(attendances == null) return BadRequest(new ApiException(400, "Not Found", "No data found"));
+
+            return Ok(attendances);
+        }
         
+        [HttpPost("interviewInvitations")]
+        public async Task<ActionResult<ICollection<AppId>>> ComposeInterviewInvitationMessages(ICollection<int> InterviewCandidateIds) {
+            
+            var errorMsg = await _repo.ComposeInterviewInvitationMessages(InterviewCandidateIds, User.GetUsername());
+
+            if(string.IsNullOrEmpty(errorMsg.ErrorString)) return Ok(errorMsg.ApplicationIds);
+
+            return BadRequest(new ApiException(400, "Failed to compose the message", errorMsg.ErrorString));
+        }
     }
 }

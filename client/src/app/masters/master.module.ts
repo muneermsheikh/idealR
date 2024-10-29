@@ -9,6 +9,7 @@ import { QualificationsComponent } from './qualifications/qualifications.compone
 import { IndustriesComponent } from '../Administration/industries/industries.component';
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { EmpAttachmentComponent } from './emp-attachment/emp-attachment.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -21,10 +22,13 @@ import { EmpAttachmentComponent } from './emp-attachment/emp-attachment.componen
     EmpEditComponent,
     EmpAttachmentComponent,
   ],
+
   imports: [
     CommonModule,
     SharedModule,
-    MasterRoutingModule
+    MasterRoutingModule,
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class MasterModule { }

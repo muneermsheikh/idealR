@@ -13,6 +13,7 @@ namespace api.Entities.HR
         public int ProfessionId { get; set;}
         public string ProfessionName { get; set; }
         public int? OrderItemId {get; set;}
+        [MaxLength(45)]
         public string PersonId { get; set;}
         
         [Required, MaxLength(15)]

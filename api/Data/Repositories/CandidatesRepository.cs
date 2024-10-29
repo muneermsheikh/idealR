@@ -1,6 +1,7 @@
 using System.Data.Common;
 using api.Data.Repositories.Admin;
 using api.DTOs;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Finance;
 using api.Entities.HR;
@@ -595,7 +596,7 @@ namespace api.Data.Repositories
             return obj;
         }
 
-        public async Task<string> WriteProspectiveExcelToDB(string fileNameWithPath, string Username)
+        public async Task<ReturnStringsDto> WriteProspectiveExcelToDB(string fileNameWithPath, string Username)
         {
             var strError = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
             return strError;

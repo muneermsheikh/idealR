@@ -5,6 +5,7 @@ import { InterviewEditComponent } from './interview-edit/interview-edit.componen
 import { RouterModule } from '@angular/router';
 import { IntervwResolver } from '../_resolvers/hr/intervwResolver';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
+import { InterviewAttendanceComponent } from './interview-attendance/interview-attendance.component';
 
 
 const routes = [
@@ -22,6 +23,8 @@ const routes = [
       interview: IntervwResolver
     }
   },
+
+  {path: 'attendance/:orderid',  component: InterviewAttendanceComponent}
  
 ]
 

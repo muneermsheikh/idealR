@@ -1,0 +1,46 @@
+
+<pagination *ngIf="pagination !== undefined"
+    class="stdd"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+
+<button class="btn fa fa-save fa-2x" title="updates ALL the attendances edited" 
+    [disabled]="attendancesToUpdate.length===0" (click)="updateAttendances()" ></button>
+<button class="btn fa fa-envelope fa-2x" title="invite selected candidates for the interview - by email" 
+    [disabled]="attendancesSelected.length===0" (click)="inviteCandidatesForInterview()" ></button>
+<button type="button" (click)="onReset()" class="fa fa-refresh fa-2x mx-2" ></button>
+<button type="button" routerLink="/interviews" class="fa fa-window-close fa-2x" ></button>
+
+
+<br><label class="stddML50 w50">Order<br>No</label>
+<label class="lbl w150">Customer</label>
+<label class="lbl w100">Venues</label>
+<label class="lbl w150">Category</label>
+<label class="lbl w85">Applicn<br>No</label>
+<label class="lbl w160">Candidate Name</label>
+<label class="lbl w85">Scheduled<br>at</label>
+<label class="lbl w85">Reported<br> at</label>
+<label class="lbl w85">Interviewd<br>at</label>
+<label class="lbl w150">Interview Status</label>
+<label class="lbl w200">Interviewer Remarks</label>
+
+<div *ngIf="attendances.length===0" class="my-2">
+    No Candidates assigned for the interview
+</div>
+<div *ngFor="let att of attendances">
+    <app-attendance-line
+        [att]="att"
+        (editEvent)="attendanceEdit($event)"
+        (reportedEvent)="reported($event)"
+        (deleteEvent)="attendanceDelete($event)"
+        (statusChangedEvent)="statusChanged($event)"
+        (selectedEvent)="selectionChanged($event)"
+    ></app-attendance-line>
+</div>

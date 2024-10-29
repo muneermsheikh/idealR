@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 import { AccountService } from 'src/app/_services/account.service';
 
 @Component({
@@ -24,11 +25,11 @@ export class FileuploadComponent {
         formData.append('file', f, f.name);
         
         this.accountService.copyProspectiveXLSFileToDB(formData).subscribe({
-          next: (response: string) => {
-            if(response === '') {
-              this.toastr.success(response + ' file(s) copied to database', 'success')
+          next: (response: IReturnStringsDto) => {
+            if(response.successString !== '') {
+              this.toastr.success(response.successString, 'success')
               } else {
-                this.toastr.warning(response, 'Failed to copy the excel data to database')
+                this.toastr.warning(response.errorString, 'Failed to copy the excel data to database')
               }
           }
           , error: (err: any) => {

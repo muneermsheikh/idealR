@@ -1,4 +1,5 @@
 using api.DTOs;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Helpers;
@@ -31,7 +32,7 @@ namespace api.Interfaces
         //Task<bool> UpdateCandidateAttachmentsWithFileNames (ICollection<string> filenames, int candidateId);
         Task<UserAttachment> GetUserAttachmentById (int attachmentId);
         Task<ICollection<UserAttachment>> GetUserAttachmentByCandidateId (int candidateid);
-        Task<string> WriteProspectiveExcelToDB(string fileNameWithPath, string username);
+        Task<ReturnStringsDto> WriteProspectiveExcelToDB(string fileNameWithPath, string username);
         Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string username);
     }
 }

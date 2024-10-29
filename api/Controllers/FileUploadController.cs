@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using api.DTOs.Admin;
 using api.DTOs.HR;
+using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
 using api.Entities.HR;
@@ -108,8 +109,10 @@ namespace api.Controllers
         }
         
         [HttpPost("interviewitem")]
-        public async Task<ActionResult<string>> UploadAndUpdateInterviewItem()
+        public async Task<ActionResult<InterviewItemWithErrDto>> UploadAndUpdateInterviewItem()
         {
+
+            var dtoErr = new InterviewItemWithErrDto();
 
             var folderName = Path.Combine("Assets", "InterviewerComments");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -144,24 +147,19 @@ namespace api.Controllers
                         }
                     }
                     
-
                 }
 
-                var dtoErr = new InterviewItemWithErrDto();
                 if(modelData.Id==0) {
-                    dtoErr = await _intervwRepo.SaveNewInterviewItem(modelData);
+                    dtoErr = await _intervwRepo.SaveNewInterviewItem(modelData, User.GetUsername());
                 } else {
                     dtoErr = await _intervwRepo.EditInterviewItem(modelData);
                 }
 
-                if(!string.IsNullOrEmpty(dtoErr.Error)) {
-                    return BadRequest(new ApiException(400, "Bad Request", dtoErr.Error));
-                }
-               
-                return "";  //dtoErr.intervwItem;
+                return dtoErr;
             }
             catch (Exception ex)
             {
+                
                 return StatusCode(500, "Internal server error" + ex.Message);
             }
 
@@ -214,8 +212,10 @@ namespace api.Controllers
         }
 
         [HttpPost("prospectiveXLS"), DisableRequestSizeLimit]
-        public  async Task<ActionResult<string>> ConvertProspectiveData()
+        public  async Task<ActionResult<ReturnStringsDto>> ConvertProspectiveData()
         {
+            var dtoErr = new ReturnStringsDto();
+
             //check for uploaded files
             var files = Request.Form.Files;
 
@@ -232,9 +232,11 @@ namespace api.Controllers
 
                         var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                         var FileExtn = Path.GetExtension(file.FileName);
-                        if(FileExtn != ".xlsx") return "Only '.xlsx' files are accepted";
+                        if(FileExtn != ".xlsx") {
+                            dtoErr.ErrorString = "Only .XLSX files accepted";
+                            return  dtoErr;
+                        }
                         
-
                         var filename=file.FileName[..9].ToLower();
 
                         var fullPath = Path.Combine(pathToSave, fileName);
@@ -249,11 +251,9 @@ namespace api.Controllers
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
-                        var errString = await _candRepo.WriteProspectiveExcelToDB(fullPath, User.GetUsername());
+                        dtoErr = await _candRepo.WriteProspectiveExcelToDB(fullPath, User.GetUsername());
 
-                        if(string.IsNullOrEmpty(errString)) return Ok("");
-
-                        return BadRequest(new ApiException(400, errString, "Failed to copy the file to database" ) );
+                        return dtoErr;
                     }
                 
                 } catch (Exception ex) {

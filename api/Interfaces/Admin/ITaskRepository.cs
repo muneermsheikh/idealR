@@ -4,6 +4,7 @@ using api.Entities.Messages;
 using api.Entities.Tasks;
 using api.Helpers;
 using api.Params.Admin;
+using api.Params.Objectives;
 
 namespace api.Interfaces.Admin
 {
@@ -27,6 +28,6 @@ namespace api.Interfaces.Admin
         Task<string> AssignTasksToHRExecs(ICollection<int> orderItemIds, string Username);
         Task<AppTask> GetOrGenertateTaskForResumeId(string ResumeId, string username, string assignedToUsername);
 
-        
+        Task<PagedList<MedicalObjective>> GetMedicalObjectives(string datefrom, string dateupto);
     }
 }

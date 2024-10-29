@@ -8,6 +8,7 @@ using api.Helpers;
 using api.Interfaces.Admin;
 using api.Interfaces.Orders;
 using api.Params.Admin;
+using api.Params.Objectives;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -139,5 +140,20 @@ namespace api.Controllers
             return await _taskRepo.GetOrGenertateTaskForResumeId(
                 resumeid, User.GetUsername(), assignedToUsername);
         }
+
+        [HttpGet("MedicalObjectives/{fromdate}/{uptodate}")]
+        public async Task<ActionResult<ICollection<MedicalObjective>>> GetMedicalObjectiveData(string fromdate, string uptodate)
+        {
+            var pagedList = await _taskRepo.GetMedicalObjectives(fromdate, uptodate);
+
+            if(pagedList.Count ==0) return BadRequest("No Objectives data available during the dates mentioned");
+
+            Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
+                pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
+            
+            return Ok(pagedList);
+        }
+    
+
     }
 }

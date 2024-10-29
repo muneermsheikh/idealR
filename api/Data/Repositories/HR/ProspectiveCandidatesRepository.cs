@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using api.DTOs;
 using api.DTOs.HR;
 using api.Entities.HR;
@@ -6,11 +5,9 @@ using api.Entities.Identity;
 using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.HR;
-using api.Params.Admin;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,18 +30,18 @@ namespace api.Data.Repositories.HR
             _context = context;
         }
 
-
-        public async Task<int> ConvertProspectiveToCandidate(int prospectiveId, string username)
+        public async Task<ProspectiveReturnDto> ConvertProspectiveToCandidate(int prospectiveId, string username)
         {
             var prospective = await _context.ProspectiveCandidates.FindAsync(prospectiveId);
 
-            //check unique values of PP and Aadhar
+            if(string.IsNullOrEmpty(prospective.Email)) return null;
+            
                var user = await _userManager.FindByEmailAsync(prospective.Email);
                var charPosition= !prospective.CandidateName.Contains(' ') ? prospective.CandidateName.IndexOf("-", StringComparison.Ordinal):0;
 
                var prospectiveKnownAs = charPosition <=0 ? prospective.CandidateName : prospective.CandidateName[..charPosition];
                
-               if(user == null) {    
+               if(user == null) {     
                     user = new AppUser
                     {
                          //UserType = "Candidate",
@@ -55,7 +52,7 @@ namespace api.Data.Repositories.HR
                          UserName = prospective.Email
                     };
                     var result = await _userManager.CreateAsync(user, "newPassword0#");
-                    if (!result.Succeeded) return 0;
+                    if (!result.Succeeded) return null;
                }
 
                //create roles
@@ -89,15 +86,94 @@ namespace api.Data.Repositories.HR
                // finally, create the object candidate
                var cand = await _candidateRepository.CreateCandidateAsync(cvDto, username);
 
-               if (cand == null) return 0;
+               if (cand == null) return null;
                
                //once succeeded, delete the record from prospective list.
-               _context.ProspectiveCandidates.Remove(prospective);
-               _context.Entry(prospective).State=EntityState.Deleted;
+                _context.ProspectiveCandidates.Remove(prospective);
+                _context.Entry(prospective).State=EntityState.Deleted;
 
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                var dto = new ProspectiveReturnDto {CandidateId = cand.Id, ApplicationNo = cand.ApplicationNo};
 
-               return cand.ApplicationNo;
+            return dto;
+        }
+
+        //called by Interview.UpdateIntervwItem while adding new candidates to IntervwItemCandidates.  
+        //this does not delete from Prospective after converting to Candidates, because the calling program
+        //is still using Prospective Table.
+        //It deletes from Prospective once the UpdateIntervwItemCandidates process is over
+        public async Task<bool> ConvertProspectiveNoDeleteFromProspective(ICollection<int> interviewItemCandidateIds, string Username)
+        {
+            var prospectiveCandidateIds = await _context.IntervwItemCandidates
+                .Where(x => interviewItemCandidateIds.Contains(x.Id))
+                .Select(x => x.ProspectiveCandidateId)    
+            .ToListAsync();
+
+            var prospectives = await _context.ProspectiveCandidates.Where(x => 
+                prospectiveCandidateIds.Contains(x.Id)).ToListAsync();
+            var interviewItemCandidates = await _context.IntervwItemCandidates.Where(x => 
+                prospectiveCandidateIds.Contains(x.ProspectiveCandidateId)).ToListAsync();
+
+            foreach(var prospective in prospectives) {
+                //check unique values of PP and Aadhar
+                var user = await _userManager.FindByEmailAsync(prospective.Email);
+                var charPosition= !prospective.CandidateName.Contains(' ') ? prospective.CandidateName.IndexOf("-", StringComparison.Ordinal):0;
+
+                var prospectiveKnownAs = charPosition <=0 ? prospective.CandidateName : prospective.CandidateName[..charPosition];
+                
+                if(user == null) {     
+                    user = new AppUser
+                    {       
+                        KnownAs = prospectiveKnownAs,
+                        Gender = prospective.Gender,
+                        PhoneNumber = prospective.PhoneNo,
+                        Email = prospective.Email,
+                        UserName = prospective.Email
+                    };
+                    var result = await _userManager.CreateAsync(user, "newPassword0#");
+                    if (!result.Succeeded) return false;
+                }
+
+                //create roles
+                //var succeeded = await _roleManager.CreateAsync(new AppRole{Name="Candidate"});
+                var roleResult = await _userManager.AddToRoleAsync(user, "Candidate");
+                //if (!roleResult.Succeeded) return null;
+                       
+                var userphones = new List<UserPhone>{new() {MobileNo=prospective.PhoneNo, IsMain=true, IsValid=true}};
+                if(!string.IsNullOrEmpty(prospective.AlternateNumber)) {
+                    var userph=new UserPhone{MobileNo=prospective.AlternateNumber, IsMain=false, IsValid=true};
+                    userphones.Add(userph);
+                }
+
+                var userprofessions = new List<UserProfession>{new() {ProfessionId=prospective.ProfessionId}};
+                var cvDto = new RegisterDto{
+                    Gender="M", FirstName = prospective.CandidateName, KnownAs = prospectiveKnownAs, 
+                    Username = user.UserName, Email = prospective.Email, AppUserId = user.Id,
+                    ReferredByName = prospective.Source, UserProfessions=userprofessions, UserPhones=userphones,
+                    City = prospective.CurrentLocation, Nationality = prospective.Nationality,
+                    Source = prospective.Source, Address=prospective.Address, Pin=""
+                };
+
+                if (!string.IsNullOrEmpty(prospective.Age)) {
+                    var age = prospective.Age[..2];
+                    cvDto.DOB = DateTime.Today.AddYears(-Convert.ToInt32(age));
+                }
+            
+                // finally, create the object candidate
+                var cand = await _candidateRepository.CreateCandidateAsync(cvDto, Username);
+                
+                //update IntervwItemCandidates.ContactId
+                var itemCandidate = interviewItemCandidates.Where(x => x.ProspectiveCandidateId==prospective.Id).FirstOrDefault();
+                if(itemCandidate != null) {
+                    itemCandidate.CandidateId=cand.Id;
+                    itemCandidate.ApplicationNo=cand.ApplicationNo;
+                    _context.Entry(itemCandidate).State = EntityState.Modified;
+                }
+
+            }
+               
+            return await _context.SaveChangesAsync() > 0;
+
         }
 
         public async Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(ProspectiveCandidateParams pParams)

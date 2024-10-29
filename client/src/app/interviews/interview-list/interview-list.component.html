@@ -11,7 +11,7 @@
     lastText="&raquo;">
 ></pagination>
 
-<label class="stdd" style="width: 250px; margin-left: 15px; text-align: right;">Enter Order No to generate new schedule</label>
+<label class="stdd" style="width: 250px; margin-left: 30px; text-align: right;">Enter Order No to generate new schedule</label>
 <input type="text" title="enter order number to get the interview data" 
     class="stdd form-control w100" style="margin-left: 20px;" [(ngModel)]="orderNoToGet">
 
@@ -20,7 +20,7 @@
 <button type="button" routerLink="/" class="fa fa-window-close fa-2x" ></button>
 
 
-<br><label class="stdd w100">Order No</label>
+<label class="lbl w100">Order No</label>
 <label class="lbl w100">Dated</label>
 <label class="lbl w200">Customer</label>
 <label class="lbl w200">Interview Venues</label>
@@ -36,5 +36,6 @@
         [interview]="intervw"
         (editEvent)="interviewEdit($event)"
         (deleteEvent)="interviewDelete($event)"
+        (attendanceEvent)="attendance($event)"
     ></app-interview-line>
 </div>

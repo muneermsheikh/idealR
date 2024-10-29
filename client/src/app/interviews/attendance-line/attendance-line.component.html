@@ -1,0 +1,85 @@
+
+<div *ngIf="att">
+    <div (click)= "getCandidateInterviewStatuses()" [ngClass]="showStepper ? 'fa fa-eye' : 'fa fa-eye-close'" ></div>
+    
+    <input type="checkbox" style="margin-left: 15px; margin-right: 15px;"
+        class="form-check-input w15 hAlignCenter"
+        [(ngModel)]="att.checked"
+        (click)="selectedClicked()"
+>
+    <div class="stdd w50">{{att.orderNo}}</div>
+    <div class="stdd w150">{{att.customerName}}</div>
+    <app-text-input [label]="'Venue'" [(ngModel)]="att.interviewVenue" class="stdd w100" id="interviewVenue" ></app-text-input>
+    <div class="stdd w150">{{att.professionName}}</div>
+    
+    <div class="stdd w75" style="text-align: center;">{{att.applicationNo}}</div>
+    <div class="stdd w150">{{att.candidateName}}</div>
+    
+    <input type="text" id="scheduledFDrom"
+        class="stdd w80"
+        placeholder="Complete By"
+        [(ngModel)]="att.scheduledFrom"
+        bsDatepicker
+        [bsValue]="bsValueDate"
+        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+    >
+    
+    <input type="text" id="reportedAt"
+        class="stdd w80"
+        placeholder="Reported at"
+        [(ngModel)]="att.reportedAt"
+        bsDatepicker
+        [bsValue]="bsValueDate"
+        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+    >
+    
+    <input type="text" id="interviewedAt"
+        class="stdd w80"
+        placeholder="Interviewed At"
+        [(ngModel)]="att.interviewedAt"
+        bsDatepicker
+        [bsValue]="bsValueDate"
+        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+    >
+
+    <ng-select class="stdd w150"
+        [items]="selectionStatuses"
+        bindLabel="name"
+        bindValue="name"
+        labelForId="id"
+        clearAllText="Clear"
+        [(ngModel)]="att.interviewStatus"
+        (change)="statusChangeClicked()"
+    ></ng-select>
+    <app-text-input [label]="'interviewer Remarks'" [(ngModel)]="att.interviewerRemarks" class="stdd w200" ></app-text-input>
+
+    <button class="btn w15 fa fa-pencil" title="edit this assignment" (click)="editClicked()" ></button>
+    <button class="btn w15 fa fa-bars" title="mark the candidate as reported for interview" (click)="reportedClicked()" ></button>
+    <button class="btn w15 fa fa-trash" (click)="deleteClicked()" ></button>
+    <div *ngIf="showStepper">
+        <mat-horizontal-stepper labelPosition="bottom" linear>
+            <mat-step label="Scheduled" 
+                  completed="true">
+            </mat-step>
+            <mat-step label="Interviewed" 
+                completed="candidateInterviewStatuses.interviewedAt !== null" >
+            </mat-step>
+            <mat-step label="Billing Address" 
+                    completed="false" optional>
+                <p>Billing Address Details</p>
+                <div>
+                    <button mat-button matStepperPrevious>
+                        Back
+                    </button>
+                    <button mat-button matStepperNext>
+                        Next
+                    </button>
+                </div>
+            </mat-step>
+            <mat-step label="Place Order" 
+                    completed="false">
+                <p>Order Details</p>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </div>
+</div>

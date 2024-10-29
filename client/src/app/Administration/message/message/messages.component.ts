@@ -150,7 +150,7 @@ export class MessageComponent implements OnInit {
     this.messageSentOn = msg.messageSent;
     this.iMessageId = msg.id;
 
-    this.dtMsgSentMoreThan2000 = this.messageSentOn===undefined ? false : this.messageSentOn > new Date('2000-01-01');
+    this.dtMsgSentMoreThan2000 = this.messageSentOn > new Date('2000-01-01');
     
     this.subject = msg.subject;
     this.toEmailId = msg.recipientEmail;
@@ -198,7 +198,7 @@ export class MessageComponent implements OnInit {
       senderUsername: msg.senderUsername, recipientUsername: msg.recipientUsername,
       ccEmailAddress: "", subject: msg.subject, content: this.msgToDisplay, id: msg.id }
 
-    var confirmMsg = 'confirm send this Message. WARNING: this cannot be undone';
+    var confirmMsg = 'confirm send this Message.';
 
     const observableInner = this.service.sendMessage(thisMsg);
     const observableOuter = this.confirm.confirm('confirm Send Message', confirmMsg);

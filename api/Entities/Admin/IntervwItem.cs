@@ -4,6 +4,11 @@ namespace api.Entities.Admin
     {
         public int IntervwId { get; set; }
         public string InterviewVenue { get; set; }
+        public string VenueAddress { get; set; }
+        public string VenueAddress2 { get; set; }
+        public string VenueCityAndPIN { get; set; }
+        public string SiteRepName { get; set; }
+        public string SitePhoneNo { get; set; }
         public int OrderItemId { get; set; }
         public int ProfessionId { get; set; }
         public string ProfessionName { get; set;}   

@@ -12,9 +12,10 @@
         <label class="lbl w125 mx-2">Interviewer Name:</label>
         <app-text-input [label]="'Interviewer Name'" formControlName="interviewerName" class="stdd w150" ></app-text-input>
         
-        <button class="btn fa fa-save mx-2 green" (click)="savewithattachments()" style="color: aliceblue; vertical-align: top;" ></button>
+        <button class="btn fa fa-save mx-2 green" (click)="savewithattachments()" 
+            title="saves the interview item with assignments, along with attachments" style="color: aliceblue; vertical-align: top;" ></button>
         <button class="btn fa fa-users w15" style="color: aliceblue;"  (click)="getMatchingCVs(interviewItem)"
-                title="gets candidates available and matching this profession.  Sources from candidates as well as prospetive candidates"></button>
+            title="gets candidates available and matching this profession.  Sources from candidates as well as prospetive candidates"></button>
       
         <hr style="margin: 0;">
         <br><label class="lbl w75" style="margin-left: 25px;">App No</label>
@@ -28,6 +29,7 @@
         <div formArrayName="interviewItemCandidates" class="my-2" style="margin-left: 25px;">
             <div *ngIf="upload" style="font-size: x-small;">
                 <input class="stdd" type="file" id="file" (change)="onFileInputChange($event)" >
+                <button class="btn fa fa-window-close" (click)="upload = !upload" ></button>
             </div>
         
             <div *ngFor="let item of interviewItemCandidates.controls; let i=index; ">
@@ -37,7 +39,9 @@
                     <app-text-input [label]="'application No'" formControlName="applicationNo" (click)="addInterviewItemCandidate(i)" class="stdd w75" ></app-text-input>
                     <app-text-input [label]="'Candidate Name'" formControlName="candidateName" class="stdd w150" ></app-text-input>
                     <app-text-input [type]="'datetime-local'" class="dt" formControlName="scheduledFrom" [label]="'Scheduled time'"></app-text-input>
-                    <app-text-input [type]="'datetime-local'" class="dt" formControlName="reportedAt" [label]="'Reported At'"></app-text-input>
+                    <!-- <app-text-input [type]="'datetime-local'" class="dt" formControlName="reportedAt"  
+                        [label]="'Reported At'" (dblclick)="registerReportedAt(i)"></app-text-input> -->
+                    <input type="datetime-local" class="dt" formControlName="reportedAt" (dblclick)="registerReportedAt(i)">
                     <app-text-input [type]="'datetime-local'" class="dt" formControlName="interviewedAt" [label]="'Interviewed At'"></app-text-input>
                     
                     <ng-select 
@@ -57,7 +61,8 @@
                         [label]="'Attachment Full File Name'"></app-text-input> -->
 
                     <button type="button" class="btn w15 fa fa-download" style="color: aliceblue;" title="download interviewer comments" 
-                        (click)="downloadattachment(i)" ></button>
+                        (click)="downloadattachment(i)" 
+                        ></button>
                               
                     <button type="button" class="btn w15 fa fa-upload" style="color: aliceblue;" 
                         title="upload a new interviewer comment.  Any existing attachment will be REPLACED" 
@@ -72,6 +77,6 @@
     </form>
 </div>
 
-<!-- <div style="font-size: smaller;">
+<div style="font-size: smaller;">
     {{form.value | json}}
-</div> -->
+</div>

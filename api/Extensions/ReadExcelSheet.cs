@@ -1,6 +1,8 @@
 using System.Data;
 using System.Data.Common;
+using System.Drawing;
 using api.Data;
+using api.DTOs.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
@@ -13,14 +15,15 @@ namespace api.Extensions
 {
     public static class ReadExcelSheet
     {   
-        public static async Task<string> ReadProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
+        public static async Task<ReturnStringsDto> ReadProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
         {
             // var CategoryRef - label in row2, column1, data in row2, column 2  //this is redendent
             // var OrderItemId = label in row2, col1, data in row3, col2 ;
             // var professionId = label in row2, col3; data in row2, col4       //this is redendent
             //var ProfessionName = label in row2, col 5, data in row2, col6     //this is redendent
             //column titles in row 4, data starts from row 5
-            var strError="";
+            var dtoErr = new ReturnStringsDto();
+
             int rowTitle=4;     //data starts from this row
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var package = new ExcelPackage(new System.IO.FileInfo(filePath)))
@@ -34,8 +37,8 @@ namespace api.Extensions
                     rows = worksheet.Dimension.Rows;
                     columns = worksheet.Dimension.Columns;
                 } catch (Exception ex) {
-                    strError = ex.Message;
-                    return strError;
+                    dtoErr.ErrorString = ex.Message;
+                    return dtoErr;
                 }
                 
                 string CategoryRef="", ProfessionName=""; 
@@ -55,11 +58,15 @@ namespace api.Extensions
                             default:break;
                         }
                     } catch (Exception ex) {
-                        return ex.Message;
+                        dtoErr.ErrorString = ex.Message;
+                        return dtoErr;
                     }
                 }
 
-                if(OrderItemId == 0) return "OrderItemId not defined";
+                if(OrderItemId == 0) {
+                    dtoErr.ErrorString = "OrderItem Id Not defined";
+                    return dtoErr;
+                }
 
                 var query = await (from item in context.OrderItems where item.Id == OrderItemId
                         join order in context.Orders on item.OrderId equals order.Id
@@ -69,17 +76,23 @@ namespace api.Extensions
                         ProfessionName=cat.ProfessionName}
                 ).FirstOrDefaultAsync();
 
-                if(query==null) return "Invalid Order Item Id";
+                if(query==null) {
+                    dtoErr.ErrorString = "Invalid OrderItem Id";
+                    return dtoErr;
+                }
 
                 ProfessionName = query.ProfessionName;
-                CategoryRef = query.CategoryRef[25..];
+                var lng = query.CategoryRef.Length;
+                var cutLength = lng > 25 ? 25 : lng;
+                CategoryRef = query.CategoryRef[..cutLength];
                 ProfessionId = query.ProfessionId;
+                
                 
                 //DataTable dataTable = new();
                 
                 int intCandidateName=0, intEmail=0, intAlternateEmail=0, intAlternatePhone=0, intDob=0;
                 int intMobileNo=0, intAlternateNo=0, intResumeTitle=0, intKeySkills=0, intWorkExp=0, intCurrentLocation=0;
-                int intEducation=0, intGender=0, intAge=0, intAddress=0, intResumeId=0,intDesignation=0;
+                int intEducation=0, intGender=0, intAge=0, intAddress=0, intCity=0, intResumeId=0,intDesignation=0;
     
                 var DateRegistered = DateTime.Now;
                 for(int col=1; col <= columns; col++) {
@@ -100,6 +113,7 @@ namespace api.Extensions
                         case "gender": intGender=col;break;
                         case "age": intAge=col;break;
                         case "address": intAddress=col;break;
+                        case "city": intCity=col;break;
                         case "resumeid": case "resume id": intResumeId=col;break;
                         case "designation": intDesignation=col;break;
                         default:break;
@@ -108,7 +122,7 @@ namespace api.Extensions
                 
                 string CandidateName = "", EmailId = "", AlternateEmailId = "", AlternatePhone = "", DOB = "";
                 string MobileNo = "", AlternateNumber = "", ResumeTitle = "", KeySkills = "", WorkExp = "", CurrentLocation = "";
-                string Education = "", Gendr = "", Age = "", Address = "", ResumeId = "", Designation = "";
+                string Education = "", Gendr = "", Age = "", Address = "", City="", ResumeId = "", Designation = "";
                     
                 for (int row = rowTitle+1; row <= rows; row++)
                 {
@@ -128,7 +142,8 @@ namespace api.Extensions
                     Gendr = intGender == 0 ? "Male" : worksheet.Cells[row, intGender].Value?.ToString() ?? "Male";
                     Gendr = Gendr == "m" ? "Male" : "Female";
                     Age =  intAge == 0 ? "" : worksheet.Cells[row, intAge].Value?.ToString() ?? "";
-                    Address = intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    Address =  intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    City = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCity == 0 ? intCurrentLocation : intCity].Value?.ToString() ?? "";
                     ResumeId = intResumeId == 0 ? "" : worksheet.Cells[row, intResumeId].Value?.ToString() ?? "";
                     Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value?.ToString() ?? "";
                     
@@ -137,13 +152,15 @@ namespace api.Extensions
                         CategoryRef = CategoryRef,
                         OrderItemId = OrderItemId,
                         Gender = Gendr.ToLower() == "male" ? "m" : "f",
-                        CandidateName = CandidateName ,
+                        CandidateName = CandidateName.Length > 49 ? CandidateName[..49]: CandidateName ,
                         PersonId = ResumeId,
+                        ResumeId = ResumeId,
                         Source = Source,
                         //DateOfBirth = dob,
-                        Age = Age,
+                        Age = Age.Length > 10 ? Age[..10] : Age,
                         Address = Address,
-                        PhoneNo = MobileNo,
+                        City = City,
+                        PhoneNo = MobileNo.Length > 15 ? MobileNo[..15] : MobileNo,
                         AlternateNumber = AlternateNumber,
                         CurrentLocation = CurrentLocation,
                         Email = EmailId,
@@ -151,7 +168,7 @@ namespace api.Extensions
                         ProfessionId = ProfessionId,
                         ProfessionName = ProfessionName,
                         DateRegistered = DateRegistered,
-                        ResumeTitle = ResumeTitle,
+                        ResumeTitle = ResumeTitle.Length > 49 ? ResumeTitle[..49] : ResumeTitle,
                         Education = Education,
                         WorkExperience = WorkExp,
                         Username=Username
@@ -168,16 +185,38 @@ namespace api.Extensions
                 }
             }
 
+            bool isSaved = false;
             int recAffected = 0;
-            try {
-                recAffected=await context.SaveChangesAsync();
-            } catch (DbException ex) {
-                strError = ex.Message;
-            } catch (Exception ex) {
-                strError = ex.Message;
-            }
+            do
+                {
+                    try
+                    {
+                        recAffected += await context.SaveChangesAsync();
+                        isSaved = true;
+                        dtoErr.SuccessString = recAffected + " records copied";
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        foreach (var entry in ex.Entries) {
+                            Console.Write("Prospective candidates Exception - " + ex.InnerException.Message);
 
-            return string.IsNullOrEmpty(strError) ? "" : strError;
+                            entry.State = EntityState.Detached; // Remove from context so won't try saving again.
+                            dtoErr.ErrorString += ex.Message;
+                        }
+                    }
+                    catch (DbException ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+
+                    catch (Exception ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+                }
+            while (!isSaved);
+
+            return dtoErr;
         }
 
         public static async Task<string> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
