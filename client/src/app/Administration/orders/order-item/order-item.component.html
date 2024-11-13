@@ -21,10 +21,13 @@
                     : order.contractReviewStatus==='regretted' ? 'b' : ''" 
                (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
           
-          <div class="stdd w100" title="click for technical & commercial review of this order" 
+          <div *ngIf="order.contractReviewedOn === null" class="stdd w100 b" title="click for technical & commercial review of this order" 
+               (click)="contractReviewClicked()">Not Reviewed</div>
+          <div *ngIf="order.contractReviewedOn !== null" class="stdd w100" title="click to review/edit technical & commercial review of this order" 
                (click)="contractReviewClicked()">{{order.contractReviewedOn | date: 'dd-MMM-yy'}}
           </div>
-          <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall red cursorpointer"
+
+          <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall b cursorpointer"
                (click)="forwardOrderToHRDept()" title="click to forward this Order to HR Dept Head"
           > Not forwarded</div>
 

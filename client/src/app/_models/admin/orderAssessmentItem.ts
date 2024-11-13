@@ -18,3 +18,21 @@ export interface IOrderAssessmentItem
      designedBy: string;
      orderAssessmentItemQs: IOrderAssessmentItemQ[];
 }
+
+export class OrderAssessmentItem implements IOrderAssessmentItem
+{
+     id= 0;
+     orderAssessmentId= 0;
+     assessmentRef= '';
+     orderItemId= 0;
+     customerName= '';
+     professionId= 0;
+     professionName= '';
+     orderId= 0;
+     orderNo= 0;
+     approvedBy= '';
+     dateDesigned = new Date;     
+     requireCandidateAssessment = false;
+     designedBy= '';
+     orderAssessmentItemQs: IOrderAssessmentItemQ[] = [];
+}

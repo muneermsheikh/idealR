@@ -10,6 +10,10 @@ import { IndustriesComponent } from '../Administration/industries/industries.com
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { EmpAttachmentComponent } from './emp-attachment/emp-attachment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
+import { CategoryQBankModalComponent } from './category-qbank-modal/category-qbank-modal.component';
+import { CategoryQBankComponent } from './category-qbank/category-qbank.component';
+import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.component';
 
 
 @NgModule({
@@ -21,6 +25,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     IndustriesComponent,
     EmpEditComponent,
     EmpAttachmentComponent,
+    CategoryEditModalComponent,
+    CategoryQBankModalComponent,
+    CategoryQBankComponent,
+    CategoryQBankQsComponent
   ],
 
   imports: [

@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem';
 import { IOrderAssessmentItemQ } from 'src/app/_models/admin/orderAssessmentItemQ';
 import { User } from 'src/app/_models/user';
@@ -204,11 +205,20 @@ export class OrderAssessmentItemComponent implements OnInit {
     }
 
     this.service.getAssessmentQBankOfCategoryId(professionid).subscribe({
-      next: (qs: IOrderAssessmentItemQ[] ) => {
-        if(qs.length > 0) {
+      next: (qs: IAssessmentQBank) => {
+        if(qs !== null) {
           this.orderAssessmentItemQs.clear();
-          qs.forEach(x => {
-            this.orderAssessmentItem?.orderAssessmentItemQs.push(x);
+          qs.assessmentStddQs.forEach(x => {
+            
+            var stddQ: IOrderAssessmentItemQ = {
+              id:0, orderAssessmentItemId: this.orderAssessmentItem!.id,
+              orderItemId: this.orderAssessmentItem!.orderItemId,
+              orderId: this.orderAssessmentItem!.orderId,
+              questionNo: x.questionNo, question: x.question,
+              subject: x.subject, maxPoints: x.maxPoints,
+              isMandatory: false
+            }
+            this.orderAssessmentItem?.orderAssessmentItemQs.push(stddQ);
           })
         } else {
           this.toastr.warning('Failed to retrieve the standard assessment Questions');

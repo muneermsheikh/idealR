@@ -8,5 +8,6 @@ namespace api.DTOs.HR
         public string InterviewStatus { get; set; }
         public DateTime InterviewStatusDate { get; set; }
         public string InterviewerRemarks { get; set; }
+        public string AttachmentFileNameWithPath { get; set; }
     }
 }

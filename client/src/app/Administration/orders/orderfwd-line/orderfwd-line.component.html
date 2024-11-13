@@ -4,12 +4,12 @@
 
 <div *ngIf="fwd">
     <div style="display: inline-block; width: max-content;">
-        <div class="stdd w50 mx-2" >{{fwd.orderNo}}</div>
-        <div class="stdd w100 mx-2" >{{fwd.orderDate | date: 'dd-MMM-yy'}}</div>
-        <div class="stdd w250 mx-2">{{fwd.customerName}}</div>
-        <div class="stdd w250 mx-2">{{fwd.professionName}}</div>
-        <div class="stdd w250 mx-2">{{fwd.charges}}</div>
-        <button class="btn btn-sm fa fa-trash red" style="margin-left: 250px;" title="delete order forwarded to agent"
+        <div class="stdd w50" >{{fwd.orderNo}}</div>
+        <div class="stdd w100" >{{fwd.orderDate | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w200">{{fwd.customerName}}</div>
+        <div class="stdd w200">{{fwd.professionName}}</div>
+        <div class="stdd w250">{{fwd.charges}}</div>
+        <button class="btn btn-sm fa fa-trash red" style="margin-left: 50px;" title="delete order forwarded to agent"
             (click)="deleteOrder(fwd.id)"></button>
         <button (click)="hideCategory=!hideCategory" 
             style="display: inline-block; font-size: large; font-weight: bold;"  >{{hideCategory ? '-':'+'}}</button>

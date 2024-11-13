@@ -27,9 +27,9 @@
         <input class="stdd w110 mx-2" type="text" placeholder="Order Date" formControlName="completeBy"
             bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
 
-        <app-text-input class="stdd w110 mx-2" [label]="'City'" formControlName="cityOfWorking" ></app-text-input>
-        <app-text-input class="stdd w150 mx-2" [label]="'Country'" formControlName="country" ></app-text-input>
-        <app-text-input class="stdd w110 mx-5" [label]="'Order Ref'" formControlName="orderRef" ></app-text-input>
+        <app-text-input class="stdd w110 mx-1" [label]="'City'" formControlName="cityOfWorking" ></app-text-input>
+        <app-text-input class="stdd w100 mx-1" [label]="'Country'" formControlName="country" ></app-text-input>
+        <app-text-input class="stdd w200" [label]="'Order Ref'" formControlName="orderRef" ></app-text-input>
         
         <br><label class="lbl w150 mx-2">Project Head</label>
         <div class="stdd w150 mx-2">
@@ -65,10 +65,8 @@
             </div>
         </div>
          <label class="lbl w100">Status</label>
-        <div class="stdd fontSmaller w120 yellow">{{order.status}}</div>
+        <div class="stdd fontSmaller w110 yellow">{{order.status}}</div>
 
-
-       
         <button type="submit" [disabled]="!form.dirty" style="margin-left: 25px!important;" 
             class="fa fa-save fa-2x" (click)="onSubmit()" title="Save the requirement" >
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
@@ -115,8 +113,8 @@
                     <input type="checkbox" formControlName="selected" 
                         style="display: inline-block; width: 15px; margin-left: 8px; margin-right: 8px;">
 
-                    <app-text-input class="stdd w30" [label]="''" formControlName="srNo"></app-text-input>
-                    
+                    <!-- <app-text-input class="w40" style="display: inline-block;font-size: small;" formControlName="srNo"></app-text-input> -->
+                    <input type="text" class="w40" style="margin: 0 1px 0 1px; text-align: right;" formControlName="srNo">
                     <ng-select  class="stdd w240" *ngIf="categories" 
                         [items]="categories"
                         bindLabel="professionName"
@@ -128,9 +126,9 @@
 
                     <input type="checkbox" formControlName="ecnr" class="chk w30" >
                     <app-text-input class="stdd w100" [label]="'Source From'" formControlName="sourceFrom"></app-text-input>
-                    <app-text-input class="stdd w50" [label]="'quantity'" formControlName="quantity" ></app-text-input>
+                    <app-text-input class="stdd w50" [label]="'quantity'" formControlName="quantity" (change)="qntyChanged(i)" ></app-text-input>
                     <app-text-input class="stdd w50" [label]="'Min CVs'" formControlName="minCVs" ></app-text-input>
-                    <app-text-input class="stdd w50" [label]="'max CVs'" style="padding-right: 10px;" formControlName="maxCVs" ></app-text-input>
+                    <app-text-input class="stdd w50" [label]="'max CVs'" formControlName="maxCVs" ></app-text-input>
                     <!-- <input type="radio" class="inputcheck form-check-input " value=1 formControlName="requireAssessment" >Y
                     <input type="radio" class="inputcheck form-check-input " value=0 formControlName="requireAssessment" >N -->
 
@@ -143,18 +141,20 @@
                         [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
                     >
                     <input type="text" class="stdd w150 cursorpointer" title="contract review of this category"
-                        (click)="openContractReviewItemModal(i)" formControlName="reviewItemStatus" >
+                        formControlName="reviewItemStatus" >
 
                     <div *ngIf="!isAddMode" class="stdd">       
+                        <button class="btn w10 fa fa-expand" (click)="openContractReviewItemModal(i)" 
+                            title="click to edit/prepare Contract Review for this category"></button>
                         <button class="w10 btn fa fa-question" 
-                                title="design Assessment Questions for this category" 
-                                (click)="assessItem(i)" 
-                                ></button>
+                            title="design Assessment Questions for this category" 
+                            (click)="displayOrderAssessmentItem(i)" 
+                        ></button>
 
                         <button class="btn fa fa-list" title="Open Job Description"
-                                (click)="openJDModal(i)" ></button>
+                            (click)="openJDModal(i)" ></button>
                         <button class="btn fa fa-dollar" title="Open Remuneration"
-                                (click)="openRemunerationModal(i)" ></button>
+                            (click)="openRemunerationModal(i)" ></button>
                     </div>
                     <button (click)="removeItem(i)" class="btn fa fa-trash red" 
                         title="remove this item"
@@ -170,6 +170,6 @@
    </ul>
 </div>
 
-<!-- <div style="font-size: small;">
+<div style="font-size: small;">
     {{form.value |json}}
-</div> -->
+</div>

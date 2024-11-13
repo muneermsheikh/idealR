@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 
@@ -6,7 +7,7 @@ namespace api.Interfaces.Orders
     public interface IJDAndRemunRepository
     {
          //Job descriptions
-        Task<JobDescription> GetJDOfOrderItem(int OrderItemId);
+        Task<JDDto> GetJDOfOrderItem(int OrderItemId);
         Task<JobDescription> AddJobDescription(JobDescription jobDescription);
         Task<bool> EditJobDescription(JobDescription jobDescription);
         Task<bool> DeleteJobDescription (int jobDescriptionId);

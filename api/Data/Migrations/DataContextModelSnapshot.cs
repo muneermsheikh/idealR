@@ -551,8 +551,8 @@ namespace api.Data.Migrations
 
                     b.Property<string>("KnownAs")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
@@ -2350,7 +2350,7 @@ namespace api.Data.Migrations
                     b.ToTable("VoucherItem");
                 });
 
-            modelBuilder.Entity("api.Entities.HR.AssessmentQBank", b =>
+            modelBuilder.Entity("api.Entities.HR.AssessmentBank", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2369,7 +2369,43 @@ namespace api.Data.Migrations
                     b.HasIndex("ProfessionId")
                         .IsUnique();
 
-                    b.ToTable("AssessmentQBanks");
+                    b.ToTable("AssessmentBanks");
+                });
+
+            modelBuilder.Entity("api.Entities.HR.AssessmentBankQ", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssessmentBankId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AssessmentParameter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsStandardQ")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssessmentBankId");
+
+                    b.ToTable("AssessmentBankQs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentQStdd", b =>
@@ -2405,42 +2441,6 @@ namespace api.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("AssessmentQStdds");
-                });
-
-            modelBuilder.Entity("api.Entities.HR.AssessmentStddQ", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssessmentParameter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AssessmentQBankId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsMandatory")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsStandardQ")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaxPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QNo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssessmentQBankId");
-
-                    b.ToTable("AssessmentStddQs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CVRef", b =>
@@ -3433,37 +3433,6 @@ namespace api.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("api.Entities.Master.CategoryAssessmentQBank", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssessmentParameter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AssessmentQBankId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsStandardQ")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaxPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QNo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CategoryAssessmentQBanks");
-                });
-
             modelBuilder.Entity("api.Entities.Master.ChecklistHRData", b =>
                 {
                     b.Property<int>("Id")
@@ -3675,7 +3644,7 @@ namespace api.Data.Migrations
                     b.Property<string>("RecipientEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RecipientId")
+                    b.Property<int>("RecipientId")
                         .HasColumnType("int");
 
                     b.Property<string>("RecipientUsername")
@@ -3687,7 +3656,7 @@ namespace api.Data.Migrations
                     b.Property<string>("SenderEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SenderId")
+                    b.Property<int>("SenderId")
                         .HasColumnType("int");
 
                     b.Property<string>("SenderUsername")
@@ -3697,10 +3666,6 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RecipientId");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
@@ -4148,11 +4113,11 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Entities.HR.AssessmentStddQ", b =>
+            modelBuilder.Entity("api.Entities.HR.AssessmentBankQ", b =>
                 {
-                    b.HasOne("api.Entities.HR.AssessmentQBank", null)
-                        .WithMany("AssessmentStddQs")
-                        .HasForeignKey("AssessmentQBankId")
+                    b.HasOne("api.Entities.HR.AssessmentBank", null)
+                        .WithMany("AssessmentBankQs")
+                        .HasForeignKey("AssessmentBankId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -4330,21 +4295,6 @@ namespace api.Data.Migrations
                         .HasForeignKey("HelpItemId");
                 });
 
-            modelBuilder.Entity("api.Entities.Messages.Message", b =>
-                {
-                    b.HasOne("api.Entities.Identity.AppUser", "Recipient")
-                        .WithMany()
-                        .HasForeignKey("RecipientId");
-
-                    b.HasOne("api.Entities.Identity.AppUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId");
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
                 {
                     b.HasOne("api.Entities.Tasks.AppTask", null)
@@ -4466,9 +4416,9 @@ namespace api.Data.Migrations
                     b.Navigation("VoucherItems");
                 });
 
-            modelBuilder.Entity("api.Entities.HR.AssessmentQBank", b =>
+            modelBuilder.Entity("api.Entities.HR.AssessmentBank", b =>
                 {
-                    b.Navigation("AssessmentStddQs");
+                    b.Navigation("AssessmentBankQs");
                 });
 
             modelBuilder.Entity("api.Entities.HR.CVRef", b =>

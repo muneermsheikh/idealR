@@ -276,6 +276,22 @@ namespace api.Data.Repositories.Finance
             if(accountnm==null) return null;
             voucher.AccountName = accountnm.AccountName;
 
+            var fVoucher = new FinanceVoucher {
+                VoucherNo = await GetNextVoucherNo(), AccountName = accountnm.AccountName,
+                Amount = voucher.Amount, CoaId = voucher.CoaId, Divn=voucher.Divn, Narration = voucher.Narration,
+                PartyName = voucher.PartyName, VoucherDated = voucher.VoucherDated};
+
+            var entries=new List<VoucherEntry>();
+            foreach(var item in voucher.VoucherEntries) {
+                var account = await _context.COAs.FindAsync(item.CoaId);
+                var entry = new VoucherEntry {CoaId=item.CoaId, AccountName = account.AccountName,
+                    Dr = item.Dr, Cr = item.Cr, Narration = item.Narration, Remarks = item.Remarks,
+                    TransDate = item.TransDate};
+                entries.Add(entry);
+            }
+
+            fVoucher.VoucherEntries=entries;
+            
             _context.Entry(voucher).State = EntityState.Added;
 
             if (await _context.SaveChangesAsync() > 0) {

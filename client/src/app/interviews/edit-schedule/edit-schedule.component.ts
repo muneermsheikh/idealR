@@ -66,12 +66,17 @@ export class EditScheduleComponent implements OnInit{
           interviewMode: [item.interviewMode, Validators.required],
           interviewerName: item.interviewerName,
           interviewVenue: [item.interviewVenue,Validators.required],
+          venueAddress: [item.venueAddress],
+          venueAddress2: [item.venueAddress2],
+          venueCityAndPIN: [item.venueCityAndPIN],
+          siteRepName: [item.siteRepName],
+          sitePhoneNo: [item.sitePhoneNo],
 
           interviewItemCandidates: this.fb.array(
           item.interviewItemCandidates.map(cand => (
             this.fb.group({
               id: cand.id,
-              intervwItemId: [cand.intervwItemId ?? item.id, Validators.required],
+              interviewItemId: [cand.interviewItemId ?? item.id, Validators.required],
               candidateId: [cand.candidateId,Validators.required],
               persosnId: [cand.personId],
               applicationNo: cand.applicationNo,
@@ -245,16 +250,6 @@ export class EditScheduleComponent implements OnInit{
     this.itemCandidateSelected = this.interviewItemCandidates.at(index)!.value;
     this.selectedIndex=index;
     this.upload = !this.upload;
-
-    /*if(this.userFiles.length > 0) {
-      var f = this.userFiles[0];
-      this.attachment = {
-        candidateId:cand.candidateId, id:cand.id, 
-        url: '', fileName: f.name, attachmentSizeInBytes: f.size/1024, dateUploaded:new Date()};
-      
-        cand.IntervwCandAttachment=this.attachment;
-    }*/
-
   }
   
   registerReportedAt(index: number) {

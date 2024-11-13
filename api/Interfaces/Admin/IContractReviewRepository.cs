@@ -15,6 +15,7 @@ namespace api.Interfaces.Admin
         Task<bool> EditContractReview(ContractReview contractReview);
         Task<bool> EditContractReviewItemTODELETE(ContractReviewItem contractReviewItem);
         Task<ContractReviewItem> EditContractReviewItem(ContractReviewItem contractReviewItem, bool calledFromWithinThisModule);
+        Task<ContractReviewItem> SaveNewContractReviewItem(ContractReviewItem contractReviewItem);
         Task<ContractReview> GetOrGenerateContractReviewNOSAVE(int orderId, string Username);
         Task<ICollection<ContractReviewItem>> GetContractReviewItemsFromOrderId(int orderId);
         Task<ContractReview> GetContractReviewFromOrderId(int orderId);

@@ -81,10 +81,9 @@ export class OrderItemReviewComponent {
       })
 
       var username = this.form.get('hrExecUsername')!.value;
-      console.log('username:', username, 'empIdAndNames', this.empIdAndNames);
+
       if (username) {
         var idandname = this.empIdAndNames.filter(x => x.username===username)[0];
-        console.log('idandname', idandname);
         this.skills = idandname?.hrSkills?.map((x: any) => x.professionName);
       }
   }

@@ -18,6 +18,10 @@ import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
 import { OpenOrderItemsParams } from 'src/app/_models/params/Admin/openOrderItemsParams';
 import { IOrderToCreateDto } from 'src/app/_dtos/orders/orderToCreateDto';
 import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
+import { IAssessmentStandardQ } from 'src/app/_models/admin/assessmentStandardQ';
+import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
+import { IRemuneration } from 'src/app/_models/admin/remuneration';
+import { IJobDescription } from 'src/app/_models/admin/jobDescription';
 
 @Injectable({
   providedIn: 'root'
@@ -120,7 +124,7 @@ export class OrderService {
       return this.http.get<IJDDto>(this.apiUrl + 'orders/jd/' + orderitemid);
     }
     
-    updateJD(model: any) {
+    updateJD(model: IJobDescription) {
       return this.http.put<boolean>(this.apiUrl + 'orders/jd', model);
 
     }
@@ -129,8 +133,8 @@ export class OrderService {
       return this.http.get<IRemunerationDto>(this.apiUrl + 'orders/remuneration/' + orderitemid);
     }
     
-    updateRemuneration(model: any) {
-      return this.http.put(this.apiUrl + 'orders/remuneration', model);
+    updateRemuneration(model: IRemuneration) {
+      return this.http.put<IRemuneration>(this.apiUrl + 'orders/remuneration', model);
     }
 
     deleteRemuneration(remunId: number) {
@@ -160,5 +164,11 @@ export class OrderService {
     getOParams() {
       return this.oParams;
     }
+
+    getStddQOfACategoryId(id: number) {
+      return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentstddq/byid/' + id);
+    }
+
+    
 
 }

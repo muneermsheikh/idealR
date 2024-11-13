@@ -80,6 +80,10 @@ export class VouchersService {
     return this.http.put<boolean>(this.apiUrl + 'finance/voucher', formdata);
   }
 
+  saveNewVoucher(formdata: IVoucher) {
+    return this.http.post<IVoucher>(this.apiUrl + 'finance/newvoucher', formdata);
+  }
+
   public updateWithFiles(formData: FormData) {
     return this.http.put(this.apiUrl + 'finance/updateVoucherwithattachment', formData, {
       reportProgress: true,

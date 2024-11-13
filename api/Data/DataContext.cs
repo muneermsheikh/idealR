@@ -79,8 +79,8 @@ namespace api.Data
         //public DbSet<VoucherItem> VoucherItems {get; set;}
         
         //HR
-        public DbSet<AssessmentQBank> AssessmentQBanks {get; set;}
-        public DbSet<AssessmentStddQ> AssessmentStddQs {get; set;}
+        public DbSet<AssessmentBank> AssessmentBanks {get; set;}
+        public DbSet<AssessmentBankQ> AssessmentBankQs {get; set;}
         public DbSet<AssessmentQStdd> AssessmentQStdds {get; set;}
         public DbSet<Candidate> Candidates{get; set;}
         public DbSet<ProspectiveCandidate> ProspectiveCandidates{get; set;}
@@ -112,7 +112,6 @@ namespace api.Data
         public DbSet<AttendanceStatus> AttendanceStatuses {get; set;}
 
         //Master
-        public DbSet<CategoryAssessmentQBank> CategoryAssessmentQBanks {get;set;}
         public DbSet<ChecklistHRData> ChecklistHRDatas {get; set;}
         public DbSet<Industry> Industries{get; set;}
         //public DbSet<UserLike> Likes {get; set;}
@@ -148,8 +147,8 @@ namespace api.Data
             builder.Entity<ProspectiveCandidate>().HasIndex(x => x.PersonId).IsUnique();
             builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<CustomerReview>().HasIndex(x => x.CustomerId).IsUnique();
-            builder.Entity<AssessmentQBank>().HasMany(x => x.AssessmentStddQs).WithOne().OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<AssessmentQBank>().HasIndex(x => x.ProfessionId).IsUnique();
+            builder.Entity<AssessmentBank>().HasMany(x => x.AssessmentBankQs).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<AssessmentBank>().HasIndex(x => x.ProfessionId).IsUnique();
             
             builder.Entity<OrderAssessment>().HasIndex(x => x.OrderId).IsUnique();
             builder.Entity<OrderAssessment>().HasMany(x => x.OrderAssessmentItems).WithOne().OnDelete(DeleteBehavior.Cascade);

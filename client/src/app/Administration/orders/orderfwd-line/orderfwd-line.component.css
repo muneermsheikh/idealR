@@ -2,24 +2,21 @@
     display: inline-block;
     font-size: small;
     vertical-align: top;
-    margin-left: 2px;
-    margin-right: 2px;
-    color: darkblue;
-    font-weight: bold;
+    margin: 0 2px 0 2px;
+    color:aliceblue;
+    word-wrap: break-word;
 }   
 
 .stddS {
     font-size: small;
-    margin-left: 2px;
-    margin-right: 2px;
+    margin: 0 2px 0 2px;
 }
 
 .stddM {
     display: inline-block;
     font-size: smaller;
-    margin-left: 2px;
-    margin-right: 2px;
-    font-weight: normal;
+    margin: 0 2px 0 2px;
+    
 }
 
 .blue {color: darkblue;}

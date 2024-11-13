@@ -22,15 +22,17 @@ namespace api.Extensions
                     Gender = official.Gender,
                     KnownAs = official.KnownAs,
                     City = cityName,
-                    UserName = official.UserName,
+                    UserName = string.IsNullOrEmpty(official.UserName) ? official.Email : official.UserName,
                     Created = DateTime.UtcNow,
                     Email = official.Email
                 };
                 
-                await userManager.CreateAsync(off, "Pa$$w0rd");
-                await userManager.AddToRoleAsync(off, "Client");
+                var result = await userManager.CreateAsync(off, "Pa$$w0rd");
+                official.UserName=off.UserName;
             }
-            
+
+            var roleresult = await userManager.GetRolesAsync(off);
+            if(!roleresult.Contains("Client")) await userManager.AddToRoleAsync(off, "Client");            
             return off.Id;
         }
 

@@ -12,7 +12,7 @@
 ></pagination>
 
 <button class="btn fa fa-save fa-2x" title="updates ALL the attendances edited" 
-    [disabled]="attendancesToUpdate.length===0" (click)="updateAttendances()" ></button>
+    [disabled]="attendancesToUpdate.length===0" (click)="savewWithattachments()" ></button>
 <button class="btn fa fa-envelope fa-2x" title="invite selected candidates for the interview - by email" 
     [disabled]="attendancesSelected.length===0" (click)="inviteCandidatesForInterview()" ></button>
 <button type="button" (click)="onReset()" class="fa fa-refresh fa-2x mx-2" ></button>
@@ -20,21 +20,20 @@
 
 
 <br><label class="stddML50 w50">Order<br>No</label>
-<label class="lbl w150">Customer</label>
-<label class="lbl w100">Venues</label>
-<label class="lbl w150">Category</label>
-<label class="lbl w85">Applicn<br>No</label>
-<label class="lbl w160">Candidate Name</label>
-<label class="lbl w85">Scheduled<br>at</label>
-<label class="lbl w85">Reported<br> at</label>
-<label class="lbl w85">Interviewd<br>at</label>
-<label class="lbl w150">Interview Status</label>
-<label class="lbl w200">Interviewer Remarks</label>
+<label class="stdd w150">Customer</label>
+<label class="stdd w100">Venues</label>
+<label class="stdd w100">Category</label>
+<label class="stdd w70">Applicn<br>No</label>
+<label class="stdd w160">Candidate Name</label>
+<label class="stdd w110">Scheduled<br>at</label>
+<label class="stdd w110">Reported<br> at</label>
+<label class="stdd w110">Interviewd<br>at</label>
+<label class="stdd w200">File Uploaded</label>
 
 <div *ngIf="attendances.length===0" class="my-2">
     No Candidates assigned for the interview
 </div>
-<div *ngFor="let att of attendances">
+<!-- <div *ngFor="let att of attendances">
     <app-attendance-line
         [att]="att"
         (editEvent)="attendanceEdit($event)"
@@ -42,5 +41,79 @@
         (deleteEvent)="attendanceDelete($event)"
         (statusChangedEvent)="statusChanged($event)"
         (selectedEvent)="selectionChanged($event)"
+        (uploadEvent)="updateInterviewerNote($event)"
+        (FilesUploadedEvent)="FilesUploaded($event)"
+        (downloadEvent)="downloadInterviewerNote($event)"
     ></app-attendance-line>
+</div> -->
+
+<div *ngFor="let att of attendances">
+     
+    <input type="checkbox" style="margin-left: 15px; margin-right: 15px;"
+        class="form-check-input w15 hAlignCenter"
+        [(ngModel)]="att.checked"
+        (click)="selectionChanged(att)"
+    >
+    
+    <div class="stdd w50">{{att.orderNo}}</div>
+    <div class="stdd w150">{{att.customerName}}</div>
+    <app-text-input [label]="'Venue'" [(ngModel)]="att.interviewVenue" class="stdd w100" 
+        title="Candidate Name - will be displayed in red if still not interviewed" id="interviewVenue" ></app-text-input>
+    <div class="stdd w100">{{att.professionName}}</div>
+    
+    <div class="stdd w60" style="text-align: center;">{{att.applicationNo}}</div>
+    <div style="width: 150px;" [ngClass]="att.interviewStatus==='Not Interviewed' ? 'stdd red' : 'stdd'">{{att.candidateName}}</div>
+    
+    <!-- pattern="\d{2}\/\d{2}\/\d{4}" -->
+    <input type="text" id="scheduledFDrom"
+        class="dt"
+        placeholder="Scheduled At"
+        [(ngModel)]="att.scheduledFrom"
+    >
+    
+    <input type="text" id="reportedAt"
+        class="dt"
+        placeholder="Reported at"
+        [(ngModel)]="att.reportedAt"
+    >
+    
+    <input type="text" id="interviewedAt"
+        class="dt"
+        placeholder="Interviewed At"
+        [(ngModel)]="att.interviewedAt"
+    >
+    <div class="w50 mx-2" style="display: inline-block; font-size:x-small; vertical-align: top;" >
+        {{att!.attachmentFileNameWithPath===null ? 'NO' : 'YES'}}</div>
+
+    <button class="btn w15 fa fa-pencil" style="margin-left: 60px;" title="edit this assignment.  Also, upload interview comment attachment" 
+        (click)="uploadNote(att)" ></button>
+    <button class="btn w15 fa fa-bars" title="mark the candidate as reported for interview" (click)="reported(att.interviewItemCandidateId)" ></button>
+    <button type="button" class="btn w15 fa fa-download" style="color: aliceblue;" title="download interviewer comments" 
+        (click)="downloadInterviewerNote(att)" 
+        ></button>
+    <button class="btn w15 fa fa-trash" title="delete attendance - not the candidate" (click)="attendanceDelete(att.interviewItemCandidateId)" ></button>
+
+    <br><label style="margin: 0 15px 0 575px; padding-top: 0px; font-size: smaller;">Interview Status</label>
+    <ng-select class="stdd w200" 
+        [items]="selectionStatuses"
+        bindLabel="name"
+        bindValue="name"
+        labelForId="id"
+        clearAllText="Clear"
+        [(ngModel)]="att.interviewStatus"
+        (change)="statusChanged(att)"
+    ></ng-select>
+
+    <textarea name="remarks" [(ngModel)]="att.interviewerRemarks" id="remarks" class="stdd" rows="1" cols="40" 
+        title="remarks by interviewer" placeholder="Remarks by interviewer"></textarea>
+    <!-- <app-text-input [label]="'interviewer Remarks'" [(ngModel)]="att.interviewerRemarks" class="stdd w200" ></app-text-input> -->
+    
+    <div *ngIf="upload && att.interviewItemCandidateId===selectedIndex" style="font-size: x-small;">
+        <input class="stdd" type="file" id="file" (change)="onFileInputChange($event, att)" >
+        <button class="btn fa fa-window-close" (click)="upload = !upload" ></button>
+    </div>
+    
+    <hr class="my-0">
+
+
 </div>

@@ -1,10 +1,10 @@
 export interface IJDDto {
      id: number;
      orderItemId: number;
-     orderId: number;
+     //orderId: number;
      orderNo: number;
      orderDate: Date;
-     customerName: string;
+     companyName: string;
      categoryName: string;
      jobDescInBrief: string;
      qualificationDesired: string;

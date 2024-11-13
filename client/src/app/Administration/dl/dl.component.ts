@@ -17,6 +17,11 @@ import { JdModalComponent } from '../orders/jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../orders/remuneration-modal/remuneration-modal.component';
 import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { filter, switchMap } from 'rxjs';
+import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
+import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
+import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem';
+import { OrderAssessmentItemModalComponent } from '../orders/order-assessment-item-modal/order-assessment-item-modal.component';
+import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
 
 @Component({
   selector: 'app-dl',
@@ -42,11 +47,13 @@ export class DLComponent implements OnInit{
   routeId: string='';
   user?: User;
 
+  assessmentQBank: IAssessmentQBank | undefined;
   errors: string[]=[];
 
   constructor(private activatedRoute: ActivatedRoute, 
     private fb: FormBuilder,
     private service: OrderService,
+    private orderAssessService: OrderAssessmentService,
     private toastr: ToastrService,
     private router: Router,
     private taskService: TaskService,
@@ -128,10 +135,9 @@ ngOnInit(): void {
 
   newItem(): FormGroup {
     //get max SrNo
-    var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x:any) => x.srNo))+1;
     var completebefore = this.isAddMode ? this.form.get('completeBy')?.value : '';
   
-    var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x:any) => x.srNo))+1;
+    var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x: { srNo: number; }) => x.srNo))+1;
     var completebefore = this.isAddMode ? this.form.get('completeBy')?.value : '';
     return this.fb.group({
       selected: false, 
@@ -144,7 +150,7 @@ ngOnInit(): void {
       quantity: [0, [Validators.required, Validators.min(1)]],
       minCVs : 0, 
       maxCVs: 0,
-      completeBefore: [completebefore, Validators.required],
+      completeBefore: [this.form.get('completeBy')?.value, Validators.required],
       status: 'Not Started',
       reviewItemStatus: 'Not Reviewed',
       requireAssessment: false
@@ -192,6 +198,11 @@ ngOnInit(): void {
 
   
   onSubmit() {
+    if(this.orderItems.length === 0) {
+      this.toastr.warning('Require atleast one Order Item to save the Demand Letter', 'Invalid form data');
+      return;
+    }
+    
     if (this.isAddMode) {
         this.CreateOrder();
     } else {
@@ -226,9 +237,37 @@ ngOnInit(): void {
   }
 
   
-  assessItem(index: number){
+  displayOrderAssessmentItem(index: number){
     var orderitemid = this.orderItems.at(index).get('id')?.value;
-    this.navigateByRoute('/administration/orderassessmentitem/' + orderitemid, null, true);
+    if(!orderitemid) {
+      this.toastr.warning('Failed to get Order Item Id', 'logic error');
+      return;
+    }
+
+    var observableOuter = this.orderAssessService.getOrderAssessmentItem(orderitemid);
+
+    observableOuter.pipe(
+      filter((response: IOrderAssessmentItem) => response !==null),
+      switchMap((response: any) => {
+        const config = {
+          class: 'modal-dialog-centered modal-lg',
+          initialState: {
+            orderAssessmentItem: response,
+            user: this.user
+          }
+        }
+        this.bsModalRef = this.modalService.show(OrderAssessmentItemModalComponent, config);
+        const observableInner = this.bsModalRef.content.updateEvent;
+        return observableInner
+      })
+    ).subscribe((response: any) => {
+      if(response)   {
+        this.toastr.success('Updated the contract review item - you must update this Demand Letter for the changes to take permanent effect', 'Success');
+      } else {
+        this.toastr.warning('Failed to update the contract review', 'Failed')
+      }
+    })
+
   }
 
   /* OpenOrderAssessment() {
@@ -275,9 +314,8 @@ ngOnInit(): void {
   
   openContractReviewItemModal(index: any) 
   {
-      var orderitembrief = this.getControls()[index].value;
-      var orderitemid = orderitembrief.id;
-
+      var orderitemid = this.orderItems.at(index).get('id')?.value;
+      
       var observableOuter = this.contractRvwService.getContractReviewItem(orderitemid);
 
       observableOuter.pipe(
@@ -294,10 +332,10 @@ ngOnInit(): void {
           return observableInner
         })
       ).subscribe((response: any) => {       //the modal form updates the content
-          console.log('update DL response:', response);
           if(response !== null)   {
             this.toastr.success('Updated the contract review item - you must update this Demand Letter for the changes to take permanent effect', 'Success');
             this.orderItems.at(index).get('reviewItemStatus')?.setValue(response.reviewItemStatus);
+            this.form.markAsDirty();
           } else {
             this.toastr.warning('Failed to update the contract review', 'Failed')
           }
@@ -334,7 +372,7 @@ ngOnInit(): void {
         switchMap((response) => {
           //console.log('contractrvwitemmodal response:', response);
           const config = {
-            class: 'modal-dialog-centered modal-lg',
+            class: 'modal-dialog-centered modal-md',
             initialState: {
               title: 'Job Description',
               jd: response
@@ -360,29 +398,30 @@ ngOnInit(): void {
     if(this.isAddMode) return;
     var orderitemid = this.getName(index);
 
-      this.service.getRemuneration(orderitemid).subscribe(response => {
-          //this.remun=response;
-          var remun = response;
-     
-          const initialState = {
-            class: 'modal-dialog-centered modal-lg',
-            remun
-          };
-          this.bsModalRef = this.modalService.show(RemunerationModalComponent, {initialState});
-          
-          this.bsModalRef.content.updateSelectedRemuneration.subscribe((values: IRemuneration) => {
-          this.service.updateRemuneration(values).subscribe(() => {
-            this.toastr.success("Remuneration updated");
-          }, error => {
-            this.toastr.error("failed to update the Remuneration");
-          })
+    var observableOuter = this.service.getRemuneration(orderitemid);
+
+    observableOuter.pipe(
+      filter((response: IRemunerationDto) => response !==null),
+      switchMap((response: IRemunerationDto) => {
+        const config = {
+          class: 'modal-dialog-centered modal-lg',
+          initialState: {
+            remun: response
+          }
         }
-        )
-        
-      }, error => {
-        this.toastr.warning('failed to retrieve Remuneration data');
+
+        this.bsModalRef = this.modalService.show(RemunerationModalComponent, config);
+        const observableInner = this.bsModalRef.content.updateSelectedRemuneration;
+        return observableInner
       })
-      
+    ).subscribe((response: any) => {
+      if(response !== null)   {    //response: IRemunerationDto
+       
+        this.toastr.success('Updated the Remuneration details', 'Success');
+      } else {
+        this.toastr.warning('Failed to update the Remuneration details', 'Failed')
+      }
+    })//, error: (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
   }
 
   getName(i: number) {

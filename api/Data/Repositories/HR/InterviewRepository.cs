@@ -3,6 +3,7 @@ using System.Data.Common;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Admin;
+using api.Entities.HR;
 using api.Helpers;
 using api.Interfaces.Admin;
 using api.Interfaces.HR;
@@ -20,7 +21,8 @@ namespace api.Data.Repositories.HR
         private readonly IMapper _mapper;
         private readonly IProspectiveCandidatesRepository _prosRepo;
         private readonly IComposeMsgForIntrviews _composeInvitation;
-        public InterviewRepository(DataContext context, IMapper mapper, IProspectiveCandidatesRepository prosRepo, IComposeMsgForIntrviews composeInvitation)
+        public InterviewRepository(DataContext context, IMapper mapper, IProspectiveCandidatesRepository prosRepo, 
+            IComposeMsgForIntrviews composeInvitation)
         {
             _composeInvitation = composeInvitation;
             _prosRepo = prosRepo;
@@ -155,7 +157,7 @@ namespace api.Data.Repositories.HR
             return existing;
         }
 
-        public async Task<InterviewItemWithErrDto> EditInterviewItem(IntervwItem model)
+        public async Task<InterviewItemWithErrDto> EditInterviewItem(IntervwItem model, string Username)
         {
             var dtoErr=new InterviewItemWithErrDto();
 
@@ -200,6 +202,13 @@ namespace api.Data.Repositories.HR
             if(existing.InterviewItemCandidates.Count > 0) {
                 maxScheduledAt = existing.InterviewItemCandidates.Max(x => x.ScheduledFrom);
             } 
+
+            var prospectiveIds = model.InterviewItemCandidates.Where(m => m.ProspectiveCandidateId > 0)
+                .Select(m => m.ProspectiveCandidateId).ToList();
+            var candidatesInserted = new List<IntervwItemCandidate>();
+            var prospectives = await _context.ProspectiveCandidates.Where(x => prospectiveIds
+                .Contains(x.Id)).ToListAsync();
+
             foreach(var newcandidate in model.InterviewItemCandidates) {
                 var existingcand = existing.InterviewItemCandidates
                     .Where(c=>c.Id == newcandidate.Id && c.Id != default(int)).SingleOrDefault();
@@ -209,23 +218,28 @@ namespace api.Data.Repositories.HR
                     _context.Entry(existingcand).State = EntityState.Modified;
                 } else {
                     
+                    var prospective = new ProspectiveCandidate();
+                    if(prospectives != null && prospectives.Count > 0) {
+                        prospective=prospectives.FirstOrDefault(x => x.Id == newcandidate.ProspectiveCandidateId);
+                    }
                     var candtoinsert=new IntervwItemCandidate {
                         InterviewItemId = existing.Id,
                         ScheduledFrom = newcandidate.ScheduledFrom.Year > 2000 ? newcandidate.ScheduledFrom : maxScheduledAt.AddMinutes(25),
                         ReportedAt = newcandidate.ReportedAt,
                         InterviewedAt = newcandidate.InterviewedAt,
                         CandidateId = newcandidate.CandidateId,
-                        PersonId  = newcandidate.PersonId,
+                        PersonId  = newcandidate.PersonId ?? prospective.PersonId,
                         ApplicationNo = newcandidate.ApplicationNo,
                         CandidateName = newcandidate.CandidateName,
                         InterviewerRemarks = newcandidate.InterviewerRemarks,
                         InterviewStatus = newcandidate.InterviewStatus,
-                        ProspectiveCandidateId = newcandidate.ProspectiveCandidateId,
+                        ProspectiveCandidateId = newcandidate.ProspectiveCandidateId == 0 ? prospective.Id : newcandidate.ProspectiveCandidateId,
                         AttachmentFileNameWithPath = newcandidate.AttachmentFileNameWithPath,
                     };
 
                     existing.InterviewItemCandidates.Add(candtoinsert);
                     _context.Entry(candtoinsert).State=EntityState.Added;
+                    candidatesInserted.Add(candtoinsert);
                 }
 
             }
@@ -235,6 +249,17 @@ namespace api.Data.Repositories.HR
 
             try {
                 await _context.SaveChangesAsync();
+                var prospReturnDtos = await _prosRepo.ConvertProspectiveToCandidates(prospectiveIds, Username);
+                foreach(var dto in prospReturnDtos) {
+                    var cand = candidatesInserted.FirstOrDefault(x => x.ProspectiveCandidateId == dto.ProspectiveCandidateId);
+                    if(cand != null) {
+                        cand.ApplicationNo=dto.ApplicationNo;
+                        cand.CandidateId = dto.CandidateId;
+                        _context.Entry(cand).State=EntityState.Modified;
+                    }
+                }
+                if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+                
                 dtoErr.Error="";
                 dtoErr.intervwItem = existing;
             } catch (DbException ex) {
@@ -424,8 +449,11 @@ namespace api.Data.Repositories.HR
                         InterviewId=interviewItem.IntervwId, InterviewMode = interviewItem.InterviewMode, 
                         OrderItemId = interviewItem.OrderItemId, InterviewVenue = interviewItem.InterviewVenue,
                         PersonId = cand.PersonId, ProfessionName = interviewItem.ProfessionName, 
-                        ScheduledFrom = cand.ScheduledFrom, InterviewStatus = cand.InterviewStatus, 
-                        InterviewerRemarks = cand.InterviewerRemarks, Id = cand.Id
+                        ScheduledFrom = cand.ScheduledFrom, ReportedAt = Convert.ToDateTime(cand.ReportedAt),
+                        InterviewedAt = Convert.ToDateTime(cand.InterviewedAt),
+                        InterviewStatus = cand.InterviewStatus, 
+                        InterviewerRemarks = cand.InterviewerRemarks, InterviewItemCandidateId = cand.Id,
+                        AttachmentFileNameWithPath = cand.AttachmentFileNameWithPath
                     }).AsQueryable();
             
             var paged = await PagedList<InterviewAttendanceDto>.CreateAsync(query.AsNoTracking()
@@ -520,5 +548,24 @@ namespace api.Data.Repositories.HR
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<string> UpdateInterviewCandidateAttachmentFileName(IntervwItemCandidate interviewCandidate)
+        {
+            var cand = await _context.IntervwItemCandidates.Where(x =>
+                x.Id == interviewCandidate.Id).FirstOrDefaultAsync();
+            
+            if(cand == null) return "Failed to retrieve the Interview Candidate Entity from InterviewCandidateId";
+
+            cand.InterviewedAt = interviewCandidate.InterviewedAt;
+            cand.ReportedAt = interviewCandidate.ReportedAt;
+            cand.InterviewStatus  = interviewCandidate.InterviewStatus;
+            cand.InterviewerRemarks = interviewCandidate.InterviewerRemarks;
+            cand.AttachmentFileNameWithPath = interviewCandidate.AttachmentFileNameWithPath;
+                
+            _context.Entry(cand).State = EntityState.Modified;
+            
+            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to update the filename attachment";
+        }
+
     }
 }

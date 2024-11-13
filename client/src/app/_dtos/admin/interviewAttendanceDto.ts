@@ -2,7 +2,7 @@ import { IntervwItemCandidate } from "src/app/_models/hr/intervwItemCandidate";
 
 export interface IInterviewAttendanceDto
 {
-    id: number;
+    interviewItemCandidateId: number;
     checked: boolean;
     customerName: string;
     orderNo: number;
@@ -19,4 +19,5 @@ export interface IInterviewAttendanceDto
     candidateName: string;
     interviewStatus: string;
     interviewerRemarks: string;
+    attachmentFileNameWithPath: string;
 }

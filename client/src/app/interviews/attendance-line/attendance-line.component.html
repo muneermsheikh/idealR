@@ -9,40 +9,38 @@
 >
     <div class="stdd w50">{{att.orderNo}}</div>
     <div class="stdd w150">{{att.customerName}}</div>
-    <app-text-input [label]="'Venue'" [(ngModel)]="att.interviewVenue" class="stdd w100" id="interviewVenue" ></app-text-input>
-    <div class="stdd w150">{{att.professionName}}</div>
+    <app-text-input [label]="'Venue'" [(ngModel)]="att.interviewVenue" class="stdd w100" 
+        title="Candidate Name - will be displayed in red if still not interviewed" id="interviewVenue" ></app-text-input>
+    <div class="stdd w100">{{att.professionName}}</div>
     
-    <div class="stdd w75" style="text-align: center;">{{att.applicationNo}}</div>
-    <div class="stdd w150">{{att.candidateName}}</div>
+    <div class="stdd w60" style="text-align: center;">{{att.applicationNo}}</div>
+    <div style="width: 150px;" [ngClass]="att.interviewStatus==='Not Interviewed' ? 'stdd red' : 'stdd'">{{att.candidateName}}</div>
     
+    <!-- pattern="\d{2}\/\d{2}\/\d{4}" -->
     <input type="text" id="scheduledFDrom"
-        class="stdd w80"
-        placeholder="Complete By"
+        class="stddX"
+        placeholder="Scheduled At"
         [(ngModel)]="att.scheduledFrom"
-        bsDatepicker
-        [bsValue]="bsValueDate"
-        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
     >
     
     <input type="text" id="reportedAt"
-        class="stdd w80"
+        class="stddX"
         placeholder="Reported at"
         [(ngModel)]="att.reportedAt"
-        bsDatepicker
-        [bsValue]="bsValueDate"
-        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
     >
     
     <input type="text" id="interviewedAt"
-        class="stdd w80"
+        class="stddX"
         placeholder="Interviewed At"
         [(ngModel)]="att.interviewedAt"
-        bsDatepicker
-        [bsValue]="bsValueDate"
-        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
     >
+    
+    <button class="btn w15 fa fa-pencil" style="margin-left: 100px;" title="edit this assignment" (click)="editClicked()" ></button>
+    <button class="btn w15 fa fa-bars" title="mark the candidate as reported for interview" (click)="reportedClicked()" ></button>
+    <button class="btn w15 fa fa-trash" (click)="deleteClicked()" ></button>
 
-    <ng-select class="stdd w150"
+    <br><label style="margin: 0 15px 0 575px; padding-top: 0px; font-size: smaller;">Interview Status</label>
+    <ng-select class="stdd w200" 
         [items]="selectionStatuses"
         bindLabel="name"
         bindValue="name"
@@ -51,11 +49,23 @@
         [(ngModel)]="att.interviewStatus"
         (change)="statusChangeClicked()"
     ></ng-select>
-    <app-text-input [label]="'interviewer Remarks'" [(ngModel)]="att.interviewerRemarks" class="stdd w200" ></app-text-input>
+    <textarea name="remarks" [(ngModel)]="att.interviewerRemarks" id="remarks" class="stdd" rows="1" cols="70" 
+        title="remarks by interviewer" placeholder="Remarks by interviewer"></textarea>
+    <!-- <app-text-input [label]="'interviewer Remarks'" [(ngModel)]="att.interviewerRemarks" class="stdd w200" ></app-text-input> -->
+    <button type="button" class="btn w15 fa fa-download" style="color: aliceblue;" title="download interviewer comments" 
+        (click)="downloadattachment()" 
+        ></button>
+          
+    <button type="button" class="btn w15 fa fa-upload" style="color: aliceblue;" 
+        title="upload a new interviewer comment.  Any existing attachment will be REPLACED" 
+        (click)="uploadattachment()" ></button>
+    
+    <div *ngIf="upload" style="font-size: x-small;">
+        <input class="stdd" type="file" id="file" (change)="onFileInputChange($event)" >
+        <button class="btn fa fa-window-close" (click)="upload = !upload" ></button>
+    </div>
 
-    <button class="btn w15 fa fa-pencil" title="edit this assignment" (click)="editClicked()" ></button>
-    <button class="btn w15 fa fa-bars" title="mark the candidate as reported for interview" (click)="reportedClicked()" ></button>
-    <button class="btn w15 fa fa-trash" (click)="deleteClicked()" ></button>
+    <hr class="my-0">
     <div *ngIf="showStepper">
         <mat-horizontal-stepper labelPosition="bottom" linear>
             <mat-step label="Scheduled" 

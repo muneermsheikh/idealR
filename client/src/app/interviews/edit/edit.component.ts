@@ -78,7 +78,7 @@ export class EditComponent implements OnInit{
                     let cv = new IntervwItemCandidate();
 
                     cv.candidateId=x.candidateId;
-                    cv.intervwItemId=item.id; cv.applicationNo=x.applicationNo;
+                    cv.interviewItemId=item.id; cv.applicationNo=x.applicationNo;
                     cv.candidateName=x.fullName; cv.scheduledFrom=new Date();
                     
                     item.interviewItemCandidates.push(cv);

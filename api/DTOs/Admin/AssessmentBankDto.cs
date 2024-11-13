@@ -1,8 +1,11 @@
-namespace api.Entities.HR
+namespace api.DTOs
 {
-    public class AssessmentStddQ: BaseEntity
+    public class AssessmentBankDto
     {
-        public int AssessmentQBankId { get; set; }
+        public int Id { get; set; }
+        public int ProfessionId { get; set; }   
+        public string ProfessionName { get; set; }
+        public int AssessmentBankId { get; set; }
         public string AssessmentParameter { get; set; }
         public int QNo { get; set; }
         public bool IsStandardQ { get; set; }

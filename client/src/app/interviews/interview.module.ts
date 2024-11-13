@@ -13,6 +13,7 @@ import { InterviewAttendanceComponent } from './interview-attendance/interview-a
 import { AttendanceLineComponent } from './attendance-line/attendance-line.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
+import { EditAttendanceModalComponent } from './edit-attendance-modal/edit-attendance-modal.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     EditComponent,
     EditScheduleComponent,
     InterviewAttendanceComponent,
-    AttendanceLineComponent
+    AttendanceLineComponent,
+    EditAttendanceModalComponent
   ],
   imports: [
     CommonModule,

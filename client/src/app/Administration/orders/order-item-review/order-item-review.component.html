@@ -1,20 +1,20 @@
 
 <form [formGroup]="form" style="margin-left: 20px;">
-     <div *ngIf="reviewItem !== undefined" class="mx-2">
-          <div class="my-2" class="title">Contract Review</div>
-          <br><div class="title">Customer: {{reviewItem.customerName}}</div>
-          <div class="title mx-4">Order No: {{reviewItem.orderNo}} dtd: {{reviewItem.orderDate | date: 'dd-MMM-yy'}}</div>
+     <div *ngIf="reviewItem !== undefined" class="my-2 mx-2">
+          <h4 class="my-2 b">Contract Review - Order Category</h4>
+          <br><div class="title"><span style="font-weight: bold;">Customer: </span>{{reviewItem.customerName}}</div>
+          <div class="title mx-4"><span style="font-weight: bold;">Order No.: </span>{{reviewItem.orderNo}} dtd: {{reviewItem.orderDate | date: 'dd-MMM-yy'}}</div>
           
           <button type="button" style="display: inline-block;" class="mL15 btn btn-success fa fa-save" (click)="confirmUpdate()"></button>
           <button type="button" style="display: inline-block;" class="btn fa fa-window-close fa-2x" (click)="decline()"></button>
 
-          <br><div class="title">Category to review:</div>
-          <div class="title" >{{reviewItem.professionName}}</div>
-          <div class="title mx-2">Charges:</div>
-          <app-text-input [label]="'Charges'" class="stdd w100" formControlName="charges"></app-text-input>
+          <br><div class="title b"><span>Category to review: </span></div>
+          <div class="title w350" >{{reviewItem.professionName}}</div>
+          <div class="title mx-2 hAlignR">Charges: </div>
+          <app-text-input [label]="'Charges'" class="stdd w75" formControlName="charges"></app-text-input>
           <!-- <app-text-input [label]="'Rvw Id'" class="stdd w35" formControlName="contractReviewId"></app-text-input> -->
           
-          <br><div class="title w150">Assigned to: </div>
+          <br><div class="title w100">Assigned to: </div>
           <ng-select *ngIf="empIdAndNames" 
                class="stdd w150"
                [items]="empIdAndNames"
@@ -26,11 +26,11 @@
                (change)="employeeChanged($event)"
                >
           </ng-select>
-               
-          <div *ngIf="!skills" class="stdd cursorpointer" title="dbl-click the HR Exec Username to display his skill set">No HR Skills defined for the employee</div>
-          <div *ngIf="skills" class="stdd" style="width: 450px; font-size: x-small">{{skills.flat()}}</div>
-          <br>
-          <div class="title w150">Review Item Status</div>
+          <label class="stdd my-0" style="font-size: x-small;">HR Skills:</label>               
+          <div *ngIf="!skills" class="stdd my-0 cursorpointer" title="click the HR Exec Username to display his skill set"></div>
+          <div *ngIf="skills" class="stdd my-0" style="width: 450px; font-size: x-small">{{skills.flat()}}</div>
+          
+          <br><div class="title w150">Review Item Status</div>
           <ng-select *ngIf="reviewStatus" 
                class="stdd w150"
                [items]="reviewStatus"
@@ -42,9 +42,9 @@
                >
           </ng-select>
 
-          <label class="lbl w150 b my-2">Assessment Reqd</label>
-          <input type="radio" class="stdd inputcheck form-check-input mx-2 " value= 1 formControlName="requireAssess" >Yes
-          <input type="radio" class="stdd inputcheck form-check-input mx-2" value= 0 formControlName="requireAssess" >No
+          <label class="lbl w150 b my-2 hAlignR">Assessment Reqd: </label>
+          <input type="radio" class="inputcheck form-check-input mx-2" value= 1 formControlName="requireAssess" >Yes
+          <input type="radio" class="inputcheck form-check-input mx-2" value= 0 formControlName="requireAssess" >No
      </div>
  
      <br>
@@ -56,19 +56,19 @@
           <label class="lbl w75">Response<br>YES</label>
           <!-- <label class="lbl w50">Response<br>Yes/No</label> -->
           <label class="lbl w150">Remarks</label>
-          <button class="btn btn-primary fa fa-plus" (click)="addQ()" title="add a new Review Question"></button>
+          <button class="btn fa fa-plus" (click)="addQ()" title="add a new Review Question"></button>
           <div formArrayName="contractReviewItemQs" class="mt-2 my-1 px-0">
                <div *ngFor="let q of contractReviewItemQs.controls; let i=index">
                     <div [formGroupName]="i">
-                         <app-text-input [label]="'Sr#'" class="stdd w35" formControlName="srNo" ></app-text-input>
+                         <input type="text" class="std w35" formControlName="srNo">
+                         <!-- <app-text-input [label]="'Sr#'" class="std w35" formControlName="srNo" ></app-text-input> -->
                          <input type="checkbox" class="stdd w35" formControlName="isMandatoryTrue" >
                          <app-text-input [label]="'Parameter'" class="stdd w350" formControlName="reviewParameter" style="font-size: small;"></app-text-input>
                          <input type="checkbox" class="stdd w75" formControlName="response">
                          <app-text-input [label]="'Remarks'" class="stdd w150" style="font-size: small;" formControlName="remarks"></app-text-input>
                          <button class="btn mL10 fa fa-trash fa-sm red" (click)="removeQ(i)" ></button>
-                         <app-text-input [label]="'rvwItemId'" class="stdd w35" formControlName="contractReviewItemId" ></app-text-input>
+                         <!-- <app-text-input [label]="'rvwItemId'" class="stdd w35" formControlName="contractReviewItemId" ></app-text-input> -->
                     </div>
-
                </div>      
           </div>   
      </div>

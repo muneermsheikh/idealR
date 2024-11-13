@@ -5,6 +5,8 @@ namespace api.Interfaces.Admin
 {
     public interface IComposeMsgForIntrviews
     {
-         Task<MessagesWithErrDto> InviteCandidatesForInterviews(ICollection<int> InterviewItemCandidateIds, string username);
+        Task<MessagesWithErrDto> InviteCandidatesForInterviews(ICollection<int> InterviewItemCandidateIds, string username);
+        Task<MessagesWithErrDto> EditInviteForInterviews(ICollection<int> InterviewItemCandidateIds, string username);
+         
     }
 }

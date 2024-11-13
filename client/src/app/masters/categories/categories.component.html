@@ -1,8 +1,8 @@
-<h4 class="w200">Categories Listing</h4>
+<h4 class="w200">Category Listing</h4>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
-    <pagination class="stdd"
-         [totalItems]="pagination!.totalItems"
-         [itemsPerPage]="pagination!.itemsPerPage"
+    <pagination class="stdd" *ngIf="pagination"
+         [totalItems]="pagination.totalItems"
+         [itemsPerPage]="pagination.itemsPerPage"
          (pageChanged)="onPageChanged($event)"
          [maxSize]="10"
          previousText="&lsaquo;"
@@ -21,7 +21,7 @@
     <button class="btn fa fa-window-close fa-2x" style="color: aliceblue;" routerLink="/administration" ></button>
 </div>
 <div class="container my-2">
-    <div class="stdd w50 b" >Sr#</div>
+    <div class="stdd w50 b" >Category<br>Id</div>
     <div class="stdd w300 b" >Category Name</div>
     
     <div *ngIf="!categories">No Categories on record</div>
@@ -31,6 +31,7 @@
         <div class="stdd w50" style="text-align: right;">{{cat.id}}</div>
         <div class="stdd w300">{{cat.professionName}}</div>
         <button class="stdd w15 btn fa fa-pencil" (click)="editCategory(cat.id, cat.professionName)" ></button>
+        <button class="stdd w15 btn fa fa-list" (click)="customAssessmentQs(cat.id)" ></button>
         <button class="stdd w15 btn fa fa-trash red" (click)="deleteCategory(cat.id)" ></button>
     </div>
 </div>         

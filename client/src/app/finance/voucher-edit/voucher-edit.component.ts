@@ -8,7 +8,7 @@ import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownA
 import { coa, ICOA } from 'src/app/_models/finance/coa';
 import { IVoucher } from 'src/app/_models/finance/voucher';
 import { IVoucherAttachment } from 'src/app/_models/finance/voucherAttachment';
-import { IVoucherEntry } from 'src/app/_models/finance/voucherEntry';
+import { IVoucherEntry, VoucherEntry } from 'src/app/_models/finance/voucherEntry';
 import { User } from 'src/app/_models/user';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { FileService } from 'src/app/_services/file.service';
@@ -200,7 +200,9 @@ export class VoucherEditComponent implements OnInit{
           this.voucherEntries.push(this.newDRVoucherEntry());
           this.voucherEntries.push(this.newCRVoucherEntry());
       } else {
-        this.iDiff = this.totalAmountDR - this.totalAmountCR;
+        this.iDiff = - this.totalAmountCR + this.form.get('amount')?.value;
+        console.log('totalAmountCR', this.totalAmountCR, 'amount', this.form.get('amount')?.value);
+
         if(this.iDiff < 0) {    //CREDIT
           this.suggestedDefaultAmountDR = Math.abs(this.iDiff);
           this.voucherEntries.push(this.newDRVoucherEntry());
@@ -243,7 +245,7 @@ export class VoucherEditComponent implements OnInit{
         transDate: new Date(), 
         coaId: [craccountid ?? this.suggestedDefaultCoaIdCR, Validators.required], 
         accountName:'', 
-        cr: this.suggestedDefaultAmountCR ,
+        cr: this.suggestedDefaultAmountCR ?? 0,
         dr: 0,
         narration: '',
         drEntryApproved: false,
@@ -298,18 +300,20 @@ export class VoucherEditComponent implements OnInit{
       var d = this.totalAmountDR - this.totalAmountCR;
       this.diff = Math.abs(d).toString();
       this.diff += d > 0 ? ' DR' : ' CR';
-      this.iDiff = Math.abs(d);
-      this.form.get('totalAmountDR')?.setValue(this.totalAmountDR);
+      this.iDiff = d; //Math.abs(d);
+      //this.form.get('totalAmountDR')?.setValue(this.totalAmountDR);
     }
 
     updateVoucherAmount()
     {
-        this.voucherAmount = this.form.controls['amount'].value;
+        this.totalAmountCR = this.form.get('amount')?.value;
+        this.recalculateTotal();
     }
 
     setDefaultEntryValues(): any {
-      var icOAId = this.form.controls['cOAId'].value;
-      var vAmount = +this.form.controls['amount'].value;
+      
+      var icOAId = this.form.get('coaId')!.value;
+      var vAmount = +this.form.get('amount')!.value;
 
       var accountclass = this.coas.filter(x => x.id == icOAId).map(x => x.accountClass);
       
@@ -369,7 +373,7 @@ export class VoucherEditComponent implements OnInit{
 
       var _coa: ICOA = new coa;
       const config = {
-        class:'modal-dialog-centered modal-lg',
+        class:'modal-dialog-centered modal-md',
         initialState: {
           title: 'add a new Chart Of Account',
           coa: _coa
@@ -440,17 +444,35 @@ export class VoucherEditComponent implements OnInit{
           this.toastr.warning("Invalid form");
           return;  
         }
-        
-      this.service.updateVoucher(this.form.value).subscribe({
-        next: (response: boolean) => {
-          if(!response) {
-              this.toastr.warning('Failed to update the voucher', 'failure');
-          } else {
-              this.toastr.success('Voucher updated', 'success');
-              this.router.navigateByUrl(this.returnUrl);
+      
+      this.voucherEntries.value.forEach((element: VoucherEntry) => {
+        if(element.cr===null) element.cr = 0;
+      });
+
+      if(this.form.get('id')?.value === 0) {
+        this.service.saveNewVoucher(this.form.value).subscribe({
+          next: (response: IVoucher) => {
+            if(response !== null) {
+              this.toastr.success('new Voucher updated');
+              this.form.get('voucherNo')?.setValue(response.voucherNo);
+            } else {
+              this.toastr.warning('Failed to insert the new voucher', 'Failure')
+            }
           }
-        }, error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
-      })
+        })
+      } else {
+          this.service.updateVoucher(this.form.value).subscribe({
+            next: (response: boolean) => {
+              if(!response) {
+                  this.toastr.warning('Failed to update the voucher', 'failure');
+              } else {
+                  this.toastr.success('Voucher updated', 'success');
+                  this.router.navigateByUrl(this.returnUrl);
+              }
+            }, error: (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
+          })
+      }
+        
     }
     
 

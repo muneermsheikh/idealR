@@ -43,11 +43,11 @@ namespace api.Controllers
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPost]
-        public async Task<ActionResult> CreateCustomer(CreateCustomerDto createDto)
+        public async Task<ActionResult<string>> CreateCustomer(CreateCustomerDto createDto)
         {
             var newCustomer = _mapper.Map<Customer>(createDto);
 
-            if (await _customerRepo.InsertCustomer(newCustomer)) return Ok();
+            if (await _customerRepo.InsertCustomer(newCustomer)) return Ok("");
             
             return BadRequest("Failed to create the Customer Object");
         }

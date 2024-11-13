@@ -20,10 +20,16 @@ namespace api.Controllers
             _qBankRepo = qBankRepo;
         }
         
-        [HttpGet("existingqbankprofs")]
-        public async Task<ICollection<Profession>> ExistingQBankCategories()
+   
+        [HttpGet("questionsFromQBank/{professionid}")]
+        public async Task<ActionResult<AssessmentBank>> GetAssessmentQsFromQBank(int professionid) 
         {
-            return await _qBankRepo.GetExistingCategoriesInAssessmentQBank();
+            var qs = await _qBankRepo.GetOrCreateCustomAssessmentQsForAProfession(professionid);
+
+            if(qs==null) return NotFound(new ApiException(404,"No assessment questions found in the Question Bank matching the given profession", "No Questions in Question Bank"));
+
+            return Ok(qs);
+
         }
 
         [HttpGet("assessmentbankqs")]
@@ -41,18 +47,12 @@ namespace api.Controllers
         [HttpGet("assessmentstddqs")]
         public async Task<ActionResult<ICollection<AssessmentQBankDto>>> GetAssessmentBankQList(AssessmentQBankParams qParams)
         {
-            var qs = await _qBankRepo.GetAssessmentStddQList(qParams);     
+            var qs = await _qBankRepo.GetAssessmentQBanks(qParams);     
             if(qs == null) return NotFound("No matching Assessment Questions found from the Question Bank");
 
             return Ok(qs);
         } 
 
-
-        [HttpGet("catqs/{categoryName}")]
-        public async Task<AssessmentQBank> GetAssessmentQsOfCategoryByName(string categoryName)
-        {
-            return await _qBankRepo.GetAssessmentQsOfACategoryByName(categoryName);
-        }
 
         [HttpGet("catqsbyorderitem/{orderitemid}")]
         public async Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQBankByCategoryId(int orderitemid)
@@ -63,16 +63,16 @@ namespace api.Controllers
 
         [Authorize(Policy = "HRMPolicy")]
         [HttpPost]
-        public async Task<ActionResult<AssessmentQBank>> InsertAssessmentQ(AssessmentQBank qbank)
+        public async Task<ActionResult<AssessmentBankQ>> InsertAssessmentQ(AssessmentBankQ qbank)
         {
-            var q = await _qBankRepo.InsertAssessmentQBank(qbank);
+            var q = await _qBankRepo.InsertStddQ(qbank);
             if (q == null) return BadRequest(new ApiException(400, "Bad Request", 
                 "this probably means the Assessment Question for the chosen category already exists"));
             return Ok(q);
         }
 
         [HttpPost("stddq")]
-        public async Task<ActionResult<AssessmentStddQ>> InsertStddQ(AssessmentStddQ stddQ)
+        public async Task<ActionResult<AssessmentBankQ>> InsertStddQ(AssessmentBankQ stddQ)
         {
             var q = await _qBankRepo.InsertStddQ(stddQ);
 
@@ -81,15 +81,34 @@ namespace api.Controllers
 
         [Authorize(Policy ="HRMPolicy")]
         [HttpPut]
-        public async Task<AssessmentQBank> UpdateAssessmentQBank(AssessmentQBank qBank)
+        public async Task<AssessmentBankQ> UpdateAssessmentQBank(AssessmentBankQ qBank)
         {
-            var success = await _qBankRepo.UpdateAssessmentQBank(qBank);
+            var success = await _qBankRepo.UpdateStddQ(qBank);
             return success;
+        }
+
+        [Authorize(Policy ="HRMPolicy")]
+        [HttpPut("assessmentBank")]
+        public async Task<bool> UpdateAssessmentBank(AssessmentBank qBank)
+        {
+            if(qBank.Id == 0) {
+                return await _qBankRepo.InsertAssessmentBank(qBank);
+            } else {
+                return await _qBankRepo.UpdateAssessmentBank(qBank);
+            }
+            
+        }
+
+        [Authorize(Policy ="HRMPolicy")]
+        [HttpPost("assessmentBank")]
+        public async Task<bool> InsertAssessmentBank(AssessmentBank qBank)
+        {
+            return  await _qBankRepo.InsertAssessmentBank(qBank);
         }
 
         [Authorize(Policy ="HRMPoicy")]
         [HttpPut("stddq")]
-        public async Task<ActionResult<AssessmentStddQ>> UpdateStddQ(AssessmentStddQ stddQ)
+        public async Task<ActionResult<AssessmentBankQ>> UpdateStddQ(AssessmentBankQ stddQ)
         {
            return await _qBankRepo.UpdateStddQ(stddQ);
 
@@ -99,9 +118,21 @@ namespace api.Controllers
         [HttpDelete("stddq/{questionId}")]
         public async Task<ActionResult<bool>> DeleteStandardQ(int questionId)
         {
-            return await _qBankRepo.DeleteAssessmentQBank(questionId);
+            return await _qBankRepo.DeleteAssessmentBankQ(questionId);
         }
 
+        
+        [HttpGet("qBankPaged")]
+        public async Task<ActionResult<PagedList<AssessmentBank>>> GetQBankPaginated([FromQuery] AssessmentQBankParams qbankParams)
+        {
+            var qs = await _qBankRepo.GetQBankPaginated(qbankParams);     //includes qbankitems
+            if(qs == null) return NotFound("No matching Assessment Questions found from the Question Bank");
+
+            Response.AddPaginationHeader(new PaginationHeader(qs.CurrentPage, qs.PageSize, 
+                qs.TotalCount, qs.TotalPages));
+            
+            return Ok(qs);
+        } 
 
     }
 }

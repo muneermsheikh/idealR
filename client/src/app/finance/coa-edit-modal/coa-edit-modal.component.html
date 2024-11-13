@@ -1,7 +1,7 @@
 <div class="modal-header">
 	<div class="b">{{title}}</div>
 
-	<button type="button" title="submit" class="stdd btn btn-default green fa fa-2x fa-check" (click)="updateCOA()"></button>
+	<button type="button" title="submit" style="margin-left: 20px;" class="stdd btn btn-default green fa fa-2x fa-save" (click)="updateCOA()"></button>
 	<button class="stdd close pull-right fa fa-2x fa-close" type="button" aria-label="Close" (click)="bsModalRef.hide()"></button>
 </div>
 
@@ -43,7 +43,7 @@
 		<br>
 		<label class="stdd w150 b">Opening Balance</label>
 		<input type="text" class="stdd w90" [(ngModel)]="coa.opBalance" >
-		
+		<label class="stdd w150">Use -ve prefix for credit amounts</label>
 		
 	</div>
 	<div class="stdd col-4" style="vertical-align: top;">

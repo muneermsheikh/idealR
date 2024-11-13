@@ -34,7 +34,7 @@
                     <label class="stdd mL355 w110 b">Date Forwarded</label>
                     <label class="stdd mx-2 w300 b">Agent</label>
                     <label class="stdd b mx-2 w250">Official Name</label>
-                    <button type="button" class="stdd mx-20 fa fa-plus" (click)="addOfficial(bi)"></button>
+                    <button type="button" class="btn mx-20 fa fa-plus" (click)="addOfficial(bi)"></button>
 
                     <div *ngFor="let official of orderForwardCategoryOfficials(bi).controls; let si=index">
                         <div [formGroupName]="si" style="margin-left: 355px;">

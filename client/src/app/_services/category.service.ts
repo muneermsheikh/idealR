@@ -36,21 +36,26 @@ export class CategoryService {
     return this.http.get<IVendorFacility[]>(this.apiUrl + 'masters/VendorFacilityList')
   }
 
-  getCategoriesPaged(mParams: professionParams, fromCache: boolean=true): Observable<any> { 
+  getCategoriesPaged(aParams: professionParams, fromCache: boolean=true): Observable<any> { 
 
+    //var aParams = this.mParams;
+    console.log('params:', aParams);
     if(!fromCache) {
       this.cache = new Map();
     } else {
-      const response = this.cache.get(Object.values(mParams).join('-'));
+      console.log('categories getting from cache');
+      const response = this.cache.get(Object.values(aParams).join('-'));
       if(response) return of(response);
     }
+
+    console.log('categories getting from api');
     
-      let params = getHttpParamsForProfession(mParams);
+      let params = getHttpParamsForProfession(aParams);
       
       return getPaginatedResult<IProfession[]>(this.apiUrl + 
         'Profession', params, this.http).pipe(
         map(response => {
-          this.cache.set(Object.values(mParams).join('-'), response);
+          this.cache.set(Object.values(aParams).join('-'), response);
           return response;
         })
       )

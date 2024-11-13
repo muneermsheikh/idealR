@@ -11,6 +11,7 @@ namespace api.Interfaces.HR
     {
         Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(ProspectiveCandidateParams pParams);
         Task<ProspectiveReturnDto> ConvertProspectiveToCandidate(int prospectiveid, string Username);
+        Task<ICollection<ProspectiveReturnDto>> ConvertProspectiveToCandidates(ICollection<int> prospectiveids, string Username);
         Task<bool> ConvertProspectiveNoDeleteFromProspective(ICollection<int> ProspectiveCandidateIds, string Username);
         Task<ICollection<ProspectiveSummaryDto>> GetProspectiveSummary(ProspectiveSummaryParams pParams);
         Task<ProspectiveCandidate> GetProspectiveCandidate(ProspectiveSummaryParams pParams);

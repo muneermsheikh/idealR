@@ -13,11 +13,18 @@
     padding: 0px;
 }
 
+.std {
+	display: inline-block;
+    font-size: smaller;
+	text-align: left;
+}
+
 .title {
 	display: inline-block;
 	font-size: small;
-	font-weight: bold;
 }
+
+.hAlignR {text-align: right;}
 
 .b {font-weight: bold;}
 
@@ -39,6 +46,7 @@
     width: 40px;
     border: 2px;
     border-color: #000000;
+	vertical-align: bottom;
 }
 
 input[type="radio"] {

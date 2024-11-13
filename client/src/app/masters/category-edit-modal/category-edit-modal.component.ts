@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { IProfession } from 'src/app/_models/masters/profession';
-import { ConfirmService } from 'src/app/_services/confirm.service';
+import { categoryRefParam } from 'src/app/_models/params/Admin/categoryRefParam';
 
 @Component({
   selector: 'app-category-edit-modal',
@@ -10,17 +10,17 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 })
 export class CategoryEditModalComponent {
 
-    @Output() updateEvent = new EventEmitter<IProfession>();
-    
-    category: IProfession | undefined;
-    title: string='';
+  Category: {"id": number, "professionName": string} | undefined;
+  title: string='';
 
-    constructor(public bsModalRef: BsModalRef, private confirm: ConfirmService){}
+  @Output() updateEvent = new EventEmitter<{"id": number, "professionName": string}>();
+ 
+  constructor (public bsModalService: BsModalService){};
 
-    updateClicked() {
-      if(this.category?.professionName !=='') {
-        this.updateEvent.emit(this.category);
-        this.bsModalRef.hide();
-      }
+  UpdateClicked() {
+    if(this.Category?.professionName !== '') {
+      this.updateEvent.emit(this.Category);
+      this.bsModalService.hide();
     }
+  }
 }

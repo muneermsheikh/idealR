@@ -132,7 +132,7 @@ namespace api.Controllers
                 if(modelData.Id==0) {
                     dtoErr = await _repo.SaveNewInterviewItem(modelData, User.GetUsername());
                 } else {
-                    dtoErr = await _repo.EditInterviewItem(modelData);
+                    dtoErr = await _repo.EditInterviewItem(modelData, User.GetUsername());
                 }
 
                 if(!string.IsNullOrEmpty(dtoErr.Error)) {
@@ -173,7 +173,7 @@ namespace api.Controllers
         [HttpPut("intervwitem")]
         public async Task<ActionResult<Intervw>> UpdateInterviewItem(IntervwItem intervwitem)
         {
-            var obj = await _repo.EditInterviewItem(intervwitem);
+            var obj = await _repo.EditInterviewItem(intervwitem, User.GetUsername());
 
             if(obj == null) return BadRequest(new ApiException(400, "Bad Request", obj.Error));
 

@@ -18,6 +18,7 @@ namespace api.DTOs.HR
         public string VenueAddress { get; set; }
         public string VenueAddress2 { get; set; }
         public string VenueCityAndPIN { get; set; }
+        public string InterviewMode {get; set;}
         public string SiteRepName { get; set; }
         public string SitePhoneNo { get; set; }
         public DateTime ScheduledAt { get; set; }

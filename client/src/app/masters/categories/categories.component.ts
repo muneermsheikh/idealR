@@ -9,6 +9,8 @@ import { CategoryService } from 'src/app/_services/category.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
+import { CategoryQBankModalComponent } from '../category-qbank-modal/category-qbank-modal.component';
 
 @Component({
   selector: 'app-categories',
@@ -32,6 +34,7 @@ export class CategoriesComponent implements OnInit {
   bsModalRef: BsModalRef | undefined;
 
   constructor(private service: CategoryService, 
+    private orderAssessService: OrderAssessmentService,
     private modalService: BsModalService, 
     private toastr: ToastrService,
     private confirm: ConfirmService){}
@@ -69,10 +72,11 @@ export class CategoriesComponent implements OnInit {
 
   editCategory(catId: number,catName: string) {
     var category={id: catId, professionName: catName};
+    
     const config = {
       class: 'modal-dialog-centered modal-md',
       initialState: {
-        category: category,
+        Category: category,
         title: 'Category'
       }
     }
@@ -103,9 +107,10 @@ export class CategoriesComponent implements OnInit {
   }
 
   onSearch() {
-    const params = this.service.getParams();
+    const params = new professionParams();  // this.service.getParams();
     params.search = this.searchTerm?.nativeElement.value;
     params.pageNumber = 1;
+    this.pParams = params;
     this.service.setParams(params);
     this.loadData();
   }
@@ -149,5 +154,27 @@ export class CategoriesComponent implements OnInit {
         (err: any) => {
           console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
       })
+  }
+
+  customAssessmentQs(id: number) {
+ 
+    const config = {
+      class: 'modal-dialog-centered modal-lg',
+      initialState: {
+        id: id,
+        user: this.user
+      }
+    }
+    this.bsModalRef = this.modalService.show(CategoryQBankModalComponent, config);
+    this.bsModalRef.content.updateEvent.subscribe({
+      next: (response: boolean) => {
+        if(response) {
+          this.toastr.success('custom assessment questions updated', 'Success')
+        } else {
+          this.toastr.warning('Failed to update the custom assessment questions', 'Failed t update')
+        }
+      }
+    })
+ 
   }
 }

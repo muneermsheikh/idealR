@@ -1,4 +1,5 @@
 using System.Reflection.Metadata.Ecma335;
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Interfaces.Orders;
@@ -31,18 +32,22 @@ namespace api.Data.Repositories.Orders
 
         public async Task<bool> EditJobDescription(JobDescription jobDescription)
         {
-            var existingObject = await _context.JobDescriptions.FindAsync(jobDescription.Id);
-            if (existingObject == null) return false;
+            if(jobDescription.Id == 0) {
+                _context.JobDescriptions.Add(jobDescription);
+            } else {
+                var existingObject = await _context.JobDescriptions.FindAsync(jobDescription.Id);
+                if (existingObject == null) return false;
+                _context.Entry(existingObject).CurrentValues.SetValues(jobDescription);
+            }
             
-            _context.Entry(existingObject).CurrentValues.SetValues(jobDescription);
-
+            
             try{
                 await _context.SaveChangesAsync();
+                return true;
             } catch (Exception ex) {
                 throw new Exception(ex.Message, ex);
             }
 
-            return true;
         }
 
 
@@ -82,11 +87,27 @@ namespace api.Data.Repositories.Orders
             return itemToInsert;
         }
         
-        public async Task<JobDescription> GetJDOfOrderItem(int OrderItemId)
+        public async Task<JDDto> GetJDOfOrderItem(int OrderItemId)
         {
-            var jd = await _context.JobDescriptions.Where(x => x.OrderItemId == OrderItemId).FirstOrDefaultAsync();
-
-            return jd;
+            var orderdata = await (from item in _context.OrderItems where item.Id == OrderItemId
+                join cat in _context.Professions on item.ProfessionId equals cat.Id
+                join order in _context.Orders on item.OrderId equals order.Id
+                select new {OrderNo = order.OrderNo, 
+                OrderDate = order.OrderDate, CategoryName = cat.ProfessionName,
+                CustomerName = order.Customer.CustomerName}).FirstOrDefaultAsync();
+            
+            var jobDesc = await _context.JobDescriptions.Where(x => x.OrderItemId == OrderItemId)
+                .Select (x => new JDDto {
+                    Id = x.Id, CompanyName = orderdata.CustomerName, OrderNo = orderdata.OrderNo,
+                    CategoryName = orderdata.CategoryName, OrderItemId = x.OrderItemId, JobDescInBrief = x.JobDescInBrief,
+                    QualificationDesired = x.QualificationDesired, ExpDesiredMax = x.ExpDesiredMax,
+                    ExpDesiredMin = x.ExpDesiredMin, MinAge = x.MinAge, MaxAge = x.MaxAge}).FirstOrDefaultAsync()
+                    ?? new JDDto {
+                        CompanyName = orderdata.CustomerName, OrderNo = orderdata.OrderNo, 
+                        OrderDate = orderdata.OrderDate,
+                        CategoryName = orderdata.CategoryName, OrderItemId = OrderItemId};
+            
+            return jobDesc;
         }
 
         public async Task<Remuneration> GetRemuneratinOfOrderItem(int OrderItemId)
@@ -186,8 +207,19 @@ namespace api.Data.Repositories.Orders
                     LeavePerYearInDays = remun.LeavePerYearInDays
                 }).FirstOrDefaultAsync();
             
+            query ??= await (from item in _context.OrderItems where item.Id == OrderItemId
+                join order in _context.Orders on item.OrderId equals order.Id
+                select new RemunerationDto {
+                    Id = 0,
+                    CategoryName = item.Profession.ProfessionName,
+                    CustomerName = order.Customer.CustomerName,
+                    OrderDate = order.OrderDate,
+                    OrderNo = order.OrderNo,
+                    OrderItemId= item.Id,
+                    WorkHours = 48
+                }).FirstOrDefaultAsync();
+            
             return query;
         }
-
     }
 }

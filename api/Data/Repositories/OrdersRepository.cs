@@ -4,14 +4,11 @@ using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.Admin;
-using api.Interfaces.Messages;
 using api.Interfaces.Orders;
 using api.Params.Orders;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Packaging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace api.Data.Repositories
 {
@@ -453,59 +450,23 @@ namespace api.Data.Repositories
         }
         public async Task<PagedList<OrderBriefDto>> GetOrdersAllAsync(OrdersParams orderParams)
         {
-            /*var orders = await _context.Orders.ToListAsync();
-            var fwdhrs = await _context.OrderForwardToHRs.ToListAsync();
-            var acks = await _context.AckanowledgeToClients.ToListAsync();
-            var assess = await _context.OrderAssessments.ToListAsync();
-            var crvws = await _context.ContractReviews.ToListAsync();
-
-            foreach(var o in orders) {
-                var hrFWD = fwdhrs.Where(x => x.OrderId == o.Id).FirstOrDefault();
-                var ack = acks.Where(x => x.OrderId == o.Id).FirstOrDefault();
-                var ass = assess.Where(x => x.OrderId == o.Id).FirstOrDefault();
-                var crvw = crvws.Where(x => x.OrderId == o.Id).FirstOrDefault();
-
-                var extn = new OrderExtn {OrderId = o.Id, OrderNo = o.OrderNo, ForwardedToHROn = hrFWD?.DateOnlyForwarded,
-                 AcknowledgedOn = ack?.DateAcknowledged, AssessmentDesignedOn = ass?.DateDesigned ?? o.OrderDate,
-                 ContractReviewedOn = crvw?.ReviewedOn, ContractReviewId = (int)(crvw?.Id), 
-                 ContratReviewResult=crvw?.ReviewStatus};
-
-                 _context.OrderExtns.Add(extn);
-            }
-
-            await _context.SaveChangesAsync();
-            */
-
             var qry = (from order in _context.Orders where order.Status.ToLower() != "concluded"
                 join extn in _context.OrderExtns on order.Id equals extn.OrderId into extns 
                 from oextn in extns.DefaultIfEmpty()
                 select new OrderBriefDto {
                     Id=order.Id, CompleteBy = order.CompleteBy, CustomerName = order.Customer.CustomerName,
-                    ContractReviewedOn = (DateTime)oextn.ContractReviewedOn,
+                    ContractReviewedOn = oextn.ContractReviewedOn,
+                         //== null ? new DateTime(1999,1,1) : oextn.ContractReviewedOn),
+                    ForwardedToHRDeptOn = oextn.ForwardedToHROn,
+                         //== null ? new DateTime(1999,1,1) : oextn.ForwardedToHROn,
+                    ContractReviewStatus = oextn.ContratReviewResult, 
                     OrderDate = order.OrderDate, OrderNo = order.OrderNo, Status = order.Status,
-                    CityOfWorking = order.CityOfWorking, ContractReviewStatus = oextn.ContratReviewResult,
-                    ForwardedToHRDeptOn  = oextn.ForwardedToHROn, ContractReviewId = oextn.ContractReviewId,
+                    CityOfWorking = order.CityOfWorking, 
+                    //ContractReviewId = oextn.ContractReviewId,        //this gives NULLABLE OBJECT MUST HAVE A VALUE
                     CustomerId = order.CustomerId
                 }).OrderBy(x => x.OrderNo)
                 .AsQueryable();
             
-            /*var qry = _context.Orders.Where(x => x.Status.ToLower() != "concluded")
-                //.Include(x => x.ContractReview)
-                .OrderBy(x => x.OrderNo)
-                .Select(x => new OrderBriefDto {
-                    CompleteBy = x.CompleteBy
-                    , CustomerName = x.Customer.CustomerName
-                    //, ContractReviewedOn = x.ContractReview.ReviewedOn
-                    , OrderDate=x.OrderDate, OrderNo=x.OrderNo,
-                    Status = x.Status, Id=x.Id
-                    , CityOfWorking = x.CityOfWorking
-                    ,ContractReviewStatus = x.ContractReviewStatus 
-                    , ForwardedToHRDeptOn = x.ForwardedToHRDeptOn
-                    , ContractReviewId=x.ContractReviewId, CustomerId=x.CustomerId
-                }).AsQueryable();
-            */
-            var temp = await qry.ToListAsync();
-
             var paged = await PagedList<OrderBriefDto>.CreateAsync(qry.AsNoTracking()
                 .ProjectTo<OrderBriefDto>(_mapper.ConfigurationProvider)
                 , orderParams.PageNumber, orderParams.PageSize);

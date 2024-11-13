@@ -1,0 +1,55 @@
+<div class="modal-header my-0" *ngIf="itemCandidate">
+    <div class="stdd w75 b">Candidate:</div>
+    <div class="stdd w200 mx-2">{{itemCandidate.applicationNo}} - {{itemCandidate.candidateName}}</div>
+
+</div>
+
+<div class="modal-body" *ngIf="itemCandidate">
+    <label class="lbl">Scheduled At:</label>
+    <input class="stdd w150" type="text" 
+        placeholder="Scheduled At" 
+        [(ngModel)]="itemCandidate!.scheduledFrom" 
+    >
+    
+    <br><label class="lbl">Reported At:</label>
+    <input class="stdd w150" type="text" 
+        placeholder="Reported At" 
+        [(ngModel)]="itemCandidate!.reportedAt" 
+    >
+    
+    <br><label class="lbl">Interviewed At:</label>
+    <input class="stdd w150" type="text" 
+        placeholder="Interviewed At" 
+        [(ngModel)]="itemCandidate!.interviewedAt" 
+    >
+    
+    <br><label class="lbl">Interview Status:</label>
+    <ng-select class="stdd w200" 
+        [items]="selectionStatuses"
+        bindLabel="name"
+        bindValue="name"
+        labelForId="name"
+        clearAllText="Clear"
+        (change)="statusChanged()"
+        [(ngModel)]="itemCandidate.interviewStatus"       
+        >
+    </ng-select>    
+    <button type="button" class="btn mx-5 w15 fa fa-upload"  
+        title="upload a new interviewer comment.  Any existing attachment will be REPLACED" 
+        (click)="upload = !upload" ></button>
+    
+    <div *ngIf="upload" style="font-size: x-small;">
+        <input class="stdd" type="file" id="file" (change)="onFileInputChange($event)" >
+        <button class="btn fa fa-window-close" (click)="upload = !upload" ></button>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success fa fa-save" style="margin-left: 200px;" (click)="updateAttendance()" ></button>
+    <button class="btn fa fa-erase fa-2x mx-2" (click)="eraseAttendanceData()"
+        title="Erase attendance data like Reported At, Interviewed At and Interview Status" ></button>
+    <button class="btn btn-close close mx-2" aria-label="close" (click)="bsModalRef.hide()"></button>
+    <button class="btn fa fa-trash red" 
+        title="deletes the candidate assignment entirely" (click)="deleteItemCandidate()"></button>
+
+</div>

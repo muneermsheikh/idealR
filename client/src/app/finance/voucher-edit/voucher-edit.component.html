@@ -36,28 +36,27 @@
 		Please enter the credit Account
 	</div>
 
-	<div class="stdd w30 fa fa-plus" disabled="isAddMode" (click)="addNewCOA()"></div>
+	<div class="stdd w30 fa fa-plus" title="insert a new Chart of Account" disabled="isAddMode" (click)="addNewCOA()"></div>
 	<label class="lbl w100">Divn:</label>
 	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
-	<button type="button" class="btn fa fa-window-close fa-3x mx-1" 
+	
+	<label class="stdd w100">Narration:</label>
+	<textarea class="stdd" formControlName="narration" cols="25" rows="2"></textarea>
+	<button type="button" class="btn fa fa-window-close fa-2x mx-1" 
 		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
 		(click)="returnToCaller()" ></button>
-	
-	<br class="my-2">
-	<label class="stdd w100">Narration:</label>
-	<textarea style="background-color: antiquewhite;" formControlName="narration" cols="47" rows="2"></textarea>
-	
-	<label class="lbl w100" >Amount:</label>
+
+	<br><label class="lbl w100 my-0" >Amount:</label>
 	<input type="number" (change)="updateVoucherAmount()" class="stdd w100" formControlName="amount" > 
-	<div *ngIf="voucherAmount !== 0 && (iDiff !==0 || voucherAmount !== totalAmountDR)" 
-		class="stdd red" >total mismatch" 
-	</div>
 	
 	<div class="stdd b" style="margin-left: 50px;">Totals:</div>
 	<span class="stdd">DR</span><div class="stdd w75" style="text-align:right; border: solid;" >{{totalAmountDR}}</div>
 	<span class="stdd">CR</span><div class="stdd w75" style="text-align:right; border: solid;">{{totalAmountCR}}</div>
-	<span class="stdd">Balance</span><div class="stdd w100" style="text-align:right; border: solid;">{{diff}} </div>
+	<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
+	<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
+		Voucher Amount NOT totally disbursed</div>
 
+		
 	<br><label class="stdd w90 b">Date</label>
 	<label class="stdd w300 b">Account</label>
 	<label class="stdd w75 b">Debit</label>
@@ -67,7 +66,7 @@
 	<label class="stdd2 w50 b">by / on</label>
 
 	<button (click)="updateVoucher()" 
-		[disabled]="!form.dirty || (voucherAmount !== 0 && (iDiff !==0 || voucherAmount !== totalAmountDR))" 
+		[disabled]="!form.dirty && voucherAmount !== 0 && iDiff !==0 && voucherAmount !== totalAmountDR" 
 		style="margin-left: 20px !important; color:aliceblue; vertical-align: top;" class="btn fa fa-save green mx-1" ></button>
 	<button type="button" class="btn fa fa-trash red mx-1" style="color: aliceblue; vertical-align: top;" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
 
@@ -77,8 +76,8 @@
 	<br>
 	<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
 		<div *ngFor="let t of voucherEntries.controls; let i=index;">
-			<hr class="my=0">
-			<div [formGroupName]="i">
+			<hr class="my-0">
+			<div [formGroupName]="i" class="my-0">
 				<input class="stdd w90" style="font-size: x-small;"
 					type="text"
 					placeholder="Date"
@@ -100,8 +99,8 @@
 					Please enter the Account
 				</div>
 
-				<input class="stdd w75 tAlignRight"  type="number"(change)="recalculateTotal()" formControlName="dr">
-				<input class="stdd w75 tAlignRight" type="number"(change)="recalculateTotal()" formControlName="cr">
+				<input class="stdd w75 tAlignRight"  type="number" (change)="recalculateTotal()" formControlName="dr">
+				<input class="stdd w75 tAlignRight" type="number" (change)="recalculateTotal()" formControlName="cr">
 				<input class="stdd w300" type="text" formControlName="narration">
 				
 				<input type="checkbox" style="border-color: black;"

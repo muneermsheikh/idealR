@@ -1,12 +1,11 @@
-<div class="modal-header my-0">
-    <h6>Edit a {{title}}</h6>
+<div class="modal-header">
+    Edit a {{title}}
+    <button class="btn fa fa-save fa-2x" (click)="UpdateClicked()"></button>
+    <button class="bfn fa fa-window-close fa-2x" (click)="bsModalService.hide()" ></button>
 </div>
-<div class="modal-body my-0">
-    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
-        title="update the " {{title}} (click)="updateClicked()" ></button>
-    <button class="btn fa fa-close pull-right" title="Close" (click)="bsModalRef.hide()" ></button>
+<div class="modal-body">
+    <label style="display: inline-block; width: 150px;">Enter value for the {{title}}:</label>
+    <input type="text" style="display: inline-block; width: 300px;" [(ngModel)]="Category!.professionName" >
+</div>
 
-    <label style="display: inline-block; width: 150px;">{{title}} Name</label>
-   <!-- <input type="text" class="w200" [(ngModel)]="category" > -->
-</div>
 <div class="modal-footer"></div>

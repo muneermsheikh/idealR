@@ -35,6 +35,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { MessageComponent } from './message/message/messages.component';
 import { DLComponent } from './dl/dl.component';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
+import { OrderAssessmentItemModalComponent } from './orders/order-assessment-item-modal/order-assessment-item-modal.component';
 
 
 @NgModule({
@@ -71,6 +72,7 @@ import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conv
     MessageComponent,
     DLComponent,
     ExcelConversionMenuComponent,
+    OrderAssessmentItemModalComponent,
   ],
   imports: [
     CommonModule,

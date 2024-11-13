@@ -81,11 +81,12 @@ namespace api.Helpers
             CreateMap<ContractReviewItemQ, ContractReviewItemStddQ>();
             CreateMap<ContractReview, ContractReviewDto>();
             CreateMap<ContractReviewItem, ContractReviewItemDto>(); //add OrderDate, CustomerName, OrderNo
-
+            CreateMap<ContractReviewItemDto, ContractReviewItemDto>();
             CreateMap<ChecklistHR, ChecklistHRDto>();
             CreateMap<ChecklistHRDto, ChecklistHR>();
 
             CreateMap<AssessmentQStdd, CandidateAssessmentItem>();
+            CreateMap<AssessmentBank, AssessmentBank>();
 
             CreateMap<CVRefDto, CVRefDto>();
 

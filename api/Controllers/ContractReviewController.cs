@@ -43,6 +43,16 @@ namespace api.Controllers
             return item;
         }
 
+        [HttpPost("reviewitem")]
+        public async Task<ActionResult<ContractReviewItem>> PostNewReviewItem(ContractReviewItem reviewItem)
+        {
+            var obj = await _repo.SaveNewContractReviewItem(reviewItem);
+
+            if (obj == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to create the Contract Review Item"));
+
+            return Ok(obj);
+        }
+
         [HttpPost("contractreview")]
         public async Task<ActionResult<ContractReview>> AddContractReview(ContractReview contractReview)
         {

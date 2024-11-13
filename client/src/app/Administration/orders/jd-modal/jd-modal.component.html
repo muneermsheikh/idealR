@@ -1,30 +1,31 @@
 
 <div *ngIf="jd !== null && jd !== undefined" class="mx-2 my-1">
 
-     <div class="modal-footer">
-          <button type="button" class="btn btn-success fa fa-save" (click)="confirm()"></button>
-          <button type="button" class="btn btn-secondary btn-danger fa fa-close" (click)="decline()"></button>
-     </div>
-    <div class="mx-2">
-         <div>
-              <strong>Customer: </strong> {{jd.customerName}}
-         </div>
-         <div>
-              <strong>Order No.:</strong> {{jd.orderNo}} dt {{jd.orderDate | date}}
-         </div>
-         <div>
-              <strong>Category: </strong>{{jd.categoryName}}
-         </div>
-    
+     <div class="modal-header my-0">
+          <h4 style="font-weight: bold;">Job Description </h4>
+          
+          <button type="button" class="btn btn-success mx-5 fa fa-save" (click)="confirm()"></button>
+          <button type="button" class="btn btn-secondary fa fa-window-close fa-2x" (click)="decline()"></button>
+
     </div>
-    <div class="modal-body">
+    <div class="modal-body my-9">
          
-         <form #jdForm="ngForm" id="jdForm">
+          <div>
+               <strong>Customer: </strong> {{jd.companyName}}
+          </div>
+          <div>
+               <strong>Order No.:</strong> {{jd.orderNo}} dt {{jd.orderDate | date}}
+          </div>
+          <div>
+               <strong>Category: </strong>{{jd.categoryName}}
+          </div>
+          
+          <form #jdForm="ngForm" id="jdForm">
              
               <strong>Qualification</strong>
               <input class="form-text-input" 
                    id="qualificationDesired" name = "qualificationDesired" 
-                   [(ngModel)]="jd.qualificationDesired" type="text" style="width: 400px;" > 
+                   [(ngModel)]="jd.qualificationDesired" type="text" style="width: 200px;" > 
               
               <br><label style="font-weight: bold; margin-right: 2px;">Exp (in yrs):</label>
               <label style="font-weight: bold; margin-right: 2px;" for="expDesiredMin">From: </label>
@@ -44,7 +45,7 @@
                    name="jobDescInBrief"
                    class="form-text-input"
                    [(ngModel)]="jd.jobDescInBrief"     
-                   cols="50" rows="9"
+                   cols="50" rows="6"
               > </textarea>
     
          

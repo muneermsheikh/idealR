@@ -48,6 +48,18 @@ export class AttendanceService {
     return this.http.put<IInterviewAttendanceToUpdateDto[]>(this.apiUrl + 'interview/updateAttendance', dtos);
   }
 
+  UploadInterviewerNote(model: any) {
+    return this.http.post<string>(this.apiUrl + 'FileUpload/InterviewerNote', model);
+  }
+
+  downloadInterviewerNote(fullpath: string) {
+    let params = new HttpParams();
+    params = params.append('fullpath', fullpath);
+
+    return this.http.get(this.apiUrl + 'FileUpload/downloadfile', {params, responseType: 'blob'});
+
+  }
+
   getAttendanceStatus(candidateId: number) {
     return this.http.get<IIntervwAttendance[]>(this.apiUrl + 'interview/candidateattendances/' + candidateId);
   }

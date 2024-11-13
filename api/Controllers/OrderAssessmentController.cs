@@ -30,17 +30,6 @@ namespace api.Controllers
 
         }
 
-        [HttpGet("questionsFromQBank/{professionid}")]
-        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetAssessmentQsFromQBank(int professionid) 
-        {
-            var qs = await _repo.GetCustomAssessmentQsForAProfession(professionid);
-
-            if(qs==null || qs.Count == 0) return NotFound(new ApiException(404,"No assessment questions found in the Question Bank matching the given profession", "No Questions in Question Bank"));
-
-            return Ok(qs);
-
-        }
-
         
         //OrderAssessmentItem
         [HttpGet("orderassessmentitem/{orderItemId}")]
@@ -83,11 +72,16 @@ namespace api.Controllers
         [HttpPut("assessmentitem")]
         public async Task<ActionResult<bool>> UpdateOrderItemAssessment(OrderAssessmentItem orderAssessmentItem)
         {
-            var updated = await _repo.EditOrderAssessmentItem(orderAssessmentItem);
-
-            if(!updated) return BadRequest("Failed to update the Order Item Assessment");
-
-            return Ok(true);
+            if(orderAssessmentItem.Id == 0) {
+                var posted = await _repo.SaveOrderAssessmentItem(orderAssessmentItem);
+                if(posted == null) return BadRequest("Failed to post the OrderItem Assessment");      
+                return Ok(true);
+            } else {
+                var updated = await _repo.EditOrderAssessmentItem(orderAssessmentItem, User.GetUsername());
+                if(!updated) return BadRequest("Failed to update the Order Item Assessment");
+                return Ok(true);
+            }
+            
         }
 
 

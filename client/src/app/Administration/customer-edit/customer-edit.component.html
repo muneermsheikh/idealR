@@ -9,13 +9,16 @@
             <label class="lbl w80">Known As:</label> 
             <app-text-input [label]="'Known As'" formControlName="knownAs" class="stdd w150"></app-text-input>
             <label class="lbl w80" style="text-align: right;" >Type:</label>
-            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="customer" class="w35 stdd">Customer
-            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="associate" class="w35 stdd">associate
-            <input type="radio" id="customerType" name="customerType" formControlName="customerType" value="vendor" class="w35 stdd">Vendor
+            <input type="radio" id="customerType" name="customerType" 
+                formControlName="customerType" value="customer" class="inputcheck form-check-input">Customer
+            <input type="radio" id="customerType" name="customerType" 
+                formControlName="customerType" value="associate" class="inputcheck form-check-input">associate
+            <input type="radio" id="customerType" name="customerType" 
+                formControlName="customerType" value="vendor" class="inputcheck form-check-input">Vendor
         
             <br><label class="lbl w100">Address:</label> 
-            <app-text-input [label]="'Address'" formControlName="add" class="stdd w250" ></app-text-input>
-            <app-text-input [label]="'Address2'" formControlName="add2" class="stdd w250 ml-5" ></app-text-input>
+            <app-text-input [label]="'Address'" formControlName="add" class="stdd w400" ></app-text-input>
+            <app-text-input [label]="'Address2'" formControlName="add2" class="stdd w400 ml-5" ></app-text-input>
 
             <br><label class="lbl w100">City:</label> 
             <app-text-input [label]="'City'" formControlName="city" class="stdd w100 fSmall"></app-text-input>
@@ -54,7 +57,7 @@
             <label class="fSmaller w125">Phone</label>
             <label class="fSmaller w125">Mobile</label>
             <label class="fSmaller w150">Email</label>
-            <button class="btn w25 fa fa-plus" (click)="addCustomerOfficial()" ></button>
+            <button class="btn w25 fa fa-plus" title="add a new Customer Official" (click)="addCustomerOfficial()" ></button>
             
             <hr class="my-0" style="border-style: double;">
             

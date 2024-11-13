@@ -15,13 +15,13 @@ namespace api.Interfaces
         //Task<OrderAssessmentItem> GenerateOrderAssessmentItemFromStddQ(int orderItemId, string loggedinUsername);
         Task<OrderAssessmentItem> SaveOrderAssessmentItem(OrderAssessmentItem orderItemAssessment);
         Task<string> EditOrderAssessment(OrderAssessment orderAssessment, string Username);
-        Task<bool> EditOrderAssessmentItem(OrderAssessmentItem orderAssessmentItem);
+        Task<bool> EditOrderAssessmentItem(OrderAssessmentItem orderAssessmentItem, string Username);
         Task<bool> DeleteOrderAssessmentItem(int orderItemId);
         Task<bool> DeleteOrderAssessmentItemQ(int questionId);
  
         //orderitemassessmentQ
         Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQStdds();
-        Task<ICollection<OrderAssessmentItemQ>> GetCustomAssessmentQsForAProfession(int professionid);
+
         Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid);
         
     }

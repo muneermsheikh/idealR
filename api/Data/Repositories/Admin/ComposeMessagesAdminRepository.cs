@@ -138,8 +138,8 @@ namespace api.Data.Repositories.Admin
 
                 var message = new Message
                 {
-                    Sender = senderObj,
-                    Recipient = recipientObj,
+                    //Sender = senderObj,
+                    //Recipient = recipientObj,
                     SenderUsername=senderObj.UserName,
                     RecipientUsername = recipientObj.UserName ?? "",
                     //RecipientAppUserId=recipientObj.Id,
@@ -280,8 +280,8 @@ namespace api.Data.Repositories.Admin
 
                     var emailMessage = new Message
                     {
-                        Sender = senderObj,
-                        Recipient = recipientObj,
+                        //Sender = senderObj,
+                        //Recipient = recipientObj,
                         SenderUsername=senderObj.UserName,
                         SenderEmail=senderObj.Email,
                         RecipientUsername = recipientObj.UserName,

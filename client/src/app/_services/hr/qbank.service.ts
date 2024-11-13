@@ -8,6 +8,7 @@ import { assessmentQBankParams } from 'src/app/_models/admin/assessmentQBankPara
 import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 import { Pagination } from 'src/app/_models/pagination';
 import { getPaginationHeadersAssessmentQBankParams } from '../paginationHelper';
+import { IAssessmentBank } from 'src/app/_models/admin/assessmentBank';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,11 @@ export class QbankService {
   routeId: string='';
   user?: User;
   cache = new Map();
+
+  customQs: IAssessmentBank[]=[];
+  customParams = new assessmentQBankParams();
+  paginationCustom: Pagination | undefined;
+  cacheCustom = new Map();
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
@@ -45,6 +51,31 @@ export class QbankService {
    
   }
 
+  getQBankPaginated() {
+    
+    const response = this.cacheCustom.get(Object.values(this.customParams).join('-'));
+    
+    if(response) return of(response);
+  
+    let params = getPaginationHeadersAssessmentQBankParams(this.customParams);
+
+    return this.http.get<IAssessmentBank[]>(this.apiUrl + 'assessmentqbank/qBankPaged', {params})
+    .pipe(
+      map(response => {
+        this.cacheCustom.set(Object.values(this.customParams).join('-'), response);
+        return response;
+      })
+    )
+  }
+
+  setCustomParams(params: assessmentQBankParams) {
+    this.customParams = params;
+  }
+
+  getCustomParams() {
+    return this.customParams;
+  }
+
   setQParams(params: assessmentQBankParams) {
     this.qParams = params;
   }
@@ -61,7 +92,7 @@ export class QbankService {
     }
 
     this.cache.forEach((qs: IAssessmentQBank[]) => {
-      q = qs.find(p => p.categoryId === id);
+      q = qs.find(p => p.professionId === id);
       i++;
     })
 
@@ -73,11 +104,20 @@ export class QbankService {
     return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentqbank/byid/' + id);
   }
 
-  update(model: IAssessmentQBank) {
-    return this.http.put<IAssessmentQBank>(this.apiUrl + 'assessmentqbank', model);
+    //assessment questions
+    getQBankOfCategoryId(professionId: number) {
+
+    return this.http.get<IAssessmentBank>(this.apiUrl + 'AssessmentQBank/questionsFromQBank/' 
+      + professionId);
   }
 
-  insert(model: IAssessmentQBank) {
-    return this.http.post<IAssessmentQBank>(this.apiUrl + 'assessmentqbank', model);
+
+  update(model: IAssessmentBank) {
+    console.log('QBank service:', model);
+    return this.http.put<boolean>(this.apiUrl + 'assessmentqbank/assessmentBank', model);
+  }
+
+  insert(model: IAssessmentBank) {
+    return this.http.post<boolean>(this.apiUrl + 'assessmentqbank/assessmentBank', model);
   }
 }

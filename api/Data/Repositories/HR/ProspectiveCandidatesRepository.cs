@@ -93,7 +93,8 @@ namespace api.Data.Repositories.HR
                 _context.Entry(prospective).State=EntityState.Deleted;
 
                 await _context.SaveChangesAsync();
-                var dto = new ProspectiveReturnDto {CandidateId = cand.Id, ApplicationNo = cand.ApplicationNo};
+                var dto = new ProspectiveReturnDto {CandidateId = cand.Id, ApplicationNo = cand.ApplicationNo,
+                    ProspectiveCandidateId = prospectiveId };
 
             return dto;
         }
@@ -108,6 +109,8 @@ namespace api.Data.Repositories.HR
                 .Where(x => interviewItemCandidateIds.Contains(x.Id))
                 .Select(x => x.ProspectiveCandidateId)    
             .ToListAsync();
+
+            if(prospectiveCandidateIds.Count == 0) return false;  
 
             var prospectives = await _context.ProspectiveCandidates.Where(x => 
                 prospectiveCandidateIds.Contains(x.Id)).ToListAsync();
@@ -167,6 +170,7 @@ namespace api.Data.Repositories.HR
                 if(itemCandidate != null) {
                     itemCandidate.CandidateId=cand.Id;
                     itemCandidate.ApplicationNo=cand.ApplicationNo;
+                    itemCandidate.PersonId = prospective.PersonId;
                     _context.Entry(itemCandidate).State = EntityState.Modified;
                 }
 
@@ -369,5 +373,16 @@ namespace api.Data.Repositories.HR
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<ICollection<ProspectiveReturnDto>> ConvertProspectiveToCandidates(ICollection<int> prospectiveids, string Username)
+        {
+            var returnDto = new List<ProspectiveReturnDto>();
+
+            foreach(var id in prospectiveids) {
+                var dto = await ConvertProspectiveToCandidate(id, Username);
+                returnDto.Add(dto);
+            }
+
+            return returnDto;
+        }
     }
 }

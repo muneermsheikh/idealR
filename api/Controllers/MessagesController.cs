@@ -49,8 +49,8 @@ namespace api.Controllers
             if(senderObj == null) return NotFound(new ApiException(400, "Not Found", "Sender Username not found in Identity object"));
 
             var message = new Message{
-                Sender = senderObj,
-                Recipient = recipientObj,
+                //Sender = senderObj,
+                //Recipient = recipientObj,
                 SenderUsername = senderObj.UserName,
                 RecipientUsername = recipientObj.UserName,
                 Content = msgModel.Content,

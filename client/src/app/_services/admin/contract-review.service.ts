@@ -49,7 +49,11 @@ export class ContractReviewService {
   
   updateContractReviewItem(model: IContractReviewItem) 
   {
-    return this.http.put<IContractReviewItem>(this.apiUrl + 'ContractReview/reviewitem', model);
+    if(model.id !==0) {
+      return this.http.put<IContractReviewItem>(this.apiUrl + 'ContractReview/reviewitem', model);
+    } else {
+      return this.http.post<IContractReviewItem>(this.apiUrl + 'ContractReview/reviewitem', model);
+    }
   }
 
   getContractReviews(oParams: contractReviewParams) {

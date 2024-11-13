@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Errors;
@@ -211,7 +212,7 @@ namespace api.Controllers
         }
 
         [HttpGet("jd/{OrderItemId}")]
-        public async Task<ActionResult<JobDescription>> GetJDofOrderItem (int OrderItemId)
+        public async Task<ActionResult<JDDto>> GetJDofOrderItem (int OrderItemId)
         {
             var jd = await _jdAndRemunRepo.GetJDOfOrderItem(OrderItemId);
             if(jd == null) return NotFound("That Order Item does not have any Job Description defined");
@@ -262,6 +263,12 @@ namespace api.Controllers
         [HttpPut("remuneration")]
         public async Task<ActionResult<Remuneration>> EditRemuneration(Remuneration remuneration)
         {
+            if(remuneration.Id == 0) {
+                var newRemun = await _jdAndRemunRepo.AddRemuneration(remuneration);
+                if(newRemun != null) return Ok(newRemun);
+                return BadRequest("Failed to save the remuneration");
+            }
+
             var edited = await _jdAndRemunRepo.EditRemuneration(remuneration);
             if(edited) return Ok(edited);
             return BadRequest("Failed to edit the remuneration details");

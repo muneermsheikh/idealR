@@ -1,6 +1,6 @@
 <div style="display: inline-block; font-size: large; font-weight: bold;" >Orders Listing</div>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
-     <pagination class="stdd"
+     <pagination class="stdd" *ngIf="pagination"
           [totalItems]="pagination!.totalItems"
           [itemsPerPage]="pagination!.itemsPerPage"
           (pageChanged)="onPageChanged($event)"

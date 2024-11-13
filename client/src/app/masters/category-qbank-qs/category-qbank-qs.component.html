@@ -1,0 +1,12 @@
+<div *ngFor="let q of assessmentQs">
+    <div *ngIf="show" class="stdd w15 fa fa-plus" (click)="show=!show" ></div>
+    <div *ngIf="!show" class="stdd w15 fa fa-minus" (click)="show=!show" ></div>
+
+    <div class="stdd w50" style="text-align: right;">{{q.qNo}}</div>
+    <div class="stdd w200">{{q.assessmentParameter}}</div>
+    <div class="stdd w400">{{q.question}}</div>
+    <input type="checkbox" class="stdd w15" [ngModel]="q.isMandatory">
+    <div class="stddd w75" style="text-align: right;">{{q.maxPoints}}</div>
+
+</div>
+<div class="stdd w75" style="text-align: right; border-style: solid;">{{totalMarks}}</div>

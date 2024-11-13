@@ -8,17 +8,15 @@
 
                <div class="mx-2">
                     <div>
-                         <strong class="stdd w150">Remuneration details for: </strong> {{remun.categoryName}}
+                         <strong class="stdd w150 vAlignT">Remuneration details for: </strong> {{remun.categoryName}}
                     </div>
                     <div>
-                         <strong class="stdd w75">Customer: </strong> {{remun.customerName}}
+                         <strong class="stdd w75 vAlignT">Customer: </strong> {{remun.customerName}}
                     </div>
                     <div>
-                         <strong class="stdd w75">Order No.:</strong> {{remun.orderNo}} dt {{remun.orderDate | date}}
-                    </div>
-                    <div class="pull-right">
-                         <button type="button" class="btn btn-success mx-2 fa fa-save" (click)="confirm()"></button>
-                         <button type="button" class="btn btn-danger fa fa-window-close red" (click)="decline()"></button>
+                         <strong class="stdd w75 vAlignT">Order No.:</strong> {{remun.orderNo}} dt {{remun.orderDate | date}}
+                         <button type="button" class="btn btn-success vAlignT mx-5 fa fa-save" (click)="confirm()"></button>
+                         <button type="button" class="btn vAlignT fa fa-window-close fa-2x" (click)="decline()"></button>
                     </div>
                     
                </div>

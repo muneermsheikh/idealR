@@ -9,7 +9,7 @@ namespace api.DTOs.Admin
         public string CustomerType { get; set; }
         [Required, MaxLength(100), MinLength(5)]
         public string CustomerName { get; set; }
-        [Required, MaxLength(15), MinLength(5)]
+        [Required, MaxLength(25), MinLength(5)]
         public string KnownAs { get; set; }
         public string Add { get; set; }
         public string Add2 { get; set; }

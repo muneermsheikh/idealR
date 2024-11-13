@@ -152,7 +152,7 @@ namespace api.Controllers
                 if(modelData.Id==0) {
                     dtoErr = await _intervwRepo.SaveNewInterviewItem(modelData, User.GetUsername());
                 } else {
-                    dtoErr = await _intervwRepo.EditInterviewItem(modelData);
+                    dtoErr = await _intervwRepo.EditInterviewItem(modelData, User.GetUsername());
                 }
 
                 return dtoErr;
@@ -164,6 +164,52 @@ namespace api.Controllers
             }
 
 
+        }
+
+        [HttpPost("InterviewerNote")]
+        public async Task<ActionResult<string>> UploadInterviewItemCandidateAttachment()
+        {
+
+            var folderName = Path.Combine("Assets", "InterviewerComments");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
+
+            try
+            {
+                var modelData = JsonSerializer.Deserialize<IntervwItemCandidate>(Request.Form["data"],  
+                        new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                
+                var files = Request.Form.Files;
+               
+                var memoryStream = new MemoryStream();
+
+                foreach (var file in files) {
+                    //var file = files.FirstOrDefault();
+
+                    if (file.Length==0) return "Invalid file upload";
+
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    
+                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                    if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                    var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    file.CopyTo(stream);
+
+                    if(!string.IsNullOrEmpty(modelData.AttachmentFileNameWithPath) 
+                        && modelData.AttachmentFileNameWithPath.Contains(fileName)) {
+                        modelData.AttachmentFileNameWithPath=fullPath;
+                    }
+                }
+                var retDto = await _intervwRepo.UpdateInterviewCandidateAttachmentFileName(modelData) == null ? "" : "Error in updating attendance data";
+
+                return retDto;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
         }
 
         [HttpPost("uploadDepAttachment")]

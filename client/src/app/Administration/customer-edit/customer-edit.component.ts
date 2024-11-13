@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Navigation, RouteConfigLoadEnd, Router } from '@angular/router';
-import { valuesIn } from 'lodash-es';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ICustomer } from 'src/app/_models/admin/customer';
 import { User } from 'src/app/_models/user';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
@@ -60,10 +59,14 @@ export class CustomerEditComponent implements OnInit {
       customerOfficials: this.fb.array(
         cust.customerOfficials.map(x => (
           this.fb.group({
-            id: x.id, appUserId: x.appUserId, customerId: x.customerId, gender: [x.gender, [Validators.required, Validators.maxLength(1)]], 
-            title: [x.title, Validators.required], officialName: [x.officialName, Validators.required], 
-            designation: x.designation, divn: [x.divn, Validators.required], phoneNo: x.phoneNo, knownAs: x.knownAs,
-            mobile: x.mobile, email: [x.email, Validators.required], status: x.status, priorityHR: x.priorityHR,
+            id: x.id, appUserId: x.appUserId, customerId: x.customerId, 
+            gender: [x.gender, [Validators.required, Validators.maxLength(1)]], 
+            title: [x.title, Validators.required], 
+            officialName: [x.officialName, [Validators.required, Validators.minLength(4), Validators.maxLength(50)]], 
+            designation: x.designation, divn: [x.divn, Validators.required], phoneNo: x.phoneNo, 
+            knownAs: [x.knownAs, [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
+            mobile: x.mobile, email: [x.email, Validators.required], 
+            status: x.status, priorityHR: x.priorityHR,
             priorityAdmin: x.priorityAdmin, priorityAccount: x.priorityAccount,userName: x.userName, 
           })
         ))
@@ -99,8 +102,11 @@ export class CustomerEditComponent implements OnInit {
       newCustomerOfficial(): FormGroup {
         return this.fb.group({
 
-            id: 0, appUserId: 0, customerId: this.customer?.id, gender: ['M', [Validators.required, Validators.maxLength(1)]],
-            title: 'Mr.', officialName: ['', Validators.required], designation: '', knownAs: ['', Validators.required],
+            id: 0, appUserId: 0, customerId: this.customer?.id, 
+            gender: ['M', [Validators.required, Validators.maxLength(1)]], title: 'Mr.', 
+            officialName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]], 
+            designation: '', 
+            knownAs: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(25)]],
             divn: '', phoneNo: '',  mobile: '', email: '', status: 'Active', 
             priorityHR: 1, priorityAdmin: 1, priorityAccount: 1, userName: ''
         })
@@ -151,17 +157,19 @@ export class CustomerEditComponent implements OnInit {
     if(formdata.id > 0) {
 
       this.service.updateCustomer(formdata).subscribe({
-        next: response => {
-          if(response === '') {
+        next: (response: string) => {
+          if(response === '' || response === null) {
             this.toastr.success('The Customer is successfully updated', 'success');
             this.close();
+          } else {
+            this.toastr.warning(response, 'Failed to update the customer')
           }
-        }
+        }, error: (err: any) => this.toastr.error(err.error?.details, 'Error')
       })
   } else {
       this.service.register(formdata).subscribe({
-        next: (response: boolean) => { 
-          if(!response) {
+        next: (response: string) => { 
+          if(response !=='') {
             this.toastr.warning('Failed to insert the the entity','Failure' )
           } else {
             this.toastr.success('The entity was successfully inserted', 'Success')

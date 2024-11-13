@@ -10,6 +10,7 @@ import { IOrderAssessment } from 'src/app/_models/admin/orderAssessment';
 import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem';
 import { IOrderAssessmentItemQ } from 'src/app/_models/admin/orderAssessmentItemQ';
 import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
+import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +78,7 @@ export class OrderAssessmentService {
     //assessment questions
     getAssessmentQBankOfCategoryId(professionId: number) {
 
-      return this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/questionsFromQBank/' 
+      return this.http.get<IAssessmentQBank>(this.apiUrl + 'AssessmentQBank/questionsFromQBank/' 
         + professionId);
     }
 

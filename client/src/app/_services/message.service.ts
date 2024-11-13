@@ -24,7 +24,7 @@ export class MessageService {
     {"MessageType" : "MedicalUnfitnessAdvise"}, {"MessageType" : "TravelAdviseToClient"},
     {"MessageType" : "VisaIssueAdviseByMail"}, {"MessageType" : "VisaRejectionAdviseByMail"},
     {"MessageType" : "CustomerFeedback"}, {"MessageType": "AdviseToHRDeptHead"}, {"MessageType": "AssignTaskToHRExec"},
-    {"MessageType" : "CVFwdTask"}, {"MessageType": "OrderFwdToHR"}
+    {"MessageType" : "CVFwdTask"}, {"MessageType": "OrderFwdToHR"}, {"MessageType": "InterviewInvitation"}
   ]
 
   constructor(private http: HttpClient) { }

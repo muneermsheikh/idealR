@@ -71,7 +71,7 @@ export class CustomersService {
   }
 
   register(model: IRegisterCustomerDto) {
-    return this.http.post<boolean>(this.apiUrl + 'customers', model )
+    return this.http.post<string>(this.apiUrl + 'customers', model )
   }
   
   getCustomerCities(customerType: string) {
@@ -95,7 +95,7 @@ export class CustomersService {
   }
 
   updateCustomer(model: any) {
-    return this.http.put(this.apiUrl + 'customers/edit', model);
+    return this.http.put<string>(this.apiUrl + 'customers/edit', model);
   }
 
   //associates

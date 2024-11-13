@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeesComponent } from './employees/employees.component';
 import { EmployeeFromIdResolver } from '../_resolvers/employeeFromIdResolver';
@@ -10,6 +10,9 @@ import { RouterModule } from '@angular/router';
 import { SkillDataResolver } from '../_resolvers/hr/skillDataResolver';
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
+
+import { AssessmentStddQResolver } from '../_resolvers/hr/assessmentStddQResolver';
+import { CategoryQBankComponent } from './category-qbank/category-qbank.component';
 
 
 const routes = [
@@ -30,8 +33,7 @@ const routes = [
   {path: 'qualifications', component: QualificationsComponent },
   {path: 'categories', component: CategoriesComponent},
   {path: 'industries', component: IndustriesComponent},
-
- 
+  {path: 'customAssessments', component: CategoryQBankComponent}
 ]
 
 @NgModule({

@@ -136,6 +136,15 @@ namespace api.Extensions
             return obj;
         }
 
+        public async static Task<string> GetCustomerShortNameFromOrderId(this DataContext context, int OrderId)
+        {
+            var obj = await context.Orders.Where(x => x.Id == OrderId)
+                .Select(x => x.Customer.KnownAs).FirstOrDefaultAsync();
+            
+            return obj;
+        }
+
+
         public async static Task<string> GetProfessionNameFromOrderItemId(this DataContext context, int OrderItemId)
         {
             var obj = await (from item in context.OrderItems where item.Id == OrderItemId

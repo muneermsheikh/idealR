@@ -25,6 +25,6 @@ namespace api.DTOs.HR
         public string CandidateName { get; set; }
         public string InterviewStatus { get; set; }
         public string InterviewerRemarks { get; set; }
-
+        public string AttachmentFileNameWithPath { get; set; }
     }
 }

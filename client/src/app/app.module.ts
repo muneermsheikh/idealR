@@ -64,7 +64,7 @@ import { DisplayTextModalComponent } from './modals/display-text-modal/display-t
     DateInputRangeModalComponent,
     CandidatesAvailableModalComponent,
     DisplayTextModalComponent,
-  
+      
         
   ],
   imports: [

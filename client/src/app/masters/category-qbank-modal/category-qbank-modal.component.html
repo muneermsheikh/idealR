@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <h4>Custom Assessment Questions for {{assessment?.professionName}}</h4>
+    <button class="btn btn-success fa fa-save" style="margin-left: 200px;" 
+    style="color:aliceblue;margin-left: 50px;" (click)="updateQ()" ></button>
+    
+    <button class="btn fa fa-window-close fa-2x pull-right" 
+    (click)="bsModalService.hide()" ></button>
+
+</div>
+
+<div class="modal-body">
+   
+
+    <form [formGroup]="form">
+        <label class="lbl w50">Q No:</label>
+        <label class="lbl w200">Subject:</label>
+        <label class="lbl w350">Question:</label>
+        <label class="lblChk">Manda<br>tory:</label>
+        <label class="lbl w50">Max<br>Points</label>
+        <button  type="button" (click)="addQ()" class="btn fa fa-plus blue" style="margin-left: 10px;"></button>
+
+        <div formArrayName="assessmentBankQs">
+            <div *ngFor="let q of assessmentBankQs?.controls; let i=index">
+                <div [formGroupName]="i">
+                    <app-text-input [label]="'Question No'" class="stdd w50" formControlName="qNo" ></app-text-input>
+                    <app-text-input [label]="'Subject'" class="stdd w200" formControlName="assessmentParameter" ></app-text-input>
+                    <app-text-input [label]="'Question'" class="stdd w350" formControlName="question" ></app-text-input>
+                    
+                    <input type="checkbox" formControlName="isMandatory" class="inputCheck">
+
+                    <app-text-input [label]="'Max Points'" class="stdd w50" formControlName="maxPoints" 
+                        (change)="calcualteTotals()"></app-text-input>
+                    <button (click)="removeQ(i)" class="btn fa fa-trash red" 
+                        title="remove this item"
+                    ></button>
+                </div>
+            </div>
+            <br>
+            <label style="display: inline-block; margin-left: 610px; font-size: smaller;font-weight: bold;">Total</label>
+            <div style="width: 50px; display: inline-block; border-style:solid; margin-left: 10px; font-weight: bold; font-size: smaller; text-align: right;">{{totalMarks}}</div>
+        </div>
+    </form>
+</div>
+<!--
+<div style="font-size: smaller;" >
+    {{form.value | json}}
+</div> -->

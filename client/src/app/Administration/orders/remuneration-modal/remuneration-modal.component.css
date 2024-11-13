@@ -1,6 +1,5 @@
 .stdd {
-    margin: 2px;
-    padding: 2px;
+    margin: 0 2px 0 2px;
     display: inline-block !important;
     font-size: small;
 }
@@ -18,6 +17,7 @@
 
 .tAlignR {text-align: right;}
 .vAlignM {vertical-align: middle;}
+.vAlignT {vertical-align: top;}
 
 .red {color: red}
 
