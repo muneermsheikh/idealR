@@ -3,6 +3,8 @@
     <form [formGroup]="form" (ngSubmit)="form.valid" 
         autocomplete="off" *ngIf="orderAssessmentItem">
 
+    <div class="stdd w30">{{orderAssessmentItem.orderId}}</div>
+    <div class="stdd w30">{{orderAssessmentItem.orderItemId}}</div>
     <label class="lbl b 100">Order No.:</label>
     <div class="stdd w75">{{orderAssessmentItem.orderNo}} </div>
 
@@ -71,3 +73,5 @@
 <div class="modal-footer">
 
 </div>
+
+<!-- <div style="font-size: x-small;" >{{form.value | json}}</div> -->

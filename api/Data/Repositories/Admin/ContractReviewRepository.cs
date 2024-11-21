@@ -334,14 +334,14 @@ namespace api.Data.Repositories.Admin
                }
 
           //based on status of ALL orderItem.ReviewItemStatusId, update OrderReviewStatus field
-          private async Task<bool> UpdateOrderReviewStatusNOSAVE(int orderId, int orderitemid)
+          private async Task<string> UpdateOrderReviewStatusNOSAVE(int orderId, int orderitemid)
           {
                if(orderId == 0) {
                     orderId = await _context.OrderItems.Where(x => x.Id == orderitemid)
                          .Select(x => x.OrderId).FirstOrDefaultAsync();
                }
 
-               if(orderId == 0) return false;
+               if(orderId == 0) return "";
                var order = await _context.Orders.Include(x => x.OrderItems)
                     .Where(x => x.Id == orderId)
                     .FirstOrDefaultAsync();
@@ -355,30 +355,26 @@ namespace api.Data.Repositories.Admin
                if(reviewitems == null || reviewitems.Count == 0) {
                     if(order.Status != "Awaiting Review") {
                          order.Status="Awaiting Review";
-                         order.ContractReviewStatus = "NotReviewed";
+                         order.ContractReviewStatus = "Not Reviewed";
                          _context.Entry(order).State = EntityState.Modified;
                     }
-                    return false;
+               } else {
+                    order.ContractReviewStatus = order.OrderItems.Any(x => x.ReviewItemStatus.ToLower() == "regretted")
+                         ? order.OrderItems.Any(x => x.ReviewItemStatus.ToLower()=="accepted") 
+                              ? "Accepted With Regrets"
+                              :  "Regretted"
+                         : "Accepted";
+                    _context.Entry(order).State= EntityState.Modified;
                }
 
-               order.ContractReviewStatus = order.OrderItems.Any(x => x.ReviewItemStatus.ToLower() == "regretted")
-                    ? order.OrderItems.Any(x => x.ReviewItemStatus.ToLower()=="accepted") 
-                         ? "Accepted With Regrets"
-                         :  "Regretted"
-                    : "Accepted";
-               
-               _context.Entry(order).State= EntityState.Modified;
-     
-               return true;
+               return order.ContractReviewStatus;
           }
 
-          public async Task<bool> UpdateOrderReviewStatusWITHSAVE(int orderId, int orderitemid)
+          public async Task<string> UpdateOrderReviewStatusWITHSAVE(int orderId, int orderitemid)
           {
-               if(await UpdateOrderReviewStatusNOSAVE(orderId, orderitemid)) {
-                    return await _context.SaveChangesAsync() > 0;
-               } else {
-                    return false;
-               }
+               var status = await UpdateOrderReviewStatusNOSAVE(orderId, orderitemid);
+               await _context.SaveChangesAsync();
+               return status;
           }
           
           public async Task<ContractReviewItemDto> GetOrGenerateContractReviewItem(int orderItemId, string username)

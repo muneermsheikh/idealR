@@ -202,7 +202,7 @@ export class UserTasksComponent implements OnInit {
 }
 
   medicalObjectives() {
-    this.service.getMedicalObjectives(new Date('6-1-2024').toISOString(), new Date('8-8-2024').toISOString()).subscribe({
+    this.service.getMedicalObjectives("", "").subscribe({
       next: (response: any) => console.log(response)    })
   }
 

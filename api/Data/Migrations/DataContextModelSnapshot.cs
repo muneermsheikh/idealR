@@ -207,7 +207,9 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ContactResult")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("DateOfContact")
                         .HasColumnType("datetime2");
@@ -216,11 +218,12 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GistOfDiscussions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IncomingOutgoing")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<string>("NextAction")
                         .HasColumnType("nvarchar(max)");
@@ -2173,45 +2176,6 @@ namespace api.Data.Migrations
                     b.ToTable("FinanceVouchers");
                 });
 
-            modelBuilder.Entity("api.Entities.Finance.Voucher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Amount")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("COAId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CVRefId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Divn")
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
-
-                    b.Property<string>("Narration")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("VoucherDated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VoucherNo")
-                        .HasMaxLength(10)
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Voucher");
-                });
-
             modelBuilder.Entity("api.Entities.Finance.VoucherAttachment", b =>
                 {
                     b.Property<int>("Id")
@@ -2238,14 +2202,9 @@ namespace api.Data.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VoucherId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FinanceVoucherId");
-
-                    b.HasIndex("VoucherId");
 
                     b.HasIndex("FileName", "FinanceVoucherId")
                         .IsUnique()
@@ -2300,54 +2259,6 @@ namespace api.Data.Migrations
                     b.HasIndex("FinanceVoucherId");
 
                     b.ToTable("VoucherEntries");
-                });
-
-            modelBuilder.Entity("api.Entities.Finance.VoucherItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("COAId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("Cr")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Dr")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("DrEntryApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("DrEntryApprovedByAppUsername")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DrEntryApprovedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Narration")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TransDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VoucherId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VoucherId");
-
-                    b.ToTable("VoucherItem");
                 });
 
             modelBuilder.Entity("api.Entities.HR.AssessmentBank", b =>
@@ -2528,6 +2439,7 @@ namespace api.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("CustomerId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DOB")
@@ -3744,6 +3656,12 @@ namespace api.Data.Migrations
                     b.Property<string>("PostTaskAction")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("QntyAssigned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QntyDelivered")
+                        .HasColumnType("int");
+
                     b.Property<string>("ResumeId")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
@@ -3767,6 +3685,109 @@ namespace api.Data.Migrations
                     b.HasIndex("TaskType");
 
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("api.Entities.Tasks.HRTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssignedByUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssignedToUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CompleteBy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QntyAssigned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QntyDelivered")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StatusUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TaskDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TaskDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaskStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TaskStatusDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId", "AssignedToUsername")
+                        .IsUnique();
+
+                    b.ToTable("HRTasks");
+                });
+
+            modelBuilder.Entity("api.Entities.Tasks.HRTaskItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CVRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CandidateAssessmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HRExecutiveUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HRTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HRTaskId");
+
+                    b.HasIndex("CandidateId", "HRTaskId")
+                        .IsUnique();
+
+                    b.ToTable("HRTaskItems");
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
@@ -4082,15 +4103,11 @@ namespace api.Data.Migrations
 
             modelBuilder.Entity("api.Entities.Finance.VoucherAttachment", b =>
                 {
-                    b.HasOne("api.Entities.Finance.FinanceVoucher", null)
+                    b.HasOne("api.Entities.Finance.FinanceVoucher", "Voucher")
                         .WithMany("VoucherAttachments")
                         .HasForeignKey("FinanceVoucherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("api.Entities.Finance.Voucher", "Voucher")
-                        .WithMany("VoucherAttachments")
-                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Voucher");
                 });
@@ -4100,15 +4117,6 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Finance.FinanceVoucher", null)
                         .WithMany("VoucherEntries")
                         .HasForeignKey("FinanceVoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("api.Entities.Finance.VoucherItem", b =>
-                {
-                    b.HasOne("api.Entities.Finance.Voucher", null)
-                        .WithMany("VoucherItems")
-                        .HasForeignKey("VoucherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -4295,6 +4303,15 @@ namespace api.Data.Migrations
                         .HasForeignKey("HelpItemId");
                 });
 
+            modelBuilder.Entity("api.Entities.Tasks.HRTaskItem", b =>
+                {
+                    b.HasOne("api.Entities.Tasks.HRTask", null)
+                        .WithMany("HRTaskItems")
+                        .HasForeignKey("HRTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Tasks.TaskItem", b =>
                 {
                     b.HasOne("api.Entities.Tasks.AppTask", null)
@@ -4409,13 +4426,6 @@ namespace api.Data.Migrations
                     b.Navigation("VoucherEntries");
                 });
 
-            modelBuilder.Entity("api.Entities.Finance.Voucher", b =>
-                {
-                    b.Navigation("VoucherAttachments");
-
-                    b.Navigation("VoucherItems");
-                });
-
             modelBuilder.Entity("api.Entities.HR.AssessmentBank", b =>
                 {
                     b.Navigation("AssessmentBankQs");
@@ -4479,6 +4489,11 @@ namespace api.Data.Migrations
             modelBuilder.Entity("api.Entities.Tasks.AppTask", b =>
                 {
                     b.Navigation("TaskItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Tasks.HRTask", b =>
+                {
+                    b.Navigation("HRTaskItems");
                 });
 #pragma warning restore 612, 618
         }

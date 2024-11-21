@@ -33,6 +33,7 @@ namespace api.Interfaces
         Task<UserAttachment> GetUserAttachmentById (int attachmentId);
         Task<ICollection<UserAttachment>> GetUserAttachmentByCandidateId (int candidateid);
         Task<ReturnStringsDto> WriteProspectiveExcelToDB(string fileNameWithPath, string username);
+        Task<ReturnStringsDto> WriteProspectiveNaukriExcelToDB(string fileNameWithPath, string username);
         Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string username);
     }
 }

@@ -7,6 +7,7 @@ using api.Data.Repositories.Finance;
 using api.Data.Repositories.HR;
 using api.Data.Repositories.Master;
 using api.Data.Repositories.Orders;
+using api.Data.Repositories.Quality;
 using api.Interfaces;
 using api.Interfaces.Admin;
 using api.Interfaces.Customers;
@@ -16,6 +17,7 @@ using api.Interfaces.HR;
 using api.Interfaces.Masters;
 using api.Interfaces.Messages;
 using api.Interfaces.Orders;
+using api.Interfaces.Quality;
 using api.Services;
 using API.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +87,8 @@ namespace api.Extensions
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IInterviewRepository, InterviewRepository>();
             services.AddScoped<IComposeMsgForIntrviews, ComposeMsgsForInterviews>();
+
+            services.AddScoped<IQualityRepository, QualityRepository>();
             
             return services;
         }

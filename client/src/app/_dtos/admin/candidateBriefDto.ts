@@ -13,7 +13,7 @@ export interface ICandidateBriefDto {
      referredById: number;
      referredByName: string;
      candidateStatusName: string;
-     userProfessions: IUserProfession[];
+     userProfessions: string[];
 }
 
 export class CandidateBriefDto implements ICandidateBriefDto {
@@ -29,5 +29,5 @@ export class CandidateBriefDto implements ICandidateBriefDto {
      referredById = 0;
      referredByName = '';
      candidateStatusName = '';
-     userProfessions: IUserProfession[]=[];
+     userProfessions: string[]=[];
 }

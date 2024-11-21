@@ -1,0 +1,45 @@
+<div>showing medobjective</div>
+<h4 style="display: inline-block; font-weight: bold;">Analyses of Time taken to organize Medical Tests - from  
+    {{mParams.fromDate | date:'dd-MMM-yy'}} to {{mParams.uptoDate | date: 'dd-MMM-yy'}}</h4>
+
+<button class="btn fa fa-window-close fa-2x mx-3" style="display: inline-block;" routerLink="/" ></button>
+
+<div *ngIf="objs && pagination" style="display: inline-block;" class="mx-5">
+
+    <pagination
+        style="margin: 0 5px 0 5px; display: inline-block;"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+</div>
+       
+<div class="container">
+    <label class="lbl w75">Application No</label>
+    <label class="lbl w125">Candidate Name</label>
+    <label class="lbl w125">Customer Name</label>
+    <label class="lbl w100">Selected On</label>
+    <label class="lbl w100">Referred<br>for Medical<br>Test On</label>
+    <label class="lbl w75">Days<br>to Initiate<br>Med Test</label>
+    <label class="lbl w100">Medical Test<br>Concluded On</label>
+    <label class="lbl w75">Days<br>For Med<br>Test</label>
+    
+
+    <div *ngFor="let obj of objs">
+        <div class="stdd w75">{{obj.applicationNo}}</div>
+        <div class="stdd w125">{{obj.candidateName}}</div>
+        <div class="stdd w125">{{obj.customerName}}</div>
+        <div class="stdd w100">{{obj.dateSelected | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w100">{{obj.refForMedicals | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w75 p15">{{WorkingDays(obj.dateSelected, obj.refForMedicals)}}</div>
+        <div class="stdd w100">{{obj.medicalResult | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w75 p15">{{WorkingDays(obj.refForMedicals, obj.medicalResult)}}</div>
+    </div>
+
+</div>
+    

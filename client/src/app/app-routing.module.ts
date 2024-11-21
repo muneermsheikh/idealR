@@ -11,7 +11,6 @@ import { CandidateAssessedResolver } from './_resolvers/hr/candidate-assessed.re
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { UsersWithRolesResolver } from './_resolvers/usersWithRolesResolver';
 import { HrGuard } from './_guards/hr.guard';
-import { ProcessGuard } from './_guards/process.guard';
 import { RolesResolver } from './_resolvers/identity/roles.resolver';
 
 
@@ -27,6 +26,8 @@ const routes: Routes = [
 
       {path: 'feedback', loadChildren:() => import('./feedback/feedback.module').then(mod => mod.FeedbackModule)},
       {path: 'tasks', loadChildren:() => import('./tasks/task.module').then(mod => mod.TaskModule)},
+      
+      {path: 'quality', loadChildren: () => import('./quality/quality.module').then(mod => mod.QualityModule)},
       
       {path: 'hr/cvassess/:id', component: CvAssessComponent, canActivate: [HrGuard],
       resolve: {

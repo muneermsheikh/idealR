@@ -130,8 +130,9 @@ namespace api.Controllers
         {
             return await _finRepo.GetNextVoucherNo();
         }
+
         [HttpGet("voucherspagedlist")]
-        public async Task<ActionResult<PagedList<Voucher>>> GetVouchersPagedList([FromQuery]VoucherParams vParams)
+        public async Task<ActionResult<PagedList<FinanceVoucher>>> GetVouchersPagedList([FromQuery]VoucherParams vParams)
         {
             var pagedList = await _finRepo.GetVouchers(vParams);
             if(pagedList.Count ==0) return BadRequest("No order items on record matching the criteria");
@@ -152,7 +153,7 @@ namespace api.Controllers
         }
 
         [HttpPut("voucher")]
-        public async Task<ActionResult<Voucher>> EditVoucher(FinanceVoucher voucher)
+        public async Task<ActionResult<FinanceVoucher>> EditVoucher(FinanceVoucher voucher)
         {
             var existing = await _finRepo.EditVoucher(voucher);
             if(existing == null) return BadRequest(new ApiException(400, "Bad Request", "Failed to update the Voucher"));

@@ -43,6 +43,7 @@ namespace api.Controllers
         [HttpPost("newCallRecord")]
         public async Task<ActionResult<CallRecord>> AddNewCallRecord(CallRecord userContact)
         {
+            if(string.IsNullOrEmpty(userContact.Username)) userContact.Username = User.GetUsername();
             return await _histRepo.AddNewCallRecord(userContact);
         }
 
@@ -76,6 +77,7 @@ namespace api.Controllers
         [HttpPut("UpdateNewItem")]
         public async Task<ActionResult<CallRecord>> UpdateCallRecordWithSingleItem(CallRecord callRecord)
         {
+            callRecord.Username = callRecord.Username ?? User.GetUsername();
             var returnDto = await _histRepo.EditCallRecordWithSingleItem(callRecord, User.GetUsername());
 
             return Ok(returnDto.CallRecord);

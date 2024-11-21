@@ -5,6 +5,7 @@ namespace api.Params.HR
         public int Id { get; set; }
         public int ResumeId { get; set; }
         public string Source {get; set;}
+        public string CandidateName { get; set;}
         public string PhoneNo { get; set; }
         public string Email { get; set; }
         public DateTime DateRegistered { get; set; }

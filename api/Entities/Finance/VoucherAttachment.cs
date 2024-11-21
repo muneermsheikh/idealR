@@ -13,6 +13,6 @@ namespace api.Entities.Finance
         public string Url { get; set; }
         public DateTime DateUploaded { get; set; }
         public string UploadedByUsername { get; set; }
-        public Voucher Voucher {get; set;}
+        public FinanceVoucher Voucher {get; set;}
     }
 }

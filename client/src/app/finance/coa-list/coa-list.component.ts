@@ -73,7 +73,7 @@ export class CoaListComponent implements OnInit {
   }
 
   getCOAs(useCache: boolean=true) {
-
+    
     this.service.setParams(this.sParams);
     
     return this.service.getCoas(useCache).subscribe({
@@ -205,7 +205,7 @@ export class CoaListComponent implements OnInit {
 
       this.service.editCOA(t).subscribe(response => {
         var index=this.coas.findIndex(x => x.id===t.id);
-        if ((index: number) => 0) {
+        if (index !== -1) {
           this.coas[index]=response;
         }
       })
@@ -311,3 +311,25 @@ export class CoaListComponent implements OnInit {
     this.router.navigateByUrl(this.returnUrl || '/finance' );
   }
 }
+
+export function convertDateToDateOnly(datepart: Date) {
+  
+
+    const milliseconds: number = +datepart; // Replace with your milliseconds value
+    const date: Date = new Date(milliseconds);
+
+    // Extract the date part
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1; // Months are zero-based
+    const day: number = date.getDate();
+
+    // Format the date as YYYY-MM-DD
+    //const formattedDate: string = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+    //var dt = new Date(+formattedDate.substring(0,4), +formattedDate.substring(5,2), +formattedDate.substring(8,2));
+    var dt = new Date(year, month, day);
+    //return formattedDate;
+    return dt;
+  }
+
+

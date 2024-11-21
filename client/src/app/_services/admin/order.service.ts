@@ -22,6 +22,7 @@ import { IAssessmentStandardQ } from 'src/app/_models/admin/assessmentStandardQ'
 import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { IJobDescription } from 'src/app/_models/admin/jobDescription';
+import { IIdDto } from 'src/app/_dtos/admin/idDto';
 
 @Injectable({
   providedIn: 'root'
@@ -169,6 +170,14 @@ export class OrderService {
       return this.http.get<IAssessmentQBank>(this.apiUrl + 'assessmentstddq/byid/' + id);
     }
 
-    
+    createOrderAssignmentTasks(orderItemIds: number[]) {
+      return this.http.post<string>(this.apiUrl + 'Quality/assignToHRExecs', orderItemIds);
+    }
+
+    //contract review
+    updateContractReviewStatus(orderid: number) {
+      var status = this.http.get<string>(this.apiUrl + 'ContractReview/updateorderreviewstatus/' + orderid );
+      return status;
+    }
 
 }

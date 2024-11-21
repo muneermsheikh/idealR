@@ -5,6 +5,7 @@ using api.Entities.Admin.Client;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
+using api.Interfaces.Admin;
 using api.Interfaces.HR;
 using api.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -26,8 +27,10 @@ namespace api.Controllers
     public class FeedbackController : BaseApiController
     {
         private readonly IFeedbackRepository _repo;
-        public FeedbackController(IFeedbackRepository repo)
+        private readonly ITaskRepository _taskRepo;
+        public FeedbackController(IFeedbackRepository repo, ITaskRepository taskRepo)
         {
+            _taskRepo = taskRepo;
             _repo = repo;
         }
 
@@ -113,5 +116,21 @@ namespace api.Controllers
             return BadRequest(new ApiException(400, "Failed to generate email to client", err));
 
         }
+
+        [HttpGet("MedicalObjectives")]
+        public ActionResult<string> GetMedicalObjectiveData()
+        {
+            return "reached api";
+            /*var pagedList = await _taskRepo.GetMedicalObjectives();
+
+            if(pagedList.Count ==0 || pagedList == null) return BadRequest("No Objectives data available during the dates mentioned");
+
+            Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
+                pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
+            
+            return Ok(pagedList);
+            */
+        }
+    
     }
 }

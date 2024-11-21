@@ -29,7 +29,7 @@ export interface ICandidate {
      country: string;
      nationality: string;
      email: string;
-     companyId: number;
+     
      created: Date;
      appUserIdNotEnforced: string;
      appUserId: number;

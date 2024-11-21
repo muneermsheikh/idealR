@@ -13,7 +13,7 @@
     margin-left: 2px;
     margin-right:1px;
     vertical-align: top;
-    font-size: x-small;
+    font-size: smaller;
     font-weight: bold;
 }
 
@@ -42,19 +42,23 @@
 .mL110 {margin-left:110px !important;}
 .mL460 {margin-left: 460px !important;}
 
-.fSmallest {font-size: xx-small; font-weight: bold;}
+.fSmallest {font-size: x-small; font-weight: bold;}
 .fSmaller {font-size: smaller;}
-
+.b {font-weight: bold;}
 .red {color: red;}
+.alignR {text-align: right;}
 
 .w25 {width: 25px;}
 .w30 {width: 30px;}
+.w50 {width: 50px;}
 .w75 {width: 75px;}
 .w80 {width: 80px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
 .w150 {width: 150px;}
+.w175 {width: 175px;}
 .w250 {width: 250px;}
+.w600 {width: 600px;}
 
 .cursorPointer{cursor:pointer; color: darkblue;}
 

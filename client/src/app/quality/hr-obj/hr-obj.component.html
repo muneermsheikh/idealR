@@ -1,0 +1,42 @@
+<h4 style="display: inline-block; font-weight: bold;">Analyses of Time taken to shortlist CVs by HR Executives - from  
+    {{mParams.fromDate | date:'dd-MMM-yy'}} to {{mParams.uptoDate | date: 'dd-MMM-yy'}}</h4>
+
+<button class="btn fa fa-window-close fa-2x mx-3" style="display: inline-block;" routerLink="/" ></button>
+
+<div *ngIf="objs && pagination" style="display: inline-block;" class="mx-5">
+
+    <pagination
+        style="margin: 0 5px 0 5px; display: inline-block;"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+</div>
+       
+<div class="container">
+    <label class="lbl w100">HR Executive Name</label>
+    <label class="lbl w75">Order No</label>
+    <label class="lbl w100">Date Assigned</label>
+    <label class="lbl w75">Quantity<br>Assigned</label>
+    <label class="lbl w100">Total CVs<br>Concluded</label>
+    <label class="lbl w100">Date Concluded</label>
+    <label class="lbl w75">Days<br>taken to<br>Conclude</label>
+    
+
+    <div *ngFor="let obj of objs">
+        <div class="stdd w100">{{obj.assignedToUsername}}</div>
+        <div class="stdd w75">{{obj.orderNo}}</div>
+        <div class="stdd w100">{{obj.dateAssigned | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w75 p15">{{obj.totalCVsAssigned}}</div>
+        <div class="stdd w75 p15">{{obj.totalCVsConcluded}}</div>
+        <div class="stdd w100">{{obj.dateConcluded | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w75 p15">{{WorkingDays(obj.dateAssigned, obj.dateConcluded)}}</div>
+    </div>
+
+</div>
+    

@@ -1,4 +1,5 @@
 using System.Data.Common;
+using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.DTOs.Process;
 using api.Entities.Admin;
@@ -560,8 +561,8 @@ namespace api.Data.Repositories.Deployment
                 .ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
                 , depParams.PageNumber, depParams.PageSize);
 
-            var depids = paged.Select(x => x.DepId).ToList();
-            var depitems = await _context.DepItems.Where(x => depids.Contains(x.DepId)).ToListAsync();
+            //var depids = paged.Select(x => x.DepId).ToList();
+            //var depitems = await _context.DepItems.Where(x => depids.Contains(x.DepId)).ToListAsync();
 
             return paged;
         }
@@ -590,5 +591,7 @@ namespace api.Data.Repositories.Deployment
             return obj;
         }
 
+
+   
     }
 }

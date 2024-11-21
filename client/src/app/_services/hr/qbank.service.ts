@@ -7,7 +7,7 @@ import { User } from 'src/app/_models/user';
 import { assessmentQBankParams } from 'src/app/_models/admin/assessmentQBankParams';
 import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 import { Pagination } from 'src/app/_models/pagination';
-import { getPaginationHeadersAssessmentQBankParams } from '../paginationHelper';
+import { getPaginatedResult, getPaginationHeadersAssessmentQBankParams } from '../paginationHelper';
 import { IAssessmentBank } from 'src/app/_models/admin/assessmentBank';
 
 @Injectable({
@@ -58,13 +58,13 @@ export class QbankService {
     if(response) return of(response);
   
     let params = getPaginationHeadersAssessmentQBankParams(this.customParams);
-
-    return this.http.get<IAssessmentBank[]>(this.apiUrl + 'assessmentqbank/qBankPaged', {params})
-    .pipe(
-      map(response => {
-        this.cacheCustom.set(Object.values(this.customParams).join('-'), response);
-        return response;
-      })
+    
+    return getPaginatedResult<IAssessmentBank[]>
+        (this.apiUrl + 'AssessmentQBank/qBankPaged', params, this.http).pipe(
+          map(response => {
+            this.cacheCustom.set(Object.values(this.customParams).join('-'), response);
+            return response;
+          })
     )
   }
 

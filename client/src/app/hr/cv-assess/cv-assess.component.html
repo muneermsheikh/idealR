@@ -8,8 +8,8 @@
           <span class="b">Application No.: </span> <span class="blue ">{{cvBrief!.applicationNo}}</span>
           <br><span class="b">Name: </span> <span class="blue">{{cvBrief!.fullName}}</span> 
           <br><span class="b">Referred By:</span> <span class="blue">{{cvBrief!.referredByName}}</span>
-          <br><span class="b">Categories:</span> <div class="stdd blue fontSmaller" *ngFor="let item of cvBrief.userProfessions">
-               {{item.professionName}}, 
+          <br><span class="b">Categories:</span> <div class="stdd blue fontSmaller" >
+               {{cvBrief.userProfessions.flat()}}, 
           </div>
      </div>
 

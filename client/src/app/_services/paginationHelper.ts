@@ -25,6 +25,7 @@ import { FeedbackParams } from "../_models/params/hr/feedbackParams";
 import { customerParams } from "../_models/params/Admin/customerParams";
 import { HttpParamsWithStringDto } from "../_dtos/admin/HttpParamsWithStringDto";
 import { CandidateFlightParams } from "../_models/params/process/CandidateFlightParams";
+import { ParamsCOA } from "../_models/params/finance/paramsCOA";
 
 export function getPaginatedResult<T>(url: string, params: HttpParams, http: HttpClient) {
  
@@ -279,11 +280,11 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     let params = new HttpParams();
 
     params = params.append('pageNumber', mParams.pageNumber.toString());
-    params = params.append('pageSize', mParams.pageSize.toString())
+    params = params.append('pageSize', mParams.pageSize.toString());
+    if(mParams.search !== '') params = params.append('search', mParams.search);
 
     if (mParams.professionName !== '') params = params.append('name', mParams.professionName);
     if (mParams.id !== 0) params = params.append('id', mParams.id!.toString());
-    if (mParams.search) params = params.append('search', mParams.search);
     
     return params;
 
@@ -550,3 +551,50 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 
     return params;
   }  
+
+  export function GetHttpParamsForCOA(oParams: ParamsCOA) {
+    
+    let params = new HttpParams();  // getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
+    params = params.append('pageSize', oParams.pageSize);
+    params = params.append('pageNumber', oParams.pageNumber);
+
+    if (oParams.search) params = params.append('search', oParams.search);
+    if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
+    if (oParams.sort !== '') params = params.append('sort', oParams.sort);
+    if (oParams.cOAId !== 0) params = params.append('cOAId', oParams.cOAId.toString());
+    if (oParams.accountType !== '') params = params.append('accountType', oParams.accountType);
+    if (oParams.divisionToExclude !== '') params = params.append('divisionToExclude', oParams.divisionToExclude);
+    
+  return params;
+}
+
+export function getWorkingDays(startDate: Date, endDate: Date): number {
+ 
+  if(new Date(endDate).getFullYear() < 2000) {
+    return 0;
+  }
+  
+  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const diffInTime = new Date(endDate).getTime() - new Date(startDate).getTime();
+
+  return Math.round(diffInTime / oneDay);
+ 
+    /*
+ 
+ 
+  let count = 0;
+  let currentDate = new Date(startDate);
+  console.log('startDate:', startDate, 'endDate', endDate, 'currentDt, endDate', currentDate.getTime, endDate.getTime);
+  while (currentDate <= endDate) {
+      const dayOfWeek = currentDate.getDay();
+      console.log('startDate:', startDate, 'endDate', endDate, 'dayofweek', dayOfWeek, 'count', count);
+      if (dayOfWeek !== 0) { // 0 = Sunday, 6 = Saturday
+          count++;
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return count;
+  */
+}

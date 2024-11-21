@@ -1,3 +1,4 @@
+using System.Security.Cryptography.Xml;
 using api.DTOs.Admin;
 using api.Entities.HR;
 using api.Entities.Tasks;
@@ -401,7 +402,7 @@ namespace api.Data.Repositories.Admin
         }
         private async Task<string> TasksPostCVRef(string Username, ICollection<CandidatesAssessedButNotRefDto> candidatesNotRefDto)
         {
-            
+            //candidatesNotRefDto - CVs selected by user to forward to clients
             //1 - update candidateAssessment.CVRefId value
             //2 - mark DocControllerAdminTasks as completed
             //3 - create cvfwdtask - DocController to register CVRef in the system
@@ -448,6 +449,14 @@ namespace api.Data.Repositories.Admin
                 
             //create various tasks
             string categoryDescription="";
+            
+            //7 - HRExecTask
+            var tasksHRExec = await _context.HRTasks.Where(x => 
+                x.TaskStatus !="Completed" 
+                && candidatesNotRefDto
+                .Select(x => x.OrderItemId).ToList().Contains(x.OrderItemId))
+                .ToListAsync();
+
             foreach(var item in candidatesNotRefDto) {
                 //3 - create cvfwdtask - DocController to register CVRef in the system
                 categoryDescription ="Candidate-" + await _context.GetCandidateDescriptionFromCandidateId(item.CandidateId) + 
@@ -501,20 +510,44 @@ namespace api.Data.Repositories.Admin
                     }};
                 _context.Entry(selTask).State = EntityState.Added;
 
-                //7 - HRExecTask
-                var tasksHRExec = await _context.Tasks.Where(x => 
-                    x.TaskType == "AssignTaskToHRExec" && x.TaskStatus !="Completed" && 
-                        candidatesNotRefDto.Select(x => x.OrderItemId).ToList().Contains(x.OrderItemId)).ToListAsync();
-                foreach(var t in tasksHRExec) {
-                    t.TaskStatus = "Completed";
-                    t.CompletedOn = DateTime.UtcNow;
-
-                    t.TaskItems.Add(new () { TaskItemDescription="CV No. " + t.ApplicationNo + ", " + 
-                        _context.GetCandidateNameFromCandidateId(t.CandidateId) + " referred to client on " + DateTime.UtcNow,
-                         AppTaskId = t.Id, TaskStatus = "Completed", TransactionDate=DateTime.UtcNow, UserName=Username});
-                    _context.Entry(t).State = EntityState.Modified;
+                var hrtask = tasksHRExec.Where(x => x.OrderItemId == item.OrderItemId
+                    && x.AssignedToUsername == item.HRExecUsername).FirstOrDefault();
+                
+                
+                var hritem = new HRTaskItem{TransactionDate=DateTime.UtcNow, 
+                    ApplicationNo=item.ApplicationNo, CandidateId=item.CandidateId,
+                    HRExecutiveUsername=item.HRExecUsername, CandidateAssessmentId=item.CandidateAssessment.Id,
+                    CVRefId=item.CvRefId, Remarks="Candidate " + item.ApplicationNo + "-" + item.CandidateName +
+                    "- for " + item.CustomerName + " " + item.CustomerCity + " forwarded today."};
+                
+                if(hrtask !=null) {
+                    hritem.HRTaskId = hrtask.Id;
+                    _context.HRTaskItems.Add(hritem); 
+                } else {
+                    hrtask = new HRTask {TaskDate=DateTime.UtcNow, AssignedByUsername = Username, 
+                        AssignedToUsername=Username, CompleteBy=DateTime.UtcNow.AddDays(5), OrderId=item.OrderId,
+                        OrderItemId=item.OrderItemId, OrderNo = item.OrderNo, 
+                        QntyAssigned = await _context.OrderItems.Where(x => x.Id==item.OrderItemId)
+                            .Select(x => x.Quantity).FirstOrDefaultAsync(), TaskStatus = "In Process",
+                        TaskDescription = "New HR Executive Assignment Task Created for " + Username + 
+                            " since the User does not have a task assigned to him. ",
+                        HRTaskItems = new List<HRTaskItem>{hritem}};
+                    _context.HRTasks.Add(hrtask);                 
+                    //**TODO** raise alert logged in HR Executive has not been assigned this task        
                 }
+            }
+            
+            //UPDATE HRTasks.QntyDelivered
+            var ids = tasksHRExec.Select(x => x.Id).ToList();
+            var taskToUpdate = await _context.HRTasks.Include(x => x.HRTaskItems)
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(); 
 
+            foreach(var t in taskToUpdate) {
+                t.QntyDelivered = t.HRTaskItems.Count;
+                t.TaskStatusDate = DateTime.UtcNow;
+                t.TaskStatus = t.QntyDelivered >= t.QntyDelivered ? "Completed" : "In Process";
+                _context.Entry(t).State = EntityState.Modified;
             }
 
             try {

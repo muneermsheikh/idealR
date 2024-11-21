@@ -28,7 +28,7 @@ namespace api.Interfaces.Admin
         Task<bool> DeleteReviewQ(int id);
 
         Task<ICollection<ContractReviewItemStddQ>> GetReviewStddQs();
-        Task<bool> UpdateOrderReviewStatusWITHSAVE(int orderId, int orderItemId);
+        Task<string> UpdateOrderReviewStatusWITHSAVE(int orderId, int orderItemId);
         Task<ContractReviewItemDto> InsertContractRvwItemFromOrderItemAndContractRvwId (int orderitemid);
     }
 }

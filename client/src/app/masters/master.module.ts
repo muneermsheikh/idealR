@@ -12,7 +12,6 @@ import { EmpAttachmentComponent } from './emp-attachment/emp-attachment.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
 import { CategoryQBankModalComponent } from './category-qbank-modal/category-qbank-modal.component';
-import { CategoryQBankComponent } from './category-qbank/category-qbank.component';
 import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.component';
 
 
@@ -27,7 +26,6 @@ import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.
     EmpAttachmentComponent,
     CategoryEditModalComponent,
     CategoryQBankModalComponent,
-    CategoryQBankComponent,
     CategoryQBankQsComponent
   ],
 

@@ -13,6 +13,7 @@ import { AccountService } from 'src/app/_services/account.service';
 export class ExcelConversionMenuComponent {
 
   uploadExcel=false;
+  uploadNaukriExcel=false;
   uploadCustomerExcel=false;
   uploadEmployeeExcel=false;
   uploadOrderExcel=false;
@@ -33,9 +34,19 @@ export class ExcelConversionMenuComponent {
   }
   
   //prospective
-  
   toggleProspectiveExcel() {
     this.uploadExcel=!this.uploadExcel;
+    this.uploadNaukriExcel=false;
+    this.uploadCustomerExcel=false;
+    this.uploadCandidateExcel=false;
+    this.uploadEmployeeExcel=false;
+    this.uploadOrderExcel=false;
+  }
+
+  //prospective
+  toggleNaukriProspectiveExcel() {
+    this.uploadNaukriExcel=!this.uploadNaukriExcel;
+    this.uploadExcel=false;
     this.uploadCustomerExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
@@ -56,6 +67,34 @@ export class ExcelConversionMenuComponent {
     })
   }
 
+  
+  exportNaukriProspectiveFile() {
+    this.accountService.copyProspectiveNaukriXLSFileToDB(this.formData).subscribe({
+      next: (response: IReturnStringsDto) => {
+        //console.log('exportprospective: response:', response);
+        if(response.errorString !== '') this.toastr.warning(response.errorString, 'Warning');
+        if(response.successString !== '') this.toastr.success(response.successString, 'Success');
+        
+      }
+      , error: (err: any) => {
+        console.log(err.error.text, 'Error encountered');
+        this.toastr.error(err.error.text, 'Error in copying the excel data to database');
+      }
+    })
+  }
+
+  onNaukriProspectiveFileInputChange(event: Event) {
+      
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    const f = files[0];
+    this.formData = new FormData();
+
+    if(f.size > 0) this.formData.append('file', f, f.name);
+        
+  }
+  
+
   onProspectiveFileInputChange(event: Event) {
       
     const target = event.target as HTMLInputElement;
@@ -71,11 +110,17 @@ export class ExcelConversionMenuComponent {
     this.uploadExcel=false;
   }
 
+  closeNaukriProspectiveFileInput() {
+    this.uploadNaukriExcel=false;
+  }
+
+
   //customer
   
   toggleCustomerExcel() {
     this.uploadCustomerExcel = !this.uploadCustomerExcel;
     this.uploadExcel = false;
+    this.uploadNaukriExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
     this.uploadOrderExcel=false;
@@ -118,6 +163,7 @@ export class ExcelConversionMenuComponent {
   toggleCandidatesExcel() {
     this.uploadCandidateExcel = !this.uploadCandidateExcel;
     this.uploadExcel=false;
+    this.uploadNaukriExcel=false;
     this.uploadCustomerExcel=false;
     this.uploadEmployeeExcel=false;
     this.uploadOrderExcel=false;
@@ -158,6 +204,7 @@ export class ExcelConversionMenuComponent {
   toggleEmployeesExcel() {
     this.uploadEmployeeExcel = !this.uploadEmployeeExcel;
     this.uploadExcel=false;
+    this.uploadNaukriExcel=false;
     this.uploadCustomerExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadOrderExcel=false;
@@ -198,6 +245,7 @@ export class ExcelConversionMenuComponent {
   toggleOrdersExcel() {
     this.uploadOrderExcel = !this.uploadOrderExcel;
     this.uploadExcel=false;
+    this.uploadNaukriExcel=false;
     this.uploadCustomerExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;

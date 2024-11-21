@@ -311,7 +311,63 @@ namespace api.Controllers
 
             return Ok("");
         }
-               
+
+        
+        [HttpPost("naukriprospectiveXLS"), DisableRequestSizeLimit]
+        public  async Task<ActionResult<ReturnStringsDto>> ConvertProspectiveDataFromNaukri()
+        {
+            var dtoErr = new ReturnStringsDto();
+
+            //check for uploaded files
+            var files = Request.Form.Files;
+
+            string ErrorString="";
+       
+            if(files.Count > 0) 
+            {
+                try{
+                    var folderName = Path.Combine("Assets", "Images");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    foreach (var file in files)
+                    { 
+                        if(file.Length == 0) continue;
+
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var FileExtn = Path.GetExtension(file.FileName);
+                        if(FileExtn != ".xlsx") {
+                            dtoErr.ErrorString = "Only .XLSX files accepted";
+                            return  dtoErr;
+                        }
+                        
+                        var filename=file.FileName[..9].ToLower();
+
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
+
+                        if (System.IO.File.Exists(fullPath)) {
+                            System.IO.File.Delete(fullPath);
+                            //ErrorString="The file [" + file.FileName + "] already exists at " +  pathToSave + ". Either delete the file or move it, so that the file can be downloaded";
+                            //return ErrorString;
+                        }
+
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        file.CopyTo(stream);
+
+                        dtoErr = await _candRepo.WriteProspectiveNaukriExcelToDB(fullPath, User.GetUsername());
+
+                        return dtoErr;
+                    }
+                
+                } catch (Exception ex) {
+                    throw new Exception(ex.Message);
+                } 
+            }
+            
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+
+            return Ok("");
+        }
+             
         [HttpPost("customerXLS"), DisableRequestSizeLimit]
         public  async Task<ActionResult<string>> ConvertXLSToCustomerData()
         {
@@ -533,49 +589,5 @@ namespace api.Controllers
         }
  
        
-        /*[HttpPost("updateAndUploadAttachments")]
-        public async Task<ActionResult<ICollection<EmployeeAttachment>>> UploadAndUpdateAttachment()
-        {
-            var folderName = Path.Combine("Assets", "EmployeeAttachments");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
-
-            //try
-            //{
-                var modelData = JsonSerializer.Deserialize<ICollection<EmployeeAttachment>>(Request.Form["data"],  
-                    new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                
-                var files = Request.Form.Files;
-
-                foreach(var file in files) {
-                    var memoryStream = new MemoryStream();
-                    if (file.Length==0) return null;
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                
-                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
-                    if(System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
-                    var dbPath = Path.Combine(folderName, fileName); //you can add this path to a list and then return all dbPaths to the client if require
-
-                    using var stream = new FileStream(fullPath, FileMode.Create);
-                    file.CopyTo(stream);
-                    var modelFile = modelData.FirstOrDefault(x => x.FileName == file.FileName);
-                    if(modelFile != null) modelFile.FullPath = fullPath;
-                }
-
-                var dtoErr = await _empRepo.EditEmployeeAttachments(modelData);
-
-                if(!string.IsNullOrEmpty(dtoErr.Error)) {
-                    return BadRequest(new ApiException(400, "Bad Request", dtoErr.Error));
-                }
-               
-                return Ok(dtoErr.employeeAttachments);
-           }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error" + ex.Message);
-            }
-            
-        }
-        */
   }
 }

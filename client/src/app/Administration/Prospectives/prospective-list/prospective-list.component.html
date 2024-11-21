@@ -10,14 +10,7 @@
           firstText="&laquo;"
           lastText="&raquo;">
      ></pagination>
-
-     
-    <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" class="btn fa fa-search fa-2x mx-2" style="color: aliceblue;"></button>
-
-    <button (click)="onReset()" class="btn fa fa-refresh fa-2x mx-2" style="color: aliceblue;"></button>
-    
-    <label class="lbl w100 mx-2" title="The paged list that will retreive records based upon the status you select" >Choose Status</label>
+        <label class="lbl w100 mx-2" title="The paged list that will retreive records based upon the status you select" >Choose Status</label>
         <ng-select class="stdd"
             style="border-style: double; width: 100px; font-size: small;"
             [items]="paramsStatus"
@@ -26,10 +19,25 @@
             labelForId="status"
             clearAllText="Clear"
             [(ngModel)]="pParams.statusClass"
-    ></ng-select>
+        ></ng-select>
     <button class="btn fa fa-filter fa-2x" style="color: aliceblue;" 
         title="filters the records based upon the status selected" (click)="setParameters()" ></button>
     <button class="btn fa fa-window-close fa-2x mx-5" style="color: aliceblue;" title="go back" routerLink="/" ></button>
+    
+    <br><label class="lbl w75">Search on Category</label>
+    <input type="text" title="enter any part of category ref to search by" 
+        class="stdd fa-solid fa-magnifying-glass w100" #search placeholder="Category">
+    <label class="lbl w75">Search on Phone No</label>
+    <input type="text" title="enter the phone number to search by" 
+        class="stdd fa-solid fa-magnifying-glass w100" #searchPhoneNo placeholder="phone no">
+    <label class="lbl w75">Search on Name</label>
+    <input type="text" title="enter any part of cnadidate name to search by" 
+        class="stdd fa-solid fa-magnifying-glass w150" #searchName placeholder="Candidate Name">
+    
+    <button (click)="onSearch()" title="search the text entered" class="btn fa fa-search fa-2x mx-2" style="color: aliceblue;"></button>
+
+    <button (click)="onReset()" class="btn fa fa-refresh fa-2x mx-2" style="color: aliceblue;"></button>
+    
 </div>
 
 <div class="form-inline">
@@ -39,7 +47,6 @@
     <label class="lbl w100">Phone No</label>
     <label class="lbl w150">Email</label>
     <label class="lbl w100">Source</label>
-    <label class="lbl w75">Person<br>Type</label>
     <label class="lbl w75">Person Id</label>
     <label class="lbl w75">Nationality</label>
     <label class="lbl w75">Date<br>Registered</label>
@@ -47,7 +54,7 @@
     <label class="lbl w100">Duration</label>
 
 </div>
-<hr>
+<hr class="my-0">
 
 <div *ngIf="!prospectives" class="my-2">
     No prospective candidates found matching your criteria

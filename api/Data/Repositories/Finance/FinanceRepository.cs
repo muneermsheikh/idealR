@@ -110,6 +110,7 @@ namespace api.Data.Repositories.Finance
                 if(!string.IsNullOrEmpty(coaParams.AccountType)) query = query.Where(x => x.AccountName.ToLower() == coaParams.AccountType.ToLower());
                 if(!string.IsNullOrEmpty(coaParams.Divn)) query = query.Where(x => x.Divn.ToLower() == coaParams.Divn.ToLower());
                 if(!string.IsNullOrEmpty(coaParams.DivisionToExclude)) query = query.Where(x => x.Divn != coaParams.DivisionToExclude);
+                if(!string.IsNullOrEmpty(coaParams.Search)) query = query.Where(x => x.AccountName.ToLower().Contains(coaParams.Search.ToLower()));
             }
              
             var paged = await PagedList<COA>.CreateAsync(
@@ -281,22 +282,29 @@ namespace api.Data.Repositories.Finance
                 Amount = voucher.Amount, CoaId = voucher.CoaId, Divn=voucher.Divn, Narration = voucher.Narration,
                 PartyName = voucher.PartyName, VoucherDated = voucher.VoucherDated};
 
-            var entries=new List<VoucherEntry>();
-            foreach(var item in voucher.VoucherEntries) {
-                var account = await _context.COAs.FindAsync(item.CoaId);
-                var entry = new VoucherEntry {CoaId=item.CoaId, AccountName = account.AccountName,
-                    Dr = item.Dr, Cr = item.Cr, Narration = item.Narration, Remarks = item.Remarks,
-                    TransDate = item.TransDate};
-                entries.Add(entry);
+            var entries = new List<VoucherEntry>();
+            foreach(var newItem in voucher.VoucherEntries)
+            {
+                var itemToInsert = new VoucherEntry
+                    {
+                        AccountName = await GetAccountNameFromId(newItem.CoaId),
+                        CoaId = newItem.CoaId,
+                        Cr = newItem.Cr, Dr = newItem.Dr,
+                        Narration = newItem.Narration,
+                        Remarks = newItem.Remarks, TransDate=newItem.TransDate
+                    };
+
+                    entries.Add(itemToInsert);
             }
 
-            fVoucher.VoucherEntries=entries;
-            
-            _context.Entry(voucher).State = EntityState.Added;
+            fVoucher.VoucherEntries = entries;
 
-            if (await _context.SaveChangesAsync() > 0) {
-                return voucher;
-            } else {
+            _context.FinanceVouchers.Add(fVoucher);
+
+            try {
+                await _context.SaveChangesAsync();
+                return fVoucher;
+            } catch {
                 return null;
             }
 

@@ -112,7 +112,8 @@ namespace api.Controllers
                 .OrderBy(u => u.UserName)
                 .Select(u => new MemberDto
                 {
-                    Id = u.Id, UserName = u.UserName, KnownAs = u.KnownAs, PhoneNumber = u.PhoneNumber, 
+                    Id = u.Id, UserName = u.UserName, KnownAs = u.KnownAs, 
+                    PhoneNumber = u.PhoneNumber, Gender = u.Gender,
                     Email = u.Email, City = u.City, Country = u.Country, Position = u.Position,
                     DateOfBirth = u.DateOfBirth, Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
                 })

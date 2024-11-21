@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
@@ -10,6 +10,7 @@ import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { Pagination } from 'src/app/_models/pagination';
 import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
 import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { ProspectiveService } from 'src/app/_services/hr/prospective.service';
 import { CallRecordsEditModalComponent } from 'src/app/callRecords/call-records-edit-modal/call-records-edit-modal.component';
@@ -22,6 +23,9 @@ import { CallRecordsEditModalComponent } from 'src/app/callRecords/call-records-
 export class ProspectiveListComponent implements OnInit {
 
   @ViewChild('search', {static: false}) searchTerm: ElementRef | undefined;
+  @ViewChild('searchPhoneNo', {static: false}) searchPhoneNo: ElementRef | undefined;
+  @ViewChild('searchName', {static: false}) searchTermName: ElementRef | undefined;
+
   @ViewChild('discussions', {static: false}) discussionTerm: ElementRef | undefined;
   user?: User;
   returnUrl = '';
@@ -46,13 +50,15 @@ export class ProspectiveListComponent implements OnInit {
     {status: "Interested, and keen"}, {status: "Interested, but doubtful"}]
 
   constructor(private service: ProspectiveService, private modalService: BsModalService,
-    private router: Router, private toastr: ToastrService, private confirm: ConfirmService){
+    private router: Router, private toastr: ToastrService, private confirm: ConfirmService,
+    private accountService: AccountService){
     let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
         if (nav?.extras && nav.extras.state) {
             if(nav.extras.state['returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
 
             if( nav.extras.state['user']) this.user = nav.extras.state['user'] as User;
+            if(!this.user) this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
         }
   }
 
@@ -149,6 +155,7 @@ export class ProspectiveListComponent implements OnInit {
           callRecord: event,
           contactResults: this.callRecordStatus,
           candidateName: item.candidateName,
+          userName: this.user?.userName
         }
       }
           
@@ -219,7 +226,9 @@ export class ProspectiveListComponent implements OnInit {
   
   onSearch() {
     const params = this.service.getParams();
-    params.search = this.searchTerm?.nativeElement.value;
+    if(this.searchTerm?.nativeElement.value !=='') params.search = this.searchTerm?.nativeElement.value;
+    if(this.searchPhoneNo?.nativeElement.value !=='') params.search = this.searchPhoneNo?.nativeElement.value;
+    if(this.searchTermName?.nativeElement.value !=='') params.search = this.searchTermName?.nativeElement.value;
     params.pageNumber = 1;
     this.service.setParams(params);
     this.loadProspectives();

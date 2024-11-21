@@ -41,7 +41,8 @@ namespace api.Data.Repositories.Admin
         {
             var dtoErr = new MessageWithError();
 
-            var dto = OrderItems.Select(x => new {x.CustomerName, x.AboutEmployer, x.OrderNo, x.OrderDate, x.CityOfEmployment}).FirstOrDefault();
+            var dto = OrderItems.Select(x => new {x.CustomerName, x.AboutEmployer, x.OrderNo, x.OrderDate, 
+                x.CityOfEmployment}).FirstOrDefault();
             var senderObject = await _userManager.FindByNameAsync(senderUsername);
             if( recipientObject == null) {
                 dtoErr.ErrorString = "Recipient Object is not defined";
@@ -317,7 +318,9 @@ namespace api.Data.Repositories.Admin
         private static string ComposeCategoryTableForEmail(ICollection<OrderItemBriefDto> orderItems)
         {
             int srno = 0;
-            string TableBody = "<Table><TH width='25'>Sr<br>No</TH><TH width='300'>Cat Ref</TH><TH width='40'>Qnty</TH><TH width='250'>Job Description</TH><TH width='250'>Remuneration</TH><TH width='150'>Remarks</TH>";
+            string TableBody = "<Table border='1'><TH width='25'>Sr<br>No</TH><TH width='300'>Cat Ref</TH>" +
+                "<TH width='40'>Qnty</TH><TH width='250'>Job Description</TH>" +
+                "<TH width='250'>Remuneration</TH><TH width='150'>Remarks</TH>";
             string jd = "";
             string remun = "";
             foreach (var item in orderItems)
@@ -325,11 +328,11 @@ namespace api.Data.Repositories.Admin
                 if (item.JobDescription != null)
                 {
                     if (!string.IsNullOrEmpty(item.JobDescription.JobDescInBrief)) jd = item.JobDescription.JobDescInBrief;
-                    if (item.JobDescription.MaxAge > 0) jd += "Max Age:" + item.JobDescription.MaxAge + " yrs";
-                    if (item.JobDescription.ExpDesiredMin > 0) jd += "Exp: " + item.JobDescription.ExpDesiredMin;
+                    if (item.JobDescription.MaxAge > 0) jd += "<br>Max Age:" + item.JobDescription.MaxAge + " yrs";
+                    if (item.JobDescription.ExpDesiredMin > 0) jd += "<br>Exp: " + item.JobDescription.ExpDesiredMin;
                     if (item.JobDescription.ExpDesiredMax > 0) jd += " - " + item.JobDescription.ExpDesiredMax;
                     if (item.JobDescription.ExpDesiredMin > 0 || item.JobDescription.ExpDesiredMax > 0) jd += " yrs.";
-                    if (!string.IsNullOrEmpty(item.JobDescription.QualificationDesired)) jd += " Qualification: " + item.JobDescription.QualificationDesired;
+                    if (!string.IsNullOrEmpty(item.JobDescription.QualificationDesired)) jd += "<br>Qualification: " + item.JobDescription.QualificationDesired;
                 }
 
                 if (item.Remuneration != null)
@@ -338,20 +341,20 @@ namespace api.Data.Repositories.Admin
                     remun += string.IsNullOrEmpty(item.Remuneration.SalaryCurrency) ? "" : item.Remuneration.SalaryCurrency;
                     remun += item.Remuneration.SalaryMin > 0 ? item.Remuneration.SalaryMin : "";
                     remun += item.Remuneration.SalaryMax > 0 ? "-" + item.Remuneration.SalaryMax : "";
-                    remun += "; Housing: ";
+                    remun += "<br>Housing: ";
                     remun += item.Remuneration.HousingProvidedFree ? "Free" :
                         item.Remuneration.HousingAllowance > 0 ? item.Remuneration.HousingAllowance : "Not provided";
-                    remun += "; Food: ";
+                    remun += "<br>Food: ";
                     remun += item.Remuneration.FoodAllowance > 0 ? item.Remuneration :
                         item.Remuneration.FoodProvidedFree ? "Provided Free" : "Not Provided";
-                    remun += "; Transport: ";
+                    remun += "<br>Transport: ";
                     remun += item.Remuneration.TransportProvidedFree ? "Provided Free" :
                         item.Remuneration.TransportAllowance > 0 ? item.Remuneration.TransportAllowance : "Not Provided";
                     remun += "; Medical Facilities: As per labour laws;";
-                    if (item.Remuneration.OtherAllowance > 0) remun += "; Other Allowance: " + item.Remuneration.OtherAllowance;
+                    if (item.Remuneration.OtherAllowance > 0) remun += "<br>Other Allowance: " + item.Remuneration.OtherAllowance;
 
                 }
-                TableBody += "<TR><TD  style='vertical-align: top;'>" + ++srno + 
+                TableBody += "<TR><TD style='vertical-align: top;'>" + ++srno + 
                     "</TD><TD style='vertical-align: top;'>" + item.OrderNo + "-" + item.SrNo + "-" + 
                     item.ProfessionName + "</TD><TD style='vertical-align: top;'>" + 
                     item.Quantity + "</TD><TD style='vertical-align: top;'>" +
@@ -407,27 +410,27 @@ namespace api.Data.Repositories.Admin
             var HrExecUsernameDistinct = assignmentDtos.Select(x => x.HrExecUsername).Distinct().ToList();
 
             foreach(var hrexecuser in HrExecUsernameDistinct) {
-                var orderitemsAssignedToHRExec = assignmentDtos.Where(x => x.HrExecUsername.ToLower() == hrexecuser).OrderBy(x => x.OrderItemId).ToList();
+                var orderitemsAssignedToHRExec = assignmentDtos.Where(x => x.HrExecUsername.ToLower() == hrexecuser.ToLower())
+                    .OrderBy(x => x.OrderItemId).ToList();
                 var orderItemTable = ComposeCategoryTableForEmail(orderitemsAssignedToHRExec);
-                var recipientObj = await _userManager.FindByNameAsync(Username);
+                var recipientObj = await _userManager.FindByNameAsync(hrexecuser);
                 if(recipientObj==null) continue;
 
-                msgBody = _dateToday + "<br><br>" + recipientObj.Gender == "Male" ? "Mr." : "Ms.";
+                msgBody = _dateToday + "<br><br>" + recipientObj.Gender.ToLower() == "m" ? "Mr." : "Ms.";
                 msgBody += recipientObj.KnownAs + "<br>" + recipientObj.Position + ", email:" + recipientObj.Email;
                 msgBody +="<br><br>Following Order Categories are assigned to you. Job Descriptions and Remunertions can be " +
                     "viewed on the links provided. For any clarification, please approach your Supervisor. " +
-                    "<br><br><b>Details of the Order Categories</b><br><br>:" +
-                    "<b>Order No.</b>: " + 
-                    "<br><b>Order Categories</b><br>:";
+                    "<br><br><b>Details of the Order Categories:</b><br><br>" +
+                    "<b>Order No.</b>: " + orderitemsAssignedToHRExec.Select(x => x.OrderNo).FirstOrDefault() + " dated " + 
+                        orderitemsAssignedToHRExec.Select(x => x.OrderDate).FirstOrDefault();
+                msgBody += "<br><b>Order Categories</b>: <br>";
                                 
-                msgBody += orderItemTable + ".  Best regards<br><br>"  + senderObject.KnownAs + ", " + senderObject.Position;
+                msgBody += orderItemTable + "Best regards<br><br>"  + senderObject.KnownAs + ", " + senderObject.Position;
 
-                var msg = new Message{MessageType = "DesignOrderItemAssessmentQ", Content = msgBody, 
+                var msg = new Message{
+                    MessageType = "AssignTaskToHRExec", Content = msgBody, 
                     MessageComposedOn = _dateToday,  RecipientUsername = recipientObj.UserName,
-                    //RecipientAppUserId = recipientObj.Id, 
-                    RecipientEmail = recipientObj.Email, 
-                    //SenderAppUserId = senderObject.Id, 
-                    SenderUsername = senderObject.UserName, 
+                    RecipientEmail = recipientObj.Email, SenderUsername = senderObject.UserName, 
                     Subject = "Task to source complying Candidates"};
                 msgs.Add(msg);
             }

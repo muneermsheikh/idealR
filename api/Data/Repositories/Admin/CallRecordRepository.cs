@@ -148,6 +148,7 @@ namespace api.Data.Repositories.Admin
             model.Source ??= "Unknown";
 
             if(model.Id==0) {
+                model.Username = model.Username ?? Username;
                 model.Status = model.CallRecordItems.FirstOrDefault().ContactResult;
                 model.StatusDate=model.CallRecordItems.FirstOrDefault().DateOfContact;
                 _context.CallRecords.Add(model);
@@ -292,14 +293,26 @@ namespace api.Data.Repositories.Admin
         {
             var query = _context.CallRecords.AsQueryable();
 
-            if(!string.IsNullOrEmpty(hParams.PersonId)) query = query.Where(x => x.PersonId == hParams.PersonId);
-            if (!string.IsNullOrEmpty(hParams.Username)) query = query.Where(x => x.Username == Username);
-            if(!string.IsNullOrEmpty(hParams.Subject)) query = query.Where(x => x.Subject == hParams.Subject);
-            if(!string.IsNullOrEmpty(hParams.Status)) query = query.Where(x => x.Status == hParams.Status);
-            if(!string.IsNullOrEmpty(hParams.CategoryRef)) query = query.Where(x => x.CategoryRef == hParams.CategoryRef);
-            if(!string.IsNullOrEmpty(hParams.MobileNo)) query = query.Where(x => x.PhoneNo == hParams.MobileNo);
-            if(!string.IsNullOrEmpty(hParams.Email)) query = query.Where(x => x.Email == hParams.Email);
-
+            if(!string.IsNullOrEmpty(hParams.PersonId)) {
+                query = query.Where(x => x.PersonId == hParams.PersonId);
+            } else if (!string.IsNullOrEmpty(hParams.Username)) {
+                query = query.Where(x => x.Username.ToLower() == Username.ToLower());
+            } else if(!string.IsNullOrEmpty(hParams.MobileNo)) {
+                query = query.Where(x => x.PhoneNo == hParams.MobileNo);
+            } else if(!string.IsNullOrEmpty(hParams.Email)) {
+                query = query.Where(x => x.Email.ToLower() == hParams.Email.ToLower());
+            } else {
+                if(!string.IsNullOrEmpty(hParams.Subject)) 
+                    query = query.Where(x => x.Subject.ToLower() == hParams.Subject.ToLower());
+                if(!string.IsNullOrEmpty(hParams.Status)) 
+                    query = query.Where(x => x.Status.ToLower() == hParams.Status.ToLower());
+                if(!string.IsNullOrEmpty(hParams.CategoryRef)) 
+                    query = query.Where(x => x.CategoryRef == hParams.CategoryRef);
+                if(!string.IsNullOrEmpty(hParams.Search))
+                    query = query.Where(x => x.CallRecordItems
+                        .Select(m => m.GistOfDiscussions.ToLower()).ToList().Contains(hParams.Search.ToLower()));
+            }
+             
             var paged = await PagedList<CallRecordBriefDto>.CreateAsync(query.AsNoTracking()
                 .ProjectTo<CallRecordBriefDto>(_mapper.ConfigurationProvider)
                 , hParams.PageNumber, hParams.PageSize);

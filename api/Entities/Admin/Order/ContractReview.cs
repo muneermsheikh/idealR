@@ -14,7 +14,7 @@ namespace api.Entities.Admin.Order
         public string VisaProcessInchargeUsername { get; set; }
         public string EmigProcessInchargeUsername { get; set; }
         public string TravelProcessInchargeUsername { get; set; }   
-        public string ReviewStatus { get; set; } = "NotReviewed";
+        public string ReviewStatus { get; set; } = "Not Reviewed";
         public bool ReleasedForProduction { get; set; }=false;
         public ICollection<ContractReviewItem> ContractReviewItems {get; set; }
         public Order Order { get; set; }

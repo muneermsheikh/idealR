@@ -1,5 +1,6 @@
 <div class="modal-header my-0">
     <h4 style="font-size: bold;">Edit Call Record</h4>
+   
     <button class="btn btn-success w30 fa fa-save" 
         style="margin-left: 400px;" (click)="updateCallRecord()" ></button>
     <button class="btn fa fa-window-close fa-2x pull-right" (click)="close()" ></button>
@@ -9,24 +10,23 @@
     <div *ngIf="callRecord">
         <form [formGroup]="form" >
             <label class="lbl w150">Name of the Person:</label> 
-            <div class="stdd w150" >{{callRecord.personName}}</div>
+            <div class="stdd w250" >{{callRecord.personName}}</div>
         
             <label class="lbl w125 mL15">CategoryRef:</label> 
                 <div class="stdd w150">{{callRecord.categoryRef}}</div>
             <br><label class="lbl w150">Subject:</label> 
-                <div class="stdd w150">{{callRecord.subject}}</div>
+                <div class="stdd w250">{{callRecord.subject}}</div>
             <label class="lbl w125 mL15">Status:</label> 
             <div class="stdd  w100">{{callRecord.status}}</div>
 
             <hr class="my-1">
             
             <label class="lbl w80">Date</label>
-            <label class="lbl w30">In/<br>Out</label>
-            <label class="lbl w80">Phone</label>
-            <label class="lbl w125">Gist of discussions</label>
-            <label class="lbl w175">Result</label>
+            <label class="lbl w75">In / Out</label>
+            <label class="lbl w125">Phone</label>
+            <label class="lbl w175">Result of disc</label>
             <label class="lbl w150">Next action</label>
-            <label class="lbl w75">On</label>
+            <label class="lbl w75">By</label>
             <button class="btn w25 fa fa-plus" (click)="addCallRecordItem()" ></button>
             <hr class="my-0">
 
@@ -34,18 +34,14 @@
                 <div *ngFor="let item of callRecordItems.controls; let i=index">
                     <div [formGroupName]="i">
                         
-                        <input class="stdd w80" type="text" placeholder="Date" 
+                        <input class="stdd w80 fSmaller" type="text" placeholder="Date" 
                             formControlName="dateOfContact" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
                         
-                        <input type="text" class="stdd fSmaller w30" formControlName="incomingOutgoing" >
-                      
-                        <input type="text" formControlName="phoneNo" class="stdd fSmaller w80" >
+                        <app-text-input class="stdd fSmaller w75" formControlName="incomingOutgoing" ></app-text-input>
+                        <app-text-input [label]="'Phone No'" class="stdd fSmallest w125" formControlName="phoneNo" ></app-text-input>
                         
-                        <textarea formControlName="gistOfDiscussions" cols="15" rows="2" 
-                            class="stdd  fSmaller"></textarea>
-                      
                         <ng-select
                             class="select"
                             style="border-color: black; width: 175px;"
@@ -54,10 +50,20 @@
                             bindValue="status"
                             labelForId="status"
                             formControlName="contactResult"
+                            (change)="contactResultChanged($event, i)"
                         ></ng-select>
-
+                        
+                        <div *ngIf="form.controls['contactResult']">
+                            <div *ngIf="form.controls['contactResult'].touched && form.controls['contactResult'].invalid
+                                && form.controls['contactResult']!.errors 
+                                && form.controls['contactResult']!.errors['required']"
+                                class="alert alert-danger">
+                                Contact Result not selected
+                            </div>
+                        </div>
+                        
                         <ng-select
-                            class="select w125"
+                            class="select w150"
                             style="border-color: black;"
                             [items]="nextAction"
                             bindLabel="status"
@@ -65,13 +71,17 @@
                             labelForId="status"
                             formControlName="nextAction"
                         ></ng-select>
-
+                        
                         <input class="stdd w75" type="text" placeholder="Date" 
                             formControlName="nextActionOn" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-                        
                         <button class="btn w25 fa fa-trash fa-sm red" (click)="removeDepItem(i)" ></button>
+                        
+                        <br class="my-0">
+                        <label class="stdd fSmallest b w75 alignR">Discussions</label>
+                        <app-text-input [label]="'Discussions'" class="stdd fSmallest w600" formControlName="gistOfDiscussions" ></app-text-input>
+                        
                     </div>
                 </div>
             </div>

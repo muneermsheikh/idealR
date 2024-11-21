@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Entities.Finance
 {
-    public class Voucher: BaseEntity
+    public class VoucherTODELETE: BaseEntity
     {
-        public Voucher()
+        public VoucherTODELETE()
         {
         }
 

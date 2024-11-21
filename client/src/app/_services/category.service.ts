@@ -38,17 +38,12 @@ export class CategoryService {
 
   getCategoriesPaged(aParams: professionParams, fromCache: boolean=true): Observable<any> { 
 
-    //var aParams = this.mParams;
-    console.log('params:', aParams);
     if(!fromCache) {
       this.cache = new Map();
     } else {
-      console.log('categories getting from cache');
       const response = this.cache.get(Object.values(aParams).join('-'));
       if(response) return of(response);
     }
-
-    console.log('categories getting from api');
     
       let params = getHttpParamsForProfession(aParams);
       

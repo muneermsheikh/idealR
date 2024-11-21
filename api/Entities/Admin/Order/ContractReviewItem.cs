@@ -15,7 +15,7 @@ namespace api.Entities.Admin.Order
         public string RequireAssess { get; set; }
         public int Charges { get; set; }
         public string HrExecUsername { get; set; }
-        public string ReviewItemStatus {get; set;}="NotReviewed";
+        public string ReviewItemStatus {get; set;}="Not Reviewed";
          
         public ICollection<ContractReviewItemQ> ContractReviewItemQs {get; set;}     //copies data from ReviewItemData
         //public OrderItem OrderItem {get; set;}

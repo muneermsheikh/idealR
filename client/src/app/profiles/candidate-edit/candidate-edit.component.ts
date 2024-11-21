@@ -110,7 +110,6 @@ export class CandidateEditComponent implements OnInit {
       this.routeId = this.activatedRoute.snapshot.params['id'];
           //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
 
-          this.routeId = this.activatedRoute.snapshot.params['id'];
           this.router.routeReuseStrategy.shouldReuseRoute = () => false;
 
           //navigationExtras
@@ -158,7 +157,7 @@ export class CandidateEditComponent implements OnInit {
       aadharNo: [cv.aadharNo],
       ppNo: [cv.ppNo],
       ecnr: [cv.ecnr],
-      companyId: [cv.companyId],
+      customerId: [cv.customerId],
       referredByName: [cv.referredByName],
 
       address: [cv.address],

@@ -190,7 +190,9 @@ namespace api.Data.Repositories.HR
             } else {
                 if(!string.IsNullOrEmpty(pParams.CategoryRef) ) qry = qry.Where(x => x.CategoryRef == pParams.CategoryRef);
                 
-                if(!string.IsNullOrEmpty(pParams.Search)) qry = qry.Where(x => x.CategoryRef == pParams.Search);
+                if(!string.IsNullOrEmpty(pParams.Search)) qry = qry.Where(x => x.CategoryRef.Contains(pParams.Search));
+                if(!string.IsNullOrEmpty(pParams.PhoneNo)) qry = qry.Where(x => x.PhoneNo ==pParams.PhoneNo);
+                if(!string.IsNullOrEmpty(pParams.CandidateName)) qry = qry.Where(x => x.CandidateName.Contains(pParams.Search));
                 
                 if(!string.IsNullOrEmpty(pParams.StatusClass)) {
                     if(pParams.StatusClass=="Active") {

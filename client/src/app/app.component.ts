@@ -63,6 +63,10 @@ export class AppComponent implements OnInit {
     this.router.navigateByUrl('/administration/excelConversion')
   }
 
+  exportNaukriProspectives() {
+    this.router.navigateByUrl('/administration/excelConversionOfNaukri')
+  }
+
   exportExcelCustomers() {
 
   }

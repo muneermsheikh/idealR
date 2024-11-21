@@ -6,6 +6,7 @@ namespace api.Params.HR
         public int ApplicationNoFrom{ get; set; }
         public int ApplicationNoUpto{ get; set; }
         public string CandidateName { get; set; }
+        public string CategoryName { get; set; }
         public string PassportNo { get; set; }
         public int ProfessionId { get; set; }
         public int AgentId { get; set; }

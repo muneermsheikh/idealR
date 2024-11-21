@@ -18,9 +18,11 @@ namespace api.Data.Repositories
         private readonly IMapper _mapper;
         private readonly IComposeMessagesAdminRepository _msgAdmRepo;
         private readonly IJDAndRemunRepository _jdandremunRepo;
-        public OrdersRepository(DataContext context, IMapper mapper, 
+        private readonly IContractReviewRepository _crRepo;
+        public OrdersRepository(DataContext context, IMapper mapper, IContractReviewRepository crRepo,
             IComposeMessagesAdminRepository msgAdmRepo, IJDAndRemunRepository jdandremunRepo)
         {
+            _crRepo = crRepo;
             _jdandremunRepo = jdandremunRepo;
             _msgAdmRepo = msgAdmRepo;
             _mapper = mapper;
@@ -31,7 +33,7 @@ namespace api.Data.Repositories
             {
             var item = _mapper.Map<OrderItem>(dto);
             item.Status="NotStarted";
-            item.ReviewItemStatus = "NotReviewed";
+            item.ReviewItemStatus = "Not Reviewed";
 
             _context.Entry(item).State = EntityState.Added;
 
@@ -143,7 +145,7 @@ namespace api.Data.Repositories
                         MinCVs = newItem.MinCVs,
                         MaxCVs = newItem.MaxCVs,
                         SourceFrom = newItem.SourceFrom,
-                        ReviewItemStatus = "NotReviewed",
+                        ReviewItemStatus = "Not Reviewed",
                         Ecnr = newItem.Ecnr,
                         CompleteBefore = newItem.CompleteBefore,
                         Status = "Not Started",
@@ -155,46 +157,6 @@ namespace api.Data.Repositories
                     _context.Entry(itemToInsert).State = EntityState.Added;
                 }
 
-                //jobdescription
-                /*
-                if(existingItem != null) {
-                    if(existingItem.JobDescription != null) {
-                        var existingSubItem = existingItem.JobDescription;
-                        if(newItem.JobDescription.Id != existingSubItem?.Id && newItem.JobDescription.Id != default(int))
-                        {
-                            _context.JobDescriptions.Remove(existingSubItem);
-                            _context.Entry(existingSubItem).State = EntityState.Deleted; 
-                        }
-                    
-                        if(existingSubItem != null)    //update navigation record
-                        {
-                            _context.Entry(existingSubItem).CurrentValues.SetValues(newItem.JobDescription);
-                            _context.Entry(existingSubItem).State = EntityState.Modified;
-                        } else {    //insert new navigation record
-                            var itemToInsert = _jdandremunRepo.CreateNewJobDescription(newItem.JobDescription, existingItem.Id);
-
-                            _context.Entry(itemToInsert).State = EntityState.Added;
-                        }
-
-                        //remuneration
-                        var existingSubItem2 = existingItem.Remuneration;
-                        if(newItem.Remuneration.Id != existingSubItem2?.Id && newItem.Remuneration.Id != default(int))
-                        {
-                            _context.Remunerations.Remove(existingSubItem2);
-                            _context.Entry(existingSubItem2).State = EntityState.Deleted; 
-                        }
-
-                        if(existingSubItem2 != null)    //update navigation record
-                        {
-                            _context.Entry(existingSubItem2).CurrentValues.SetValues(newItem.Remuneration);
-                            _context.Entry(existingSubItem2).State = EntityState.Modified;
-                        } else {    //insert new navigation record
-                            var remunerationToInsert = _jdandremunRepo.CreateNewRemuneration(newItem.Remuneration, existingItem.Id);
-                            _context.Entry(remunerationToInsert).State = EntityState.Added;
-                        }
-                    }   
-                }
-                */
             }
             
             _context.Entry(existingObject).State = EntityState.Modified;
@@ -204,6 +166,8 @@ namespace api.Data.Repositories
             } catch (Exception ex) {
                 throw new Exception(ex.Message, ex);
             }
+
+            await _crRepo.UpdateOrderReviewStatusWITHSAVE(newObject.Id,0);
 
             return true;
         }
@@ -234,7 +198,7 @@ namespace api.Data.Repositories
                         MinCVs = newObject.MinCVs,
                         MaxCVs = newObject.MaxCVs,
                         SourceFrom = newObject.SourceFrom,
-                        ReviewItemStatus = "NotReviewed",
+                        ReviewItemStatus = "Not Reviewed",
                         Ecnr = newObject.Ecnr,
                         CompleteBefore = newObject.CompleteBefore,
                         Status = "Not Started",

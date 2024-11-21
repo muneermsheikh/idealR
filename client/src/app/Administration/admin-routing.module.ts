@@ -31,6 +31,7 @@ import { MessageComponent } from './message/message/messages.component';
 import { DLComponent } from './dl/dl.component';
 import { CvsreferredComponent } from '../profiles/cvsreferred/cvsreferred.component';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
+import { MedObjectivesComponent } from '../quality/med-objectives/med-objectives.component';
 
 
 const routes = [
@@ -83,6 +84,8 @@ const routes = [
   },
 
   {path: 'excelConversion', component: ExcelConversionMenuComponent},
+
+  {path: 'excelConversionOfNaukri', component: ExcelConversionMenuComponent},
   
   {path: 'cvsreferred/:id', component: CvsreferredComponent},
   
@@ -117,7 +120,9 @@ const routes = [
 
   {path: 'messages', component: MessageComponent},
   
-  {path: 'userroles', component: UserManagementComponent}
+  {path: 'userroles', component: UserManagementComponent},
+
+ 
 ]
 
 @NgModule({

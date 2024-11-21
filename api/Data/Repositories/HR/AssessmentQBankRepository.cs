@@ -263,11 +263,11 @@ namespace api.Data.Repositories.HR
 
         public async Task<PagedList<AssessmentBank>> GetQBankPaginated(AssessmentQBankParams qParams)
         {
-            var q =  _context.AssessmentBanks.AsQueryable();
+            var q =  _context.AssessmentBanks.Include(x => x.AssessmentBankQs).AsQueryable();
             
             var paged = await PagedList<AssessmentBank>.CreateAsync(q.AsNoTracking()
-                    .ProjectTo<AssessmentBank>(_mapper.ConfigurationProvider),
-                    qParams.PageNumber, qParams.PageSize);
+                    //.ProjectTo<AssessmentBank>(_mapper.ConfigurationProvider)
+                    , qParams.PageNumber, qParams.PageSize);
             
             return paged;
         }

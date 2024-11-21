@@ -25,9 +25,7 @@ namespace api.Interfaces.Admin
             string taskOwnername, string assignedToUserName, int orderId, int orderItemId, int orderNo, int appNo, 
             int candidateId, string taskDescription, DateTime completeBy, string taskStatus, string username);
         Task<string> DesignOrderItemAssessmentQAndCreateTask(int orderid, string Username);
-        Task<string> AssignTasksToHRExecs(ICollection<int> orderItemIds, string Username);
         Task<AppTask> GetOrGenertateTaskForResumeId(string ResumeId, string username, string assignedToUsername);
 
-        Task<PagedList<MedicalObjective>> GetMedicalObjectives(string datefrom, string dateupto);
     }
 }

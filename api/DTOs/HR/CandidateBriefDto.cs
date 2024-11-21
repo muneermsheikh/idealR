@@ -15,8 +15,8 @@ namespace api.DTOs.HR
         public string PpNo { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
-        public ICollection<UserProfession> userProfessions { get; set; }
-
+        //public ICollection<UserProfession> userProfessions { get; set; }
+        public ICollection<string> UserProfessions { get; set; }
         public string Status {get; set;} = "NotReferred";
     }
 }

@@ -15,13 +15,13 @@ import { TaskService } from 'src/app/_services/admin/task.service';
 import { OrderItemReviewComponent } from '../orders/order-item-review/order-item-review.component';
 import { JdModalComponent } from '../orders/jd-modal/jd-modal.component';
 import { RemunerationModalComponent } from '../orders/remuneration-modal/remuneration-modal.component';
-import { IRemuneration } from 'src/app/_models/admin/remuneration';
 import { filter, switchMap } from 'rxjs';
 import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
 import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
 import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem';
 import { OrderAssessmentItemModalComponent } from '../orders/order-assessment-item-modal/order-assessment-item-modal.component';
 import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 
 @Component({
   selector: 'app-dl',
@@ -58,7 +58,8 @@ export class DLComponent implements OnInit{
     private router: Router,
     private taskService: TaskService,
     private contractRvwService: ContractReviewService,
-    private modalService: BsModalService){
+    private modalService: BsModalService,
+    private confirm: ConfirmService){
 
       this.routeId = this.activatedRoute.snapshot.params['id'];
 
@@ -249,6 +250,7 @@ ngOnInit(): void {
     observableOuter.pipe(
       filter((response: IOrderAssessmentItem) => response !==null),
       switchMap((response: any) => {
+
         const config = {
           class: 'modal-dialog-centered modal-lg',
           initialState: {
@@ -278,6 +280,50 @@ ngOnInit(): void {
   } */
 
   assignTasksToHRExecs() {
+
+    if(this.isAddMode) return;
+   
+    if(this.order?.projectManagerId===0) {
+      this.toastr.warning('Project Manager needs to be defined before tasks can be assiged');
+      return;
+    }
+ 
+    if (this.isAddMode) {
+      this.toastr.error('tasks cannot be assigned while in add mode.  Save the data first and then comeback to this form in edit mode to assign HR Executive tasks');
+      return;
+    }
+
+    let f = this.form.value;
+    var itemids = f.orderItems.filter((x:any) => x.selected===true).map((x:IOrderItem) => x.id);   
+    if (itemids.length === 0) {
+      this.toastr.error('No Order Items selected');
+      return;
+    }
+
+    var confirmMsg = "This will create tasks in the name of HR Executives defined in the contract review.  " 
+      + "This will also compose messages which you can view/edit in the Messages section.";
+
+    const observableInner = this.service.createOrderAssignmentTasks(itemids);
+    const observableOuter = this.confirm.confirm('confirm assign Tasks to HR Executives', confirmMsg);
+
+    observableOuter.pipe(
+        filter((confirmed) => confirmed),
+        switchMap(() => {
+          return observableInner
+        })
+    ).subscribe({
+      next: (response) => {
+        if(response === '' || response === null) {
+          this.toastr.success('tasks created for the chosen order items. Messages also composed, which you can view/edit in the Messages section', "Success");
+        } else  {
+          this.toastr.warning(response, 'Failed to process Some or all Order Item Ids');
+        }
+      },
+      error: (err: any) => this.toastr.error(err.error.text, 'Error encountered')
+    })
+  }
+
+  assignTasksToHRExecsdelete() {
     if(this.isAddMode) return;
    
     if(this.order?.projectManagerId===0) {
@@ -297,7 +343,7 @@ ngOnInit(): void {
       return;
     }
  
-    return this.taskService.createOrderAssignmentTasks(itemids).subscribe((response: string) => {
+    return this.service.createOrderAssignmentTasks(itemids).subscribe((response: string) => {
 
       if(response === '' || response === null) {
         this.toastr.success('tasks created for the chosen order items', "Success");
@@ -311,6 +357,27 @@ ngOnInit(): void {
     
   }      
 
+  updateContractReviewStatus() {
+    var orderid = this.form.get('id')?.value;
+    if(orderid === '' || orderid === null) return  null;
+
+    return this.service.updateContractReviewStatus(+orderid).subscribe({
+      next: (response: string) => {
+        console.log('response:', response);
+        if(response === '' || response === null) {
+          this.toastr.info('Failed to update the Contract Review', 'Failure');
+        } else {
+          //this.form.get('contractReviewStatus')?.setValue(response);
+          this.order!.contractReviewStatus = response;
+          this.toastr.success('Contract Review value updated', 'Success');
+        }
+      },
+      error: (err: any) => {
+        console.log('error in updatecontractreviewstatus:',err);
+        this.toastr.error(err.error?.details, 'Error');
+      }
+    })
+  }
   
   openContractReviewItemModal(index: any) 
   {

@@ -40,13 +40,10 @@
 	<label class="lbl w100">Divn:</label>
 	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
 	
-	<label class="stdd w100">Narration:</label>
+	<br><label class="stdd w100">Narration:</label>
 	<textarea class="stdd" formControlName="narration" cols="25" rows="2"></textarea>
-	<button type="button" class="btn fa fa-window-close fa-2x mx-1" 
-		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
-		(click)="returnToCaller()" ></button>
 
-	<br><label class="lbl w100 my-0" >Amount:</label>
+	<label class="lbl w100 my-0" >Amount:</label>
 	<input type="number" (change)="updateVoucherAmount()" class="stdd w100" formControlName="amount" > 
 	
 	<div class="stdd b" style="margin-left: 50px;">Totals:</div>
@@ -55,9 +52,11 @@
 	<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
 	<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
 		Voucher Amount NOT totally disbursed</div>
-
+	<button type="button" class="btn fa fa-window-close fa-2x pull-right" 
+		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
+		(click)="returnToCaller()" ></button>
 		
-	<br><label class="stdd w90 b">Date</label>
+	<br class="my-1"><label class="stdd w90 b">Date</label>
 	<label class="stdd w300 b">Account</label>
 	<label class="stdd w75 b">Debit</label>
 	<label class="stdd w75 b">Credit</label>
@@ -70,7 +69,6 @@
 		style="margin-left: 20px !important; color:aliceblue; vertical-align: top;" class="btn fa fa-save green mx-1" ></button>
 	<button type="button" class="btn fa fa-trash red mx-1" style="color: aliceblue; vertical-align: top;" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
 
-		
 	<button type="button" (click)="addVoucherEntry()" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
 
 	<br>

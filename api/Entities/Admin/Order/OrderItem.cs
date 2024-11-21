@@ -17,7 +17,7 @@ namespace api.Entities.Admin.Order
         //public int Charges { get; set; }
         public string Status { get; set; }="Not Started";
         public bool Checked {get; set;}
-        public string ReviewItemStatus { get; set; }="NotReviewed";
+        public string ReviewItemStatus { get; set; }="Not Reviewed";
         public ICollection<OrderAssessmentItemQ> OrderItemAssessmentQs { get; set; }
         public Profession Profession { get; set; }
         public JobDescription JobDescription { get; set; }

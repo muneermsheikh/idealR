@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
 import { IUserHistoryBriefDto } from 'src/app/_dtos/admin/useHistoryBriefDto';
 import { Pagination } from 'src/app/_models/pagination';
 import { User } from 'src/app/_models/user';
@@ -10,8 +10,8 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CallRecordsEditModalComponent } from '../call-records-edit-modal/call-records-edit-modal.component';
 import { IContactResult } from 'src/app/_models/admin/contactResult';
 import { CallRecordParams, ICallRecordParams } from 'src/app/_models/params/callRecordParams';
-import { ICallRecordItem } from 'src/app/_models/admin/callRecordItem';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
+import { AccountService } from 'src/app/_services/account.service';
 
 @Component({
   selector: 'app-call-records-list',
@@ -35,12 +35,13 @@ export class CallRecordsListComponent implements OnInit{
   user?: User;
     
   constructor(private service: UserHistoryService, private confirm: ConfirmService,
-      private toastr: ToastrService, private bsModalRef: BsModalRef, 
-      private bsModalService: BsModalService){}
+      private toastr: ToastrService, private bsModalRef: BsModalRef, private accountService: AccountService,
+      private bsModalService: BsModalService){
+        this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
+      }
   
   ngOnInit(): void {
     this.getCallRecords(this.userHistoryParams);
-    console.log('callRecords:', this.callRecords);
     this.contactResults = this.service.getContactResults();
   }
 
@@ -154,8 +155,6 @@ export class CallRecordsListComponent implements OnInit{
       this.toastr.warning('No Call Record object returned by call record item');
       return;
     }  
-
-    console.log('call record edit:', callRecord);
 
     const config = {
         class: 'modal-dialog-centered modal-lg',

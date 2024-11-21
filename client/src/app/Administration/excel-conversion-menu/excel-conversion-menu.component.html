@@ -1,9 +1,13 @@
 <div class="container">
 
     <!-- *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" -->
-    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Candidate, customer or Employees" >
-        <a  routerLinkActive="active" (click)="toggleProspectiveExcel()" class="nav-link">Prospective Excel Conversion</a>
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - downloaded from TimesJob.Com" >
+        <a  routerLinkActive="active" (click)="toggleProspectiveExcel()" class="nav-link">Prospective XL Conversion-TimesJob</a>
     </div> 
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets downloaded from Naukri.Com" >
+        <a  routerLinkActive="active" (click)="toggleNaukriProspectiveExcel()" class="nav-link">Prospective XL Conversion-Naukri</a>
+    </div> 
+
     <div  class="nav-item menuStdd" title="import data from Excel Sheets - for customer and Vendors" >
         <a  routerLinkActive="active" (click)="toggleCustomerExcel()" class="nav-link">Customer Excel Conversion</a>
     </div>
@@ -24,7 +28,7 @@
     <div *ngIf="uploadExcel" class="my-10" >
         
         <div style="word-wrap: normal; width: 800px;">
-            <li>This option will upload your Prospective Excel File, read the data and insert into the database.</li>
+            <li>This option will upload your Prospective Excel File downloaded from TimesJob, read the data and insert into the database.</li>
             <li>About Excel Sheet formatting, this option has the following requirements:</li>
             <li>The Worksheet name must be named 'Sheet1'</li>
             <li>The OrderItem Id should be in row 2, and column 1, value in col 3</li>
@@ -37,10 +41,32 @@
         <br>
         <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onProspectiveFileInputChange($event)"
             title="click to choose an excel file containing the prospective data"  >
-        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file to database" 
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file downloaded from TimesJob.Com to database" 
             (click)="exportProspectiveFile()" ></button>
         <button class="stdd btn fa fa-window-close" title="close this prospective file input" 
             (click)="closeProspectiveFileInput()" ></button>
+    </div>
+
+    <div *ngIf="uploadNaukriExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Prospective Excel File downloaded from Naukri.Com, read the data and insert into the database.</li>
+            <li>About Excel Sheet formatting, this option has the following requirements:</li>
+            <li>The Worksheet name must be named 'MySheet'</li>
+            <li>The OrderItem Id should be in row 2, and column 1, value in col 3</li>
+            <li>Source tag should be in row 2 col 3, value in column 4</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 4</li>
+            <li>Data should begin from row 5th row.</li>
+            
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onNaukriProspectiveFileInputChange($event)"
+            title="click to choose an excel file containing the prospective data from Naukri.Com"  >
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded prospective file to database" 
+            (click)="exportNaukriProspectiveFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this prospective file input" 
+            (click)="closeNaukriProspectiveFileInput()" ></button>
     </div>
 
 

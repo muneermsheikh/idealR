@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, of } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { IContractReview } from 'src/app/_models/admin/contractReview';
@@ -7,7 +7,6 @@ import { IReviewItemStatus } from 'src/app/_models/admin/reviewItemStatus';
 import { contractReviewParams } from 'src/app/_models/params/Admin/contractReviewParams';
 import { Pagination } from 'src/app/_models/pagination';
 import { IContractReviewItem } from 'src/app/_models/admin/contractReviewItem';
-import { IContractReviewItemReturnValueDto } from 'src/app/_dtos/admin/contractReviewItemReturnValueDto';
 import { getHttpParamsForContractReview, getPaginatedResult} from '../paginationHelper';
 import { IContractReviewItemStddQ } from 'src/app/_models/admin/contractReviewItemStddQ';
 import { IContractReviewDto } from 'src/app/_dtos/orders/contractReviewDto';
@@ -86,7 +85,7 @@ export class ContractReviewService {
     }
   
   updateContractReview(model: IContractReview) {
-    return this.http.put<boolean>(this.apiUrl + 'ContractReview/contractreview', model)
+    return this.http.put<string>(this.apiUrl + 'ContractReview/contractreview', model)
   }
 
 }

@@ -144,13 +144,12 @@ namespace api.Controllers
             return Ok(qs);
         }
 
-        [HttpPut("updateorderreviewstatus/{orderid}")]
-        public async Task<ActionResult<bool>> UpdateOrderReviewStatus(int orderid)
+        [HttpGet("updateorderreviewstatus/{id}")]
+        public async Task<ActionResult<string>> UpdateOrderReviewStatus(int id)
         {
-            var updated = await _repo.UpdateOrderReviewStatusWITHSAVE(orderid,0);
-            if(!updated) return BadRequest("Failed to update the review statuses");
-
-            return Ok();
+            var status = await _repo.UpdateOrderReviewStatusWITHSAVE(id,0);
+            
+            return Ok(status);
 
         }
 

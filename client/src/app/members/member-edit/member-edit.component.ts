@@ -45,18 +45,18 @@ export class MemberEditComponent implements OnInit {
   }
   
   UpdateMember() {
-    console.log('member', this.member);
+
     this.service.updateMember(this.member!).subscribe({
       next: succeeded => {
         if(succeeded) {
-          this.toastr.success('Order Updated', 'Success')
+          this.toastr.success('Member Updated', 'Success')
         } else {
-          this.toastr.warning('Failed to update the order', 'Failure')
+          this.toastr.warning('Failed to update the Member', 'Failure')
         }
       },
       error: err => {
-        console.log('updateOrder error:', err);
-        if(err.error.error) {
+        
+        if(err.error?.error) {
           this.toastr.error(err.error.error, 'Error encountered')
         } else {
           this.toastr.error(err, 'Error encountered')

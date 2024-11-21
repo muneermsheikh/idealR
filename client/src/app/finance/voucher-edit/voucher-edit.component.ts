@@ -208,7 +208,7 @@ export class VoucherEditComponent implements OnInit{
           this.voucherEntries.push(this.newDRVoucherEntry());
         } else {
           this.suggestedDefaultAmountCR = Math.abs(this.iDiff);
-          this.suggestedDefaultCoaIdCR = this.form.get('cOAId')?.value;
+          this.suggestedDefaultCoaIdCR = this.form.get('coaId')?.value;
 
           this.voucherEntries.push(this.newCRVoucherEntry());
         }
@@ -238,7 +238,8 @@ export class VoucherEditComponent implements OnInit{
     }
 
     newCRVoucherEntry(): any {
-      var craccountid = this.form.get('cOAID')?.value;
+      var craccountid = this.form.get('coaId')?.value;
+      console.log('craccountid', craccountid, this.suggestedDefaultCoaIdCR);
       return this.fb.group({
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 

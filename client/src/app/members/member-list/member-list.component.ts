@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastRef, ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { filter, switchMap, take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { Pagination } from 'src/app/_models/pagination';
 import { UserParams } from 'src/app/_models/params/userParams';

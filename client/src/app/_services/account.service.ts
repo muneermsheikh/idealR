@@ -59,6 +59,10 @@ export class AccountService {
   })
 
 
+  copyProspectiveNaukriXLSFileToDB(model: any) {
+      return this.http.post<IReturnStringsDto>(this.baseUrl + 'FileUpload/naukriprospectiveXLS', model);
+  }
+
   copyProspectiveXLSFileToDB(model: any) {
     return this.http.post<IReturnStringsDto>(this.baseUrl + 'FileUpload/prospectiveXLS', model);
   }

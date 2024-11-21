@@ -128,6 +128,8 @@ namespace api.Data
         //Tasks
         public DbSet<AppTask> Tasks {get; set;}
         public DbSet<TaskItem> TaskItems {get; set;}
+        public DbSet<HRTask> HRTasks {get; set;}
+        public DbSet<HRTaskItem> HRTaskItems {get; set;}
         
         //UserHistory
         //public DbSet<UserHistory> UserHistories {get; set;}
@@ -232,6 +234,9 @@ namespace api.Data
             //builder.Entity<AppTask>().HasIndex(x => new {x.CVRefId, x.TaskType})
                 //.HasFilter("CVRefId is NOT ")     //provided by default
                 //.IsUnique();
+            builder.Entity<HRTask>().HasMany(x => x.HRTaskItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<HRTask>().HasIndex(x => new {x.OrderItemId, x.AssignedToUsername}).IsUnique();
+            builder.Entity<HRTaskItem>().HasIndex(x => new {x.CandidateId, x.HRTaskId}).IsUnique();
 
             builder.Entity<FlightDetail>().HasIndex(x => x.FlightNo).IsUnique();
             //builder.Entity<CandidateFlight>().HasIndex(x => x.CvRefId).IsUnique();

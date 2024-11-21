@@ -37,6 +37,7 @@ export class OrderAssessmentItemModalComponent implements OnInit {
   ngOnInit(): void {
     
       if(this.orderAssessmentItem) {
+
         this.CreateAndInitializeFormArray(this.orderAssessmentItem);
         this.calcualteTotals();
         this.professionId = this.orderAssessmentItem?.professionId;
@@ -44,7 +45,7 @@ export class OrderAssessmentItemModalComponent implements OnInit {
   }
 
   CreateAndInitializeFormArray(item: IOrderAssessmentItem) {
-
+    console.log('item in createandinitiaize:', item);
     this.form = this.fb.group({
         id: [item.id],
         orderAssessmentId: [item.orderAssessmentId],
@@ -84,10 +85,12 @@ export class OrderAssessmentItemModalComponent implements OnInit {
   newOrderAssessmentItemQ(): FormGroup {
     return this.fb.group({
           id: 0,
-          orderAssessmentItemId: this.form.get('id'),
-          orderItemId: [this.form.get('orderItemId'), Validators.required],
-          orderId: [this.form.get('orderId'), Validators.required],
-          questionNo: [0, Validators.required],
+          orderAssessmentItemId: this.form.get('id')?.value,
+          orderItemId: [this.form.get('orderItemId')?.value, Validators.required],
+          orderId: [this.form.get('orderId')?.value, Validators.required],
+          questionNo: [this.orderAssessmentItemQs.length===0 ? 1 
+            : Math.max(...this.orderAssessmentItemQs.value.map((x: { questionNo: number; }) => x.questionNo))+1, 
+            Validators.required],
           subject: ['', Validators.required],
           question: ['', Validators.required],
           maxPoints: [0, Validators.required],

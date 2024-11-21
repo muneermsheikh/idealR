@@ -15,8 +15,7 @@
         <div class="stdd w100">{{prospective.phoneNo}}</div>
         <div class="stdd w150">{{prospective.email}}</div>
         <div class="stdd w100">{{prospective.source}}</div>
-        <div class="stdd w75">{{prospective.personType}}</div>
-        <div class="stdd w75">{{prospective.personId}}</div>
+        <div class="stdd w75">{{prospective.personId.substring(0,15)}}</div>
         <div class="stdd w75">{{prospective.nationality}}</div>
         <div class="stdd w75">{{prospective.dateRegistered | date : 'dd-MMM-yy'}}</div>
         

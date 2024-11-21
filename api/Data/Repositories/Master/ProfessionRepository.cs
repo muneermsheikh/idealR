@@ -98,6 +98,8 @@ namespace api.Data.Repositories.Master
             if(!string.IsNullOrEmpty(pParams.ProfessionName)) 
                 obj = obj.Where(x => x.ProfessionName.ToLower() == pParams.ProfessionName.ToLower());
 
+            if(!string.IsNullOrEmpty(pParams.Search)) obj = obj.Where(x => x.ProfessionName.ToLower().Contains(pParams.Search.ToLower()));
+            
             if(pParams.Id != 0) obj = obj.Where(x => x.Id == pParams.Id);
 
             var paged = await PagedList<Profession>.CreateAsync(obj.AsNoTracking()

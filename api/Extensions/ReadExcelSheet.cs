@@ -1,13 +1,10 @@
 using System.Data;
 using System.Data.Common;
-using System.Drawing;
 using api.Data;
 using api.DTOs.Admin;
 using api.Entities.Admin.Client;
 using api.Entities.HR;
 using api.Entities.Master;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
@@ -218,6 +215,210 @@ namespace api.Extensions
 
             return dtoErr;
         }
+
+        
+        public static async Task<ReturnStringsDto> ReadNaukriProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
+        {
+            // var CategoryRef - label in row2, column1, data in row2, column 2  //this is redendent
+            // var OrderItemId = label in row2, col1, data in row3, col2 ;
+            // var professionId = label in row2, col3; data in row2, col4       //this is redendent
+            //var ProfessionName = label in row2, col 5, data in row2, col6     //this is redendent
+            //column titles in row 4, data starts from row 5
+            var dtoErr = new ReturnStringsDto();
+
+            int rowTitle=4;     //data starts from this row
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(new System.IO.FileInfo(filePath)))
+            {
+
+                //ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int rows=0, columns=0;
+                ExcelWorksheet worksheet;
+                try{
+                    worksheet = package.Workbook.Worksheets["MySheet"];
+                    rows = worksheet.Dimension.Rows;
+                    columns = worksheet.Dimension.Columns;
+                } catch (Exception ex) {
+                    dtoErr.ErrorString = ex.Message;
+                    return dtoErr;
+                }
+                
+                string CategoryRef="", ProfessionName=""; 
+                var Source="";
+                int OrderItemId = 0, ProfessionId = 0;
+                int intOrderItemIdRow=2;
+                for(int col=1; col <= 3; col++){
+                    try {
+                        var colTitle = worksheet.Cells[intOrderItemIdRow, col].Value?.ToString();
+                        switch (colTitle.ToLower()) {
+                            case "orderitemid": case "order item id": case "orderitem id": 
+                                OrderItemId=Convert.ToInt32((worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "0").ToString()); 
+                                break;
+                            case "source":
+                                Source = (worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "Times Job").ToString(); 
+                                break;
+                            default:break;
+                        }
+                    } catch (Exception ex) {
+                        dtoErr.ErrorString = ex.Message;
+                        return dtoErr;
+                    }
+                }
+
+                if(OrderItemId == 0) {
+                    dtoErr.ErrorString = "OrderItem Id Not defined";
+                    return dtoErr;
+                }
+
+                var query = await (from item in context.OrderItems where item.Id == OrderItemId
+                        join order in context.Orders on item.OrderId equals order.Id
+                        join cat in context.Professions on item.ProfessionId equals cat.Id
+                        select new {ProfessionId=item.ProfessionId, 
+                        CategoryRef=order.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
+                        ProfessionName=cat.ProfessionName}
+                ).FirstOrDefaultAsync();
+
+                if(query==null) {
+                    dtoErr.ErrorString = "Invalid OrderItem Id";
+                    return dtoErr;
+                }
+
+                ProfessionName = query.ProfessionName;
+                var lng = query.CategoryRef.Length;
+                var cutLength = lng > 25 ? 25 : lng;
+                CategoryRef = query.CategoryRef[..cutLength];
+                ProfessionId = query.ProfessionId;
+                
+                
+                //DataTable dataTable = new();
+                
+                int intCandidateName=0, intEmail=0, intDob=0;
+                int intMobileNo=0, intResumeTitle=0, intKeySkills=0, intWorkExp=0, intCurrentLocation=0;
+                int intEducation=0, intGender=0, intAge=0, intAddress=0, intCity=0, intDesignation=0;
+    
+                var DateRegistered = DateTime.Now;
+                for(int col=1; col <= columns; col++) {
+                    var colTitle = worksheet.Cells[rowTitle, col].Value?.ToString();
+                    switch (colTitle?.ToLower()) {
+                        case "name": intCandidateName=col; break;
+                        case "emailid": case "email id": intEmail=col;break;
+                        //case "alternateemailid": case "alternate email": case "alternte emailid": case "alternate email id": intAlternateEmail=col;break;
+                        //case "alternatephone": intAlternatePhone=col;break;
+                        case "dob": case "date of birth": intDob=col;break;
+                        case "phone": case "mobile no": case "mobile no.": intMobileNo=col;break;
+                        //case "alternatenumber": case "alternate number": case "alternate contact no.": case "alternate contact no": intAlternateNo=col;break;
+                        case "job title": intResumeTitle=col;break;
+                        case "key skills": intKeySkills=col;break;
+                        case "total experience": intWorkExp=col;break;
+                        case "current location": intCurrentLocation=col;break;
+                        case "education": case "under graduation degree" : intEducation=col;break;
+                        case "gender": intGender=col;break;
+
+                        case "age": intAge=col;break;
+                        case "permanent address": intAddress=col;break;
+                        case "home town/city": intCity=col;break;
+                        //case "resumeid": case "resume id": intResumeId=col;break;
+                        case "curr. company designation": intDesignation=col;break;
+                        default:break;
+                    }
+                }
+                
+                string CandidateName = "", EmailId = "", DOB = "";
+                string MobileNo = "", ResumeTitle = "", KeySkills = "", WorkExp = "", CurrentLocation = "";
+                string Education = "", Gendr = "", Age = "", Address = "", City="", ResumeId = "", Designation = "";
+                    
+                for (int row = rowTitle+1; row <= rows; row++)
+                {
+                    CandidateName = intCandidateName == 0 ? "" : worksheet.Cells[row, intCandidateName].Value?.ToString() ?? "";
+                    EmailId = intEmail == 0 ? "" : worksheet.Cells[row, intEmail].Value?.ToString() ?? "";
+                    DOB = intDob == 0 ? "" : worksheet.Cells[row, intDob].Value.ToString() ?? "";
+                    MobileNo = intMobileNo == 0 ? "": worksheet.Cells[row, intMobileNo].Value?.ToString()  ?? "";
+                    ResumeTitle = intResumeTitle == 0 ? "" : worksheet.Cells[row, intResumeTitle].Value?.ToString() ?? "";
+                    KeySkills = intKeySkills == 0 ? "" : worksheet.Cells[row, intKeySkills].Value?.ToString() ?? "";
+                    WorkExp = intWorkExp == 0 ? "" : worksheet.Cells[row, intWorkExp].Value?.ToString() ?? "";
+                    Address = intAddress == 0 ? "": worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    CurrentLocation = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCurrentLocation].Value?.ToString() ?? "";
+                    Education = intEducation == 0 ? "" : worksheet.Cells[row, intEducation].Value?.ToString() ?? "";
+                    Gendr = intGender == 0 ? "Male" : worksheet.Cells[row, intGender].Value?.ToString() ?? "Male";
+                    Gendr = Gendr == "m" ? "Male" : "Female";
+                    Age =  intAge == 0 ? "" : worksheet.Cells[row, intAge].Value?.ToString() ?? "";
+                    Address =  intAddress == 0 ? "" : worksheet.Cells[row, intAddress].Value?.ToString() ?? "";
+                    City = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCity == 0 ? intCurrentLocation : intCity].Value?.ToString() ?? "";
+                    Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value?.ToString() ?? "";
+
+                    var isDOB = DateTime.TryParse(DOB, out DateTime dtDOB);
+                    var personId= Guid.NewGuid().ToString();
+                    if(personId.Length > 44) personId=personId[..44];
+                    var newProspectiveCandidate = new ProspectiveCandidate
+                    {
+                        PersonId = personId,
+                        CategoryRef = CategoryRef,
+                        OrderItemId = OrderItemId,
+                        Gender = Gendr.ToLower() == "male" ? "m" : "f",
+                        CandidateName = CandidateName.Length > 49 ? CandidateName[..49] : CandidateName, 
+                        ResumeId = ResumeId,
+                        Source = Source,
+                        DateOfBirth = isDOB ? dtDOB : new DateTime(1900,1,1),
+                        Age = Age.Length > 10 ? Age[..10] : Age,
+                        Address = Address,
+                        City = City,
+                        PhoneNo = MobileNo.Length > 15 ? MobileNo[..15] : MobileNo,
+                        CurrentLocation = CurrentLocation,
+                        Email = EmailId,
+                        ProfessionId = ProfessionId,
+                        ProfessionName = ProfessionName,
+                        DateRegistered = DateRegistered,
+                        ResumeTitle = ResumeTitle.Length > 49 ? ResumeTitle[..49] : ResumeTitle,
+                        Education = Education,
+                        WorkExperience = WorkExp,
+                        Username = Username
+                    };
+
+                    if ( DOB != "" && Age != "" && !DateTime.TryParse(DOB, out DateTime dob))
+                    {
+                        dob = new DateTime();
+                        if(dob.Year < 1900) dob = DateTime.Now.AddYears(-Convert.ToInt32(Age[..2]));
+                        newProspectiveCandidate.DateOfBirth = dob;
+                    }
+
+                    context.Entry(newProspectiveCandidate).State = EntityState.Added;
+                }
+            }
+
+            bool isSaved = false;
+            int recAffected = 0;
+            do
+                {
+                    try
+                    {
+                        recAffected += await context.SaveChangesAsync();
+                        isSaved = true;
+                        dtoErr.SuccessString = recAffected + " records copied";
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        foreach (var entry in ex.Entries) {
+                            Console.Write("Prospective candidates Exception - " + ex.InnerException.Message);
+
+                            entry.State = EntityState.Detached; // Remove from context so won't try saving again.
+                            dtoErr.ErrorString += ex.Message;
+                        }
+                    }
+                    catch (DbException ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+
+                    catch (Exception ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+                }
+            while (!isSaved);
+
+            return dtoErr;
+        }
+
 
         public static async Task<string> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
         {

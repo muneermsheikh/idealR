@@ -23,7 +23,7 @@ namespace api.Data.Repositories.Admin
         private readonly UserManager<AppUser> _userManager;
         private readonly IComposeMessagesHRRepository _msgHRRepo;
         private readonly IComposeMessagesAdminRepository _admnMsgRepo;
-        private readonly DateTime _today = DateTime.Now;
+        private readonly DateTime _today = DateTime.UtcNow;
         private readonly IMapper _mapper;
         public TaskRepository(DataContext context, IConfiguration config, IComposeMessagesHRRepository msgHRRepo, IComposeMessagesAdminRepository admnMsgRepo,
             UserManager<AppUser> userManager, IMapper mapper)
@@ -170,75 +170,6 @@ namespace api.Data.Repositories.Admin
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the email message";
 
         }
-
-        public async Task<string> AssignTasksToHRExecs(ICollection<int> orderItemIds, string Username)
-        {
-            var assignments = await (from item in _context.OrderItems where orderItemIds.Contains(item.Id)
-                join order in _context.Orders on item.OrderId equals order.Id
-                join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId
-                join jobDescription in _context.JobDescriptions on item.Id equals jobDescription.OrderItemId into jobDes
-                    from jd in jobDes.DefaultIfEmpty()
-                join remuneration in _context.Remunerations on item.Id equals remuneration.OrderItemId into remunern
-                    from remun in remunern.DefaultIfEmpty()
-                select new OrderItemBriefDto
-                {
-                    OrderId = order.Id, CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
-                    AboutEmployer = order.Customer.Introduction, OrderNo = order.OrderNo,
-                    OrderDate = order.OrderDate, OrderItemId = item.Id, RequireInternalReview = rvw.RequireAssess,
-                    SrNo = item.SrNo, ProfessionId = item.ProfessionId,
-                    ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity, Ecnr = item.Ecnr,
-                    CompleteBefore = item.CompleteBefore, Status = item.Status, 
-                    HrExecUsername = rvw.HrExecUsername, JobDescription=jd, Remuneration = remun
-                    
-                }).ToListAsync();    
-            
-            if(assignments.Count==0) return "Failed to retrieve any records";
-
-               //create task in the name of HRExecUsername
-               
-               var tasks = new List<AppTask>();
-               var task = new AppTask();
-
-                foreach(var t in assignments)
-                {
-                    var recipientObj= await _userManager.FindByNameAsync(t.HrExecUsername);
-                    if(recipientObj == null) continue;
-                    if (t.CompleteBefore.Year < 2000) t.CompleteBefore = _today.AddDays(7);
-                    var taskitems = new List<TaskItem>
-                    {
-                        new() {
-                            TransactionDate = _today,
-                            TaskItemDescription = "",
-                            UserName = Username,
-                            NextFollowupOn = _today.AddDays(5)
-                        }
-                    };
-
-                    var apptask = new AppTask{TaskDate=_today, AssignedToUsername = recipientObj.UserName,
-                        CompleteBy=_today.AddDays(4), OrderId=t.OrderId, OrderItemId=t.OrderItemId,
-                        TaskDescription="Assignment to source suitable CVs: Category Ref: " + 
-                        t.OrderNo + "-" + t.SrNo + "-" + t.ProfessionName +
-                        " for " + t.CustomerName, AssignedByUsername = recipientObj.UserName, TaskStatus = "Not started",
-                        TaskItems = taskitems, TaskType = "AssignTaskToHRExec"};
-
-                    _context.Entry(apptask).State = EntityState.Added;
-                }
-                
-                var msgs = await _msgHRRepo.ComposeMessagesToHRExecToSourceCVs(assignments, Username);
-
-                foreach(var msg in msgs.Messages) {
-                    _context.Entry(msg).State = EntityState.Added;
-                }
-
-                try{
-                    await _context.SaveChangesAsync();
-                } catch (Exception ex) {
-                    throw new Exception(ex.Message);
-                }
-
-                return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save the tasks and message to the database";
-        }
-
         public async Task<string> DeleteTask(int taskId)
         {
             var task = await _context.Tasks.FindAsync(taskId);
@@ -360,8 +291,6 @@ namespace api.Data.Repositories.Admin
             _context.Entry(task).State = EntityState.Modified;
 
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to mark the task as completed";
-
-
         }
 
         public async Task<AppTask> GetOrGenertateTaskForResumeId(string resumeId, string username, string assignedToUsername)
@@ -410,67 +339,6 @@ namespace api.Data.Repositories.Admin
             return tasks;
         }
 
-        public async Task<PagedList<MedicalObjective>> GetMedicalObjectives(string fromdate, string uptodate) 
-        {
-            var seqs = new List<int>{ 300, 400, 500, 100};
-
-            var objectives = new List<MedicalObjective>();
-            DateTime.ParseExact(fromdate, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture);
-            DateTime.ParseExact(uptodate, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture);
-
-            var depQuery = _context.DepItems.OrderBy(x => x.DepId)
-                .Select(x =>  new {
-                    DepId=x.DepId, TransactionDate=x.TransactionDate, Sequence=x.Sequence})
-            .AsQueryable();
-
-            depQuery = depQuery.Where(x => seqs.Contains(x.Sequence));
-            depQuery = depQuery.Where(x => 
-                x.TransactionDate >= Convert.ToDateTime(fromdate) && 
-                x.TransactionDate <= Convert.ToDateTime(uptodate));
-
-            var depitems = await depQuery.ToListAsync();
- 
-            var uniqeDepIds = depitems.Select(x => x.DepId).Distinct();
-            foreach(var uniq in uniqeDepIds)
-            {
-                var filtered = depitems.Where(x => x.DepId == uniq).ToList();
-                var objective = new MedicalObjective{DepId=uniq};
-                foreach(var item in filtered) {
-                    if(item.Sequence==100) objective.DateSelected=item.TransactionDate;
-                    
-                    if(item.Sequence==300) objective.RefForMedicals=item.TransactionDate;
-                    if(item.Sequence==400 || item.Sequence==500) objective.MedicalResult=item.TransactionDate;
-                }
-
-                //dateRange may exclude some sequences, so get those sequences from db
-                if(objective.DateSelected.Year < 2000) {
-                    var sq = await _context.DepItems.Where(x => x.DepId==uniq && x.Sequence==100).FirstOrDefaultAsync();
-                    if(sq!=null) objective.DateSelected=sq.TransactionDate;
-                }
-                    
-                objectives.Add(objective);
-            }
-
-            var depids = depitems.Select(x => x.DepId).ToList();
-            var query = await (
-                    from dep in _context.Deps where depids.Contains(dep.Id)
-                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
-                join cand in _context.Candidates on cvref.CandidateId equals cand.Id
-                orderby dep.Id
-                select new MedicalObjective {
-                    DepId=dep.Id, ApplicationNo=cand.ApplicationNo,
-                    CandidateName = cand.FullName, CustomerName = dep.CustomerName
-                }).ToListAsync();
-                       
-            foreach(var obj in objectives) {
-                var qry = query.Where(x => x.DepId == obj.DepId).FirstOrDefault();
-                obj.ApplicationNo=qry.ApplicationNo; obj.CustomerName=qry.CustomerName;
-                obj.CandidateName = qry.CandidateName;
-            }
-           
-           
-           return (PagedList<MedicalObjective>)query;
-            
-        }
+      
     }
 }

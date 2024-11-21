@@ -7,7 +7,7 @@ import { ICOA } from 'src/app/_models/finance/coa';
 import { ParamsCOA } from 'src/app/_models/params/finance/paramsCOA';
 import { CandidateCOAParamsDto } from 'src/app/_dtos/finance/candidateCOAParamsDto';
 import { Pagination } from 'src/app/_models/pagination';
-import { getPaginatedResult } from '../paginationHelper';
+import { GetHttpParamsForCOA, getPaginatedResult } from '../paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -38,13 +38,14 @@ export class COAService {
   getCoas(useCache: boolean=true) {
 
     var oParams = this.sParams;  
-
+    
       if(useCache) {
           const response = this.cache.get(Object.values(oParams).join('-'));
           if(response) return of(response);
       }
 
-      let params = this.getHttpParamsForCOA(oParams);
+      let params = GetHttpParamsForCOA(oParams);
+      console.log('sParams', params);
       
       return getPaginatedResult<ICOA[]>(this.apiUrl + 'Finance/coapagedlist', params, this.http).pipe(
         map(response => {
@@ -96,24 +97,7 @@ export class COAService {
     return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coasforpayment/' + appno);
   }
 
-  
-  getHttpParamsForCOA(oParams: ParamsCOA) {
-    
-      let params = new HttpParams();  // getPaginationHeaders(oParams.pageNumber, oParams.pageSize);
-      params = params.append('pageSize', oParams.pageSize);
-      params = params.append('pageNumber', oParams.pageNumber);
-
-      if (oParams.search) params = params.append('search', oParams.search);
-      if (oParams.accountName !== '' )  params = params.append('coaId', oParams.accountName);
-      if (oParams.sort !== '') params = params.append('sort', oParams.sort);
-      if (oParams.cOAId !== 0) params = params.append('cOAId', oParams.cOAId.toString());
-      if (oParams.accountType !== '') params = params.append('accountType', oParams.accountType);
-      if (oParams.divisionToExclude !== '') params = params.append('divisionToExclude', oParams.divisionToExclude);
-      
-    return params;
-  }
-
-  setParams(params: ParamsCOA) {
+    setParams(params: ParamsCOA) {
     this.sParams = params;
   }
   

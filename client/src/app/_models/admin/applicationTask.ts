@@ -16,6 +16,8 @@ export interface IApplicationTask {
      orderId?: number;
      orderNo?: number;
      orderItemId?: number;
+     qntyAssigned: number;
+     qntyDelivered: number;
      applicationNo?: number;
      candidateId?: number;
      resumeId: string;
@@ -37,6 +39,8 @@ export class ApplicationTask implements IApplicationTask {
      orderId= 0;
      orderNo= 0;
      orderItemId= 0;
+     qntyAssigned = 0;
+     qntyDelivered = 0;
      applicationNo= 0;
      candidateId= 0;
      resumeId= '';

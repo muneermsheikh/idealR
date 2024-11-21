@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Linq.Expressions;
 using api.Data.Repositories.Admin;
 using api.DTOs;
 using api.DTOs.Admin;
@@ -13,6 +14,7 @@ using api.Interfaces.Orders;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -145,8 +147,36 @@ namespace api.Data.Repositories
 
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
         {
-                var query =  _context.Candidates.Include(x => x.UserProfessions)
-                    
+                //check if userProfession.ProfessionName is not blanks
+                var blankProfs = await _context.UserProfessions.Where(x => x.ProfessionName==null || x.ProfessionName == "").ToListAsync();
+                if(blankProfs.Count > 0) {
+                    foreach(var up in blankProfs) {
+                        var profName = await _context.Professions.Where(x => x.Id == up.ProfessionId).Select(x => x.ProfessionName).FirstOrDefaultAsync();
+                        up.ProfessionName = profName;
+                        _context.Entry(up).State=EntityState.Modified;
+                    }
+                    if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+                }                    
+                
+                var qry = (from cand in _context.Candidates
+                    join cust in _context.Customers on cand.CustomerId equals cust.Id into Customer
+                    from cst in Customer.DefaultIfEmpty()
+                    select new CandidateBriefDto  {
+                        ApplicationNo = cand.ApplicationNo, City = cand.City, Id=cand.Id,
+                        CustomerId = Convert.ToInt32(cand.CustomerId), Email = cand.Email,
+                        FullName = cand.FullName, KnownAs = cand.KnownAs, PpNo = cand.PpNo,
+                        Status = cand.Status, UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName).ToList(),
+                        ReferredByName = cst.CustomerName
+                    }).AsQueryable();
+                
+                var pagedList = await PagedList<CandidateBriefDto>.CreateAsync(qry.AsNoTracking()
+                        , candidateParams.PageNumber, candidateParams.PageSize);
+                
+                return pagedList;
+
+                //projectTo shortens the sql query by EF Core
+                //check if UserProfession.ProfessionName is blank
+                /* var query =  _context.Candidates.Include(x => x.UserProfessions)
                     .Select(cand => new CandidateBriefDto {
                         ApplicationNo = cand.ApplicationNo, City = cand.City, Created = cand.Created, Email=cand.Email,
                         FullName=cand.FullName, Id=cand.Id, KnownAs=cand.KnownAs, LastActive=cand.LastActive, 
@@ -158,33 +188,102 @@ namespace api.Data.Repositories
                 if(candidateParams.Id > 0) {
                     query = query.Where(x => x.Id == candidateParams.Id);}
                 else {
-                        if(!string.IsNullOrEmpty(candidateParams.CandidateName)) 
-                            query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.CandidateName.ToLower()));
-                        
-                        if(!string.IsNullOrEmpty(candidateParams.PassportNo))
-                            query = query.Where(x => x.PpNo == candidateParams.PassportNo);
-                        
-                        if(candidateParams.ProfessionId != 0) {
-                            var candidateids = await _context.UserProfessions.Where(x => x.ProfessionId == candidateParams.ProfessionId)
-                                .Select(x => x.CandidateId).ToListAsync();
-                            if(candidateids.Count > 0) {
-                                query = query.Where(x => candidateids.Contains(x.Id));
-                            }
+                    if(!string.IsNullOrEmpty(candidateParams.CandidateName)) 
+                        query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.CandidateName.ToLower()));
+                    
+                    if(!string.IsNullOrEmpty(candidateParams.PassportNo))
+                        query = query.Where(x => x.PpNo == candidateParams.PassportNo);
+                    
+                    if(candidateParams.ProfessionId != 0) {
+                        var CandidateIds = await _context.UserProfessions.Where(x => x.ProfessionId == candidateParams.ProfessionId)
+                            .Select(x => x.CandidateId).ToListAsync();
+                        if(CandidateIds.Count > 0) {
+                            query = query.Where(x => CandidateIds.Contains(x.Id));
                         }
-
-                        if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
-                        query = query.OrderBy(x => x.ApplicationNo);
+                    } else if(candidateParams.CategoryName != "") {
+                        var CandidateIds = await _context.UserProfessions
+                            .Where(x => x.ProfessionName.Contains(candidateParams.CategoryName))
+                            .Select(x => x.CandidateId).ToListAsync();
+                        if(CandidateIds.Count > 0) {
+                            query = query.Where(x => CandidateIds.Contains(x.Id));
+                        }
                     }
 
+                    if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
 
+                    if(!string.IsNullOrEmpty(candidateParams.Search)) {
+                        if(candidateParams.Search.Contains(",") ) {
+                            var appnos = new List<int>();
+                            int index = candidateParams.Search.IndexOf(",");
+                            if(index != -1) {
+                                while (candidateParams.Search.Length > 0) {
+                                    index = candidateParams.Search.IndexOf(",");
+                                    if(index != -1) {
+                                        var appno = candidateParams.Search[..index];
+                                        if(int.TryParse(appno, out _)) {
+                                            appnos.Add(Convert.ToInt32(appno));
+                                            index +=1;
+                                            candidateParams.Search = candidateParams.Search[index..];   //delete the appno string,
+                                        }
+                                    } else {
+                                        if(int.TryParse(candidateParams.Search, out _)) {
+                                            appnos.Add(Convert.ToInt32(candidateParams.Search));
+                                            candidateParams.Search = "";
+                                        }
+                                    }
+
+                                }
+                                if(appnos.Count > 0) query = query.Where(x => appnos.Contains(x.ApplicationNo));
+                                
+                            } else {
+                                query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.Search.ToLower()));
+                            }
+                        }
+                        
+                    }
+                    
+                    query = query.OrderBy(x => x.ApplicationNo);
+                }
+                
                 var paged = await PagedList<CandidateBriefDto>.CreateAsync(query.AsNoTracking()
                         //.ProjectTo<CandidateBriefDto>(_mapper.ConfigurationProvider)
                         , candidateParams.PageNumber, candidateParams.PageSize);
+                var profs = await _context.UserProfessions
+                    .Where(x => paged.Select(x => x.Id).ToList().Contains(x.CandidateId) 
+                    && string.IsNullOrEmpty(x.ProfessionName)).ToListAsync();
                 
-                return paged;
+                var profnames = await _context.Professions.Where(x => profs.Select(x => x.ProfessionId).ToList().Contains(x.Id)).ToListAsync();
+                
+                foreach(var prof in profs) {
+                    prof.ProfessionName = profnames.Where(x => x.Id == prof.ProfessionId)
+                        .Select(x => x.ProfessionName).FirstOrDefault();
+                    _context.Entry(prof).State = EntityState.Modified;
 
-            
-            
+                    var page = paged.Where(x => x.Id == prof.CandidateId).FirstOrDefault().userProfessions.ToList();
+                    foreach(var pg in page) {
+                        pg.ProfessionName = prof.ProfessionName;
+                    }
+                }
+
+                var candidateids = paged.Select(x => x.Id).ToList();
+                var CandidateIdAndAgentNames = await (from cand in _context.Candidates where candidateids.Contains(cand.Id)
+                    join agent in _context.Customers on cand.CustomerId equals agent.Id
+                    select new {CandidateId=cand.Id, AgentName = agent.CustomerName}
+                ).ToListAsync();
+
+                foreach(var pg in paged ) {
+                    var agentName = CandidateIdAndAgentNames.Where(x => x.CandidateId == pg.Id).Select(x => x.AgentName).FirstOrDefault();
+                    if(!string.IsNullOrEmpty(agentName)) {
+                        pg.ReferredByName = agentName;
+                    }
+                }
+
+                if(_context.ChangeTracker.HasChanges()) {
+                    await _context.SaveChangesAsync();
+                }
+
+                return paged;
+                */
         }
 
         public async Task<bool> InsertCandidate(Candidate candidate)
@@ -248,7 +347,7 @@ namespace api.Data.Repositories
                 }
             }
 
-            //edit UserPhones
+            //delete userphones that currently exists, but are not present in new Object
             foreach (var existingItem in existingObject.UserPhones?.ToList())
             {
                 if(!newObject.UserPhones.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
@@ -261,7 +360,6 @@ namespace api.Data.Repositories
             //items in current object - either updated or new items
             foreach(var newItem in newObject.UserPhones)
             {
-
                 var existingItem = existingObject.UserPhones?
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
@@ -283,7 +381,7 @@ namespace api.Data.Repositories
                 }
             }
 
-            //edit UserExp
+            //delete experience that currently exist in DB but not in newObject
             foreach (var existingItem in existingObject.UserExperiences.ToList())
             {
                 if(!newObject.UserExperiences.Any(c => c.Id == existingItem.Id && c.Id != default(int)))
@@ -601,7 +699,12 @@ namespace api.Data.Repositories
             var strError = await _context.ReadProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
             return strError;
         }
-
+        
+        public async Task<ReturnStringsDto> WriteProspectiveNaukriExcelToDB(string fileNameWithPath, string Username)
+        {
+            var strError = await _context.ReadNaukriProspectiveCandidateDataExcelFile(fileNameWithPath, Username);
+            return strError;
+        }
         
         public async Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string Username)
         {

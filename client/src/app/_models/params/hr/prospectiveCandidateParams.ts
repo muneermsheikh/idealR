@@ -4,6 +4,8 @@ export class prospectiveCandidateParams {
      dateAdded?: string;
      status= '';
      statusClass='Active';
+     phoneNo = '';
+     candidateName = '';
      closed=false;
      
      sort = "date";

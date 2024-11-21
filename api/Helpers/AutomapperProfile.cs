@@ -124,7 +124,8 @@ namespace api.Helpers
             CreateMap<Dep, DeploymentPendingDto>();
             CreateMap<DeploymentPendingDto, DeploymentPendingDto>();
             CreateMap<CandidateFlightGrp, CandidateFlightGrpDto>();
-
+            CreateMap<DepItem, MedicalObjective>();
+            
             CreateMap<CreateCustomerDto, Customer>();
             CreateMap<Customer, CustomerAndOfficialsDto>();
 
@@ -138,6 +139,7 @@ namespace api.Helpers
             CreateMap<OrderItemBriefDto, OrderItemAssignmentDto>();
 
             CreateMap<AppTask, TaskInBriefDto>();
+            CreateMap<AppTask, HRObjective>();
 
             CreateMap<CallRecord, CallRecordDto>();
             CreateMap<CallRecord,CallRecordBriefDto>();

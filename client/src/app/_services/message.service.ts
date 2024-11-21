@@ -5,9 +5,7 @@ import { Message } from '../_models/message';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { messageParams } from '../_models/params/Admin/messageParams';
 import { map, of } from 'rxjs';
-import { IMessage } from '../_models/admin/message';
 import { IMessageToSendDto } from '../_dtos/admin/messageToSendDto';
-import { MessageType } from '@microsoft/signalr';
 
 @Injectable({
   providedIn: 'root'

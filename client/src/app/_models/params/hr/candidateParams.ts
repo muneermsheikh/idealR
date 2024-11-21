@@ -3,15 +3,17 @@ export class candidateParams {
     applicationNoFrom = 0;
     applicationNoUpto = 0;
     candidateName = '';
+    categoryName = '';
     passportNo?='';
     professionId = 0;
+    professionName = '';
     agentId = 0;
     typeOfCandidate='';
 
     sort = "name";
 
     pageNumber = 1;
-    pageSize = 10;
+    pageSize = 15;
     
     search= '';
 }

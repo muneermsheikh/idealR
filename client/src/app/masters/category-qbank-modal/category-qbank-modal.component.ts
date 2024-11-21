@@ -17,7 +17,6 @@ import { QbankService } from 'src/app/_services/hr/qbank.service';
 export class CategoryQBankModalComponent implements OnInit{
 
   form: FormGroup = new FormGroup({});
-  id: number=0;
   assessment: IAssessmentBank | undefined;
   
   @Output() cancelRegister = new EventEmitter();
@@ -33,43 +32,37 @@ export class CategoryQBankModalComponent implements OnInit{
   
   ngOnInit(): void {
 
-    if(this.id > 0) {
-      this.service.getQBankOfCategoryId(this.id).subscribe({
-        next: (response: IAssessmentBank) => {
-          
-          if(response !== null) {
-            this.assessment = response;
-            this.CreateAndInitializeFormArray(response);
-            this.calcualteTotals();  
-          }
-        }
-       }) 
-    }
+      if(this.assessment) {
+        this.CreateAndInitializeFormArray(this.assessment!);
+        this.calcualteTotals();  
+      }
   }
 
   CreateAndInitializeFormArray(item: IAssessmentBank) {
 
-    this.form = this.fb.group({
-        id: [item.id],
+    if(item) {
+      this.form = this.fb.group({
+        id: [item!.id ?? 0],
         professionId: [item.professionId, Validators.required],
         professionName: [item.professionName, Validators.required],
        
         assessmentBankQs: this.fb.array(
-          item.assessmentBankQs.map(q => (
-            this.fb.group({
-                id: [q.id ?? 0],
-                assessmentBankId: q.assessmentBankId,
-                assessmentParameter: [q.assessmentParameter, Validators.required],
-                qNo: [q.qNo, [Validators.required, Validators.min(1), Validators.max(25)]],
-                isStandardQ: [q.isStandardQ],
-                isMandatory: [q.isMandatory, Validators.required],
-                question: [q.question, Validators.required],
-                maxPoints: [q.maxPoints, Validators.required]
-            })
-          ))
-      )
-        
+            item.assessmentBankQs.map(q => (
+              this.fb.group({
+                  id: [q!.id ?? 0],
+                  assessmentBankId: q.assessmentBankId,
+                  assessmentParameter: [q.assessmentParameter, Validators.required],
+                  qNo: [q.qNo, [Validators.required, Validators.min(1), Validators.max(25)]],
+                  isStandardQ: [q.isStandardQ],
+                  isMandatory: [q.isMandatory, Validators.required],
+                  question: [q.question, Validators.required],
+                  maxPoints: [q.maxPoints, Validators.required]
+              })
+            ))
+        )
     })
+    }
+    
   }
 
   get assessmentBankQs() : FormArray {

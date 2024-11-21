@@ -17,6 +17,6 @@ namespace api.DTOs.Admin.Orders
         public DateOnly CompleteBefore { get; set; }
         public string Status { get; set; }="Not Started";
         public bool Checked {get; set;}
-        public string ReviewItemStatus { get; set; }="NotReviewed";
+        public string ReviewItemStatus { get; set; }="Not Reviewed";
     }
 }

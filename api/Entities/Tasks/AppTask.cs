@@ -19,6 +19,8 @@ namespace api.Entities.Tasks
         public int? OrderId {get; set;}
         public int? OrderNo { get; set; }
         public int OrderItemId {get; set;}
+        public int QntyAssigned {get; set;}
+        public int QntyDelivered {get; set;}
         public int? ApplicationNo { get; set; }
         [MaxLength(15)]
         public string ResumeId {get; set;}

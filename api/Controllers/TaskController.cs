@@ -85,15 +85,7 @@ namespace api.Controllers
             return await _taskRepo.DeleteTaskItem(taskitemid);
         }
 
-        [HttpPost("assignToHRExecs")]
-        public async Task<ActionResult<string>> AssignHRExecTasks(ICollection<int> orderItemIds)
-        {
-            var strErr = await _taskRepo.AssignTasksToHRExecs(orderItemIds, User.GetUsername());
-            
-            if(string.IsNullOrEmpty(strErr)) return BadRequest(new ApiException(404, "failed to create tasks", strErr));
-
-            return "";
-        }
+      
 
               
         [HttpGet("generateTask")]
@@ -141,19 +133,6 @@ namespace api.Controllers
                 resumeid, User.GetUsername(), assignedToUsername);
         }
 
-        [HttpGet("MedicalObjectives/{fromdate}/{uptodate}")]
-        public async Task<ActionResult<ICollection<MedicalObjective>>> GetMedicalObjectiveData(string fromdate, string uptodate)
-        {
-            var pagedList = await _taskRepo.GetMedicalObjectives(fromdate, uptodate);
-
-            if(pagedList.Count ==0) return BadRequest("No Objectives data available during the dates mentioned");
-
-            Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
-                pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
-            
-            return Ok(pagedList);
-        }
-    
-
+        
     }
 }

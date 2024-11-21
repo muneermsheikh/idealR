@@ -72,7 +72,7 @@ import { OrderAssessmentItemModalComponent } from './orders/order-assessment-ite
     MessageComponent,
     DLComponent,
     ExcelConversionMenuComponent,
-    OrderAssessmentItemModalComponent,
+    OrderAssessmentItemModalComponent
   ],
   imports: [
     CommonModule,

@@ -23,6 +23,7 @@ import { IdsModalComponent } from 'src/app/modals/ids-modal/ids-modal.component'
 export class ProfileListComponent implements OnInit{
 
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
+  @ViewChild('searchCat', {static: false}) searchTermCat?: ElementRef;
   
   pagination: Pagination | undefined;
 
@@ -123,7 +124,12 @@ export class ProfileListComponent implements OnInit{
   onSearch() {
     const params = this.service.getCVParams() ?? new candidateParams();
     
-    params.search = this.searchTerm!.nativeElement.value;
+    var searchByNm = this.searchTerm!.nativeElement.value;
+    if(searchByNm !== '') params.search = searchByNm;
+
+    var searchByCat = this.searchTermCat!.nativeElement.value;
+    if(searchByNm !== '') params.categoryName = searchByNm;
+    
     params.pageNumber = 1;
     this.service.setCVParams(params);
     this.getCVs();
@@ -255,7 +261,7 @@ export class ProfileListComponent implements OnInit{
   }
 
   cvEditClicked(id: any) {
-    
+  
     this.navigateByUrl('/candidates/register/edit/' + id, undefined, true);
   }
 

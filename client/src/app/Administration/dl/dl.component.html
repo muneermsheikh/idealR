@@ -50,7 +50,8 @@
                     ?'green'
                     :order.contractReviewStatus==='Accepted with regrets'
                         ?'blue'
-                        :'red'" 
+                    :'red'" 
+                    (click)="updateContractReviewStatus()"
             >
                     {{order.contractReviewStatus}}
             </div>  
@@ -170,6 +171,6 @@
    </ul>
 </div>
 
-<div style="font-size: small;">
+<!-- <div style="font-size: small;">
     {{form.value |json}}
-</div>
+</div> -->

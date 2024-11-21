@@ -10,7 +10,6 @@ import { DateInputRange } from 'src/app/_dtos/finance/dateInputRange';
 })
 export class DateInputRangeModalComponent {
 
-  
   @Output() returnDateRangeEvent = new EventEmitter<DateInputRange>();
   
   title: string = '';

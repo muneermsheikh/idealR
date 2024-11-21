@@ -1,9 +1,25 @@
 .stdd {
     display: inline-block;
     vertical-align: top;
-    
+    margin: 0 2px 0 2px;
+    word-wrap: break-word;
+    font-size: small;
 }
-.fSmall {font-size: small;}
+
+.compress {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 2px 0 2px;
+    word-wrap: break-word;
+    font-size: small;
+    word-spacing: -2px;
+}
+.fSmall {
+    font-size: small;
+    vertical-align: middle;
+    margin: 0 2px 0 2px;
+    word-break: break-word;
+}
 
 .b {font-weight: bold;}
 .red {color: red;}

@@ -54,7 +54,7 @@ export class OrdersListingComponent implements OnInit {
   ]
 
   orderStatus = [
-    {name: 'Not Reviewed', value: 'NotReviewed'},
+    {name: 'Not Reviewed', value: 'Not Reviewed'},
     {name: 'Reviewed and Approved', value: 'ReviewedAndApproved'},
     {name: 'Reviewed and declined', value: 'ReviewedAndDeclined'}
   ]

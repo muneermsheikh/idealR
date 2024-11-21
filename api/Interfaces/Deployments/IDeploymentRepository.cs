@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
@@ -23,6 +24,6 @@ namespace api.Interfaces.Deployments
         Task<ICollection<DeployStatus>> GetDeploymentStatusData();
         Task<ICollection<DeployStatusAndName>> GetDeploymentSeqAndStatus();
         Task<DepItem> GetNextDepItemToAddFomCVRefId(int cvRefId);
-        
+       
     }
 }

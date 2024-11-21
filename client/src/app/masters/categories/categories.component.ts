@@ -11,6 +11,8 @@ import { CategoryEditModalComponent } from '../category-edit-modal/category-edit
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
 import { CategoryQBankModalComponent } from '../category-qbank-modal/category-qbank-modal.component';
+import { QbankService } from 'src/app/_services/hr/qbank.service';
+import { IAssessmentBank } from 'src/app/_models/admin/assessmentBank';
 
 @Component({
   selector: 'app-categories',
@@ -34,7 +36,7 @@ export class CategoriesComponent implements OnInit {
   bsModalRef: BsModalRef | undefined;
 
   constructor(private service: CategoryService, 
-    private orderAssessService: OrderAssessmentService,
+    private qBkService: QbankService,
     private modalService: BsModalService, 
     private toastr: ToastrService,
     private confirm: ConfirmService){}
@@ -155,26 +157,34 @@ export class CategoriesComponent implements OnInit {
           console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
       })
   }
+  
+  customAssessmentQs(categoryId: number){
+    
+    var observableOuter = this.qBkService.getQBankOfCategoryId(categoryId);
 
-  customAssessmentQs(id: number) {
- 
-    const config = {
-      class: 'modal-dialog-centered modal-lg',
-      initialState: {
-        id: id,
-        user: this.user
-      }
-    }
-    this.bsModalRef = this.modalService.show(CategoryQBankModalComponent, config);
-    this.bsModalRef.content.updateEvent.subscribe({
-      next: (response: boolean) => {
-        if(response) {
-          this.toastr.success('custom assessment questions updated', 'Success')
-        } else {
-          this.toastr.warning('Failed to update the custom assessment questions', 'Failed t update')
+    observableOuter.pipe(
+      filter((response: IAssessmentBank) => response !==null),
+      switchMap((response: any) => {
+
+        const config = {
+          class: 'modal-dialog-centered modal-lg',
+          initialState: {
+            assessment: response,
+            user: this.user
+          }
         }
+        this.bsModalRef = this.modalService.show(CategoryQBankModalComponent, config);
+        const observableInner = this.bsModalRef.content.updateEvent;
+        return observableInner
+      })
+    ).subscribe((response: any) => {
+      if(response)   {
+        this.toastr.success('Viewed/updated the Custom Assessment Parameters for the category', 'Success');
+      } else {
+        this.toastr.warning('Failed to view/update the Custom Assessment Parameters', 'Failed')
       }
     })
- 
+
   }
+
 }

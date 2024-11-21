@@ -13,6 +13,7 @@ import { AccountService } from '../account.service';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { MedicalParams } from 'src/app/_models/admin/objectives/medicalParams';
 import { IMedicalObjective } from 'src/app/_models/admin/objectives/medicalObjective';
+import { IMedObj, MedObj } from 'src/app/_models/admin/objectives/medObj';
 
 @Injectable({
   providedIn: 'root'
@@ -40,42 +41,11 @@ export class TaskService {
     })
    }
 
-  createOrderAssignmentTasks(orderItemIds: number[]) {
-    return this.http.post<string>(this.apiUrl + 'Task/assignToHRExecs', orderItemIds);
-  }
+ 
 
   addTask(task: IApplicationTask)
   {
     return this.http.post<IApplicationTask>(this.apiUrl + 'Task', task);
-  }
-
-  getPaginatedMedicalPerf(fromdt: string, uptodt: string) {
-    return this.http.get<IMedicalObjective[]>(this.apiUrl + 'Task/MedicalObectives/' + fromdt + '/' + uptodt);
-  }
-
-  getPaginatedMedObjs(): any {     //returns IPaginationAppTask
-    
-    var medicalParams=this.medParams;
-
-    const response = this.cache.get(Object.values(medicalParams).join('-'));
-    if(response) return of(response);
-
-    let pParams = new HttpParams();
-
-    pParams = pParams.append('fromDate', medicalParams.fromDate);
-    pParams = pParams.append('uptoDate', medicalParams.uptoDate);
-    pParams = pParams.append('pageNumber', medicalParams.pageNumber.toString());
-    pParams = pParams.append('pageSize', medicalParams.pageSize.toString());
-    console.log('pParams in taskservice', pParams, medicalParams);
-    
-    return getPaginatedResult<IMedicalObjective[]>(this.apiUrl + 
-      'Task/MedicalObjectives', pParams, this.http).pipe(
-      map(response => {
-        this.cache.set(Object.values(pParams).join('-'), response);
-        return response;
-      })
-    )
-    
   }
 
   
@@ -86,8 +56,6 @@ export class TaskService {
   getMedParams() {
     return this.medParams;
   }
-
-
 
   getPaginatedTasks(): any {     //returns IPaginationAppTask
     
@@ -192,6 +160,7 @@ export class TaskService {
   }
 
   getMedicalObjectives(fromdate: any, uptodate: any) {
-    return this.http.get<IMedicalObjective[]>(this.apiUrl + 'task/MedicalObjectives/' + fromdate + '/' + uptodate);
+
+    return this.http.get<IMedicalObjective[]>(this.apiUrl + 'feedback/MedicalObjectives/' + fromdate + '/' + uptodate);
   }
 }
