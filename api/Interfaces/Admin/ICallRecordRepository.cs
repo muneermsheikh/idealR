@@ -15,8 +15,11 @@ namespace api.Interfaces.Admin
         Task<bool> DeleteCallRecord (int historyId);
         Task<bool> DeleteCallRecordItem(int historyitemid);
         Task<PagedList<CallRecordBriefDto>> GetCallRecordPaginated(CallRecordParams pParams, string username);
+        Task<ICollection<CallRecordBriefDto>> GetCallRecordsForReport(CallRecordParams hParams, string Username);
         Task<CallRecordItem> UpdateHistoryItem(CallRecordItem CallRecorditem, string UserDisplayName);
+        Task<CallRecordItemAddedReturnValueDto> InsertCallRecordItem(CallRecordItemToAddDto cRecordItem, string Username);
         Task<CallRecordDto> GetCallRecordDtoByParams(CallRecordParams histParams);
         Task<CallRecord> GetOrGenerateCallRecord(string personType, string personId,string Username);
+        Task<ICollection<CallRecordBriefDto>> GetCallRecordSummaryOfCandidate(string PersonId, string personType);
     }
 }

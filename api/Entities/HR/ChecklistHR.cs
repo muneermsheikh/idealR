@@ -16,11 +16,13 @@ namespace api.Entities.HR
         public bool ExceptionApproved {get; set;}
         public string ExceptionApprovedBy {get; set;}
         public DateTime ExceptionApprovedOn {get; set;}
+        public string SalaryOffered {get; set;}
+        public int SalaryExpectation {get; set;}
         public bool ChecklistedOk {get; set;}
         public string Username {get; set;}
         public ICollection<ChecklistHRItem> ChecklistHRItems {get; set;}
-        public Candidate Candidate {get; set;}
-        public OrderItem OrderItem {get; set;}
+        //public Candidate Candidate {get; set;}
+        //public OrderItem OrderItem {get; set;}
 
     }
 }

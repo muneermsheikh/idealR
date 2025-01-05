@@ -1,0 +1,124 @@
+<div class="modal-header my-0" *ngIf="emp" >
+    <h4>Employment details</h4>
+    
+    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
+        title="edit emp data" (click)="updateEmployment()" ></button>
+    <button class="btn fa fa-close fa-2x pull-right" title="Close" (click)="close()" ></button>
+</div>
+
+<div class="modal-body my-0" *ngIf="emp">
+    <form [formGroup]="form">
+        <label for="applicationNo" class="stdd w150 b">Application No:</label> 
+            <div class="stdd w200" >{{candidateName}}</div>
+        <br>
+        <label for="customerName" class="stdd w150 b">Customer Name</label> 
+            <div class="stdd w200">{{companyName}}</div>
+        <br><label for="customerName" class="stdd w150 b">Category Ref</label> 
+            <div class="stdd w200">{{categoryRef}}</div>
+                
+
+        <br><label class="stdd w150 b" >Offer Acceptance</label>
+        <div class="stdd w175">
+            <ng-select 
+                    style="border: color(from color srgb r g b); font-size: smaller;"
+                    [items]="statuses"
+                    bindLabel="status"
+                    bindValue="status"
+                    labelForId="status"
+                    clearAllText="Clear"
+                    formControlName="offerAccepted"
+            ></ng-select>
+        </div>
+
+        <br><label class="stdd b w150">Accept/Decline `On</label>
+        <div style="display:inline-block; width: 110px;">
+            <input class="stdd w110" type="text" placeholder="Offer accepted On" 
+                formControlName="offerAcceptedOn" bsDatepicker 
+                [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        </div>
+
+        <br><br>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onFileInputChange($event)"
+        title="click to choose the Offer Letter to upload"  >
+        <label class="stdd b w175">Offer Attachment File Name</label>
+        <input type="text" formControlName="offerAttachmentFileName" class="stdd w200">
+        <br><label class="stdd b w175">Offer Attachment Full Path</label>
+        <input type="text" formControlName="offerAttachmentFullPath" class="stdd w200">
+        <button class="btn fa fa-download" (click)="download()" 
+            title="click to download the offer letter - disabled if not uploaded" 
+            [disabled]="form.get('offerAttachmentFullPath')?.value === ''" ></button>
+        
+
+        <hr style="border: double; margin-top:2px; margin-bottom: 2px;">
+        <label class="stdd w150 b">Currency & Salary</label> 
+            <input type="text" class="stdd w50 ml-10" title="salary currency" 
+                formControlName="salaryCurrency">
+            <input type="number" class="stdd w75" title="salary" 
+                formControlName="salary">
+        <hr class="my-0">
+        <label class="stdd w150 b">Perks</label> 
+        <label class="stdd w100 b">Allowance</label> 
+        <label class="stdd w100 b">Provided Free</label> 
+        <label class="stdd w100 b">Not Provided</label> 
+        
+        <br>
+        <label for="housingAllowance" class="stdd w150" >Housing</label>
+        <input type="number" class="stdd w75"  
+            title="housing allowance" formControlName="housingAllowance">
+        <input type="checkbox" style="margin-left: 50px;"
+            class="form-check-input w20 hAlignCenter"
+            formControlName="housingProvidedFree"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="housingNotProvided" style="margin-left: 75px;"
+        >
+        
+        <br>
+        <label class="stdd w150" >Food</label>
+        <input type="number" class="stdd w75" 
+            title="Food Allowance" formControlName="foodAllowance">
+        <input type="checkbox" style="margin-left: 50px;"
+            class="form-check-input w20 hAlignCenter"
+            formControlName="foodProvidedFree"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="foodNotProvided" style="margin-left: 75px;"
+        >
+    
+        <br><label for="Transportation" class="stdd w150" >Transportation</label>
+        <input type="number" class="stdd w75"  
+            title="Transportation allowance" formControlName="transportAllowance">
+        <input type="checkbox" class="form-check-input w20 hAlignCenter" 
+            formControlName="transportProvidedFree" style="margin-left: 50px;"
+        >
+        <input type="checkbox" class="form-check-input w20 hAlignCenter"
+            formControlName="transportNotProvided" style="margin-left: 75px;"
+        >
+        
+        <br><label for="otherAllowance" class="stdd w150" >Other Allowance</label>
+        <input type="number" class="stdd w75" 
+            title="Other allowance" formControlName="otherAllowance">
+        
+        <br><label class="stdd w150">Contract Period</label>
+        <input type="number" class="stdd w50" 
+            title="Contract Period n months" formControlName="contractPeriodInMonths">
+        <label class="stdd w50">Months</label>
+        <br><label class="stdd w150">Annual Leave</label>
+        <input type="number" class="stdd w50" 
+            title="Number of days leave in a year" formControlName="leavePerYearInDays">
+        <label class="stdd w75">days, after</label>
+        <input type="number" class="stdd w50" 
+            title="after months of employment" formControlName="leaveAirfareEntitlementAfterMonths">
+        <label class="stdd w100">months of employment</label>
+
+    </form>
+</div>
+
+<div class="modal-footer my-0">
+
+</div>
+<!--
+<div style="font-size: smaller;">
+    {{form.value | json}}
+</div>
+-->

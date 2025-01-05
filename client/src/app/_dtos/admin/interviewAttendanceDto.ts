@@ -2,6 +2,8 @@ import { IntervwItemCandidate } from "src/app/_models/hr/intervwItemCandidate";
 
 export interface IInterviewAttendanceDto
 {
+    intervwItemId: number;
+    intervwItemCandidateId: number;
     interviewItemCandidateId: number;
     checked: boolean;
     customerName: string;

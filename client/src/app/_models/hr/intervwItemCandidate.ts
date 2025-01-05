@@ -3,6 +3,7 @@ import { UserAttachment } from "./userAttachment";
 
 export interface IIntervwItemCandidate {
      id: number;
+     intervwItemId: number;
      interviewItemId: number;
      candidateId: number;
      personId: string;
@@ -21,6 +22,7 @@ export interface IIntervwItemCandidate {
 export class IntervwItemCandidate implements IIntervwItemCandidate {
      id= 0;
      interviewItemId= 0;
+     intervwItemId: number=0;
      candidateId= 0;
      prospectiveCandidateId = 0;
      personId = '';

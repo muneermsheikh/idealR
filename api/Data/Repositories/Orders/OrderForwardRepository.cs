@@ -39,13 +39,14 @@ namespace api.Data.Repositories.Orders
             _context = context;
         }
 
+        /* 
         public async Task<PagedList<OrderForwardCategory>> GetPagedList(OrderFwdParams fParams)
         {
             var query = _context.OrderForwardCategories
                 .Include(x => x.OrderForwardCategoryOfficials)
                 .AsQueryable();
 
-            var temp = await query.ToListAsync();
+            //var temp = await query.ToListAsync();
             
             if(fParams.ProfessionId != 0) query = query.Where(x => x.ProfessionId == fParams.ProfessionId).Where(x => x.ProfessionId == fParams.ProfessionId);
             if(fParams.OrderId != 0) query = query.Where(x => x.OrderId == fParams.OrderId);
@@ -54,7 +55,23 @@ namespace api.Data.Repositories.Orders
                     //.ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
                     , fParams.PageNumber, fParams.PageSize);
             
+            return paged;
+        }
+        */
+
+        public async Task<PagedList<OrderForwardCategory>> GetPagedListDLForwarded(OrderFwdParams fParams)
+        {
+           var query = _context.OrderForwardCategories
+                .Include(x => x.OrderForwardCategoryOfficials.OrderByDescending(x => x.DateForwarded))
+                .AsQueryable();
+
+            //var temp = await query.ToListAsync();
             
+            if(fParams.OrderId != 0) query = query.Where(x => x.OrderId == fParams.OrderId);
+            
+            var paged = await PagedList<OrderForwardCategory>.CreateAsync(query.AsNoTracking()
+                    //.ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
+                    , fParams.PageNumber, fParams.PageSize);
             return paged;
 
         }
@@ -85,7 +102,7 @@ namespace api.Data.Repositories.Orders
 
                 fwdCats = await _mapper.ProjectTo<OrderForwardCategory>(from item in _context.OrderItems where orderitems.Select(x=>x.Id).ToList().Contains(item.Id)
                     join order in _context.Orders on item.OrderId equals order.Id 
-                    join cust in _context.Customers on order.CustomerId equals cust.Id
+                    //join cust in _context.Customers on order.CustomerId equals cust.Id
                     join cat in _context.Professions on item.ProfessionId equals cat.Id
                     join rvw in _context.ContractReviewItems on item.Id equals rvw.OrderItemId into rvwitems 
                         from rvwitem in rvwitems.DefaultIfEmpty()
@@ -93,8 +110,8 @@ namespace api.Data.Repositories.Orders
                         OrderId=orderid,
                         OrderNo=order.OrderNo, 
                         OrderDate = order.OrderDate,
-                        CustomerName=cust.CustomerName,
-                        CustomerCity = cust.City,
+                        CustomerName=order.Customer.CustomerName,
+                        CustomerCity = order.Customer.City,
                         OrderItemId = item.Id,
                         ProfessionId = item.ProfessionId,
                         ProfessionName = cat.ProfessionName,
@@ -143,9 +160,13 @@ namespace api.Data.Repositories.Orders
                 await _context.SaveChangesAsync();
              } catch (Exception ex) {
                 if(ex.InnerException.Message.Contains("IX_OrderForwardCategoryOfficials_OrderForwardCategoryId_CustomerOfficialId")) {
-                    strErr = "Unique Index Violation of CategoryId and OfficialId";
+                    strErr = "The Order details have already been forwarded earlier to the same Customer Official.  " +
+                        "This cannot be forwarded again, as per database index definitions. You can view all the customer officials to whom this order " +
+                        "has been forwarded to, in the Order Exit form";
                 } else if(ex.InnerException.Data.Contains("IX_OrderForwardCategoryOfficials_OrderForwardCategoryId_CustomerOfficialId")) {
-                    strErr = "Unique Index Violation of CategoryId and OfficialId";
+                    strErr = "The Order details have already been forwarded earlier to the same Customer Official.  " +
+                        "This cannot be forwarded again, as per database index definitions. You can view all the customer officials to whom this order " +
+                        "has been forwarded to, in the Order Exit form";
                 } else {
                     strErr = ex.Message;
                 }
@@ -394,7 +415,7 @@ namespace api.Data.Repositories.Orders
             
             return msgs;
         }
-
+    
 
         //fieldName values: "contractreview", "acknowledgement", "forwardedtohr", "assessmentdesigned"
         public async Task<bool> UpdateOrderExtn(int orderid, string fieldName, string fieldVal)
@@ -434,7 +455,12 @@ namespace api.Data.Repositories.Orders
                     break;
             }
             
-            return await _context.SaveChangesAsync() > 0;
+            if(fieldName.ToLower() != "contractreview") {
+              return true;  
+            }
+
+            return fieldName.ToLower() == "contractreview" || await _context.SaveChangesAsync() > 0;
+
         }
 
         public async Task<bool> UpdateOrderExtnDueToDelete(int orderid, string fieldName)

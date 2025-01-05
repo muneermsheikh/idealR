@@ -1,0 +1,30 @@
+.stdd {
+    margin: 0 2px 0 2px;
+    display: inline-block !important;
+    font-size: small;
+}
+
+.lbl {
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 2px;
+  font-size: small;
+  font-weight: bold;
+}
+
+.ML30 {margin-left: 30px;}
+.ML10 {margin-left: 10px;}
+.ml5 {margin-left: 5px;}
+
+.tAlignR {text-align: right;}
+.vAlignM {vertical-align: middle;}
+.vAlignT {vertical-align: top;}
+
+.red {color: red}
+
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w250 {width: 250px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w25 {width:25px;}

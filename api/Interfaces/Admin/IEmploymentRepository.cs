@@ -7,8 +7,8 @@ namespace api.Interfaces.Admin
 {
     public interface IEmploymentRepository
     {
-        Task<string> SaveNewEmployment (Employment employment);
-        Task<string> EditEmployment (Employment employment, string Username);
+        Task<int> SaveNewEmployment (Employment employment);
+        Task<int> EditEmployment (Employment employment, string Username);
         Task<string> DeleteEmployment (int employmentId);
         Task<PagedList<Employment>> GetEmployments(EmploymentParams empParams);
         Task<Employment> GetOrGenerateEmploymentFromSelDecId(int SelDecisionId);

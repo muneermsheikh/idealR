@@ -3,6 +3,7 @@ import { IVoucherEntry, VoucherEntry } from "./voucherEntry";
 
 export interface IVoucher
 {
+	section: string;
 	partyName: string;
 	id: number;
 	divn: string;
@@ -25,6 +26,7 @@ export interface IVoucher
 
 export class Voucher implements IVoucher
 {
+	section = '';
 	partyName='';
 	id=0;
 	divn = '';

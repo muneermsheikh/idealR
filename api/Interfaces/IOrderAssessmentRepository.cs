@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
@@ -22,7 +23,10 @@ namespace api.Interfaces
         //orderitemassessmentQ
         Task<ICollection<OrderAssessmentItemQ>> GetAssessmentQStdds();
 
-        Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid);
+        Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQsFromOrderItemId(int orderitemid);
+        Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQsFromId(int orderassessmentitemid);
+        Task<ICollection<OrderAssessmentItemHeaderDto>> GetOrderAssessmentHeaders(string professionGroup);
+        Task<SingleStringDto> GetAndSetProfessionGroupFromProfessionId(int professionId, int OrderAssessmentItemId);    
         
     }
 }

@@ -85,7 +85,6 @@ export class CallRecordsEditModalComponent implements OnInit {
   }
 
   removeDepItem(index: number) {
-    
       this.confirm.confirm("Confirm Delete", 
         "This will also delete the selected Call Record Item. If you confirm to delete, remember to save this transaction")
         .subscribe({next: confirmed => {
@@ -103,21 +102,21 @@ export class CallRecordsEditModalComponent implements OnInit {
   contactResultChanged(event: any, index: number) {
       switch (event.status.toLowerCase()) {
         case "not responding": case "will revert later":
-          this.callRecordItems.at(index).get('nextAction')?.setValue('Call Again');
-          break;
+            this.callRecordItems.at(index).get('nextAction')?.setValue('Call Again');
+            break;
         case "wrong number":
-          this.callRecordItems.at(index).get('nextAction')?.setValue('Correct Phone Number');
-          break;
+            this.callRecordItems.at(index).get('nextAction')?.setValue('Correct Phone Number');
+            break;
         case "not interested": case "declined-family issues":
-            case "declined for overseas": "declined-low remuneration"
-          this.callRecordItems.at(index).get('nextAction')?.setValue('Concluded');
-          break;
+        case "declined for overseas": case "declined-low remuneration":
+            this.callRecordItems.at(index).get('nextAction')?.setValue('Concluded');
+            break;
         case "declined - sc not agreed": 
-          this.callRecordItems.at(index).get('nextAction')?.setValue('Escalate To Supervisor');
-          break;
+            this.callRecordItems.at(index).get('nextAction')?.setValue('Escalate To Supervisor');
+            break;
         default:
-          this.callRecordItems.at(index).get('nextAction')?.setValue('Concluded');
-          break;
+            this.callRecordItems.at(index).get('nextAction')?.setValue('Concluded');
+            break;
       }
   }
   

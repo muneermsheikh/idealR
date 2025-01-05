@@ -98,6 +98,17 @@ namespace api.Data
                     context.AttendanceStatuses.Add(item);
                 }
              }
+            
+            if(!await context.Helps.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/HelpSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<Help>>(data);
+
+                foreach(var item in dbData) 
+                {
+                    context.Helps.Add(item);
+                }
+             }
 
             if(!await context.SkillDatas.AnyAsync()) {
                 var data = await File.ReadAllTextAsync("Data/SeedData/SkillSeedData.json");

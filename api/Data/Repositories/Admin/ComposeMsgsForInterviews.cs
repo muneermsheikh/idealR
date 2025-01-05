@@ -3,12 +3,9 @@ using api.DTOs.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Extensions;
-using api.Helpers;
 using api.Interfaces.Admin;
 using api.Interfaces.HR;
-using api.Interfaces.Messages;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +19,7 @@ namespace api.Data.Repositories.Admin
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _config;
         private readonly IProspectiveCandidatesRepository _prosRepo;
+        private readonly string _RAName;
         public ComposeMsgsForInterviews(DataContext context, IMapper mapper, IProspectiveCandidatesRepository prosRepo,
              UserManager<AppUser> userManager, IConfiguration config)
         {
@@ -30,6 +28,7 @@ namespace api.Data.Repositories.Admin
             _userManager = userManager;
             _mapper = mapper;
             _context = context;
+            _RAName = _config["IdealUsername"];
         }
 
         //**TODO** combine following 2 procedures into one - the only diff here is InterviewItemCandidateIds name
@@ -258,6 +257,139 @@ namespace api.Data.Repositories.Admin
             
             return msgWithErr;
         }
+
+
+        public async Task<MessagesWithErrDto> ComposeEmailsForEmploymentInterest(CallRecordCandidateAdviseDto Dto, string username)
+        {
+            var msgWithErr = new MessagesWithErrDto();
+
+            var catRef = Dto.CategoryRef;
+            var ProfessionName = catRef[catRef.LastIndexOf("-")..];
+            ProfessionName=ProfessionName[1..];
+            var PersonId = Dto.PersonId;
+            var item = Dto.CallRecordItem;
+
+            var data = await (
+                from prosp in _context.ProspectiveCandidates where prosp.PersonId == PersonId
+                join orderitem in _context.OrderItems on prosp.OrderItemId equals orderitem.Id
+                join order in _context.Orders on orderitem.OrderId equals order.Id 
+                select new {
+                    CandidateTitle = prosp.Gender,
+                    CandidateName = prosp.CandidateName,
+                    ContactResult = item.ContactResult, 
+                    Email= prosp.Email,
+                    DateOfContact = item.DateOfContact, 
+                    CustomerCity = order.Customer.City,
+                    Source = prosp.Source,
+                    City = prosp.City,
+                    PhoneNo = prosp.PhoneNo
+            }).FirstOrDefaultAsync();
+            
+            if(data == null) {
+                msgWithErr.ErrorString = "Your instructions did not yield any result";
+                return msgWithErr;
+            }
+           
+            var Obj = await _userManager.FindByNameAsync(username);
+
+            var SendereObj = new AppUserBriefDto{AppUserEmail=Obj.Email, AppUserId=Obj.Id, KnownAs=Obj.KnownAs,
+                Name = Obj.UserName, Position = Obj.Position, Username = Obj.UserName};
+
+            var recipientObj = new {
+                CandidateName = data.CandidateName, Email = data.Email, 
+                Position=ProfessionName};
+
+            var ToCC="";
+            var Title = data.CandidateTitle.ToLower()=="f" ? "Ms. " : "Mr. ";
+
+            var subject = "Requirement of " + ProfessionName + " in " +  data.CustomerCity;
+            
+            var DateOfContact = data.DateOfContact;
+
+            var msgBody = string.Format("{0: dd-MMM-yyyy}", DateOfContact) + "<br><br>" + Title + 
+                data.CandidateName + "<br>" + data.City + "<br>Phone: " + data.PhoneNo + "; email: " + recipientObj.Email ?? "";
+
+            if(!string.IsNullOrEmpty(ToCC)) msgBody += "<br>copy: " + ToCC ?? "";
+                
+            msgBody += "<br><br>Dear " + Title + data.CandidateName + ":" + "<br><br><u>Subject: " + subject + "</u><br><br>";
+
+            msgBody += "We are " + _RAName + ", a licensed recruitment firm based in Mumbai, " + 
+                "in the business of providing recruitment services for the last 40+ years.  We have your details from " + data.Source + 
+                ". <br><br>One of our clients in " + data.CustomerCity + " needs a " + ProfessionName +
+                ", in which connection we had a brief conversation with you on " + string.Format("{0: dddd, dd-MMM-yyyy}", DateOfContact);
+                
+            var thanks = ".  We thank you for the courtesy extended during the conversation.<br><br>";
+            var clPara = "<br><br>Look forward to hear from you.";
+
+            switch (data.ContactResult.ToLower()) {
+                case "interested": case "interested, and keen":
+                    msgBody += thanks + "We note of your interest in the said employment opportunity, for which we thank you.  " +
+                    "<br><br>If you have not shared with us your updated resume, please do so now to the below mentioned email Id " + 
+                    "in order to forward the same to our client for his review." + clPara;
+                    break;
+                case "interested, but doubtful":
+                    msgBody += thanks + "We note of your interest in the said employment opportunity, for which we thank you.  " +
+                    "<br><br>We note from our conversation that your interest in the employment is not yet confirmed.  As we " + 
+                    "have soon to compile profiles for consideration of the client, kindly let us have your considered and confirmed " +
+                    "decision at the very earliest." + clPara;
+                    break;
+                case "interested, undecided":
+                    msgBody += thanks + "We note that you have not decided on your interest in the employment. As we have to finalize " +
+                    "compilation of suitble profiles for consideration of the client, we request you to please let us know of your " +
+                    "decision soon - whether your interest or non-interest.  If you are interested, we have to initiate the " +
+                    "formalities at the earliest." + clPara;
+                    break;
+                case "declined-low remuneration":
+                    msgBody += thanks + "You declined to consider the said employment opportunity due to low remuneration offered by the " +
+                    "client. We appreciate your response, and will be advising the client suitably to explore if the remuneration offer " +
+                    "could be suitably amended to suit market expectations.  If their response is positive, we will revert to you with the " +
+                    "details for your consideration.";
+                    break;
+                case "declined for overseas":
+                    msgBody += "We note that you are not interested in overseas employments. We have marked your profile accordingly, and will not approach you again for overseas opportunities." +
+                        "Thank you for your time.";
+                    break;
+                
+                case "declined - sc not agreed": case "declined - other reasons":
+                    msgBody += thanks + "We regret to note you have declined to consider the employment. We will approach you again whenever other suitable " +
+                    "opportunities arise.";
+                    break;
+
+                case "wrong number":
+                    msgBody += "We tried to reach you on the telephone number " + data.PhoneNo + " that is mentioned in your profile in " +
+                    data.Source + ".  Unfortunately, this number is reported as a <i>Wrong Number</i> by the Telephone Services Provider.  " +
+                    "Kindly revert with your correct telephone number, if you are interested in the said employment opportunity." + clPara;
+                    break;
+                case "not responding":
+                    msgBody += "We tried to reach you on the telephone number " + data.PhoneNo + " which is mentioned in your profile in " +
+                    data.Source + ".  Unfortunately, this number is <i>Not Attended</i>.  If this is not the correct number, please " +
+                    "inform us of the correct number.  Please respond to this message by a brief message <i>Interested<i> or <i>Not Interested<i>. " +
+                    "If you are interested, then please share with us your updated profile." + clPara;
+                
+                    break;
+                default:
+                    msgBody="";
+                    break;
+            }
+
+            msgBody += "<br><br>With best regards<br>" + SendereObj.KnownAs + ", " + SendereObj.Position + "<br>" + _RAName;
+
+            var message = new Message
+            {
+                SenderUsername=SendereObj.Username,
+                SenderEmail= _config["EmailId"] ?? "",
+                RecipientEmail = recipientObj.Email ?? "",
+                Subject = subject,
+                Content = msgBody,
+                MessageType = "CandidateInterest",
+                MessageComposedOn = DateTime.UtcNow,
+            };
+            
+            msgWithErr.Messages=new List<Message>{message};
+            
+            return msgWithErr;
+        }
+
 
     }
 }

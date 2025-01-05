@@ -76,11 +76,13 @@ export class ProfileListComponent implements OnInit{
 
   ngOnInit(): void {
 
-    this.loadCandidates(false);
+    //this.loadCandidates(false);
+    this.service.setCVParams(this.cvParams);
     
     this.activatedRoute.data.subscribe(data => {
-        //this.cvs = data.candidateBriefs,
-        //this.totalCount = data.candidateBriefs.count,
+        this.cvs = data['candidateBriefs'].result,
+        this.totalCount = data['candidateBriefs'].count,
+        this.pagination = data['candidateBriefs'].pagination,
         this.professions = data['professions'],
         this.agents = data['agents']
       }
@@ -226,7 +228,7 @@ export class ProfileListComponent implements OnInit{
 
   cvAssessEvent(cvbrief: any)
   {
-    this.navigateByUrl('/hr/cvassess/' + cvbrief.id, cvbrief, false);
+    this.navigateByUrl('/candidates/cvassess/' + cvbrief.id, cvbrief, false);
   }
 
   navigateByUrl(route: string, cvObject: any|undefined, toedit: boolean) {
@@ -266,7 +268,7 @@ export class ProfileListComponent implements OnInit{
   }
 
   cvAssessClicked() {
-    this.navigateByUrl('/hr/assessments', this.selectedCVs, false);
+    this.navigateByUrl('/candidates/assessments', this.selectedCVs, false);
   }
 
   cvDeleteClicked(id: any) {

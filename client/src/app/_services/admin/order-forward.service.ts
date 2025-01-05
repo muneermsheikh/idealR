@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment.development';
 import { getPaginatedResult } from '../paginationHelper';
 import { IOfficialAndCustomerNameDto } from 'src/app/_dtos/admin/client/oficialAndCustomerNameDto';
 import { IOrderForwardCategory } from 'src/app/_models/orders/orderForwardCategory';
+import { IOrderForwardToAgent } from 'src/app/_models/orders/orderForwardToAgent';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,8 @@ export class OrderForwardService {
     if(response) return of(response);
 
     let params = getHttpParamsForOrders(oParams);
-
-    return getPaginatedResult<IOrderForwardCategory[]>(this.apiUrl + 
+  
+    return getPaginatedResult<IOrderForwardCategory>(this.apiUrl + 
         'OrderForward/pagedlist', params, this.http).pipe(
           map(response => {
             this.cache.set(Object.values(oParams).join('-'), response);
@@ -49,7 +50,7 @@ export class OrderForwardService {
   }*/
 
   forwardOrderToSelectedAgents(dtos: IOfficialAndCustomerNameDto[], orderid: number) {
-    console.log('orderforwardservice.forwardOrderToselected', dtos, orderid);
+    //console.log('orderforwardservice.forwardOrderToselected', dtos, orderid);
     return this.http.post<string>(this.apiUrl + 'Orderforward/forwardToAgents/' + orderid, dtos );
   }
 

@@ -8,5 +8,6 @@ namespace api.Params.HR
         public int OrderId { get; set; }
         public int OrderNo { get; set; }
         public string InterviewStatus { get; set; }
+        public string ProfessionNameMatching { get; set; }
     }
 }

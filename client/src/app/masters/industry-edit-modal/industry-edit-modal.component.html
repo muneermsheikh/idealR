@@ -1,0 +1,15 @@
+<div class="modal-header">
+    Edit a {{title}}
+    <button class="btn fa fa-save fa-2x" (click)="UpdateClicked()"></button>
+    <button class="bfn fa fa-window-close fa-2x" (click)="bsModalService.hide()" ></button>
+</div>
+<div class="modal-body" *ngIf="industry">
+    <label style="display: inline-block; width: 150px;">Enter value for the {{title}}:</label>
+    <input type="text" style="display: inline-block; width: 200px;" [(ngModel)]="industry.industryName" >
+    <label style="display: inline-block; width: 150px;">Enter Industry Group for the {{title}}:</label>
+    <input type="text" style="display: inline-block; width: 200px;" [(ngModel)]="industry.industryGroup" >
+    <label style="display: inline-block; width: 150px;">Enter Industry Class for the {{title}}:</label>
+    <input type="text" style="display: inline-block; width: 200px;" [(ngModel)]="industry.industryClass" >
+</div>
+
+<div class="modal-footer"></div>

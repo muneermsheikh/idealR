@@ -12,7 +12,7 @@ export class AvailableItemComponent implements OnInit {
  
   @Input() cv: ICvsAvailableDto|undefined;
   @Output() msgEvent = new EventEmitter<number>();
-  @Output() downloadEvent = new EventEmitter<number>();
+  @Output() downloadEvent = new EventEmitter<ICvsAvailableDto>();
   @Output() cvAssessEvent = new EventEmitter<ICvsAvailableDto>();
   @Output() cvCheckedEvent = new EventEmitter<ICvsAvailableDto>();
  
@@ -44,8 +44,8 @@ export class AvailableItemComponent implements OnInit {
     this.isHidden = true;
   }
 
-  download(id: number) {
-    this.downloadEvent.emit(id);
+  download(cv: ICvsAvailableDto) {
+    this.downloadEvent.emit(cv);
   }
 
   //async 

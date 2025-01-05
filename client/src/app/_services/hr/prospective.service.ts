@@ -16,6 +16,7 @@ import { ICallRecordParams } from 'src/app/_models/params/callRecordParams';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCreateDto';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 
 
 @Injectable({
@@ -59,12 +60,14 @@ export class ProspectiveService {
   }
   
   
-    getProspectivesPaged(dParams: prospectiveCandidateParams) {
+  getProspectivesPaged(dParams: prospectiveCandidateParams) {
 
       const response = this.cache.get(Object.values(dParams).join('-'));
       if(response) return of(response);
-  
+
       let params = getHttpParamsForProspectiveCandidates(dParams);
+
+      console.log('prospective service getprospectivespaged params:', params);
   
       return getPaginatedResult<IProspectiveBriefDto[]>(this.apiUrl + 
           'Prospectives/pagedlist', params, this.http).pipe(
@@ -75,6 +78,15 @@ export class ProspectiveService {
       )
     }
   
+    getProspectivesList(orderno: string, status: string) {
+
+      return this.http.get<IProspectiveBriefDto[]>(this.apiUrl + 'Prospectives/list/' + orderno + '/' + status);
+        
+    }
+
+    getProspectiveHeadersDto(st: string) {
+      return this.http.get<IProspectiveHeaderDto[]>(this.apiUrl + 'Prospectives/headers/' + st);
+    }
   
   getProspectiveSummary(useCache: boolean)
   {
@@ -101,7 +113,6 @@ export class ProspectiveService {
   
   setParams(params: prospectiveCandidateParams) {
     this.oParams = params;
-    console.log('in prospective.sevice, params set to', this.oParams);
   }
   
   getParams() {

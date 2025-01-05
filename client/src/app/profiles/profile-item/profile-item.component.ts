@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
 import { ICandidateBriefDto } from 'src/app/_dtos/admin/candidateBriefDto';
 import { ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
 import { ICvAssessmentHeader } from 'src/app/_models/hr/cvAssessmentHeader';
+import { InterviewBriefPendingModalComponent } from 'src/app/interviews/interview-brief-pending-modal/interview-brief-pending-modal.component';
 
 @Component({
   selector: 'app-profile-item',
@@ -29,7 +32,9 @@ export class ProfileItemComponent implements OnInit {
   xPosTabMenu: number=0;
   yPosTabMenu: number=0;
   
-  constructor() { }
+  bsModalRef: BsModalRef|undefined;
+
+  constructor(private modalService: BsModalService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -80,4 +85,30 @@ export class ProfileItemComponent implements OnInit {
   deleteCV(id: number) {
     this.cvDeleteEvent.emit(id);
   }
+
+  assignToInterview(cvid: number) {
+   
+      const config = {
+        class: 'modal-dialog-centered modal-lg',
+        initialState: {
+          candidateId: this.cv?.id,
+          candidateName: this.cv?.fullName,
+          applicationNo: this.cv?.applicationNo,
+          interviewDate: new Date(),
+          categoryMatching: this.cv?.userProfessions.flat()
+        }
+      }
+      
+      console.log('config', this.cv?.userProfessions, this.cv?.userProfessions.flat());
+
+      this.bsModalRef = this.modalService.show(InterviewBriefPendingModalComponent, config);
+      this.bsModalRef.content.EmitEvent.subscribe({
+        next: (response: boolean) => {
+          if(response) this.toastr.success('selected candidate added to the interview item  selected', 'Success')
+        }
+      })
+
+  }
+
+
 }

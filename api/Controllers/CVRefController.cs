@@ -71,15 +71,18 @@ namespace api.Controllers
           }
 
           [HttpPost]
-          public async Task<ActionResult<string>> MakeReferrals(ICollection<int> CVReviewIds)
+          public async Task<ActionResult<ReturnStringsDto>> MakeReferrals(ICollection<int> CVReviewIds)
           {
                var msgWithErr = await _cvrefRepo.MakeReferrals(CVReviewIds, User.GetUsername());
 
                if(!string.IsNullOrEmpty(msgWithErr.ErrorString)) return BadRequest(new ApiException(400, "Failed to forward the CVs to the client", msgWithErr.ErrorString));
-
-               if(!string.IsNullOrEmpty(msgWithErr.Notification)) return Ok("CVs refferred, but with some errors: " + msgWithErr.Notification);
-               
-               return Ok("");
+               var returnDto = new ReturnStringsDto();
+               if(!string.IsNullOrEmpty(msgWithErr.Notification)) {
+                    returnDto.SuccessString ="CVs referred, but with some errors: " + msgWithErr.Notification;
+               } else {
+                    returnDto.SuccessString = "All CVs referred, tasks created and CV Forwarding Message to clients composed";
+               }
+               return Ok(returnDto);
           }
 
           //[Authorize(Roles="DocumentControllerAdmin, HRManager")]

@@ -53,12 +53,11 @@ export class IndustriesService {
     return this.http.delete<boolean>(this.apiUrl+ 'Industries/deletebyid/' +  industryid);
   }
 
-  updateIndustry(id: number, name: string) {
-    if(id===0) {
-      return this.http.post<IIndustryType>(this.apiUrl + 'Industries/add/' + name, {})
+  updateIndustry(industry: IIndustryType) {
+    if(industry.id===0) {
+      return this.http.post<IIndustryType>(this.apiUrl + 'Industries/add', industry)
     } else {
-      var ind: IIndustryType = {id: id, industryName: name};
-      return this.http.put<boolean>(this.apiUrl + 'Industries/edit', ind);
+      return this.http.put<boolean>(this.apiUrl + 'Industries/edit', industry);
     }
   }
 

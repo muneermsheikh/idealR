@@ -14,6 +14,7 @@ import { TextInputComponent } from '../_forms/text-input/text-input.component';
 import { DatePickerComponent } from '../_forms/date-picker/date-picker.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HasRoleDirective } from '../_directives/has-role.directive';
+import { RegisterCallRecordsComponent } from '../callRecords/register-call-records/register-call-records.component';
 
 
 
@@ -21,7 +22,8 @@ import { HasRoleDirective } from '../_directives/has-role.directive';
   declarations: [
     TextInputComponent,
     DatePickerComponent,
-    HasRoleDirective
+    HasRoleDirective,
+    RegisterCallRecordsComponent
   ],
   imports: [
     CommonModule,
@@ -63,6 +65,7 @@ import { HasRoleDirective } from '../_directives/has-role.directive';
     TextInputComponent,
     DatePickerComponent,
     HasRoleDirective,
+    RegisterCallRecordsComponent
   ]
 })
 export class SharedModule { }

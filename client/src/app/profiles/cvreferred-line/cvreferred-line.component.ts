@@ -14,7 +14,7 @@ export class CvreferredLineComponent implements OnInit {
   @Output() downloadEvent = new EventEmitter<number>();
   @Output() cvAssessEvent = new EventEmitter<ISelPendingDto>();
   @Output() cvCheckedEvent = new EventEmitter<ISelPendingDto>();
- 
+  @Output() deleteEvent = new EventEmitter<number>();
 
   currentId=0;
   
@@ -43,6 +43,9 @@ export class CvreferredLineComponent implements OnInit {
     this.downloadEvent.emit(id);
   }
 
+  deleteClicked(id: number) {   //cvref.id
+    this.deleteEvent.emit(id)
+  }
   //async 
   onClickLoadDocument(cvid: number) {
     // get a document from the Web API endpoint 'LoadDocument'

@@ -53,14 +53,12 @@ export class InterviewAttendanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    if(this.aParams.orderId !== 0) this.getAttendancePaged()    
+    if(this.aParams.orderId !== 0) this.getAttendancePaged(false)    
   }
 
-  getAttendancePaged() {
-
+  getAttendancePaged(cached:boolean) {
     this.service.setAParams(this.aParams);
-    this.service.getAttendancePaged().subscribe({
+    this.service.getAttendancePaged(cached).subscribe({
       next: response => {
         this.attendances = response.result;
         this.pagination = response.pagination;
@@ -128,7 +126,7 @@ export class InterviewAttendanceComponent implements OnInit {
     if (params.pageNumber !== event.page) {
       params.pageNumber = event.page;
       this.service.setAParams(params);
-      this.getAttendancePaged();
+      this.getAttendancePaged(true);
     }
   }
 
@@ -137,14 +135,14 @@ export class InterviewAttendanceComponent implements OnInit {
     params.search = this.searchTerm?.nativeElement.value;
     params.pageNumber = 1;
     this.service.setAParams(params);
-    this.getAttendancePaged();
+    this.getAttendancePaged(true);
   }
 
   onReset() {
     if(this.searchTerm) this.searchTerm.nativeElement!.value = '';
     const params = this.service.getAParams();
     this.service.setAParams(params);
-    this.getAttendancePaged();
+    this.getAttendancePaged(false);
   }
 
   statusChanged(att: IInterviewAttendanceDto) {
@@ -220,6 +218,7 @@ export class InterviewAttendanceComponent implements OnInit {
 
     var itemCandidate: IIntervwItemCandidate = {
         id: att.interviewItemCandidateId,  interviewItemId: 0,
+        intervwItemId: att .intervwItemId,
         candidateId: att.interviewItemCandidateId, personId: att.personId,
         prospectiveCandidateId: 0, applicationNo: att.applicationNo,
         candidateName: att.candidateName, passportNo: '',

@@ -9,6 +9,7 @@ export interface IProspectiveBriefDto
     dateRegistered: Date;
     candidateName: string;
     categoryRef: string;
+    customerName: string;
     phoneNo: string;
     email: string;
     currentLocation: string;

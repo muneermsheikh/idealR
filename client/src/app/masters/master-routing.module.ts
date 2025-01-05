@@ -1,17 +1,16 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeesComponent } from './employees/employees.component';
 import { EmployeeFromIdResolver } from '../_resolvers/employeeFromIdResolver';
 import { MastersMenuComponent } from './masters-menu/masters-menu.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
 import { CategoriesComponent } from './categories/categories.component';
-import { IndustriesComponent } from '../Administration/industries/industries.component';
+import { IndustriesComponent } from './industries/industries.component';
 import { RouterModule } from '@angular/router';
 import { SkillDataResolver } from '../_resolvers/hr/skillDataResolver';
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
 
-import { AssessmentStddQResolver } from '../_resolvers/hr/assessmentStddQResolver';
 
 
 const routes = [

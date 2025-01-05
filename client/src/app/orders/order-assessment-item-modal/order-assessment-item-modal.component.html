@@ -1,0 +1,86 @@
+<div class="modal-body my-0">
+    <h4 style="font-weight: bold;">Define Assessment parameters for Order Item </h4>
+    <form [formGroup]="form" (ngSubmit)="form.valid" 
+        autocomplete="off" *ngIf="orderAssessmentItem">
+
+    <label class="lbl b 100">Order No.:</label>
+    <div class="stdd w75">{{orderAssessmentItem.orderNo}} </div>
+
+    <label class="lbl w75">Customer</label>
+    <div class="stdd w200">{{orderAssessmentItem.customerName}}</div>
+
+    <br><label class="lbl w75">Category</label>
+    <div class="stdd w200">{{orderAssessmentItem.professionName}}</div> 
+    <label class="lbl w75">Prof Group:</label>
+    <div class="stdd w200 borderAllaround" (dblclick)="getProfessionGroup()">{{orderAssessmentItem.professionGroup}}</div>
+    
+    <br><label class="lbl w100">Designed By</label>
+    <app-text-input [label]="'Designed By'" formControlName="designedBy" class="stdd w75" > </app-text-input>
+    
+    <label class="lbl w50 hAlignR">On</label>
+    <input type="text" class="stdd w75" placeholder="designed On" formControlName="dateDesigned"
+        bsDatepicker [bsValue]="bsValueDate"[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+    
+    <label class="lbl w75 fSmaller" >Approved By</label>
+    <input type="text" class="stdd w75" formControlName="approvedBy" (dblclick)="updateApprovedBy()" >
+    
+    <button class="btn fa fa-list" title="imports standard assessment questions" 
+        (click)="populateStddAssessmentQuestions()"></button>
+        
+    <button class="btn fa fa-list-ul" title="imports custom assessment questions matching the profession" 
+        (click)="populateCustomAssessmentQuestions()"></button>
+
+    <button class="btn fa fa-save" title="Save this data" (click)="update()"></button>
+
+    <button class="btn fa fa-window-close fa-2x" title="close this form and return to the calling program" 
+        (click)="cancel()"></button>
+    <button class="btn fa fa-copy" title="Retrieve Profession Group from Profession Object" (click)="copyProfGroup()"></button>
+
+    <div *ngIf="copyAssessmentQs">
+        <app-order-assessment-item-header
+            [profGroup]="orderAssessmentItem.professionGroup"
+            [targetAssessmentItem]="orderAssessmentItem"
+            (sectionCloseEvent)="closeSection()"
+            (targetAssessmentItemQsEvent)="assessmentQsEmitted($event)"
+        ></app-order-assessment-item-header>
+    </div>
+    
+    <div formArrayName="orderAssessmentItemQs" >
+
+        <label class="lbl w50">Q No</label>
+        <label class="lbl w150">Subject</label>
+        <label class="lbl w400">Question</label>
+        <label class="lbl w50">Points</label>
+        <label class="w40" style="display: inline-block; font-size: x-small; vertical-align: middle;" >Manda<br>tory</label>
+        <button class="stdd btn btn-priamry fa fa-plus"
+            type="button" (click)="addNewOrderAssessmentItemQ()"> </button>
+        
+        <div *ngFor="let item of orderAssessmentItemQs.controls; let i=index">
+            <div [formGroupName]="i">
+                <div class="stdd w50">
+                    <app-text-input [label]="'Question No'" formControlName="questionNo"></app-text-input>
+                </div>
+                <div class="stdd w150">
+                    <app-text-input [label]="'Subject'" formControlName="subject"></app-text-input>
+                </div>
+                <!-- <app-text-input class="stdd w400" [label]="'question'" formControlName="question"></app-text-input> -->
+                <textarea class="stdd" cols="60" rows="1" formControlName="question" placeholder="assessment parameter" ></textarea>
+
+                <app-text-input (change)="calcualteTotals()" class="stdd w50" 
+                    [label]="'Points'" formControlName="maxPoints"></app-text-input>
+                <!--<input class="stdd w50" formControlName="maxPoints" (change)="calcualteTotals()">-->
+                <input class="stdd" type="checkbox" formControlName="isMandatory">
+                <button class="btn fa fa-trash red" (click)="removeOrderAssessmentItemQ(i)" ></button>
+            
+            </div>
+        </div>
+        <div style="margin-left: 600px;">Total: {{totalMarks}}</div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+
+</div>
+
+<div style="font-size: x-small;" >{{form.value | json}}</div>

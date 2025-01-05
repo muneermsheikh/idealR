@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.DTOs.Orders;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
@@ -95,15 +96,36 @@ namespace api.Controllers
             return Ok("");
         }
 
-        [HttpGet("orderitemassessmentQ/{orderitemid}")]
-        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetOrderAssessmentItemQs (int orderitemid)
+        [HttpGet("orderassessmentItemQsFromOrderItemId/{orderitemid}")]
+        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetOrderAssessmentItemQsFromOrderItemId (int orderitemid)
         {
-            var obj = await _repo.GetOrderAssessmentItemQs(orderitemid);
+            var obj = await _repo.GetOrderAssessmentItemQsFromOrderItemId(orderitemid);
 
             if(obj == null) return BadRequest(new ApiException(402, "Bad Request", "No assessment questions returned"));
 
             return Ok(obj); 
         }
+
+        [HttpGet("assessmentItemHeaders/{professionGroup}")]
+        public async Task<ActionResult<ICollection<OrderAssessmentItemHeaderDto>>> GetOrderAssessmentItemHeaders (string professionGroup)
+        {
+            var dtos = await _repo.GetOrderAssessmentHeaders(professionGroup);
+
+            //if (dtos == null || dtos.Count == 0) return BadRequest(new ApiException(400, "No record returned", "No matching order assessment exist for the selection Profession Group"));
+
+            return Ok(dtos);
+        }
+
+        [HttpGet("orderassessmentItemQs/{assessmentitemid}")]
+        public async Task<ActionResult<ICollection<OrderAssessmentItemQ>>> GetOrderAssessmentItemQsFromId (int assessmentitemid)
+        {
+            var obj = await _repo.GetOrderAssessmentItemQsFromId(assessmentitemid);
+
+            if(obj == null) return BadRequest(new ApiException(402, "Bad Request", "No assessment questions returned"));
+
+            return Ok(obj); 
+        }
+
 
         [HttpDelete("itemAssessment/{orderItemId}")]
         public async Task<ActionResult<bool>> DeleteOrderItemAssessment(int orderItemId)
@@ -120,7 +142,14 @@ namespace api.Controllers
             if(!deleted) return BadRequest("Failed to delete the OrderItem Assessment Question");
             return Ok(true);
         }
-        
 
+ 
+        [HttpGet("getAndSetProfessionGroup/{ProfessionId}/{OrderAssessmentItemId}")]
+        public async Task<ActionResult<SingleStringDto>> SetOrderAssessmentItemFromProfId(int ProfessionId, int OrderAssessmentItemId)
+        {
+            var st = await _repo.GetAndSetProfessionGroupFromProfessionId(ProfessionId, OrderAssessmentItemId);
+            
+            return Ok(st);
+        }   
     }
 }

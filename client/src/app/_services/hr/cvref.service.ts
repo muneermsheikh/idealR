@@ -13,8 +13,8 @@ import { ICVRefDto } from 'src/app/_dtos/admin/cvRefDto';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
-import { ISelectionStatus } from 'src/app/_models/admin/selectionStatus';
 import { ISelectionStatusDto } from 'src/app/_dtos/admin/selectionStatusDto';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 
 
 @Injectable({
@@ -48,42 +48,46 @@ export class CvrefService {
 
   
     referCVs(cvassessmentids: number[]) {
-      return this.http.post<string>(this.apiUrl + 'CVRef', cvassessmentids);
+      return this.http.post<IReturnStringsDto>(this.apiUrl + 'CVRef', cvassessmentids);
     }
 
     referredCVsPaginated(useCache: boolean = false) { 
       
-      //var paramsDto: ISelPendingDtoWithParamsNamesDto;
       if(!useCache) {
+        this.cacheReferred = new Map()
+      } else {
         const response = this.cacheReferred.get(Object.values(this.cvRefParams).join('-'));
-        if(response) return of(response);
+        if(response) return of(response)
       }
-
+    
       let params = getPaginationHeadersCVRefParams(this.cvRefParams);
-      console.log('cvrefparams', params);
        
       return getPaginatedResult<ISelPendingDto[]>(this.apiUrl 
         + 'cvref/cvsreferred', params, this.http).pipe(
       map(response => {
-        this.cache.set(Object.values(this.cvRefParams).join('-'), response);
+        this.cacheReferred.set(Object.values(this.cvRefParams).join('-'), response);
         return response;
       })
     )
     
-  }
+    }
 
-  getCVRefWithDeploys(cvrefid: number) {
-    return this.http.get<ICVRefWithDepDto>(this.apiUrl + 'CVRef/cvrefwithdeploys/' + cvrefid);
-  }
+    deleteCVRef(cvrefid: number) {
+      return this.http.delete<boolean>(this.apiUrl + 'CVRef/deleteCVRef/' + cvrefid);
+    }
 
-  getCVRefWithCVRefId(cvrefid: number) {
-    return this.http.get<ICVRefDto>(this.apiUrl + 'CVRef/cvref/' + cvrefid);
-  }
+    getCVRefWithDeploys(cvrefid: number) {
+      return this.http.get<ICVRefWithDepDto>(this.apiUrl + 'CVRef/cvrefwithdeploys/' + cvrefid);
+    }
 
-  
-  registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
-    return this.http.post<messageWithError>(this.apiUrl + 'Selection', selDecisions);
-  }
+    getCVRefWithCVRefId(cvrefid: number) {
+      return this.http.get<ICVRefDto>(this.apiUrl + 'CVRef/cvref/' + cvrefid);
+    }
+
+    
+    registerSelectionDecisions(selDecisions: createSelDecisionDto[]) {
+      return this.http.post<messageWithError>(this.apiUrl + 'Selection', selDecisions);
+    }
 
   setParams(params: CVRefParams) {
     this.cvRefParams = params;

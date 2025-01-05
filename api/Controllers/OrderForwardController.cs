@@ -22,10 +22,24 @@ namespace api.Controllers
             _orderFwdRepo = orderFwdRepo;
         }
 
-        [HttpGet("pagedlist")]
+        /*[HttpGet("pagedlist")]
         public async Task<ActionResult<PagedList<OrderForwardCategory>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
         {
             var fwds = await _orderFwdRepo.GetPagedList(fParams);
+
+            if(fwds == null) return NotFound("No matching Order Forward records found");
+
+            Response.AddPaginationHeader(new PaginationHeader(fwds.CurrentPage, fwds.PageSize, 
+                fwds.TotalCount, fwds.TotalPages));
+            
+            return Ok(fwds);
+        }
+        */
+
+        [HttpGet("pagedlist")]
+        public async Task<ActionResult<PagedList<OrderForwardCategory>>> GetOrderForwardsPagedList([FromQuery] OrderFwdParams fParams)
+        {
+            var fwds = await _orderFwdRepo.GetPagedListDLForwarded(fParams);
 
             if(fwds == null) return NotFound("No matching Order Forward records found");
 

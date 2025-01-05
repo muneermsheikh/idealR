@@ -141,6 +141,7 @@ export class VoucherEditComponent implements OnInit{
       
       this.form = this.fb.group({
         id: vch.id,
+        section: [vch.section, Validators.required],
         divn: [vch.divn, Validators.maxLength(1)],
         voucherNo: [vch.voucherNo, Validators.required],
         voucherDated: [vch.voucherDated, Validators.required],
@@ -367,7 +368,7 @@ export class VoucherEditComponent implements OnInit{
     }
 
     returnToCaller() {
-      this.router.navigateByUrl(this.returnUrl || '/finance');
+      this.router.navigateByUrl('/');
     }
 
     addNewCOA() {

@@ -1,6 +1,4 @@
 using System.Data.Common;
-using System.Linq.Expressions;
-using api.Data.Repositories.Admin;
 using api.DTOs;
 using api.DTOs.Admin;
 using api.DTOs.HR;
@@ -10,11 +8,11 @@ using api.Entities.Identity;
 using api.Extensions;
 using api.Helpers;
 using api.Interfaces;
+using api.Interfaces.Masters;
 using api.Interfaces.Orders;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,9 +25,11 @@ namespace api.Data.Repositories
         private readonly UserManager<AppUser> _userManager;
         private readonly IComposeMessagesHRRepository _hrMsgRepo;
         private readonly DateTime _today = DateTime.UtcNow;
-        public CandidatesRepository(DataContext context, UserManager<AppUser> userManager, 
+        private readonly IProfessionRepository _profRepo;
+        public CandidatesRepository(DataContext context, UserManager<AppUser> userManager, IProfessionRepository profRepo,
             IMapper mapper, IComposeMessagesHRRepository hrMsgRepo)
         {
+            _profRepo = profRepo;
             _hrMsgRepo = hrMsgRepo;
             _userManager = userManager;
             _mapper = mapper;
@@ -122,7 +122,8 @@ namespace api.Data.Repositories
                     orderby cv.ApplicationNo
                     select new cvsAvailableDto {
                         CandAssessmentId = asses.Id, ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
-                        CandidateId = cv.Id, AssessedOn = asses.AssessedOn, Gender=  (cv.Gender == "female" ? "F": "M").ToUpper(),
+                        CandidateId = cv.Id, AssessedOn = asses.AssessedOn, 
+                        Gender=  (cv.Gender == "female" ? "F": "M").ToUpper(),
                         GradeAssessed=asses.AssessResult,  Checked = false, OrderItemId = item.Id,
                         OrderCategoryRef=cat.ProfessionName + " (" + order.OrderNo + "-" + item.SrNo + ") - " + order.Customer.KnownAs,
                     }).AsQueryable();
@@ -148,10 +149,12 @@ namespace api.Data.Repositories
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
         {
                 //check if userProfession.ProfessionName is not blanks
-                var blankProfs = await _context.UserProfessions.Where(x => x.ProfessionName==null || x.ProfessionName == "").ToListAsync();
+                var blankProfs = await _context.UserProfessions
+                    .Where(x => x.ProfessionName==null || x.ProfessionName == "").ToListAsync();
                 if(blankProfs.Count > 0) {
                     foreach(var up in blankProfs) {
-                        var profName = await _context.Professions.Where(x => x.Id == up.ProfessionId).Select(x => x.ProfessionName).FirstOrDefaultAsync();
+                        var profName = await _context.Professions
+                            .Where(x => x.Id == up.ProfessionId).Select(x => x.ProfessionName).FirstOrDefaultAsync();
                         up.ProfessionName = profName;
                         _context.Entry(up).State=EntityState.Modified;
                     }
@@ -167,123 +170,21 @@ namespace api.Data.Repositories
                         FullName = cand.FullName, KnownAs = cand.KnownAs, PpNo = cand.PpNo,
                         Status = cand.Status, UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName).ToList(),
                         ReferredByName = cst.CustomerName
-                    }).AsQueryable();
+                    })
+                    .OrderByDescending(x => x.ApplicationNo)
+                    .AsQueryable();
                 
                 var pagedList = await PagedList<CandidateBriefDto>.CreateAsync(qry.AsNoTracking()
                         , candidateParams.PageNumber, candidateParams.PageSize);
+                //var candidateids = pagedList.Select(x => x.Id).ToList();
+                var ups = await _context.UserProfessions.Where(x =>pagedList.Select(x => x.Id).ToList().Contains(x.CandidateId)).ToListAsync();
                 
+                foreach(var page in pagedList) {
+                    var userProfs = ups.Where(x => x.CandidateId==page.Id).Select(x => x.ProfessionName).ToList();
+                    page.UserProfessions = userProfs;
+                }
                 return pagedList;
 
-                //projectTo shortens the sql query by EF Core
-                //check if UserProfession.ProfessionName is blank
-                /* var query =  _context.Candidates.Include(x => x.UserProfessions)
-                    .Select(cand => new CandidateBriefDto {
-                        ApplicationNo = cand.ApplicationNo, City = cand.City, Created = cand.Created, Email=cand.Email,
-                        FullName=cand.FullName, Id=cand.Id, KnownAs=cand.KnownAs, LastActive=cand.LastActive, 
-                        CustomerId=Convert.ToInt32(cand.CustomerId), Status = cand.Status, PpNo=cand.PpNo,
-                        userProfessions = cand.UserProfessions
-                    })
-                    .AsQueryable();
-
-                if(candidateParams.Id > 0) {
-                    query = query.Where(x => x.Id == candidateParams.Id);}
-                else {
-                    if(!string.IsNullOrEmpty(candidateParams.CandidateName)) 
-                        query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.CandidateName.ToLower()));
-                    
-                    if(!string.IsNullOrEmpty(candidateParams.PassportNo))
-                        query = query.Where(x => x.PpNo == candidateParams.PassportNo);
-                    
-                    if(candidateParams.ProfessionId != 0) {
-                        var CandidateIds = await _context.UserProfessions.Where(x => x.ProfessionId == candidateParams.ProfessionId)
-                            .Select(x => x.CandidateId).ToListAsync();
-                        if(CandidateIds.Count > 0) {
-                            query = query.Where(x => CandidateIds.Contains(x.Id));
-                        }
-                    } else if(candidateParams.CategoryName != "") {
-                        var CandidateIds = await _context.UserProfessions
-                            .Where(x => x.ProfessionName.Contains(candidateParams.CategoryName))
-                            .Select(x => x.CandidateId).ToListAsync();
-                        if(CandidateIds.Count > 0) {
-                            query = query.Where(x => CandidateIds.Contains(x.Id));
-                        }
-                    }
-
-                    if(candidateParams.AgentId > 0) query = query.Where(x => x.CustomerId == candidateParams.AgentId);
-
-                    if(!string.IsNullOrEmpty(candidateParams.Search)) {
-                        if(candidateParams.Search.Contains(",") ) {
-                            var appnos = new List<int>();
-                            int index = candidateParams.Search.IndexOf(",");
-                            if(index != -1) {
-                                while (candidateParams.Search.Length > 0) {
-                                    index = candidateParams.Search.IndexOf(",");
-                                    if(index != -1) {
-                                        var appno = candidateParams.Search[..index];
-                                        if(int.TryParse(appno, out _)) {
-                                            appnos.Add(Convert.ToInt32(appno));
-                                            index +=1;
-                                            candidateParams.Search = candidateParams.Search[index..];   //delete the appno string,
-                                        }
-                                    } else {
-                                        if(int.TryParse(candidateParams.Search, out _)) {
-                                            appnos.Add(Convert.ToInt32(candidateParams.Search));
-                                            candidateParams.Search = "";
-                                        }
-                                    }
-
-                                }
-                                if(appnos.Count > 0) query = query.Where(x => appnos.Contains(x.ApplicationNo));
-                                
-                            } else {
-                                query = query.Where(x => x.FullName.ToLower().Contains(candidateParams.Search.ToLower()));
-                            }
-                        }
-                        
-                    }
-                    
-                    query = query.OrderBy(x => x.ApplicationNo);
-                }
-                
-                var paged = await PagedList<CandidateBriefDto>.CreateAsync(query.AsNoTracking()
-                        //.ProjectTo<CandidateBriefDto>(_mapper.ConfigurationProvider)
-                        , candidateParams.PageNumber, candidateParams.PageSize);
-                var profs = await _context.UserProfessions
-                    .Where(x => paged.Select(x => x.Id).ToList().Contains(x.CandidateId) 
-                    && string.IsNullOrEmpty(x.ProfessionName)).ToListAsync();
-                
-                var profnames = await _context.Professions.Where(x => profs.Select(x => x.ProfessionId).ToList().Contains(x.Id)).ToListAsync();
-                
-                foreach(var prof in profs) {
-                    prof.ProfessionName = profnames.Where(x => x.Id == prof.ProfessionId)
-                        .Select(x => x.ProfessionName).FirstOrDefault();
-                    _context.Entry(prof).State = EntityState.Modified;
-
-                    var page = paged.Where(x => x.Id == prof.CandidateId).FirstOrDefault().userProfessions.ToList();
-                    foreach(var pg in page) {
-                        pg.ProfessionName = prof.ProfessionName;
-                    }
-                }
-
-                var candidateids = paged.Select(x => x.Id).ToList();
-                var CandidateIdAndAgentNames = await (from cand in _context.Candidates where candidateids.Contains(cand.Id)
-                    join agent in _context.Customers on cand.CustomerId equals agent.Id
-                    select new {CandidateId=cand.Id, AgentName = agent.CustomerName}
-                ).ToListAsync();
-
-                foreach(var pg in paged ) {
-                    var agentName = CandidateIdAndAgentNames.Where(x => x.CandidateId == pg.Id).Select(x => x.AgentName).FirstOrDefault();
-                    if(!string.IsNullOrEmpty(agentName)) {
-                        pg.ReferredByName = agentName;
-                    }
-                }
-
-                if(_context.ChangeTracker.HasChanges()) {
-                    await _context.SaveChangesAsync();
-                }
-
-                return paged;
-                */
         }
 
         public async Task<bool> InsertCandidate(Candidate candidate)
@@ -708,8 +609,7 @@ namespace api.Data.Repositories
         
         public async Task<string> WriteCandidateExcelToDB(string fileNameWithPath, string Username)
         {
-            var strError = await _context.ReadCandidateDataExcelFile(fileNameWithPath, Username);
-            return strError;
+            return  await _context.ReadCandidateDataExcelFile(fileNameWithPath, Username);
         }
 
 

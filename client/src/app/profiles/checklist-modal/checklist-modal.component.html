@@ -1,9 +1,10 @@
 <div class="modal-header my-0" *ngIf="chklst" >
-    <div class="stdd w75 b">Candidate:</div> 
+    <h4 class="b">Candidate Checklist</h4>
+    <br><div class="stdd w70 b">Candidate:</div> 
     <div class="stdd w200 blue mx-1">{{chklst.applicationNo}} - {{chklst.candidateName}}</div>
 
-    <button type="button" class="stdd btn btn-success fa fa-save" (click)="Edited()"></button>
-    <button type="button" class="stdd btn btn-close close mx-10" aria-label="Close" (click)="bsModalRef.hide()">X</button>
+    <button type="button" class="stdd btn btn-success fa fa-save" (click)="Update()"></button>
+    <button type="button" class="stdd btn btn-close close mx-10" aria-label="Close" (click)="closeModal()"></button>
     <button class="btn btn-danger pull-right fa fa-trash fa-sm" (click)="deleteChecklist()" title="Delete this checklist"></button>
 </div>    
 
@@ -14,17 +15,18 @@
             <div class="stdd w75 b">Category:</div> 
             <div class="stdd w400 blue mx-1">{{chklst.categoryRef}} </div>
             
-            <div class="stdd w50 b">HR Exec</div>
+            <br><div class="stdd w150 b">HR Exec assigned to:</div>
             <div class="stdd w100 blue">{{chklst.hrExecUsername}}</div>
-            
+            <div class="stdd w100 b">Logged-In User:</div>
+            <div class="stdd w100 blue">{{chklst.userLoggedName}}</div>
             <br><div class="stdd w75 b my-0 mx-1">Fees:</div> 
                 
             <div *ngIf="chklst?.charges===undefined || chklst.charges===undefined" 
                 class="stdd mx-1 w100 text-danger" >Not Defined</div>
-            <div *ngIf="chklst.charges !==null" style="border: blue;" class="stdd blue w100" >{{chklst.charges}}</div>
+            <div *ngIf="chklst.charges !==null" style="border: blue;" class="stdd blue w70" >{{chklst.charges}}</div>
             <div class="stdd b mx-1">Agreed:</div> 
                 
-            <input class="form-text-input blue stdd w100 mx-1" [name]="'chargesAgreed'" 
+            <input class="form-text-input blue stdd w70 mx-1" [name]="'chargesAgreed'" 
                 (dblclick)="ChargesDoubleClicked()"    
                     title="this is charges agreed box"
                     formControlName="chargesAgreed"
@@ -39,7 +41,7 @@
             >
             
             <div *ngIf="chklst.charges != chklst.chargesAgreed && chklst.charges > 0" 
-                class="stdd w100 b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
+                class="stdd w150 b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
                 <div class="stdd" *ngIf="chklst.exceptionApproved">
                     <div class="stdd w50">On: </div>
                     <div class="stdd w100 blue">{{chklst!.exceptionApprovedOn | date:'d-MMM-yy'}}</div>
@@ -47,7 +49,12 @@
                     <div class="stdd w75 blue">{{chklst!.exceptionApprovedBy}}</div>    
                 </div>
             </div>
-
+            <br>
+            <label class="stdd w100 b">Salary Offered</label>
+            <div class="stdd w150 blue" title="double-click to display the remuneration modal.  Once this form is displayed and closed, please click any where out of this modal form to close it." (dblclick)="displayRemunerationModal()">{{chklst.salaryOffered}}</div>
+            <label class="stdd w70 b" style="margin-left: 10px;">Expected:</label>
+            <app-text-input title="Minimum Salary Expectation of the candidate" [label]="'Salary Expectation'" formControlName="salaryExpectation" class="stdd w70">  </app-text-input>
+            
             <br>
             <div class="stdd b">checklisted on:</div> 
             <div class="stdd blue">{{chklst.checkedOn | date: 'd-MMM-yy'}}</div>
@@ -93,8 +100,7 @@
    <div class="modal-footer">
      
    </div>
-<!--
+
 <div style="font-size: smaller;">
     {{this.form.value | json}}
 </div>
--->

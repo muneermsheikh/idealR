@@ -1,19 +1,21 @@
 .stdd {
     display: inline-block;
+    margin: 0 2px 0 1px;
     vertical-align: top;
+    word-wrap: break-word;
 }
 .fSmall {font-size: small;}
 .fSmaller {font-size: smaller;}
 
-.cursorpointer {cursor:pointer; color: darkblue;}
+.cursorpointer {cursor:pointer; color: yellow;}
 
+.btn {color: yellow}
 .b {font-weight: bold;}
-.red {color: red;}
-.w30 {width: 30px;}
-.w50 {width: 50px;}
+
+.w20 {width: 20px;}
+.w70 {width: 70px;}
 .w100 {width: 100px;}
 .w130 {width: 130px;}
 .w150 {width: 150px;}
-.w300 {width: 300px;}
+.w200 {width: 200px;}
 
-.blue {color: darkblue;}

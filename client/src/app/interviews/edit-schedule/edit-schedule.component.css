@@ -1,6 +1,6 @@
 .lbl {
     display: inline-block;
-    font-size: small;
+    font-size: smaller;
     font-weight: bold;
     margin: 0 2px 0 2px;
     vertical-align: top;
@@ -8,9 +8,10 @@
 
 .stdd {
     display: inline-block;
-    font-size: small;
+    font-size: smaller;
     margin: 0 2px 0 2px;
     vertical-align: top;
+    font-weight: normal;
 }
 
 .dropdown {
@@ -44,3 +45,13 @@
 .green {color: darkgreen}
 
 .btn {color:aliceblue}
+
+.cursor {
+    cursor:pointer; 
+    color:yellow; 
+    font-size: x-small;
+    display: inline-block;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+    font-weight: bold;
+}

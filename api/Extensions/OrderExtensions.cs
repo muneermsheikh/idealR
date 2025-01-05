@@ -160,9 +160,13 @@ namespace api.Extensions
                 join rvwitem in context.ContractReviewItems on item.Id equals rvwitem.OrderItemId
                 join cat in context.Professions on item.ProfessionId equals cat.Id
                 join ord in context.Orders on item.OrderId equals ord.Id
+                join remun in context.Remunerations on item.Id equals remun.OrderItemId into remuneration
+                from salary in remuneration.DefaultIfEmpty()
                 select new  OrdIdProfNmCustNmCatRefDto{ ProfessionName=cat.ProfessionName, 
                     CategoryRef = ord.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
-                    CustomerName=ord.Customer.CustomerName}).FirstOrDefaultAsync();
+                    CustomerName=ord.Customer.CustomerName, SalaryRange= string.Join(salary.SalaryCurrency,
+                        " ", salary.SalaryMin, "-", salary.SalaryMax)})
+                .FirstOrDefaultAsync();
             
             if(obj==null) return null;
 
@@ -173,7 +177,8 @@ namespace api.Extensions
             {
                 OrderId = obj.OrderId, CategoryRef = obj.CategoryRef, CustomerName=obj.CustomerName, 
                 ProfessionName=obj.ProfessionName, ApplicationNo = (int)(cand?.ApplicationNo), 
-                CandidateName = cand?.FullName, HrExecUsername = obj.HrExecUsername
+                CandidateName = cand?.FullName, HrExecUsername = obj.HrExecUsername,
+                SalaryRange = obj.SalaryRange
             };
 
             return dto;
@@ -183,17 +188,19 @@ namespace api.Extensions
         public async static Task<ICollection<DeploymentPendingBriefDto>> GetDepPendingBriefDtoFromDepItemIds(this DataContext context, ICollection<int> DepItemIds)
         {
             var query = await (from depItem in context.DepItems  where DepItemIds.Contains(depItem.Id)  
+                join depStatus in context.DeployStatuses on depItem.Sequence equals depStatus.Sequence
                 join dep in context.Deps on depItem.DepId equals dep.Id
                 join cvref in context.CVRefs on dep.CvRefId equals cvref.Id
                 join orderitem in context.OrderItems on cvref.OrderItemId equals orderitem.Id
                 join order in context.Orders on orderitem.OrderId equals order.Id
                 join cand in context.Candidates on cvref.CandidateId equals cand.Id
                 select new DeploymentPendingBriefDto {
-                    DepId=dep.Id, ReferredOn=cvref.ReferredOn, SelectedOn=dep.SelectedOn, ApplicationNo=cand.ApplicationNo,
-                    CandidateName=cand.FullName, OrderNo=order.OrderNo, CustomerName=order.Customer.KnownAs, 
-                    CityOfWorking=order.CityOfWorking, CategoryName=orderitem.Profession.ProfessionName,
-                    DeploySequence = depItem.Sequence, NextSequence=depItem.NextSequence, NextStageDate=depItem.NextSequenceDate,
-                    Ecnr = cand.Ecnr == "true"
+                    DepId=dep.Id, ReferredOn=cvref.ReferredOn, SelectedOn=dep.SelectedOn, 
+                    ApplicationNo=cand.ApplicationNo, CandidateName=cand.FullName, OrderNo=order.OrderNo, 
+                    CustomerName=order.Customer.KnownAs, CityOfWorking=order.CityOfWorking, 
+                    CategoryName=orderitem.Profession.ProfessionName, DeploySequence = depItem.Sequence, 
+                    NextSequence=depItem.NextSequence, NextStageDate=depItem.NextSequenceDate,
+                    Ecnr = cand.Ecnr == "true", CurrentStatus = depStatus.StatusName
                 }).ToListAsync();
     
             return query;

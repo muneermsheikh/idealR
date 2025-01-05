@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace api.Entities.HR
 {
@@ -26,8 +27,9 @@ namespace api.Entities.HR
         public int OtherAllowance { get; set; }
         public int LeavePerYearInDays { get; set; }
         public int LeaveAirfareEntitlementAfterMonths {get; set;}
-        public string ConclusionStatus { get; set; }
-        public bool OfferAccepted { get; set; }
+        //public string ConclusionStatus { get; set; }
+        [MaxLength(50)]
+        public string OfferAccepted { get; set; }
         public DateTime OfferAcceptedOn { get; set; }
         public string OfferConclusionRegisteredByUsername { get; set; }
         [MaxLength(100)]

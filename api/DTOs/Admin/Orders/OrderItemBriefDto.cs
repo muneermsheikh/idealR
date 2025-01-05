@@ -15,7 +15,7 @@ namespace api.DTOs.Admin.Orders
         
         
         public int OrderItemId { get; set; }
-        public string RequireInternalReview { get; set; }   //
+        public bool RequireInternalReview { get; set; }   //
         public int SrNo { get; set; }                       //
         public int ProfessionId { get; set; }
         public string ProfessionName { get; set; }

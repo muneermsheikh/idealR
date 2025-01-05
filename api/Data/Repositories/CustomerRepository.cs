@@ -1,3 +1,4 @@
+using System.Data.Common;
 using api.DTOs.Admin;
 using api.DTOs.Customer;
 using api.Entities.Admin.Client;
@@ -96,8 +97,13 @@ namespace api.Data.Repositories
             return paged;
         }
 
-        public async Task<bool> InsertCustomer(api.Entities.Admin.Client.Customer customer)
+        public async Task<string> InsertCustomer(api.Entities.Admin.Client.Customer customer)
         {
+            
+            //verify the customername and city is unique
+            var exists = await _context.Customers.Where(x => x.CustomerName.ToLower()==customer.CustomerName.ToLower()
+                && x.City.ToLower() == customer.City.ToLower() ).FirstOrDefaultAsync();
+            if(exists != null) return "That customer is already registered";
             
             foreach(var official in customer.CustomerOfficials) {
                 official.AppUserId = await UpdateAppUserIdExtensions.UpdateCustomerOfficialAppUserId(official, 
@@ -109,7 +115,19 @@ namespace api.Data.Repositories
             cust.CustomerOfficials=offs;
             _context.Customers.Add(cust);
             
-            return await _context.SaveChangesAsync() > 0;
+            try {
+                await _context.SaveChangesAsync();
+            } catch (DbException ex) {
+                if(ex.Message.Contains("IX_Customers_CustomerName_City")) {
+                    return "Index violation - CustomerName & City - this combination must be unique, meaning this customer is already inserted";
+                } else {
+                    return "SQL Error in inserting the customer record.  Pl see the details";
+                }
+            } catch (Exception ex) {
+                return ex.Message;
+            }
+
+            return "";
             
         }
 

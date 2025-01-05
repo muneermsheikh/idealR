@@ -18,19 +18,22 @@
          class="btn fa fa-refresh fa-2x" style="color: aliceblue;"></button>
     <button class="btn fa fa-plus fa-2x" title="Add a new Category" (click)="addCategory()" ></button>
 
-    <button class="btn fa fa-window-close fa-2x" style="color: aliceblue;" routerLink="/administration" ></button>
+    <button class="btn fa fa-window-close fa-2x" style="color: aliceblue;" routerLink="/" ></button>
 </div>
 <div class="container my-2">
     <div class="stdd w50 b" >Category<br>Id</div>
-    <div class="stdd w300 b" >Category Name</div>
-    
+    <div class="stdd w250 b" >Category Name</div>
+    <div class="stdd w250 b" >Category Domain</div>
+
     <div *ngIf="!categories">No Categories on record</div>
     
     <div *ngFor="let cat of categories" class="row">
 
         <div class="stdd w50" style="text-align: right;">{{cat.id}}</div>
-        <div class="stdd w300">{{cat.professionName}}</div>
-        <button class="stdd w15 btn fa fa-pencil" (click)="editCategory(cat.id, cat.professionName)" ></button>
+        <div class="stdd w250">{{cat.professionName}}</div>
+        <div class="stdd w250">{{cat.professionGroup}}</div>
+        
+        <button class="stdd w15 btn fa fa-pencil" (click)="editCategory(cat)" ></button>
         <button class="stdd w15 btn fa fa-list" (click)="customAssessmentQs(cat.id)" ></button>
         <button class="stdd w15 btn fa fa-trash red" (click)="deleteCategory(cat.id)" ></button>
     </div>

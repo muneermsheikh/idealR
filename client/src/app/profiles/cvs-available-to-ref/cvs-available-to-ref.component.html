@@ -44,7 +44,7 @@
           <div class="row" *ngFor="let cv of cvs" >
                 
                <app-available-item
-                    (downloadEvent)="downloadFileEvent($event)" 
+                    (downloadEvent)="downloadcv($event)" 
                     (cvCheckedEvent)="cvCheckedEvent($event)"
                     (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
                     [cv]="cv" 

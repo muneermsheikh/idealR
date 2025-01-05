@@ -25,10 +25,12 @@ export class AttendanceService {
   
   constructor(private http: HttpClient) { }
     
-  getAttendancePaged() { 
+  getAttendancePaged(cached: boolean=false) { 
 
-    const response = this.cache.get(Object.values(this.aParams).join('-'));
-    if(response) return of(response);
+    if(cached) {
+      const response = this.cache.get(Object.values(this.aParams).join('-'));
+      if(response) return of(response);
+    }
 
     let params = new HttpParams();  // getHttpParamsForOrders(oParams);
     params = params.append('orderId', this.aParams.orderId.toString());

@@ -25,5 +25,7 @@ namespace api.Interfaces.HR
          Task<MessagesWithErrDto> ComposeInterviewInvitationMessages(ICollection<int> InterviewCandidateIds, string Username);
          Task<bool> DeleteInterviewItemCandidate(int InterviewCandidateId);
          Task<string> UpdateInterviewCandidateAttachmentFileName(IntervwItemCandidate interviewCandidate);
+         Task<ICollection<InterviewMatchingCategoryDto>> GetInterviewBriefMatching(string categoryName);
+         Task<bool> SaveNewInterviewItemCandidate(IntervwItemCandidate itemCandidate);
     }
 }

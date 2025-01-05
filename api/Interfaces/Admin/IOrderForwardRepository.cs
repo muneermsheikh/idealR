@@ -19,7 +19,8 @@ namespace api.Interfaces.Admin
         Task<string> EditOrderForwardCategories(ICollection<OrderForwardCategory> models, string username);
         //Task<OrderForwardToAgent> OrderFowardsOfAnOrder(int orderid);
         Task<ICollection<OrderForwardCategoryDto>> AssociatesOfOrderForwardsOfAnOrder(int orderid, string Username);
-        Task<PagedList<OrderForwardCategory>> GetPagedList(OrderFwdParams fParams);
+        //Task<PagedList<OrderForwardCategory>> GetPagedList(OrderFwdParams fParams);
+        Task<PagedList<OrderForwardCategory>> GetPagedListDLForwarded(OrderFwdParams fParams);
         Task<bool> DeleteOrderForwardCategory(int orderforwardcategoryid);
         Task<bool> DeleteOrderForwardCategoryOfficial(int orderFwdOfficialId);
         Task<MessageWithError> ComposeMsg_AckToClient(int orderid);

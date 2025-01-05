@@ -10,7 +10,7 @@ import { IDep } from 'src/app/_models/process/dep';
 import { User } from 'src/app/_models/user';
 import { DeployService } from 'src/app/_services/deploy.service';
 import { DeployEditModalComponent } from '../deploy-edit-modal/deploy-edit-modal.component';
-import { Subject, catchError, filter, of, switchMap, tap } from 'rxjs';
+import { Subject, catchError, distinct, filter, of, switchMap, tap } from 'rxjs';
 import { DeployAddModalComponent } from '../deploy-add-modal/deploy-add-modal.component';
 import { IDepItem } from 'src/app/_models/process/depItem';
 import { ConfirmService } from 'src/app/_services/confirm.service';
@@ -23,6 +23,7 @@ import { IFlightdata } from 'src/app/_models/process/flightData';
 import { IDepItemsAndCandFlightsToAddDto } from 'src/app/_dtos/process/DepItemsToAddAndCandFlightsToAddDto';
 import { ICandidateFlightGrp } from 'src/app/_models/process/candidateFlightGrp';
 import { ICandiateFlightItem } from 'src/app/_models/process/candidateFlightItem';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 
 
 @Component({
@@ -55,7 +56,7 @@ export class DeployListingComponent implements OnInit{
   depStatuses: IDeploymentStatus[]=[];
   statusNameAndSeq: IDeployStatusAndName[]=[];
   transDate: Date=new Date;
-  sequenceSelected: number=0;
+  sequenceSelected: string='';
 
   bsModalRef: BsModalRef | undefined;
 
@@ -74,7 +75,8 @@ export class DeployListingComponent implements OnInit{
       {name:'Order No', value:'orderNo'},  
       {name:'Category Name', value:'categoryName'},  
       {name:'Date Selected', value:'selectedon'},  
-      {name:'Employer Name', value:'customerName'}
+      {name:'Employer Name', value:'customerName'},
+      {name:'Current Status', value:'currentStatus'}
   ]
 
   sortOptions = [
@@ -86,20 +88,22 @@ export class DeployListingComponent implements OnInit{
     {name:'By Employer Desc', value:'employerdesc'}
   ]
 
- SEQUENCE_SELECTED = 100;
- SEQUENCE_DOCUMENTS_ATTESTATION=200;
-  SEQUENCE_MED_REFERRED=300;
-SEQUENCE_MED_FIT=400;
- SEQUENCE_MED_UNFIT=500;
- SEQUENCE_VISA_DOC_SUBMITTED=600;
- SEQUENCE_VISA_ISSUED=700;
- SEQUENCE_VISA_REJECTED=800;
- SEQUENCE_EMIG_APP_LODGED=900;
- SEQUENCE_EMIG_DOC_LODGED=1000;
- SEQUENCE_EMIG_CLEARED=1100;
- SEQUENCE_EMIG_DENIED=1200;
- SEQUENCE_TRAVEL_BOOKED=1300;
- SEQUENCE_TRAVELED=1500;
+
+
+ SEQUENCE_SELECTED = 100; SEQUENCE_SELECTED_NAME="Selected";
+ SEQUENCE_DOCUMENTS_ATTESTATION=200; SEQUENCE_DOCUMENTS_ATTESTATION_NAME="Document Certification Initiated";
+  SEQUENCE_MED_REFERRED=300; SEQUENCE_MED_REFERRED_NAME="Referred For Medical Test";
+  SEQUENCE_MED_FIT=400; SEQUENCE_MED_FIT_NAME = "Medically Fit";
+ SEQUENCE_MED_UNFIT=500; SEQUENCE_MED_UNFIT_NAME = "Medically Unfit";
+ SEQUENCE_VISA_DOC_SUBMITTED=600; SEQUENCE_VISA_DOC_SUBMITTED_NAME = "Visa Documents submitted";
+ SEQUENCE_VISA_ISSUED=700;SEQUENCE_VISA_ISSUED_NAME = "Visa Issued";
+ SEQUENCE_VISA_REJECTED=800; SEQUENCE_VISA_REJECTED_NAME = "Visa Rejected";
+ SEQUENCE_EMIG_APP_LODGED=900; SEQUENCE_EMIG_APP_LODGED_NAME = "Emigration application lodged";
+ SEQUENCE_EMIG_DOC_LODGED=1000;SEQUENCE_EMIG_DOC_LODGED_NAME = "Emigration Documents lodged";
+ SEQUENCE_EMIG_CLEARED=1100; SEQUENCE_EMIG_CLEARED_NAME = "Emigration Cleared";
+ SEQUENCE_EMIG_DENIED=1200; SEQUENCE_EMIG_DENIED_NAME = "Emigration Denied";
+ SEQUENCE_TRAVEL_BOOKED=1300; SEQUENCE_TRAVEL_BOOKED_NAME = "Ticket booked";
+ SEQUENCE_TRAVELED=1500;SEQUENCE_TRAVELED_NAME = "Traveled";
 
   constructor(
       private toastr: ToastrService, private confirm: ConfirmService
@@ -119,28 +123,16 @@ SEQUENCE_MED_FIT=400;
     }
 
   ngOnInit(): void {
-    this.deploysSelected=[];
-    this.getDeployments();
-
-    this.activatedRoute.data.subscribe({
-      next: data => this.statusNameAndSeq = data['statusNameAndSeq']
-    })
-        
-    this.getDeploymentStatuses();
+    this.deploysSelected = [];
     this.title = "active";
-  }
 
-  getDeployStatusAndSeq() {
-    this.service.getDepStatusAndNames().subscribe({
-      next: (response) => this.statusNameAndSeq = response
+    this.activatedRoute.data.subscribe(data => {
+      this.deploys = data['deps'].result,
+      this.pagination = data['deps'].pagination,
+      this.totalCount = data['deps'].count,
+      this.statusNameAndSeq = data['statusNameAndSeq'],
+      this.depStatuses = data['depStatuses']
     })
-  }
-
-  getDeploymentStatuses() {
-    this.service.getDeployStatuses().subscribe({
-      next: response => this.depStatuses = response,
-      error: error => console.log(error)
-    });
   }
 
   onPageChanged(event: any){
@@ -155,20 +147,20 @@ SEQUENCE_MED_FIT=400;
 
   getDeployments() {
   
-  var params = this.service.getParams();
-  console.log('params from service:', params);
-   this.service.getDeploymentPagedList(params)?.subscribe({
-    next: response => {
-      if(response !== undefined && response !== null) {
-        this.deploys = response.result;
-        this.totalCount = response?.count;
-        this.pagination = response.pagination;
-      } else {
-        console.log('response is undefined');
-      }
-    },
-    error: error => console.log(error)
-   })
+    var params = this.service.getParams();
+
+    this.service.getDeploymentPagedList(params)?.subscribe({
+      next: response => {
+        if(response !== undefined && response !== null) {
+          this.deploys = response.result;
+          this.totalCount = response?.count;
+          this.pagination = response.pagination;
+        } else {
+          console.log('response is undefined');
+        }
+      },
+      error: error => console.log(error)
+    })
   }
 
   close() {
@@ -237,6 +229,9 @@ SEQUENCE_MED_FIT=400;
       case "candidateName":
         params.candidateName = search;
         break;
+      case "currentStatus":
+        params.currentStatus = search;
+        break;
       default:
         break;
     }
@@ -263,6 +258,7 @@ SEQUENCE_MED_FIT=400;
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
+    this.sequenceSelected = '';
     this.dParams = new deployParams();
     this.service.setParams(this.dParams);
     this.getDeployments();
@@ -343,7 +339,6 @@ SEQUENCE_MED_FIT=400;
         
       })
   }
-
   
   editAttachmentModal(dep: any, item: IDeploymentPendingBriefDto){
 
@@ -371,49 +366,55 @@ SEQUENCE_MED_FIT=400;
     
 }
 
-  verifyNextSequence(existingSeq: number, nextSeqProposed: number): string {
+  verifyNextSequence(existingSeq: string, nextSeqProposed: string): string {
     
-    var thisStage = this.depStatuses.filter(x => x.sequence == existingSeq)[0];
-    var nextStageProposed = this.depStatuses.filter(x => x.sequence == nextSeqProposed)[0];
+    var thisStage = this.depStatuses.filter(x => x.statusName == existingSeq)[0];
+    var nextStageProposed = this.depStatuses.filter(x => x.statusName == nextSeqProposed)[0];
     var ecnrs = this.deploysSelected.filter(x => x.ecnr);
     
     var err="";
+    if(thisStage==null) return "Cannot find this.Stage";
+    
     switch(thisStage.sequence) {
         case this.SEQUENCE_MED_REFERRED:
-            err = nextSeqProposed===this.SEQUENCE_MED_FIT || nextSeqProposed===this.SEQUENCE_MED_UNFIT
+            err = nextSeqProposed===this.SEQUENCE_MED_FIT_NAME || nextSeqProposed===this.SEQUENCE_MED_UNFIT_NAME
               ? "" : "Valid Sequence after Medical Referred is: MEDICALLY FIT or MEDICALLY UNFIT";
             break;
           
         case this.SEQUENCE_MED_FIT:
-          err = nextSeqProposed === this.SEQUENCE_VISA_DOC_SUBMITTED 
+          err = nextSeqProposed === this.SEQUENCE_VISA_DOC_SUBMITTED_NAME 
             ? "Sequence after Medical Fitness is Visa Documents submision": "";
           break;
           
         case this.SEQUENCE_VISA_ISSUED:  //next: Emig or Tkt
-            err = nextSeqProposed===this.SEQUENCE_EMIG_APP_LODGED && ecnrs.length > 0 
+            err = nextSeqProposed===this.SEQUENCE_EMIG_APP_LODGED_NAME && ecnrs.length > 0 
               ? "Atleast one of the selected candidates are ECNR, and does not need Emigration formalities"
-              : nextSeqProposed===this.SEQUENCE_TRAVEL_BOOKED && ecnrs.length === 0 
+              : nextSeqProposed===this.SEQUENCE_TRAVEL_BOOKED_NAME && ecnrs.length === 0 
               ? "Emigration Clearance can be bye-passed only for ECNR candidates"
               : "";
 
             break;
           
         case this.SEQUENCE_EMIG_APP_LODGED:
-            err = nextSeqProposed !== this.SEQUENCE_EMIG_DOC_LODGED 
+            err = nextSeqProposed !== this.SEQUENCE_EMIG_DOC_LODGED_NAME 
               ? "Sequence to follow Emigration application Lodgement is"
               : "EMIGRATION Documents Lodgement"
             break;
         
         case this.SEQUENCE_EMIG_DOC_LODGED:
-            err = nextSeqProposed === this.SEQUENCE_EMIG_CLEARED || nextSeqProposed === this.SEQUENCE_EMIG_DENIED
+            err = nextSeqProposed === this.SEQUENCE_EMIG_CLEARED_NAME || nextSeqProposed === this.SEQUENCE_EMIG_DENIED_NAME
               ? ""
-              : "Sequence after Emigration Document Lodgement is eithr Emigration Cleared Or Emigration Denied"
+              : "Sequence after Emigration Document Lodgement is either Emigration Cleared Or Emigration Denied"
             
             break;
         case this.SEQUENCE_TRAVEL_BOOKED:
-            err = nextSeqProposed === this.SEQUENCE_TRAVELED ? "" : "Sequence after Travel booked is TRAVELED";
+            err = nextSeqProposed === this.SEQUENCE_TRAVELED_NAME ? "" : "Sequence after Travel booked is TRAVELED";
             break;
-        default:
+        
+        case this.SEQUENCE_EMIG_CLEARED:
+              err = nextSeqProposed === this.SEQUENCE_TRAVELED_NAME ? "" : "Sequence after Travel booked is TRAVELED";
+              break;
+            default:
           break;
     }
     
@@ -437,7 +438,6 @@ SEQUENCE_MED_FIT=400;
 
   getNextSeqForNextTransaction(seq: number) {
     var nextSeq = this.depStatuses.find(x => x.sequence == seq)?.nextSequence ?? 0;
-    console.log('Next Sequence for next Transaction:', nextSeq);
     return nextSeq;    
   }
 
@@ -464,12 +464,10 @@ SEQUENCE_MED_FIT=400;
 
   }
 
-  selectionChanged(item: any) {
+  selectionChanged(item: any) { //item is IDeploymentPendingDto
     
-    if(item === undefined) {
-        return;
-    }
-    
+    if(item === undefined) return;
+        
     var checked=false;
 
     checked=item.checked!==true;
@@ -515,35 +513,45 @@ SEQUENCE_MED_FIT=400;
 
     var str = "";
 
-    if(this.sequenceSelected === 0 ) return 'Please select the deployment transaction you want to apply';
+    if(this.sequenceSelected === '' ) return 'Please select the deployment transaction you want to apply';
     
     if(this.deploysSelected.length ===0) return 'Please select the items that you want to apply the transactions';
     
     //verify items selected carry same deployment sequence
-    const distinctCurrentSeqs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
-  
+    const distincts = [...new Set(this.deploysSelected.map(item => item.currentStatus))]; //.deploySequence))]; // [ 'A', 'B'];
+    const distinctCurrentSeqs = [...new Set(distincts)]; //.deploySequence))]; // [ 'A', 'B'];
+    console.log('distinctcurrentseq', distinctCurrentSeqs);
     if(distinctCurrentSeqs.length > 1) return "You can apply a common next sequence to items having same current sequence";
     
-    const distinctCurrentECNRs = [...new Set(this.deploysSelected.map(item => item.deploySequence))]; // [ 'A', 'B'];
+    const distinctCurrentECNRs = [...new Set(this.deploysSelected.map(item => item.currentStatus))];  // .deploySequence))]; // [ 'A', 'B'];
     
     if(distinctCurrentECNRs.length > 1) return "You may not select items having different values of ECNR - if an item has ECNR = true, then there are different yard stick available for next sequence applicability";
     
     //verify sequence selected is valid - there is a specific order of sequences allowed in table deploysselected;
-    var err = this.verifyNextSequence(distinctCurrentSeqs[0], this.sequenceSelected);
+    
+    var proposedSeq=this.depStatuses.filter(x => x.sequence === +this.sequenceSelected)[0];
+    
+    var proposedSeqName = "";
+    if(!proposedSeq) return "failed to get proposed seq ";
+    proposedSeqName = proposedSeq.statusName;
+    
+    console.log('currentSeq:', distinctCurrentSeqs[0], 'proposed Seq:', proposedSeqName);
+
+    var err = this.verifyNextSequence(distinctCurrentSeqs[0], proposedSeqName);
     if(err !== '') return err;
 
     var cities = [... new Set(this.deploysSelected.map(x => x.cityOfWorking))];
 
-    if(this.sequenceSelected===1300 && cities.length > 1) return 'The deployment items selected by you have more than one destination airports to travel to.' 
+    if(this.sequenceSelected=== this.SEQUENCE_TRAVEL_BOOKED_NAME && cities.length > 1) return 'The deployment items selected by you have more than one destination airports to travel to.' 
       + ' Pl select the group with common destination airport, with common airport of Departure also.  Else, ' 
       + 'choose one candidate at a time';
 
     //TRANSACTION DATE FOLLOWS LAST TRANSACTION DATE?
-   
-    const lastTDt = new Date(Math.max(...this.deploysSelected.map(x => x.transactionDate.getTime())));
-    err = lastTDt > this.transDate
+    const lastDATE = Math.max(...this.deploysSelected.map(date => new Date(date.transactionDate).getTime()));
+    //const lastTDt = new Date(Math.max(...this.deploysSelected.map(x => x.transactionDate.getTime())));
+    err = lastDATE > new Date(this.transDate).getTime()
       ? "The selected Transaction date '" + this.transDate + "' is earlier than the last recorded transaction date " + 
-        " of " + lastTDt
+        " of " + lastDATE
       : "";
 
     return err;
@@ -552,16 +560,19 @@ SEQUENCE_MED_FIT=400;
 
   constructDepItemsToAdd(): IDepItemToAddDto[] {
     
+    var id = this.depStatuses.find(x => x.statusName === this.sequenceSelected)?.id!;
     var depItemsToInsert: IDepItemToAddDto[]=[];
+    console.log('id', this.sequenceSelected, id);
 
     this.deploysSelected.forEach(x => {
       var depitem: IDepItemToAddDto = {
         id: 0, depId: x.depId, transactionDate : this.transDate,
-        sequence : this.sequenceSelected, nextSequence: 0,
-        fullPath: ''};
+        sequenceName : this.sequenceSelected, nextSequence: 0,
+        sequence: +this.sequenceSelected, fullPath: ''};
 
       depItemsToInsert.push(depitem);
     })
+
     return depItemsToInsert;
   }
 
@@ -578,7 +589,7 @@ SEQUENCE_MED_FIT=400;
     
     if(depItemsToInsert===null || depItemsToInsert.length===0) return 'failed to construct Dep Items';
 
-    if(this.sequenceSelected===this.SEQUENCE_TRAVEL_BOOKED) {    //ticket booking
+    if(this.sequenceSelected===this.SEQUENCE_TRAVEL_BOOKED_NAME) {    //ticket booking
         var flightItems: ICandiateFlightItem[]=[];
         
         this.deploysSelected.forEach(x => {
@@ -610,7 +621,6 @@ SEQUENCE_MED_FIT=400;
         observableOuter.pipe(
           filter((tkt:IFlightdata) => tkt !==null),
           switchMap((tkt: IFlightdata) => {
-            console.log('flightdata received back from modal:', tkt);
             this.deploysSelected.forEach(x => {     //candidate flight is same, except candidate details differ with each object
               var candFlight: ICandidateFlightGrp = {
                   id: 0, dateOfFlight: tkt!.eTD_Boarding, airlineName: tkt!.airlineName, flightNo: tkt!.flightNo, 
@@ -637,19 +647,18 @@ SEQUENCE_MED_FIT=400;
         }) 
       
       } else {
-        //console.log('depitemstoinsert', depItemsToInsert);
         this.service.InsertDepItems(depItemsToInsert).subscribe({
           next: (itemsAdded:IDeploymentPendingBriefDto[]) => {
             if(itemsAdded === null || itemsAdded.length === 0) {      //returns DeploymentPendngDto[]
                 this.toastr.warning('Failed to insert', 'Failed to insert any dep Transaction');
-                this.sequenceSelected = -1;
+                this.sequenceSelected = '';
                 depItemsToInsert=[];
     
                 this.deploys.forEach(element => {
                   element.checked===false;
                 }); 
     
-                return "failed to insert dep transaactions";
+                return "failed to insert dep transactions";
           
               } else {
                   this.UpdateDeploymentDOM(itemsAdded);
@@ -661,34 +670,30 @@ SEQUENCE_MED_FIT=400;
       }
 
     return "";
-
   }
   
   UpdateDeploymentDOM(briefDto: IDeploymentPendingBriefDto[]) {
     for(const x of briefDto) {
       var index = this.deploys.findIndex(y => y.depId == x.depId);
       if(index !==-1) {
-        this.deploys[index]=x;
-        
-        this.newSequence.next(x.deploySequence);
-        x.checked=false;
+        this.deploys[index].currentStatus = x.currentStatus;
+        this.deploys[index].checked = false;
       }
     }
 
     this.deploysSelected=[];
-    this.sequenceSelected=-1;
+    this.sequenceSelected='';
 
     this.toastr.success('Success', 'Inserted ' + briefDto.length + ' number of deployment transactions');
   }
 
   selected(value:any):void {
-    this.sequenceSelected = value;
+    this.sequenceSelected = value.currentStatus;
   }
 
   showTicketClicked(event: any) {   //value emitted is CVRefId
     
   }
-
 
   candidateFlightDelete(candidateFlightId: any) {
     var id: number = candidateFlightId;
@@ -720,5 +725,19 @@ SEQUENCE_MED_FIT=400;
       })
   }  
   
+  filterData() {
+    var stStatus = this.statusNameAndSeq.filter(x => x.name === this.sequenceSelected).map(x => x.name)[0];
+    this.deploys = this.deploys.filter(x => x.currentStatus === stStatus);
+  }
+
+  houseKeeping() {
+
+    this.service.housekeeping().subscribe({
+      next: (response: IReturnStringsDto) => {
+        this.toastr.warning(response.errorString, 'success')
+      }
+    })
+    
+  }
 }   
 

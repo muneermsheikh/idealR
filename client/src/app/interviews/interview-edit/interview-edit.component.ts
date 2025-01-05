@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
+import { filter, switchMap } from 'rxjs';
 import { IIntervw } from 'src/app/_models/hr/intervw';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 import { InterviewService } from 'src/app/_services/hr/interview.service';
 
 @Component({
@@ -14,8 +16,8 @@ export class InterviewEditComponent implements OnInit{
 
   interview: IIntervw | undefined;
 
-  constructor(private fb: FormBuilder, private activatedRoute: ActivatedRoute, 
-    private service: InterviewService, private toastr: ToastrService) {}
+  constructor(private fb: FormBuilder, private activatedRoute: ActivatedRoute, private router: Router,
+    private service: InterviewService, private toastr: ToastrService, private confirm: ConfirmService) {}
   
   bsValueDate = new Date();
 
@@ -39,4 +41,27 @@ export class InterviewEditComponent implements OnInit{
     })
   }
 
+  deleteInterview() {
+
+      var confirmMsg = 'confirm delete this Interview?. WARNING: this cannot be undone';
+
+      const observableInner = this.service.deleteInterview(this.interview!.id);
+      const observableOuter = this.confirm.confirm('confirm Delete', confirmMsg);
+
+      observableOuter.pipe(
+          filter((confirmed) => confirmed),
+          switchMap(() => {
+            return observableInner
+          })
+      ).subscribe(response => {
+        if(response) {
+          this.toastr.success('Interview deleted', 'deletion successful');
+          this.router.navigateByUrl('/interviews');
+        } else {
+          this.toastr.error('Error in deleting the interview', 'failed to delete')
+        }
+        
+      });
+
+  }
 }

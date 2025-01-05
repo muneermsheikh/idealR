@@ -15,6 +15,7 @@ namespace api.DTOs.HR
         public bool ExceptionApproved {get; set;}
         public string ExceptionApprovedBy {get; set;}
         public DateTime ExceptionApprovedOn {get; set;}
+        public string SalaryOffered {get; set;}
         public bool ChecklistedOk {get; set;}
         public bool RequireInternalReview {get; set;}
         //following members additional

@@ -49,7 +49,6 @@ export class CandidateAssessmentService {
       )
      }
 
-
     updateCandidateAssessment(assessment: ICandidateAssessment) {
         return this.http.put<boolean>(this.apiUrl + 'CandidateAssessment/assessment', assessment);
       }
@@ -62,7 +61,7 @@ export class CandidateAssessmentService {
       return this.http.delete<boolean>(this.apiUrl + 'CandidateAssessment/assessment/' + assessmentId);
     }
 
-    getCandidateAssessment(candidateid: number, orderitemid: number) {
+    getCandidateChecklistAndAssessment(candidateid: number, orderitemid: number) {
 
       return this.http.get<ICandidateAssessmentAndChecklistDto> (this.apiUrl + 
           'CandidateAssessment/assessmentandchecklist/' + candidateid + '/' + orderitemid).pipe(
@@ -83,17 +82,19 @@ export class CandidateAssessmentService {
       
     }
     
-    
     insertNewCVAssessment(requireReview: boolean, candidateId: number, orderItemId: number) {
       return this.http.post<ICandidateAssessmentWithErrorStringDto>(this.apiUrl + 
         'CandidateAssessment/assess/' + requireReview + '/' + candidateId + '/' + orderItemId, {});
     }
-
     
     deleteAssessment(assessmentid: number) {
       return this.http.delete<boolean>(this.apiUrl + 'candidateassessment/assessment/' + assessmentid);
     }
 
+    generateCVAssessment(candidateid: number, orderitemid: number) {
+      return this.http.get<ICandidateAssessment>(this.apiUrl + 'CandidateAssessment/generate/' 
+        + candidateid + '/' + orderitemid);
+    }
   
 }
 

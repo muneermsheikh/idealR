@@ -3,6 +3,7 @@ using System.Data.Common;
 using api.Data;
 using api.DTOs.Admin;
 using api.Entities.Admin.Client;
+using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Entities.Master;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +81,7 @@ namespace api.Extensions
 
                 ProfessionName = query.ProfessionName;
                 var lng = query.CategoryRef.Length;
-                var cutLength = lng > 25 ? 25 : lng;
+                var cutLength = lng > 50 ? 50 : lng;
                 CategoryRef = query.CategoryRef[..cutLength];
                 ProfessionId = query.ProfessionId;
                 
@@ -100,7 +101,7 @@ namespace api.Extensions
                         case "alternateemailid": case "alternate email": case "alternte emailid": case "alternate email id": intAlternateEmail=col;break;
                         case "alternatephone": intAlternatePhone=col;break;
                         case "dob": case "date of birth": intDob=col;break;
-                        case "mobileno": case "mobile no": case "mobile no.": intMobileNo=col;break;
+                        case "phone number": intMobileNo=col;break;
                         case "alternatenumber": case "alternate number": case "alternate contact no.": case "alternate contact no": intAlternateNo=col;break;
                         case "resumetitle": intResumeTitle=col;break;
                         case "keyskills": intKeySkills=col;break;
@@ -143,7 +144,6 @@ namespace api.Extensions
                     City = intCurrentLocation == 0 ? "" : worksheet.Cells[row, intCity == 0 ? intCurrentLocation : intCity].Value?.ToString() ?? "";
                     ResumeId = intResumeId == 0 ? "" : worksheet.Cells[row, intResumeId].Value?.ToString() ?? "";
                     Designation = intDesignation == 0 ? "" : worksheet.Cells[row, intDesignation].Value?.ToString() ?? "";
-                    
                     var newProspectiveCandidate = new ProspectiveCandidate
                     {
                         CategoryRef = CategoryRef,
@@ -157,7 +157,7 @@ namespace api.Extensions
                         Age = Age.Length > 10 ? Age[..10] : Age,
                         Address = Address,
                         City = City,
-                        PhoneNo = MobileNo.Length > 15 ? MobileNo[..15] : MobileNo,
+                        PhoneNo =  MobileNo.Length > 20 ? MobileNo[..20] : MobileNo,
                         AlternateNumber = AlternateNumber,
                         CurrentLocation = CurrentLocation,
                         Email = EmailId,
@@ -216,7 +216,6 @@ namespace api.Extensions
             return dtoErr;
         }
 
-        
         public static async Task<ReturnStringsDto> ReadNaukriProspectiveCandidateDataExcelFile(this DataContext context, string filePath, string Username)
         {
             // var CategoryRef - label in row2, column1, data in row2, column 2  //this is redendent
@@ -247,15 +246,34 @@ namespace api.Extensions
                 var Source="";
                 int OrderItemId = 0, ProfessionId = 0;
                 int intOrderItemIdRow=2;
-                for(int col=1; col <= 3; col++){
+                for(int col=1; col < 4; col++){
                     try {
                         var colTitle = worksheet.Cells[intOrderItemIdRow, col].Value?.ToString();
                         switch (colTitle.ToLower()) {
-                            case "orderitemid": case "order item id": case "orderitem id": 
-                                OrderItemId=Convert.ToInt32((worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "0").ToString()); 
+                            case "categoryref": case "category ref": 
+                                CategoryRef = worksheet.Cells[intOrderItemIdRow, col+1].Value.ToString() ?? "";
+                                if(string.IsNullOrEmpty(CategoryRef)) {
+                                    dtoErr.ErrorString = "Category Ref not defined";
+                                } else {
+                                    int position = CategoryRef.IndexOf("-");
+                                    if(position==-1) {
+                                        dtoErr.ErrorString = "Category Ref should contain a hyphen '-' separating order no with category SrNo";
+                                    } else {
+                                        var qry = await (from item in context.OrderItems where item.SrNo == Convert.ToInt32(CategoryRef.Substring(position+1))
+                                            join order in context.Orders on item.OrderId equals order.Id where order.OrderNo == Convert.ToInt32(CategoryRef.Substring(position+1))
+                                            select new {ProfessionId = item.ProfessionId, OrderItemId=item.Id}).FirstOrDefaultAsync();
+                                    if(qry == null) {
+                                        dtoErr.ErrorString = "Invalid Category Ref";
+                                    } else {
+                                        OrderItemId = qry.OrderItemId;
+                                        ProfessionId = qry.ProfessionId;
+                                    }
+                                }       
+                                }
+                            if(!string.IsNullOrEmpty(dtoErr.ErrorString)) return dtoErr;
                                 break;
                             case "source":
-                                Source = (worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "Times Job").ToString(); 
+                                Source = (worksheet.Cells[intOrderItemIdRow, col+1].Value ?? "Naukri.Com").ToString(); 
                                 break;
                             default:break;
                         }
@@ -285,7 +303,7 @@ namespace api.Extensions
 
                 ProfessionName = query.ProfessionName;
                 var lng = query.CategoryRef.Length;
-                var cutLength = lng > 25 ? 25 : lng;
+                var cutLength = lng > 50 ? 50 : lng;
                 CategoryRef = query.CategoryRef[..cutLength];
                 ProfessionId = query.ProfessionId;
                 
@@ -418,7 +436,6 @@ namespace api.Extensions
 
             return dtoErr;
         }
-
 
         public static async Task<string> ReadCustomerDataExcelFile(this DataContext context, string filePath, string Username)
         {
@@ -657,5 +674,95 @@ namespace api.Extensions
             return Error;
         }
         
+        public static async Task<ReturnStringsDto> ReadProfessionDataExcelFile(this DataContext context, string filePath, string Username)
+        {
+            //column titles in row 4, data starts from row 5
+            var dtoErr = new ReturnStringsDto();
+
+            int rowTitle=1;   //data starts from this row
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(new System.IO.FileInfo(filePath)))
+            {
+                int rows=0, columns=0;
+                ExcelWorksheet worksheet;
+                try{
+                    worksheet = package.Workbook.Worksheets["Sheet1"];
+                    rows = worksheet.Dimension.Rows;
+                    columns = worksheet.Dimension.Columns;
+                } catch (Exception ex) {
+                    dtoErr.ErrorString = ex.Message;
+                    return dtoErr;
+                }
+                
+                //DataTable dataTable = new();
+                
+                int intProfessionName=0, intProfessionGroup=0;
+    
+                for(int col=1; col <= columns; col++) {
+                    var colTitle = worksheet.Cells[rowTitle, col].Value?.ToString();
+                    switch (colTitle?.ToLower()) {
+                        case "professionname" :case "profession name": intProfessionName=col; break;
+                        case "professiongroup": case "profession group": intProfessionGroup=col;break;
+                        default:break;
+                    }
+                }
+                
+                if (intProfessionGroup == 0 || intProfessionGroup == 0) {
+                    dtoErr.ErrorString = "Failed to identify Field Names in the file";
+                    return dtoErr;
+                }
+
+                string ProfessionName = "", ProfessionGroup = "";
+                    
+                for (int row = rowTitle+1; row <= rows; row++)
+                {
+                    ProfessionName = intProfessionName == 0 ? "" : worksheet.Cells[row, intProfessionName].Value?.ToString() ?? "";
+                    ProfessionGroup = intProfessionGroup == 0 ? "" : worksheet.Cells[row, intProfessionGroup].Value?.ToString() ?? "";
+
+                    var newProfession = new Profession
+                    {
+                        ProfessionName = ProfessionName,
+                        ProfessionGroup = ProfessionGroup
+                    };
+
+                    context.Entry(newProfession).State = EntityState.Added;
+                }
+            }
+
+            bool isSaved = false;
+            int recAffected = 0;
+            do
+                {
+                    try
+                    {
+                        recAffected += await context.SaveChangesAsync();
+                        isSaved = true;
+                        dtoErr.SuccessString = recAffected + " records copied";
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        foreach (var entry in ex.Entries) {
+                            Console.Write("Profession Exception - " + ex.InnerException.Message);
+
+                            entry.State = EntityState.Detached; // Remove from context so won't try saving again.
+                            dtoErr.ErrorString += ex.Message;
+                        }
+                    }
+                    catch (DbException ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+
+                    catch (Exception ex)
+                    {
+                        dtoErr.ErrorString += ex.Message;
+                    }
+                }
+            while (!isSaved);
+
+            return dtoErr;
+        }
+
+
     }
 }

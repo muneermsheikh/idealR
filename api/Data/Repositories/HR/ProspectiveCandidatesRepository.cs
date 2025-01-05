@@ -8,7 +8,10 @@ using api.Interfaces.HR;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.HR
@@ -180,7 +183,7 @@ namespace api.Data.Repositories.HR
 
         }
 
-        public async Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList(ProspectiveCandidateParams pParams)
+        public async Task<PagedList<ProspectiveBriefDto>> GetProspectivePagedList([FromQuery]ProspectiveCandidateParams pParams)
         {
             var qry = _context.ProspectiveCandidates.AsQueryable();
             var contactresults = new List<string>();
@@ -194,26 +197,23 @@ namespace api.Data.Repositories.HR
                 if(!string.IsNullOrEmpty(pParams.PhoneNo)) qry = qry.Where(x => x.PhoneNo ==pParams.PhoneNo);
                 if(!string.IsNullOrEmpty(pParams.CandidateName)) qry = qry.Where(x => x.CandidateName.Contains(pParams.Search));
                 
-                if(!string.IsNullOrEmpty(pParams.StatusClass)) {
-                    if(pParams.StatusClass=="Active") {
-                        contactresults.Add("wrong Number");
-                        contactresults.Add("not responding");
-                        contactresults.Add("will revert later");
-                        contactresults.Add(null);
-                    } else if(pParams.StatusClass == "Declined") {
-                        contactresults.Add("declined for overseas");
-                        contactresults.Add("declined-family issues");
-                        contactresults.Add("declined-low remuneration");
-                        contactresults.Add("declined-sc not accepted");
-                    } else if(pParams.StatusClass=="Interested") {
-                        contactresults.Add("interested, but negotiate salary");
-                        contactresults.Add("interested, but doubtful");
-                        contactresults.Add("interested, and keen");
-                    } 
-
-                    if(pParams.Status != "all") qry = qry.Where(x => contactresults.Contains(x.Status.ToLower()));
+                switch(pParams.StatusClass.ToLower()) {
+                    case "active":
+                        qry = qry.Where(x => new List<string>{"wrong Number", "not responding", "will revert later", null}.Contains(x.Status));
+                        //contactresults.AddRange(new List<string>{"wrong Number", "not responding", "will revert later", null});
+                        break;
+                    case "declined":
+                        qry = qry.Where(x => x.Status.ToLower().Contains("declined"));
+                        //contactresults.AddRange(new List<string>{"declined for overseas", "declined-family issues", "declined-low remuneration", "declined-sc not accepted"});
+                        break;
+                    case "interested":
+                        qry = qry.Where(x => new List<string>{"interested, but negotiate salary", "interested, but doubtful", "interested, and keen"}.Contains(x.Status));
+                        //contactresults.AddRange(new List<string>{"interested, but negotiate salary", "interested, but doubtful", "interested, and keen"});
+                        break;
+                    default:
+                        break;
                 }
-               
+                
                 if(pParams.DateRegistered.Year > 2000) qry = qry.Where(x => x.DateRegistered == pParams.DateRegistered);
                
                 qry = pParams.Sort.ToLower() switch
@@ -232,11 +232,58 @@ namespace api.Data.Repositories.HR
             var paged = await PagedList<ProspectiveBriefDto>.CreateAsync(qry.AsNoTracking()
                     .ProjectTo<ProspectiveBriefDto>(_mapper.ConfigurationProvider),
                     pParams.PageNumber, pParams.PageSize);
+                    
             foreach(var pg in paged) {
                 if(pg.StatusDate.Year < 1000) pg.StatusDate=pg.DateRegistered;
             }
             return paged;
         }
+
+        public async Task<ICollection<ProspectiveBriefDto>> GetProspectiveList(string orderno, string statusClass)
+        {
+            var qry = _context.ProspectiveCandidates.AsQueryable();
+            
+            if(!string.IsNullOrEmpty(orderno) ) qry = qry.Where(x => x.CategoryRef.StartsWith(orderno));
+            
+            switch(statusClass.ToLower()) {
+                case "active":
+                    qry = qry.Where(x => new List<string>{"wrong Number", "not responding", "will revert later", null}.Contains(x.Status));
+                    //contactresults.AddRange(new List<string>{"wrong Number", "not responding", "will revert later", null});
+                    break;
+                case "declined":
+                    qry = qry.Where(x => x.Status.ToLower().Contains("declined"));
+                    //contactresults.AddRange(new List<string>{"declined for overseas", "declined-family issues", "declined-low remuneration", "declined-sc not accepted"});
+                    break;
+                case "interested":
+                    qry = qry.Where(x => new List<string>{"interested, but negotiate salary", "interested, but doubtful", "interested, and keen"}.Contains(x.Status));
+                    //contactresults.AddRange(new List<string>{"interested, but negotiate salary", "interested, but doubtful", "interested, and keen"});
+                    break;
+                default:
+                    break;
+            }
+                          
+            /* qry = pParams.Sort.ToLower() switch
+            {
+                "date" => qry.OrderBy(x => x.DateRegistered).ThenBy(x => x.Status),
+                //"city" => (IQueryable<ProspectiveCandidate>)qry.OrderBy(x => x.City).ThenBy(x => x.Status),
+                "status" => qry.OrderBy(x => x.Status).ThenBy(X => X.CategoryRef),
+                "name" => (IQueryable<ProspectiveCandidate>)qry.OrderBy(x => x.CandidateName).ThenBy(x => x.Status),
+                "categoryref" => qry.OrderBy(x => x.CategoryRef).ThenBy(x => x.Status),
+                _ => qry.OrderBy(x => x.CategoryRef).ThenBy(x => x.Status),
+            }; */
+            
+            var totalCount = await qry.CountAsync();
+
+            var lst = await qry.ToListAsync();            
+
+            /*foreach(var pg in lst) {
+                if(pg.StatusDate.Year < 1000) pg.StatusDate=pg.DateRegistered;
+            } */
+            
+            var dto = _mapper.Map<ICollection<ProspectiveBriefDto>>(lst);
+            return dto;
+        }
+
 
         public async Task<ICollection<ProspectiveSummaryDto>> GetProspectiveSummary(ProspectiveSummaryParams pParams)
         {
@@ -385,6 +432,29 @@ namespace api.Data.Repositories.HR
             }
 
             return returnDto;
+        }
+    
+        public async Task<ICollection<ProspectiveHeaderDto>> GetProspectiveHeaders(string status)
+        {
+            var dto = new List<ProspectiveHeaderDto>();
+
+            if(status.ToLower() == "active") {
+    
+                dto = await (from prospect in  _context.ProspectiveCandidates 
+                    where !prospect.Status.ToLower().Contains("declined")
+                select new ProspectiveHeaderDto {
+                    Orderno = prospect.CategoryRef.Substring(0,5)})
+                .Distinct()
+                .ToListAsync();
+            } else {
+                dto = await (from prospect in  _context.ProspectiveCandidates 
+                    where prospect.Status.ToLower().StartsWith(status.ToLower())
+                    select new ProspectiveHeaderDto {Orderno = prospect.CategoryRef.Substring(0,5)})
+                .Distinct()
+                .ToListAsync();
+            }
+
+            return dto;
         }
     }
 }

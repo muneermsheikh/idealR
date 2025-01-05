@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace api.Entities.Admin
 {
     public class IntervwItem: BaseEntity
@@ -12,6 +14,8 @@ namespace api.Entities.Admin
         public int OrderItemId { get; set; }
         public int ProfessionId { get; set; }
         public string ProfessionName { get; set;}   
+        [MaxLength(10)]
+        public string CategoryRef { get; set; }
         public string InterviewMode { get; set; }
         public string InterviewerName { get; set; }
         public int EstimatedMinsToInterviewEachCandidate{ get; set; }=25;

@@ -4,6 +4,7 @@ namespace api.Entities.Finance
 {
     public class FinanceVoucher: BaseEntity
     {
+        public string Section { get; set; }
         public string PartyName { get; set; }
         [MaxLength(1)]
         public string Divn {get; set;}

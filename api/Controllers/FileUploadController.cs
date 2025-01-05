@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using api.DTOs.Admin;
 using api.DTOs.HR;
-using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
 using api.Entities.HR;
@@ -43,6 +42,58 @@ namespace api.Controllers
             _candRepo = candRepo;
             _empRepo = empRepo;
         }
+
+        private async Task<ActionResult> DownloadAttachmentFromFullPathName(UserAttachment attachment)
+        {
+            var location = attachment.UploadedLocation;
+            if(string.IsNullOrEmpty(location)) location = "D:\\IdealR_\\idealR\\api\\Assets\\Images";
+            
+            var FileName = location + "\\" + attachment.Name;
+            
+            if(!System.IO.File.Exists(FileName)) return BadRequest(new ApiException(400, "File not found", "the File " + attachment.Name + " does not exist"));
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(FileName, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
+            var dto = File(bytes, contentType, Path.GetFileName(FileName));
+            
+            return dto;
+        }
+
+        //**TODO** downloadcvfromcandidateId and download File - code repeat
+        
+        [HttpGet("downloadcv/{candidateid:int}")]
+        public async Task<ActionResult> DownloadCVFromCandidateId(int candidateid)
+        {
+            var attachments = await _candRepo.GetUserAttachmentByCandidateId(candidateid);
+            if(attachments == null || attachments.Count == 0) return BadRequest(new ApiException(400, "File Not found", "The candidate has no attachments on record"));
+
+            var attachment = attachments.FirstOrDefault(x => x.AttachmentType.ToLower() == "cv");
+            if(attachment == null) return BadRequest(new ApiException(400, "CV Attachment Not Found", "CV Attachment File Name not present"));
+            
+            var location = attachment.UploadedLocation;
+            if(string.IsNullOrEmpty(location)) location = "D:\\IdealR_\\idealR\\api\\Assets\\Images";
+            
+            var FileName = location + "\\" + attachment.Name;
+            
+            if(!System.IO.File.Exists(FileName)) return BadRequest(new ApiException(400, "File not found", "the File " + attachment.Name + " does not exist"));
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(FileName, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(FileName);
+            var dto = File(bytes, contentType, Path.GetFileName(FileName));
+            
+            return dto;
+        }
+
 
         [HttpGet("downloadattachmentfile/{attachmentid:int}")]
         public async Task<ActionResult> DownloadFile(int attachmentid)
@@ -312,7 +363,6 @@ namespace api.Controllers
             return Ok("");
         }
 
-        
         [HttpPost("naukriprospectiveXLS"), DisableRequestSizeLimit]
         public  async Task<ActionResult<ReturnStringsDto>> ConvertProspectiveDataFromNaukri()
         {
@@ -414,7 +464,7 @@ namespace api.Controllers
                 } 
             }
             
-            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the Customer Data file");
 
             return Ok("");
         }
@@ -475,7 +525,7 @@ namespace api.Controllers
                 } 
             }
             
-            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the Candidate Data file");
 
             return Ok("");
         }
@@ -523,7 +573,7 @@ namespace api.Controllers
                 } 
             }
             
-            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the prospective file");
+            if (!string.IsNullOrEmpty(ErrorString)) throw new Exception("Failed to read and update the Employee Data file");
 
             return Ok("");
         }

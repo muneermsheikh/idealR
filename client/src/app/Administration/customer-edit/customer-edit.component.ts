@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 import { ICustomer } from 'src/app/_models/admin/customer';
 import { User } from 'src/app/_models/user';
 import { CustomersService } from 'src/app/_services/admin/customers.service';
@@ -157,20 +158,21 @@ export class CustomerEditComponent implements OnInit {
     if(formdata.id > 0) {
 
       this.service.updateCustomer(formdata).subscribe({
-        next: (response: string) => {
-          if(response === '' || response === null) {
+        next: (response: IReturnStringsDto) => {
+          console.log('update customer response:', response);
+          if(response.successString !== '') {
             this.toastr.success('The Customer is successfully updated', 'success');
             this.close();
-          } else {
-            this.toastr.warning(response, 'Failed to update the customer')
+          } else if (response.errorString !== '') {
+            this.toastr.warning(response.errorString, 'Failed to update the customer')
           }
         }, error: (err: any) => this.toastr.error(err.error?.details, 'Error')
       })
   } else {
       this.service.register(formdata).subscribe({
-        next: (response: string) => { 
-          if(response !=='') {
-            this.toastr.warning('Failed to insert the the entity','Failure' )
+        next: (response: IReturnStringsDto) => { 
+          if(response.errorString !=='') {
+            this.toastr.warning(response.errorString,'Failure' )
           } else {
             this.toastr.success('The entity was successfully inserted', 'Success')
           }

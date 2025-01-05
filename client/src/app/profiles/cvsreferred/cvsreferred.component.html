@@ -37,9 +37,10 @@
     <!-- <div class="stdd fSmall w10 mx-1"></div> -->
     <div class="lbl w50 mx-1">App No</div>
     <div class="lbl w130 mx-1">Candidate Name</div>
-    <div class="lbl w300 mx-1">Category Ref</div>
+    <div class="lbl w200 mx-1">Category Ref</div>
+    <div class="lbl w150 mx-1">Customer Name</div>
     <div class="lbl w100 mx-1">Referred On</div>
-    <div class="lbl w150 mx-1">Selection Decision</div>
+    <div class="lbl w100 mx-1">Selection Decision</div>
     <div class="lbl w100 mx-1">Sel Decision Dt</div>
 </div>
 
@@ -55,6 +56,7 @@
            (downloadEvent)="downloadFileEvent($event)" 
            (cvCheckedEvent)="cvCheckedEvent($event)"
            (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
+           (deleteEvent)="deleteClicked($event)"
            [cv]="cv" 
       ></app-cvreferred-line>
  </div>

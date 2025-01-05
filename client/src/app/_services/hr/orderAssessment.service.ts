@@ -11,6 +11,8 @@ import { IOrderAssessmentItem } from 'src/app/_models/admin/orderAssessmentItem'
 import { IOrderAssessmentItemQ } from 'src/app/_models/admin/orderAssessmentItemQ';
 import { IContractReviewItemDto } from 'src/app/_dtos/orders/contractReviewItemDto';
 import { IAssessmentQBank } from 'src/app/_models/admin/assessmentQBank';
+import { IOrderAssessmentItemHeaderDto } from 'src/app/_dtos/admin/orderAssessmentItemHeaderDto';
+import { ISingleStringDto } from 'src/app/_dtos/admin/singleStringDto';
 
 @Injectable({
   providedIn: 'root'
@@ -56,8 +58,8 @@ export class OrderAssessmentService {
       return this.http.post<IOrderAssessment>(this.apiUrl + 'OrderAssessment/assessment', assessment);
     }
     
-    getOrderAssessmentItemQs(orderitemid: number) {
-      var item = this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentQs/' + orderitemid);
+    getOrderAssessmentItemQsFromOrderItemId(orderitemid: number) {
+      var item = this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentItemQsFromOrderItemId/' + orderitemid);
       return item;
     }
 
@@ -88,5 +90,17 @@ export class OrderAssessmentService {
     
     getContractReviewItemDto(orderitemid: number) {
       return this.http.get<IContractReviewItemDto>(this.apiUrl + 'ContractReview/')
+    }
+
+    getOrderAssessmentItemHeaderFromProfessionGroup(profGroup: string) {
+      return this.http.get<IOrderAssessmentItemHeaderDto[]>(this.apiUrl + 'OrderAssessment/assessmentItemHeaders/' + profGroup);
+    }
+
+    getOrderAssessmentItemQsFromId(orderassessmentitemid: number) {
+      return this.http.get<IOrderAssessmentItemQ[]>(this.apiUrl + 'OrderAssessment/orderassessmentItemQs/' + orderassessmentitemid);
+    }
+
+    getAndSetProfessionGroupFromProfId(professionid: number, orderassessmentitemId: number) {
+        return this.http.get<ISingleStringDto>(this.apiUrl + 'OrderAssessment/getAndSetProfessionGroup/' + professionid + '/' + orderassessmentitemId);
     }
 }

@@ -31,6 +31,26 @@ namespace api.Controllers
             
         }
 
+       [HttpGet("list/{orderno}/{status}")]
+        public async Task<ActionResult<ICollection<ProspectiveBriefDto>>> GetProspectiveList(string orderno, string status)
+        {
+            var pagedList = await _ProspectiveRepo.GetProspectiveList(orderno, status);
+
+            if(pagedList.Count ==0) return Ok(null);    //  return BadRequest(new ApiException(400,"Bad Request", "failed to retrieve matching orders"));
+
+            return Ok(pagedList);
+            
+        }
+
+       
+        [HttpGet("headers/{status}")]
+        public async Task<ActionResult<ICollection<ProspectiveHeaderDto>>> GetProspectiveHeaders(string status)
+        {
+            var dto = await _ProspectiveRepo.GetProspectiveHeaders(status);
+
+            return Ok(dto);
+        }
+
         [HttpDelete("delete/{prospectiveid}")]
         public async Task<ActionResult<bool>> DeleteProspectiveCandidate(int prospectiveid)
         {

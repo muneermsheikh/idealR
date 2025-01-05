@@ -4,6 +4,8 @@ export interface IDepItemToAddDto
     depId: number;
     transactionDate: Date;
     sequence: number;
+
+    sequenceName: string;
     nextSequence: number;
     fullPath: string;
 }
@@ -14,6 +16,8 @@ export class DepItemToAddDto
     depId = 0;
     transactionDate = new Date();
     sequence = 0;
+    
+    sequenceName = '';
     nextSequence = 0;
     fullPath = '';
 }

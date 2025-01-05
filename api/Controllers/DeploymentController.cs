@@ -305,6 +305,13 @@ namespace api.Controllers
 
         }
 
+        [HttpGet("Housekeeping")]
+        public async Task<ReturnStringsDto> Housekeeping()
+        {
+            var dto = await _depRepo.DoHousekeepingOfDeployments();
+
+            return dto;
+        }
        
     }
 }

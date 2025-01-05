@@ -1,7 +1,6 @@
 using api.DTOs.HR;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
-using api.Entities.Master;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;

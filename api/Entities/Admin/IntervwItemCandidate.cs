@@ -4,6 +4,7 @@ namespace api.Entities.Admin
 {
     public class IntervwItemCandidate: BaseEntity
     {
+        public int IntervwItemId { get; set; }
         public int InterviewItemId { get; set; }
         public DateTime ScheduledFrom { get; set; }= DateTime.UtcNow;
         //public DateTime ScheduledUpto { get; set; }

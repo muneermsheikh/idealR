@@ -5,6 +5,7 @@ namespace api.Entities.Admin.Order
         public int OrderAssessmentId { get; set; }
         public string AssessmentRef { get; set; }
         public int OrderItemId {get; set;}
+        public string ProfessionGroup {get; set;}
         public string CustomerName { get; set; }
         public string ProfessionName { get; set; }
         public int ProfessionId { get; set; }

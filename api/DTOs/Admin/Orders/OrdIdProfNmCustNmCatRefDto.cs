@@ -9,5 +9,6 @@ namespace api.DTOs.Admin.Orders
         public int ApplicationNo { get; set; }
         public string CandidateName { get; set; }
         public string HrExecUsername { get; set; }
+        public string SalaryRange { get; set; }
     }
 }

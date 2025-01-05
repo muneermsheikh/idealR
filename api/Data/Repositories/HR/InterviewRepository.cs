@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data.Common;
 using api.DTOs.Admin;
 using api.DTOs.HR;
@@ -102,6 +101,7 @@ namespace api.Data.Repositories.HR
                         ProfessionName = newitem.ProfessionName,
                         InterviewMode = newitem.InterviewMode,
                         InterviewerName = newitem.InterviewerName,
+                        CategoryRef = newitem.CategoryRef ?? existing.OrderNo + "-" ,
                         EstimatedMinsToInterviewEachCandidate = newitem.EstimatedMinsToInterviewEachCandidate 
                     };
 
@@ -271,6 +271,51 @@ namespace api.Data.Repositories.HR
             return dtoErr;
         }
 
+        public async Task<ICollection<InterviewMatchingCategoryDto>> GetInterviewBriefMatching(string categoryName)
+        {
+            var copyCatName = categoryName;
+
+            var strCat = new List<string>();
+            do {
+                int pos = categoryName.IndexOf(",");
+                if(pos > -1) {
+                    strCat.Add(categoryName[..pos]);
+                } else {
+                    strCat.Add(categoryName);
+                    categoryName="";
+                    continue;
+                }
+                
+                categoryName = categoryName[(pos + 1)..];
+            } while (categoryName.Length > 0);            
+            
+            do {
+                int pos = copyCatName.IndexOf(" ");
+                if(pos > -1) {
+                    strCat.Add(copyCatName[..pos]);
+                    
+                } else {
+                    strCat.Add(copyCatName);
+                    copyCatName="";
+                    continue;
+                }
+                
+                copyCatName =copyCatName[(pos + 1)..];
+            } while (copyCatName.Length > 0);          
+
+            var dto = new List<InterviewMatchingCategoryDto>();
+            foreach(var cat in strCat) {
+                var query = await (from item in _context.IntervwItems where item.ProfessionName.Contains(cat)
+                    join interview in _context.Intervws on item.IntervwId equals interview.Id
+                    select new InterviewMatchingCategoryDto {Id = item.Id, Checked=false, CategoryName=item.ProfessionName,
+                        CustomerName = interview.CustomerName, InterviewDateFrom = interview.InterviewDateFrom}
+                    ).FirstOrDefaultAsync();
+                if(query != null) dto.Add(query);
+            }
+
+            return dto;        
+        }
+        
         public async Task<PagedList<InterviewBriefDto>> GetInterviewPagedList(InterviewParams iParams)
         {
             var query = _context.Intervws.OrderByDescending(x => x.InterviewDateFrom).AsQueryable();
@@ -300,18 +345,21 @@ namespace api.Data.Repositories.HR
                 var existingOrderItemIds = itemIdsIncluded.Select(x => x.OrderItemId).ToList();
                 var orderitemsMissing = await _context.OrderItems
                     .Where(x => x.OrderId==interview.OrderId && !existingOrderItemIds.Contains(x.Id))
-                    .Select(x => new {x.Id, x.ProfessionId, x.Profession.ProfessionName}).ToListAsync();
+                    .Select(x => new {x.Id, x.ProfessionId, x.Profession.ProfessionName, 
+                    CategoryRef = OrderNo + "-" + x.SrNo}).ToListAsync();
+                
                 //insert above missing orderitems
                 if(orderitemsMissing.Count > 0) {
                     foreach(var item in orderitemsMissing) {
                         var itemToInsert = new IntervwItem{EstimatedMinsToInterviewEachCandidate=25, 
                             InterviewerName="To Be Announced", InterviewItemCandidates=new List<IntervwItemCandidate>(), 
                             InterviewMode="Personal", InterviewVenue="To Be Announced", IntervwId=interview.Id, 
-                            OrderItemId=item.Id, ProfessionId=item.ProfessionId, ProfessionName=item.ProfessionName};
+                            OrderItemId=item.Id, ProfessionId=item.ProfessionId, ProfessionName=item.ProfessionName,
+                            CategoryRef = item.CategoryRef};
                         _context.Entry(itemToInsert).State = EntityState.Added;
-                        await _context.SaveChangesAsync();
                         interview.InterviewItems.Add(itemToInsert);
                     }
+                    await _context.SaveChangesAsync();
                 }
                 dtoErr.intervw=interview;
                 return dtoErr;
@@ -332,17 +380,19 @@ namespace api.Data.Repositories.HR
             var items = await(from item in _context.OrderItems 
                 where item.OrderId == interview.OrderId 
             join cat in _context.Professions on item.ProfessionId equals cat.Id
-            select new IntervwItem {
-                
+            select new IntervwItem {                
                 OrderItemId = item.Id, ProfessionId = item.ProfessionId, 
                 IntervwId = interview.Id, ProfessionName = cat.ProfessionName,
                 InterviewMode = "Personal", InterviewVenue="To be announced", 
-                InterviewerName="To be announced",
+                InterviewerName="To be announced", CategoryRef = OrderNo + "-" + item.SrNo, 
                 InterviewItemCandidates =candidates
             }).ToListAsync();
 
             if(items.Count > 0) {
-                foreach(var item in items) {interview.InterviewItems.Add(item);}
+                var interviewitems = new List<IntervwItem>();
+                foreach(var item in items) {interviewitems.Add(item);}
+
+                interview.InterviewItems=interviewitems;
             }
 
             dtoErr.intervw = interview;
@@ -374,60 +424,62 @@ namespace api.Data.Repositories.HR
             return ErrDto;
         }
 
-        public async Task<InterviewItemWithErrDto> SaveNewInterviewItem(IntervwItem interview, string loggedInUsername)
+        public async Task<InterviewItemWithErrDto> SaveNewInterviewItem(IntervwItem interviewItem, string loggedInUsername)
         {
             var ErrDto = new InterviewItemWithErrDto();
 
-            var exists = await _context.IntervwItems.Where(x => x.OrderItemId == interview.OrderItemId).FirstOrDefaultAsync();
+            var exists = await _context.IntervwItems.Where(x => x.OrderItemId == interviewItem.OrderItemId).FirstOrDefaultAsync();
             
             if(exists != null ) {
-                ErrDto.Error="The Interview category already exists.";
+                _context.Entry(exists).State = EntityState.Modified;
+                if(await _context.SaveChangesAsync() >  0) {
+                    ErrDto.intervwItem=exists;
+                } else {
+                    ErrDto.Error = "Failed to update the inteview item";
+                }
                 return ErrDto;
             }
 
             //if prospective candidate, convert to candidates
-            foreach(var cand in interview.InterviewItemCandidates) {
+            foreach(var cand in interviewItem.InterviewItemCandidates) {
                 if(cand.CandidateId == 0) {
                     await _prosRepo.ConvertProspectiveToCandidate(cand.ProspectiveCandidateId, loggedInUsername);
                 }
             }
-             
-            var intervwid = interview.IntervwId;
-            if(intervwid == 0) {
-                var qry = await (from items in _context.OrderItems where items.Id==interview.OrderItemId
-                    join intervw in _context.Intervws on items.OrderId equals intervw.OrderId
+            
+            //if Intervw.Id is not found, create new Intervw
+            var interviewid = interviewItem.IntervwId;
+            if(interviewid == 0) {      //check if the Intervw record exists
+                var qry = await (from item in _context.OrderItems where item.Id==interviewItem.OrderItemId
+                    join intervw in _context.Intervws on item.OrderId equals intervw.OrderId
                     select new {interviewid=intervw.Id}).FirstOrDefaultAsync();
-            }
-            if(intervwid==0) {      //parent object id not available, create one
-                var orderid = await _context.OrderItems.Where(x => x.Id == interview.OrderItemId).Select(x => x.OrderId).FirstOrDefaultAsync();
+                interviewid = qry == null ? 0 : qry.interviewid;
+            } 
+            if(interviewid==0) {      //parent object not available, create one
+                var orderid = await _context.OrderItems.Where(x => x.Id == interviewItem.OrderItemId)
+                    .Select(x => x.OrderId).FirstOrDefaultAsync();
                 if(orderid==0) {
                     ErrDto.Error = "Invalid order id";
                     return ErrDto;}
-
-                intervwid = await _context.Intervws.Where(x => x.OrderId==orderid).Select(x => x.Id).FirstOrDefaultAsync();
-                if(intervwid != 0) interview.IntervwId=intervwid;
-
-                //creaate parent object intervw and attach intervwitem to it.
                 
+                //create parent object and attach interviewItem to it.
                 var intervw = await (from order in _context.Orders where order.Id == orderid 
                     select new Intervw {
-                        OrderId = interview.OrderItemId, CustomerId = order.CustomerId, 
+                        OrderId = orderid, CustomerId = order.CustomerId, 
                         CustomerName= order.Customer.CustomerName, OrderDate = order.OrderDate,
                         InterviewStatus = "Not Started", OrderNo = order.OrderNo,
-                        InterviewItems = new List<IntervwItem>{interview}
+                        InterviewItems = new List<IntervwItem>{interviewItem}
                     }).FirstOrDefaultAsync();
                 _context.Intervws.Add(intervw);
 
              } else {
-                if(interview.IntervwId==0) interview.IntervwId=intervwid;
-
-                _context.IntervwItems.Add(interview);
-                _context.Entry(interview).State = EntityState.Added;
+                interviewItem.IntervwId=interviewid;
+                _context.Entry(interviewItem).State = EntityState.Added;
              }
 
             try {
                 await _context.SaveChangesAsync();
-                ErrDto.intervwItem = interview;
+                ErrDto.intervwItem = interviewItem;
             } catch (DbException ex) {
                 ErrDto.Error = ex.Message;
             } catch (Exception ex) {
@@ -567,5 +619,11 @@ namespace api.Data.Repositories.HR
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to update the filename attachment";
         }
 
+        public async Task<bool> SaveNewInterviewItemCandidate(IntervwItemCandidate itemCandidate)
+        {
+            _context.IntervwItemCandidates.Add(itemCandidate);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

@@ -12,12 +12,16 @@ import { AvailableItemComponent } from './available-item/available-item.componen
 import { FileuploadComponent } from './fileupload/fileupload.component';
 import { CvsreferredComponent } from './cvsreferred/cvsreferred.component';
 import { CvreferredLineComponent } from './cvreferred-line/cvreferred-line.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { CvAssessComponent } from './cv-assess/cv-assess.component';
 
 
 @NgModule({
   declarations: [
     ChecklistModalComponent,
     CandidateEditComponent,
+    CvAssessComponent,
     CvsAvailableToRefComponent,
     ProfileListComponent,
     ProfileItemComponent,
@@ -26,13 +30,14 @@ import { CvreferredLineComponent } from './cvreferred-line/cvreferred-line.compo
     FileuploadComponent,
     CvsreferredComponent,
     CvreferredLineComponent,
-   
+    CvAssessComponent
   ],
   imports: [
     CommonModule,
     ProfileRoutingModule,
     SharedModule,
-    //AccordionModule
+    MatIconModule
+    //, MatButtonModule
   ]
 })
 export class ProfileModule { }

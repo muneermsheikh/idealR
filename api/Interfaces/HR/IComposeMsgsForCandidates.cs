@@ -9,13 +9,8 @@ namespace api.Interfaces.HR
 {
     public interface IComposeMsgsForCandidates
     {
-        MessageWithError AdviseCandidate_MedicallyFit(CandidateAdviseDto candDetail, DateTime TransactionDate);
-        MessageWithError AdviseCandidate_VisaIssued(CandidateAdviseDto candDetail, DateTime TransactionDate); 
-        MessageWithError AdviseCandidate_VisaRejected(CandidateAdviseDto candDetail, DateTime TransactionDate);
-        MessageWithError AdviseCandidate_MedicallyUnfit(CandidateAdviseDto candDetail,DateTime TransactionDate);
-        Task<MessageWithError> AdviseCandidate_TicketBooked(CandidateAdviseDto candDetail, DateTime TransactionDate);
-        MessageWithError AdviseCandidate_EmigrationCleared(CandidateAdviseDto candDetail, DateTime TransactionDate);
         MessageWithError AdviseCandidate_OfferAccepted(CandidateAdviseDto candDetail, DateTime TransactionDate);
+        Task<MessageWithError> AdviseCandidate_DeploymentStatus(CandidateAdviseDto candDetail, DateTime TransactionDate, string ProcessName);
     }
 
 }

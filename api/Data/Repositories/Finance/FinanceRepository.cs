@@ -13,8 +13,10 @@ namespace api.Data.Repositories.Finance
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public FinanceRepository(DataContext context, IMapper mapper)
+        private readonly IConfiguration _config;
+        public FinanceRepository(DataContext context, IMapper mapper, IConfiguration config)
         {
+            _config = config;
             _mapper = mapper;
             _context = context;
         }
@@ -24,7 +26,9 @@ namespace api.Data.Repositories.Finance
         {
             var ct=0;
             try {
+                if(String.IsNullOrEmpty(coa.Section)) coa.Section = _config["RaName"] ?? "";
                 _context.COAs.Add(coa);
+
                 ct = await _context.SaveChangesAsync();
             } catch (DbUpdateException ex) {
                 throw new Exception("Database error - " + ex.Message);

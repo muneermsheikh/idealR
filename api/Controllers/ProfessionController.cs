@@ -39,10 +39,10 @@ namespace api.Controllers
             return Ok(obj);
         }
 
-        [HttpPost("add/{professionName}")]
-        public async Task<ActionResult<Profession>> AddANewProfession(string professionName)
+        [HttpPost("add")]
+        public async Task<ActionResult<Profession>> AddANewProfession(Profession profession)
         {
-            var obj = await _profRepo.AddProfession(professionName);
+            var obj = await _profRepo.AddProfession(profession);
             if(obj==null) return BadRequest(new ApiException(400, "Failed to add the proession", "Failed to add the Profession"));
 
             return Ok(obj);
@@ -75,7 +75,7 @@ namespace api.Controllers
             var errString = await _profRepo.EditProfession(profession);
 
             if(string.IsNullOrEmpty(errString)) 
-                return Ok("Profession updated successfully");
+                return Ok(true);
             
             return BadRequest(new ApiException(400, "Bad Request", errString));
         }

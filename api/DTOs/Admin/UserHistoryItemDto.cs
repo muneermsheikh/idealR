@@ -1,7 +1,7 @@
 namespace api.DTOs.Admin
 {
-    public class CallRecordItemDto
-    {
+    public class UserHistoryItemDto
+        {
         public int Id { get; set; }
         public int CallRecordId { get; set; }
         public DateOnly DateOfContact { get; set; }

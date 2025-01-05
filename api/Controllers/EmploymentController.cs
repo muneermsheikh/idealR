@@ -48,7 +48,7 @@ namespace api.Controllers
 
 
         [HttpPost("savewithupload")]
-        public async Task<ActionResult<string>> UploadAndUpdateInterviewItem()
+        public async Task<ActionResult<int>> UploadAndUpdateInterviewItem()
         {
             var folderName = Path.Combine("Assets", "Employments");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -61,38 +61,36 @@ namespace api.Controllers
                 
                 var files = Request.Form.Files;
                
-                var memoryStream = new MemoryStream();
-
-                var file=files[0];
-
-                if (file.Length > 0) {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    
-                    var fullPath = Path.Combine(pathToSave, fileName);        //physical path
-                    if(System.IO.File.Exists(fullPath)) {
-                        return BadRequest(new ApiException(400, "File already exists", "The file already exists at location " 
-                            + pathToSave + ". Please choose another file or delete the file at the existing location"));
-                    }
-
-                    var dbPath = Path.Combine(folderName, fileName); 
-
-                    using var stream = new FileStream(fullPath, FileMode.Create);
-                    file.CopyTo(stream);
-                    modelData.OfferAttachmentFullPath=fullPath;
-                }
-                var errString="";
+                if(files != null && files.Count > 0) {
+                    var memoryStream = new MemoryStream();
                 
-                if(modelData.Id==0) {
-                    errString = await _employmentRepo.SaveNewEmployment(modelData);
-                } else {
-                    errString = await _employmentRepo.EditEmployment(modelData, User.GetUsername());
-                }
+                    var file=files[0];
 
-                if(!string.IsNullOrEmpty(errString)) {
-                    throw new Exception ( errString);
+                    if (file.Length > 0) {
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        
+                        var fullPath = Path.Combine(pathToSave, fileName);        //physical path
+                        if(System.IO.File.Exists(fullPath)) {
+                            return BadRequest(new ApiException(400, "File already exists", "The file already exists at location " 
+                                + pathToSave + ". Please choose another file or delete the file at the existing location"));
+                        }
+
+                        var dbPath = Path.Combine(folderName, fileName); 
+
+                        using var stream = new FileStream(fullPath, FileMode.Create);
+                        file.CopyTo(stream);
+                        modelData.OfferAttachmentFullPath=fullPath;
+                    }
+                }
+                
+                var id = 0;
+                if(modelData.Id==0) {
+                    id = await _employmentRepo.SaveNewEmployment(modelData);
+                } else {
+                    id = await _employmentRepo.EditEmployment(modelData, User.GetUsername());
                 }
                
-                return "";  
+                return id;  
             }
             catch (Exception ex)
             {

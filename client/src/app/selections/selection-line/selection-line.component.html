@@ -1,0 +1,25 @@
+<div *ngIf="selection" style="margin-left: 15px;">
+    <!-- <input type="checkbox" style="margin-left: 10px;border-color: black;"
+            class="form-check-input w20 hAlignCenter"
+            [(ngModel)]="selection.checked"
+            (click)="selectedClicked()" >
+-->
+    <div class="stdd w50">{{selection.applicationNo}}</div>
+    <div class="stdd w150 cursorPointer" title="email reminder to the candidate for his selection decision"
+        (click)="remindCandidateForDecision()">{{selection.candidateName}}</div>
+    <div class="stdd w200">{{selection.customerName}}</div>
+    <div class="stdd w200">{{selection.categoryRef}}</div>
+
+    <div class="stdd w100">{{selection.selectedOn | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w100">{{selection.referredOn | date: 'dd-MMM-yy'}}</div>
+
+    <div class="stdd w50 cursorPointer yellow" *ngIf="selection.employmentId === 0" (click)="displayEmployment()"
+        title="Employment data not generated for this candidate. Click to generate new">No</div>
+    <div class="stdd w50 cursorPointer" *ngIf="selection.employmentId > 0"  (click)="displayEmployment()"
+        title="Click to view the employment details of this candidate">Yes</div>
+    <button class="btn matContrast fa fa-pencil" title="edit selection detais of this candidate"
+        (click)="editSelection()"></button>
+    <button class="btn matContrast fa fa-trash fa-sm red" title="delete this selection data"
+        (click)="deleteSelection()"></button>
+</div>
+

@@ -7,6 +7,10 @@
 
 <div class="modal-body" *ngIf="coa !== undefined">
 	<div class="stdd">
+		
+		<label class="stdd w150 b">Section</label>
+		<input type="text" [(ngModel)]="coa.section" title="Section" >
+
 		<label class="stdd w150 b">Account Class</label>
 		
 		<ng-select *ngIf="accountClasses" class="stdd w150"  

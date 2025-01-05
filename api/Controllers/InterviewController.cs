@@ -223,6 +223,14 @@ namespace api.Controllers
             return Ok(attendances);
         }
         
+        [HttpPut("addCandidateToInterviewItem")]
+        public async Task<ActionResult<bool>> InsertCandidateToInterviewItem(IntervwItemCandidate itemCandidate)
+        {
+            var obj = await _repo.SaveNewInterviewItemCandidate(itemCandidate);
+
+            return obj;
+        }
+
         [HttpPost("interviewInvitations")]
         public async Task<ActionResult<ICollection<AppId>>> ComposeInterviewInvitationMessages(ICollection<int> InterviewCandidateIds) {
             
@@ -231,6 +239,21 @@ namespace api.Controllers
             if(string.IsNullOrEmpty(errorMsg.ErrorString)) return Ok(errorMsg.ApplicationIds);
 
             return BadRequest(new ApiException(400, "Failed to compose the message", errorMsg.ErrorString));
+        }
+
+        [HttpGet("interviewCategoryMatching/{categoryName}")]
+        public async Task<ActionResult<InterviewMatchingCategoryDto>> GetMatchingInterviewCategories(string categoryName)
+        {
+            var obj = await _repo.GetInterviewBriefMatching(categoryName);
+            return Ok(obj);
+        }
+
+        [HttpPost("addCandidateToInterviewItem")]
+        public async Task<ActionResult<bool>> AddCandidatesToInterviewItem(IntervwItemCandidate itemCand)
+        {
+            var succeeded = await _repo.SaveNewInterviewItemCandidate(itemCand);
+
+            return Ok(succeeded);
         }
     }
 }

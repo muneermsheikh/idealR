@@ -180,7 +180,7 @@ namespace api.Data
             
             builder.Entity<Intervw>().HasIndex(o => o.OrderId).IsUnique();
             builder.Entity<IntervwItem>().HasIndex(x => x.OrderItemId).IsUnique();
-            builder.Entity<IntervwItemCandidate>().HasIndex(x => new{x.CandidateId, x.InterviewItemId})
+            builder.Entity<IntervwItemCandidate>().HasIndex(x => new{x.CandidateId, x.IntervwItemId})
                 .HasFilter("CandidateId <> 0").IsUnique();
             builder.Entity<Intervw>().HasMany(o => o.InterviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<IntervwItem>().HasMany(o => o.InterviewItemCandidates).WithOne().OnDelete(DeleteBehavior.Cascade);

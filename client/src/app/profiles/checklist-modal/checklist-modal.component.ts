@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
+import { IRemunerationDto } from 'src/app/_dtos/admin/remunerationDto';
+import { IChecklistAndCandidateAssessmentDto } from 'src/app/_dtos/hr/checklistAndCandidateAssessmentDto';
 import { IChecklistHRDto } from 'src/app/_dtos/hr/checklistHRDto';
 import { IChecklistHR } from 'src/app/_models/hr/checklistHR';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { ChecklistService } from 'src/app/_services/hr/checklist.service';
+import { RemunerationModalComponent } from 'src/app/orders/remuneration-modal/remuneration-modal.component';
 
 @Component({
   selector: 'app-checklist-modal',
@@ -23,9 +26,10 @@ export class ChecklistModalComponent implements OnInit {
 
   checklistForm?: NgForm;
 
-  constructor(public bsModalRef: BsModalRef, private confirmService: ConfirmService, 
+  constructor(public bsmodalRef: BsModalRef, private confirmService: ConfirmService, 
       private toastr: ToastrService, private checklistService: ChecklistService, 
-      private fb: FormBuilder) { }
+      private fb: FormBuilder, private bsModalService: BsModalService
+      ) { }
 
   ngOnInit(): void {
     if(this.chklst) this.Initialize(this.chklst);
@@ -40,7 +44,7 @@ export class ChecklistModalComponent implements OnInit {
         errString = (this.form.value.charges > 0 
             && this.form.get('charges')?.value !== this.form.get('chargesAgreed')?.value  // this.form.value.chklst!.chargesAgreed 
             && !this.form.value.exceptionApproved )
-            ? "exception approved must accompany exception made by and approved on" : "";
+            ? "If Salary Agreed does not lie within the offered range, it is considered as an exception and this exception must be approved by choosing the option provided for this purpose" : "";
 
         var nonMatching = this.form.value.checklistHRItems // this.chklst?.checklistHRItems
             .filter((x:any) => x.mandatoryTrue && !x.accepts)
@@ -95,13 +99,13 @@ export class ChecklistModalComponent implements OnInit {
     return true;
   }
 
-  Edited() 
+  Update() 
   {
     var err = this.verifyData();
 
     if(err !== '') {
       this.toastr.warning(err);
-      console.log('checklist data not verified', err);
+      //console.log('checklist data not verified', err);
       return;
     }
     //no error
@@ -113,27 +117,41 @@ export class ChecklistModalComponent implements OnInit {
 
     if(formdata.id ===0) {
       this.checklistService.saveNewChecklistHR(formdata).subscribe({
-        next: (response: IChecklistHR) => {
+        next: (response: IChecklistAndCandidateAssessmentDto) => {
+          console.log('checlistmodal update return:', response);
           if(response===null) {
             this.toastr.warning('Failed to insert the new checklist', 'Failure');
           } else {
-            this.toastr.success('saved the new checklist', 'Success');
-            this.updateObj.emit('');    //success
-            this.bsModalRef.hide();
+            this.toastr.success('saved the new checklist and retrieved related assessment', 'Success');
+            this.updateObj.emit(response);    //success
+            this.bsmodalRef.hide();
           }
         },
         error: (err: any) => this.toastr.error(err, 'Error in saving the checklist')
       })
     } else {
-      this.checklistService.updateChecklist(formdata).subscribe({
-        next: () => {
-          this.updateObj.emit("");
-          this.bsModalRef.hide();
+      var chklist: IChecklistHR = {id: formdata.id, candidateId: formdata.candidateId, orderItemId: formdata.orderItemId,
+        userName: formdata.userName, checkedOn: formdata.checkedOn, userComments: formdata.userComments,
+        hRExecUsername: formdata.hrExecUsername, charges: formdata.charges, chargesAgreed: formdata.chargesAgreed,
+        exceptionApproved: formdata.exceptionApproved, exceptionApprovedOn: formdata.exceptionApprovedOn,
+        exceptionApprovedBy: formdata.exceptionApprovedBy, salaryOffered: formdata.salaryOffered,
+        salaryExpectation: formdata.salaryExpectation, checklistedOk: formdata.checklistedOk,
+        checklistHRItems: formdata.checklistHRItems};
+
+      this.checklistService.updateChecklist(chklist).subscribe({
+        next: (response: string) => {
+          if(response==="") {
+            this.updateObj.emit("");
+            this.bsmodalRef.hide();
+          }  else {
+            this.toastr.warning(response, "Failed to update the checklist")
+          }
+          
         },
         error: err => {
           console.log('failed to update the Checklist data', err);
           this.updateObj.emit('failed to update the Checklist ' + err);
-          this.bsModalRef.hide();
+          this.bsmodalRef.hide();
         }
       })
     }
@@ -141,8 +159,7 @@ export class ChecklistModalComponent implements OnInit {
     
   }
 
-  //formArrays
-  
+  //formArrays  
   Initialize(chk: IChecklistHRDto) {
 
     this.form = this.fb.group({
@@ -151,7 +168,8 @@ export class ChecklistModalComponent implements OnInit {
       userLoggedName: chk.userLoggedName, orderItemId: chk.orderItemId, hrExecUsername: chk.hrExecUsername,
       checkedOn: chk.checkedOn, charges: chk.charges, chargesAgreed: chk.chargesAgreed,
       exceptionApproved: chk.exceptionApproved, exceptionApprovedOn: chk.exceptionApprovedOn,
-      exceptionApprovedBy: chk.exceptionApprovedBy, checklistedOk: chk.checklistedOk,
+      exceptionApprovedBy: chk.exceptionApprovedBy, salaryOffered: chk.salaryOffered,
+      salaryExpectation: [chk.salaryExpectation, Validators.required], checklistedOk: chk.checklistedOk,
       assessmentIsNull: chk.assessmentIsNull,
 
       checklistHRItems: this.fb.array(
@@ -198,7 +216,6 @@ export class ChecklistModalComponent implements OnInit {
     this.checklistHRItems.markAsTouched();
   }
 
-  
   deleteChecklist() {
     var id=this.chklst!.id;
     var confirmMsg = 'confirm delete this Checklist. ' +
@@ -216,15 +233,44 @@ export class ChecklistModalComponent implements OnInit {
       if(response) {
         this.toastr.success('Checklist deleted', 'deletion successful');
         console.log('subscribed response:', response);
-        this.bsModalRef.hide();
+        this.bsmodalRef.hide();
       } else {
         this.toastr.error('Error in deleting the checklist', 'failed to delete')
       }
       
     });
-
    
   }
 
+  displayRemunerationModal() {
+    
+      var orderitemid = this.chklst?.orderItemId;
+    
+      var observableOuter = this.checklistService.getRemuneration(orderitemid!);
+    
+      observableOuter.pipe(
+        filter((response: IRemunerationDto) => response !==null),
+        switchMap((response: IRemunerationDto) => {
+          const config = {
+            class: 'modal-dialog-centered modal-lg',
+            initialState: {
+              remun: response,
+              editable: false
+            }
+          }
+    
+            this.bsmodalRef = this.bsModalService.show(RemunerationModalComponent, config);
+            const observableInner = this.bsmodalRef.content.updateSelectedRemuneration;
+            return observableInner
+          })
+        ).subscribe(() => {
+
+        })//, error: (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
+    
+  }
+
+  closeModal() {
+    this.bsmodalRef.hide()
+  }
   
 }

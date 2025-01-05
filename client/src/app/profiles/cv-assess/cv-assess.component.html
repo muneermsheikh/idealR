@@ -1,0 +1,214 @@
+
+<div class="stdd col-3 vAlignTop" style="margin-top: 5px; margin-left: 2px;"  *ngIf="cvBrief">
+     <label class="stdd w150 b">Candidate Assessment</label>
+     <button class="btn btn-primary w30 fa fa-question ML20" (click)="openShortlistCandidateHelpModal()"></button>
+     <button class="btn mx-2 w30 fa fa-window-close fa-2x pull-right" (click)="returnToCalling()" ></button>
+     
+     <div class="stdd b my-1">Candidate Details</div>
+     <div style="padding-left: 5px; border:blue;">
+          <span class="stdd">Application No.: </span> <span class="stdd b">{{cvBrief!.applicationNo}}</span>
+          <br><span class="stdd">Name: </span> <span class="stdd b">{{cvBrief!.fullName}}</span> 
+          <br><span class="stdd">Referred By:</span> <span class="stdd b">{{cvBrief!.referredByName}}</span>
+          <br><span class="b">Categories:</span> <div class="stdd fontSmaller" >
+               {{cvBrief.userProfessions.flat()}}, 
+          </div>
+     </div>
+
+     <br>
+     <div class="b fontSmall">Existing Assessments of the candidate:</div>
+     <div *ngIf="!existingAssessmentsDto" class="b">
+          No Existing Assessments
+     </div>
+
+     <div *ngIf="existingAssessmentsDto">
+          <ul class="py-0 my-0" *ngFor="let item of existingAssessmentsDto">
+               <li class="stdd my-0 py-0 fontSmaller cursorpointer" (click)="displayAssessment(item.candidateAssessmentId)">
+                    {{item.categoryRef}} for {{item.customerName.substring(0,10)}} on {{item.assessedOn | date : 'ddMMM'}}
+               </li>
+          </ul>
+     </div>
+          
+     <div *ngIf="openOrderItems===undefined" class="yellow  b"> No Orders currently open</div>
+     <div *ngIf="openOrderItems !==undefined" class="mt-2 b">Requirement for which the candidate is to be assessed</div>
+     
+     <div *ngIf="openOrderItems">
+          <ng-select 
+               style="border-bottom: yellow; font-size: small;"
+               [items]="openOrderItems"
+               bindLabel="categoryRefAndName"
+               bindValue="orderItemId"
+               labelForId="orderItemId"
+               clearAllText="Clear"
+               [(ngModel)]="orderItemSelectedId" 
+               (click)="chooseSelectedOrderItem()"
+          >
+          </ng-select>
+     </div>
+
+     <br>
+     <!--ng-disabled="!assessmentQDesigned"-->
+     <div class="text-danger fontSmaller b" *ngIf="!orderItemSelected">
+          Order category Not Selected
+     </div>
+
+     <!-- orderItemSelected -->
+     <div style="border:inset">
+          <div *ngIf="orderItemSelected" class="fontSmall b mt-2">Order Item selected</div>
+          <div style="padding-left: 5px; border-color: initial ;" 
+               *ngIf="orderItemSelected" >
+               <span class="fontSmall stdd">Category: </span> <span class="fontSmall">
+                    {{orderItemSelected.categoryRefAndName}}
+               </span>
+               <br><span class="stdd fontSmall">Order dated: </span> 
+                    <span class="stdd fontSmall mx-2 b">{{orderItemSelected.orderDate | date}}</span>
+               <br><span class="stdd">Customer: </span> 
+                    <span class="stdd fontSmall mx-2 b">{{orderItemSelected.customerName}}</span>
+               <br><span class="stdd">Require Internal Review: </span>
+                    <span class="b"> {{requireInternalReview!==undefined && requireInternalReview ? 'Yes' : 'No'}}</span> 
+          </div>
+
+          <div *ngIf="orderItemSelected && !checklist" class="text-danger fontSmall b">
+               Candidate not checklisted for above category
+          </div> 
+          <div class="fontSmall my-1" *ngIf="orderItemSelected && checklist" >
+               Checklist initiated by :
+               <label class="fontSmall b">{{checklist.userLoggedName}} </label>
+                    <label class="fontSmall b">on:  {{checklist.checkedOn |date}} </label>  
+               <br><label class="stdd">Checklist Concluded: </label> 
+                    <span class="stdd" [ngClass]="checklist.checklistedOk ? 'yellow' : 'red' ">
+                         {{checklist.checklistedOk ? ' Yes' : ' No'}}
+                    </span>
+                    
+          </div> 
+     </div>
+     
+     <br>
+     <!--require InternalReview -->
+     <div *ngIf="orderItemSelected && requireInternalReview && !qDesigned" class="fontSmall text-danger b">
+          Assessment Questions for the Order Category selected not designed.  In the Assessment form, you can press the + button to the right to create custom assessment questions, or add standard questions to the order category"
+     </div>
+
+     <!-- checklistModal -->
+     <br>
+     <button type="button" class="fontSmall b my-1 w150 btn btn-success cursorpointer"
+          style="text-align: center;"
+          title="talk to the candidate for consent to requirements" 
+          (click)="openChecklistModal()"
+          title="show checklist for the candidate"
+     >
+          Show Checklist
+     </button>
+     
+</div>
+
+<!-- the assessment items -->
+<div class="stdd my-5 col-8 fontSmall" style="vertical-align: top; margin-left: 5px; border: brown; ">
+     <div *ngIf="cvAssessment" style="font-weight: normal;" class="stdd vAlignTop">
+          <div class="col-12">
+               <label class="stdd w150">Customer Name: </label>
+               <span class="stdd w300 b">{{cvAssessment.customerName || orderItemSelected?.customerName}}</span>
+               <label class="stdd w125">Category:</label>
+               <span class="stdd 400 b">{{cvAssessment.categoryRefAndName || orderItemSelected?.categoryRefAndName}}</span>
+               <div class="stdd b">{{cvAssessment.id===0 ? 'New': 'Update'}}</div>
+          </div>
+          <br>
+          
+          <label class="stdd w125">Order dated</label>
+          <div class="stdd w100 b">{{cvAssessment.orderDate | date}}</div>
+          <label class="stdd w100">Checklisted:</label>
+          <div class="stdd w50 b">{{checklist ? 'Yes': 'No'}}</div>
+          <label class="lbl w150">Internal Review Reqd:</label>
+          <span class="stdd w50 b">{{cvAssessment.requireInternalReview ? 'Yes':'No'}}</span>
+          <label class="stdd w150">Assessmt Q designed:</label>
+          <span class="stdd w50 b">{{qDesigned ? 'Yes':'No'}}</span>
+          
+          <div class="stdd w400">
+               <span>Assessed by: </span> {{cvAssessment['assessedByEmployeeName']}} on {{cvAssessment['assessedOn'] | date}}
+          </div>
+          
+          <div *ngIf="!cvAssessment.requireInternalReview" class="stdd b">
+               No internal review required
+          </div>
+
+          <div class="stdd pull-right">
+               <button 
+                    type="button" class="stdd btn btn-success fa fa-save fa-2x"
+                    [disabled]="!form.dirty" 
+                    title="Save the assessment form" 
+                    (click)="updateAssessment()" 
+               ></button>
+               <button 
+                    type="button" class="btn btn-primary stdd fa fa-trash fa-2x" 
+                    title="delete complete Assessment Object" 
+                    (click)="deleteAssessment()" 
+               > </button>          
+          </div>
+          
+          <hr class="mt-0 mb-0">
+          <form [formGroup]="form">
+               <div *ngIf="!cvAssessment.requireInternalReview" class="stdd">
+                    <label class="stdd w50">Result: </label>
+                    <label class="stdd w50 b hAlignRight">Excellent</label>
+                    <input class="inputcheck form-check-input"  type="radio" name="assessResult" id="assessmentResult" 
+                         formControlName="assessResult" value="Excellent" (change)="form.markAsDirty()">
+                    <label class="stdd w50 b hAlignRight">V Good</label>
+                    <input type="radio" name="assessResult" id="assessResult" class="inputcheck form-check-input"
+                         formControlName="assessResult" value="Very Good" (change)="form.markAsDirty()">
+                    <label class="stdd w50 b hAlignRight">Good</label>
+                    <input type="radio" name="assessResult" id="assessResult" class="inputcheck form-check-input" 
+                         formControlName="assessResult" value="Good" (change)="form.markAsDirty()">
+                    <label class="stdd w50 b hAlignRight">Poor</label>
+                    <input type="radio" name="assessResult" id="assessResult"  class="inputcheck form-check-input" 
+                         formControlName="assessResult" value="Poor" (change)="form.markAsDirty()">     
+               </div> 
+     
+               <div *ngIf="cvAssessment" style="vertical-align: top">
+                    <div *ngIf="cvAssessment.requireInternalReview">
+                         <div class="stdd b fSmall vAlignM w50">Q No.</div>
+                         <div class="stdd b fSmall vAlignM w50 ML20">Asses-<br>sed</div>
+                         <div class="stdd b fSmall vAlignM w50 ML5">Is Man-<br>datory</div>
+                         <div class="stdd b fSmall vAlignM w400">Question</div>
+                         <div class="stdd b fSmall vAlignM w50">Max<br>Points</div>
+                         <div class="stdd b fSmall vAlignM w50">Points</div>
+                         <div class="stdd b fSmall vAlignM w200 ">Remarks</div>
+                         <button class="stdd btn fa fa-plus mx-1" title="Add an assessment item for the candidate" 
+                              (click)="addCandidateAssessmentItem()" ></button>
+                         
+                         <hr class="mt-0 mb-0">
+                         <div formArrayName="candidateAssessmentItems" class="my-1" *ngIf="cvAssessment.candidateAssessmentItems">
+                              <div *ngFor="let item of candidateAssessmentItems.controls; let i=index">
+                                   <div [formGroupName]="i" class="my-1">
+                                        <input type="text" class="stdd fSmall ML20 w50" formControlName="questionNo" >
+                                        <input type="checkbox" class="stdd fSmall w50" formControlName="assessed" >
+                                        <input type="checkbox" class="stdd fSmall w50" formControlName="isMandatory">  
+                                        <input type="text" class="stdd fSmall w400" title="question" formControlName="question">
+                                        <input type="text" class="stdd fSmall w50" title="maxPoints" formControlName="maxPoints" (click)="maxMarksTotal()"> 
+                                        <input type="number" class="stdd fSmall w50" style="text-align: right;" 
+                                             title="points" formControlName="points" (change)="pointsGainedTotal(i)">  
+                                        <input type="text" class="stdd fSmall w200" title="remarks" formControlName="remarks">
+                                   
+                                        <button class="stdd red fa fa-trash mx-2" (click)="removeCandidateAssessmentItem(i)" ></button>
+                                   </div>
+                              </div>
+                         </div>
+                         <div class="stdd b w50 mb-5 mt-2" style="margin-left: 500px;">totals: </div>
+                         <div class="stdd b w50 hAlignRight" >{{totalPoints}}</div>
+                         <div class="stdd b w50 mx-2 hAlignRight">{{totalGained}}</div>
+                         <div class="stdd b w150 hAlignRight">Grade: {{cvAssessment.assessResult}} ({{percentage}}%)</div>
+                    </div>
+               </div>
+          </form>
+     </div>
+</div>
+
+<!-- <div style="font-size: smaller;">
+     {{form.value | json}}
+</div> -->
+
+ <div class="row" *ngIf="validationErrors.length > 0">
+     <ul class="text-danger">
+          <li *ngFor="let error of validationErrors">
+               {{error}}
+          </li>
+     </ul>
+</div>

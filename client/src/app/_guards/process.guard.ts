@@ -16,7 +16,7 @@ export class ProcessGuard implements CanActivate {
     return this.accountService.currentUser$.pipe(
       map(user => {
         const roles = user!.roles;
-        console.log('admin included:', roles.includes('Admin'), roles);
+        //console.log('admin included:', roles.includes('Admin'), roles);
 
         if (roles.includes('Document Controller-Processing')
           || roles.includes('Process Executive')

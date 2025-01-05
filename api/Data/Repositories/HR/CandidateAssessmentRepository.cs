@@ -1,5 +1,7 @@
+using System.Data.Common;
 using api.DTOs.Admin.Orders;
 using api.DTOs.HR;
+using api.Entities.Admin.Order;
 using api.Entities.HR;
 using api.Entities.Tasks;
 using api.Extensions;
@@ -11,6 +13,7 @@ using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.Style.XmlAccess;
 
 namespace api.Data.Repositories.HR
 {
@@ -41,6 +44,7 @@ namespace api.Data.Repositories.HR
         
         public async Task<CandidateAssessmentWithErrDto> GenerateCandidateAssessment(int candidateid, int orderItemId, string Username)
         {
+            //Checklist is a mandatory process to be completed. If it is not, no need to generate the assessment
             var obj = new CandidateAssessmentWithErrDto();
             var checklistId = await _context.ChecklistHRs
                 .Where(x => x.CandidateId == candidateid && x.OrderItemId == orderItemId)
@@ -55,58 +59,46 @@ namespace api.Data.Repositories.HR
             var assessed = await _context.CandidateAssessments.Include(x => x.CandidateAssessmentItems)
                 .Where(x => x.CandidateId == candidateid && x.OrderItemId == orderItemId)
                 .FirstOrDefaultAsync();
-
-            if (assessed != null && assessed.AssessedOn.Year > 2000) {
+            if(assessed != null) {
                 obj.candidateAssessment = assessed;
                 return obj;
             }
- 
-            var requireAssess = await _context.RequireAssessment(orderItemId);
-
-            //generate new candidateassessment
-
-            var orderAssessmentItem = await _context.OrderAssessmentItems
-                .Include(x => x.OrderAssessmentItemQs.OrderBy(x => x.QuestionNo))
-                .Where(x => x.OrderItemId == orderItemId)   // && !string.IsNullOrEmpty(x.ApprovedBy))
-                //.Select(x =>  x.OrderItemAssessmentQs )
-                .FirstOrDefaultAsync();
-    
             
-            if(orderAssessmentItem == null) {
-                obj.ErrorString = "The Order Category is defined as requiring Candidate assessment, " + 
-                    "but no Order Assessment Questions defined. Or if the assessment Questions are defined, " +
-                    "it has not been approved.";
-                return obj;
-            }
-
-            if(requireAssess=="Y" && orderAssessmentItem.OrderAssessmentItemQs.Count ==0 ||
-                orderAssessmentItem?.OrderAssessmentItemQs == null) {
-                    obj.ErrorString = "Assessment Questions for the category not defined";
-                    return obj;
-                }
-                
-            var assessment = new CandidateAssessment{
+            var RequireAssessment = await _context.RequireAssessment(orderItemId);
+            assessed = new CandidateAssessment{
                 CandidateId = candidateid,
                 OrderItemId = orderItemId,
                 AssessedOn = _today,
                 AssessedByEmployeeName = Username,
-                ChecklistHRId = checklistId,
-                RequireInternalReview = requireAssess != "N",
+                ChecklistHRId = checklistId,            //this field is not saved
+                RequireInternalReview = RequireAssessment == "1",
                 AssessResult = "Not Assessed",
-                CategoryRefAndName = orderAssessmentItem.OrderNo + "-" + orderAssessmentItem.ProfessionName,
-                CustomerName = orderAssessmentItem.CustomerName,
-                CandidateAssessmentItems = requireAssess == "Y" 
-                    ? _mapper.Map<ICollection<CandidateAssessmentItem>>(orderAssessmentItem.OrderAssessmentItemQs) 
-                    : null
+                CategoryRefAndName = await _context.GetCategoryRefFromOrderItemId(orderItemId),
+                CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemId),      //this field is not saved
+                
+                //CandidateAssessmentItems = RequireAssessment?.ToLower() == "y" 
+                        //? new List<CandidateAssessmentItem>(){citems} //}await CreateCandidateAssessmentItems(orderItemId, candidateid)
+                        //: null
             };
+            
+            if(RequireAssessment=="1") {
+                var citems = await CreateCandidateAssessmentItems(orderItemId, candidateid);
+                
+                foreach(var itm in citems) {
+                    var item = new CandidateAssessmentItem {AssessedOnTheParameter=itm.AssessedOnTheParameter, 
+                        AssessmentGroup = itm.AssessmentGroup, CandidateAssessmentId=itm.CandidateAssessmentId,
+                        IsMandatory=itm.IsMandatory, MaxPoints=itm.MaxPoints, Points=itm.Points, QuestionNo = itm.QuestionNo,
+                        Question=itm.Question, Remarks=""};
 
-            if(assessment.CandidateAssessmentItems != null) {
-                foreach(var q in assessment.CandidateAssessmentItems) {
-                    q.Id = 0;       //orderassessmentItemQ.Id is also mapped to CandidateAssessmentItem
+                    if(assessed.CandidateAssessmentItems==null) {
+                        assessed.CandidateAssessmentItems = new List<CandidateAssessmentItem>{item};
+                    } else {
+                        assessed.CandidateAssessmentItems.Add(item);
+                    }
                 }
             }
-            
-            obj.candidateAssessment = assessment;
+
+            obj.candidateAssessment = assessed;
             return obj;
         }
 
@@ -133,14 +125,18 @@ namespace api.Data.Repositories.HR
 
         }
 
-        public async Task<CandidateAssessment> SaveCandidateAssessment(CandidateAssessment model, string Username)
+        public async Task<CandidateAssessmentWithErrDto> SaveCandidateAssessment(CandidateAssessment model, string Username)
         {
-            string grade = GetGradeFromAssessmentItems(model.CandidateAssessmentItems);
-            
-            model.AssessResult = grade;
-            model.AssessedOn = _today;
-            model.AssessedByEmployeeName = Username;
+            var dto = new CandidateAssessmentWithErrDto();
 
+            var existing = await _context.CandidateAssessments.Where(
+                x => x.CandidateId == model.CandidateId && x.OrderItemId == model.OrderItemId
+            ).FirstOrDefaultAsync();
+            
+            if(existing != null) {
+                return  await EditCandidateAssessment(model, Username);
+            }
+            
             _context.CandidateAssessments.Add(model);
             _context.Entry(model).State = EntityState.Added;
         
@@ -178,7 +174,8 @@ namespace api.Data.Repositories.HR
             _context.Entry(model).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             
-            return model;
+            dto.candidateAssessment = model;
+            return dto;
         }
 
         public async Task<string> UpdateCandidateAssessmentStatus(int candidateAssessmentId, string username)
@@ -202,15 +199,20 @@ namespace api.Data.Repositories.HR
 
             return await _context.SaveChangesAsync() > 0 ? "Updated" : "failed to update";
         }
-        public async Task<string> EditCandidateAssessment(CandidateAssessment model, string Username )
+        public async Task<CandidateAssessmentWithErrDto> EditCandidateAssessment(CandidateAssessment model, string Username )
         {
+            var dto = new CandidateAssessmentWithErrDto();
+            
             var existing = await _context.CandidateAssessments
                 .Include(x => x.CandidateAssessmentItems)
                 .Where(x => x.Id == model.Id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-            if(existing == null) return "The Candidate Assessment Object was not found";
+            if(existing == null) {
+                dto.ErrorString = "The record does not exist to edit";
+                return dto;
+            }
             var grade = GetGradeFromAssessmentItems(model.CandidateAssessmentItems);
             if(grade != "Assessment Items not properly defined") {
                 model.AssessResult = grade;
@@ -262,27 +264,15 @@ namespace api.Data.Repositories.HR
             
             try{
                await _context.SaveChangesAsync() ;
+               dto.candidateAssessment=existing;
             } catch (Exception ex) {
-                return ex.Message;
+                dto.ErrorString = ex.Message;
             }
+
+            return dto;
             
-            return "";
         }
 
-        private static string GetGradeFromAssessmentItems(ICollection<CandidateAssessmentItem> assessmentItems)
-        {
-            var sumOfPoints = assessmentItems.Sum(x => x.Points);
-            var totalOfPoints = assessmentItems.Sum(x => x.MaxPoints);
-            
-            if(sumOfPoints ==0 || totalOfPoints == 0) return "";
-
-            float pct = sumOfPoints*100/totalOfPoints;
-
-            var grade = pct > 90 ? "A+" : pct > 80 ? "A" : pct > 70 ? "B+" : pct > 60 ? "B"  : pct > 50 ? "C" : "D";
-            
-            return grade;
-        }
-     
         public async Task<bool> DeleteCandidateAssessment(int id)
         {
             var assessment = await _context.CandidateAssessments
@@ -382,21 +372,71 @@ namespace api.Data.Repositories.HR
             return dto;
         }
 
-        public async Task<CandidateAssessmentAndChecklistDto> GetCandidateAssessmentById(int candidateAssessmentId, string Username) {
-            
+        //*todo* USE parameters to commbine this and above
+        public async Task<CandidateAssessmentAndChecklistDto> GetCandidateAssessmentWithChecklistByAssessmentId(int candidateAssessmentId, string Username) {
             //this will not be an error, as candidateassessmentid already exists
             var assessment = await _context.CandidateAssessments.Include(x => x.CandidateAssessmentItems)
                 .Where(x => x.Id == candidateAssessmentId).FirstOrDefaultAsync();
             
             var checklistWithErr = await _checkRepo.GetOrGenerateChecklist(assessment.CandidateId, assessment.OrderItemId, Username);
 
-            var dto = new CandidateAssessmentAndChecklistDto();
-            dto.Assessed = assessment;
+            var dto = new CandidateAssessmentAndChecklistDto{Assessed = assessment};
+            
             dto.ChecklistHRDto=dto.ChecklistHRDto;
 
             return dto;
         }
 
+        public async Task<ChecklistAndCandidateAssessmentDto> SaveNewChecklist (ChecklistHR checklisthr, string Username)
+        {
+            var checkobj = new ChecklistAndCandidateAssessmentDto();
+
+            var obj = await _checkRepo.GetChecklist(checklisthr.CandidateId, checklisthr.OrderItemId);
+            
+            if(obj != null) {
+                var errString = await _checkRepo.EditChecklistHR(checklisthr, Username);
+                    if(string.IsNullOrEmpty(errString)) checkobj.ChecklistHR = checklisthr; //no error
+            } else {
+            
+                var errStr = await _checkRepo.VerifyChecklist(checklisthr);
+                if(!string.IsNullOrEmpty(errStr)) {
+                    checkobj.ErrorString = errStr;
+                    return checkobj;
+                }
+            
+                _context.ChecklistHRs.Add(checklisthr);
+                _context.Entry(checklisthr).State = EntityState.Added;
+                await _context.SaveChangesAsync();
+            }
+
+            checkobj.ChecklistHR  = checklisthr;
+            //new checklist, so candidateassessment does not exist. create it
+            var errDto = await GenerateCandidateAssessment(
+                checkobj.ChecklistHR.CandidateId, checkobj.ChecklistHR.OrderItemId, Username);
+            if(!string.IsNullOrEmpty(errDto.ErrorString)) {
+                checkobj.ErrorString=errDto.ErrorString;
+            } else {
+                checkobj.Assessed=errDto.candidateAssessment;
+            }
+
+            
+            try {
+                await _context.SaveChangesAsync();
+                checkobj.ChecklistHR = checklisthr;
+            } catch (DbException ex) {
+                checkobj.ErrorString = ex.Message;
+            } catch (Exception ex) {
+                if(ex.Message.Contains("IX_ChecklistHRs_OrderItemId_CandidateId")) {
+                    checkobj.ErrorString = "Unique Index violation - OrderItem and Candidate" +
+                    "- the candidate has already been assessed for the same requirement earlier";
+                } else {
+                checkobj.ErrorString = ex.Message;
+                }
+            }
+
+            return checkobj;
+            
+        }
         public async  Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessParams)
         {
             var query = _context.CandidateAssessments.AsQueryable();
@@ -463,9 +503,8 @@ namespace api.Data.Repositories.HR
             var dto = await _context.CandidateAssessments.Include(x => x.CandidateAssessmentItems)
                 .Where(x => x.CandidateId == candidateid && x.OrderItemId == orderitemid).FirstOrDefaultAsync();
             
-            //var cand = await _context.Candidates.FindAsync(candidateid);
-            
-            assItems = new List<AssessmentItemDto>();
+            if(dto == null) return null;
+
             foreach(var item in dto.CandidateAssessmentItems) {
                 var assItem = new AssessmentItemDto {
                     CandidateAssessmentId=dto.Id, Id=item.Id,
@@ -488,12 +527,52 @@ namespace api.Data.Repositories.HR
                 ProfessionName = orderiddetails.ProfessionName,
                 CategoryRef = orderiddetails.CategoryRef,
                 CustomerName = orderiddetails.CustomerName,
-                OrderId = orderiddetails.OrderId, AssessmentItemsDto=assItems
+                OrderId = orderiddetails.OrderId, 
+                AssessmentItemsDto=assItems
             };
 
             return categorydto;
-
         }
 
+        private async Task<ICollection<CandidateAssessmentItem>> CreateCandidateAssessmentItems(int orderItemId, int candidateId)
+        {
+            var Qs = await _context.OrderAssessmentItems.Include(x => x.OrderAssessmentItemQs)
+                .Where(x => x.OrderItemId==orderItemId)
+            .FirstOrDefaultAsync();
+
+            if (Qs.OrderAssessmentItemQs.Count == 0) return null;
+
+            var items = new List<CandidateAssessmentItem>();
+
+            foreach(var q in Qs.OrderAssessmentItemQs) {
+                var item = new CandidateAssessmentItem{    
+                    AssessedOnTheParameter=false,
+                    AssessmentGroup = q.Subject,
+                    IsMandatory=q.IsMandatory,
+                    MaxPoints=q.MaxPoints,
+                    Points=0,
+                    Question=q.Question,
+                    QuestionNo=q.QuestionNo,
+                    Remarks=""
+                };
+                items.Add(item);
+            }
+
+            return items;
+        }
+
+        private static string GetGradeFromAssessmentItems(ICollection<CandidateAssessmentItem> assessmentItems)
+        {
+            var sumOfPoints = assessmentItems.Sum(x => x.Points);
+            var totalOfPoints = assessmentItems.Sum(x => x.MaxPoints);
+            
+            if(sumOfPoints ==0 || totalOfPoints == 0) return "";
+
+            float pct = sumOfPoints*100/totalOfPoints;
+
+            var grade = pct > 90 ? "A+" : pct > 80 ? "A" : pct > 70 ? "B+" : pct > 60 ? "B"  : pct > 50 ? "C" : "D";
+            
+            return grade;
+        }
     }
 }

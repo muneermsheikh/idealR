@@ -37,7 +37,7 @@ export interface IEmployment
 	agentName: string;
 	approved: boolean;
 	approvedByEmpId:number;
-	offerAcceptanceConcludedOn: Date;
+	offerAcceptedOn: Date;
 	offerAttachmentFileName: string;
 	offerAttachmentFullPath: string;
 

@@ -3,11 +3,12 @@ namespace api.DTOs.Process
     public class DeploymentPendingDto
     {
         public int DepId { get; set; }
+        public int ApplicationNo {get; set;}
+        public string CandidateName { get; set; }
+        
         public DateTime TransactionDate { get; set; }
         public int CvRefId { get; set; }
         public int OrderItemId { get; set; }
-        public int ApplicationNo {get; set;}
-        public string CandidateName { get; set; }
         public bool Ecnr { get; set; }
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }

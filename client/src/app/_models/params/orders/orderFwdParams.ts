@@ -9,6 +9,6 @@ export class OrderFwdParams
     
     sort = "orderno";
     pageNumber = 1;
-    pageSize = 10;
+    pageSize = 15;
     search: string='';
 }

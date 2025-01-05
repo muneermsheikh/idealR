@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using api.Extensions;
 using api.Entities.Deployments;
 using System.Data.Common;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace api.Data.Repositories.Admin
 {
@@ -87,7 +88,7 @@ namespace api.Data.Repositories.Admin
             //1 - debit candidate account if selected
             //2 - create new record in Deployment if selected
             //3 - update SelectionDecision.SelectionnStatus in all cases
-            var cvrefidsSELECTED = dtos.Where(x => x.ConclusionStatus == "Accepted").Select(x => x.CVRefId).ToList();
+            var cvrefidsSELECTED = dtos.Where(x => x.OfferAccepted == "Accepted").Select(x => x.CVRefId).ToList();
 
             var cvrefidAndCandidateIdsSELECTED = await _context.CVRefs
                 .Where(x => cvrefidsSELECTED.Contains(x.Id)).Select(x => new {cvrefid=x.Id, candidateid=x.CandidateId}).ToListAsync();
@@ -96,7 +97,7 @@ namespace api.Data.Repositories.Admin
             var candidates = await _context.Candidates
                 .Where(x => candidateids.Contains(x.Id)).Select(x => new{x.Id, x.ApplicationNo, x.FullName}).ToListAsync();
             
-            var selectedDtos = dtos.Where(x => x.ConclusionStatus.ToLower()=="accepted").ToList();
+            var selectedDtos = dtos.Where(x => x.OfferAccepted.ToLower()=="accepted").ToList();
             
             var coaSalesRecruitment = await _finRepo.GetSalesRecruitmentCOA() ?? throw new Exception("Recritment Sales Account not defined");
             
@@ -107,7 +108,7 @@ namespace api.Data.Repositories.Admin
                         dto.CandidateId = candidateid;
                         var applicationno = candidates.Where(x => x.Id == dto.CandidateId).Select(x => x.ApplicationNo).FirstOrDefault();
                         dto.coaDR = await _finRepo.GetOrCreateCoaForCandidateWithNoSave(applicationno, true);  
-                        if(dto.coaDR == null) continue;
+                        if(dto.coaDR == null) continue; //if coaDR is created now, write it to the DB
                         if(dto.coaDR.Id ==0) _context.Entry(dto.coaDR).State = EntityState.Added;  //IF dto.coaDR.Id==0, it is a new object, to be saved
                     } else {
                         continue;       //this shd never happen
@@ -144,24 +145,31 @@ namespace api.Data.Repositories.Admin
                     _context.FinanceVouchers.Add(voucher);
            
                 //2 - create Dep record
-                    var ids = await _context.GetOrderItemIdAndCustomerId(dto.CVRefId);
-                    var depitem = new DepItem{
-                        TransactionDate = DateTime.Now, // dto.ConclusionDate,
-                        Sequence = 100,
-                        NextSequence = 300,
-                        NextSequenceDate = dto.ConclusionDate.AddDays(5)        
-                    };
 
-                    var process = new  Dep{     // Process{
-                        CurrentStatus = "Selected", 
-                        CvRefId=dto.CVRefId,
-                        SelectedOn = dto.SelectedOn,
-                        OrderItemId = ids.Count > 0 ? ids[0] : 0,
-                        CustomerId = ids.Count > 0 ? ids[1] : 0,
-                        DepItems = new List<DepItem> { depitem }
-                     };
-                    
-                    _context.Deps.Add(process);
+                    var process = await _context.Deps.Include(x => x.DepItems).Where(x => x.CvRefId == dto.CVRefId).FirstOrDefaultAsync();                    var ids = await _context.GetOrderItemIdAndCustomerId(dto.CVRefId);
+                    var newitem = new DepItem{
+                            TransactionDate = DateTime.Now, // dto.ConclusionDate,
+                            Sequence = 100,
+                            NextSequence = 300,
+                            NextSequenceDate = dto.ConclusionDate.AddDays(5)        
+                        };
+                    if(process != null) {
+                        var item = process.DepItems.Where(x => x.Sequence==100).FirstOrDefault();
+                        if(item == null) {
+                            newitem.DepId = process.Id;
+                            _context.DepItems.Add(item);
+                        }
+                    } else {
+                        process = new  Dep{     // Process{
+                            CurrentStatus = "Selected", 
+                            CvRefId=dto.CVRefId,
+                            SelectedOn = dto.SelectedOn,
+                            OrderItemId = ids.Count > 0 ? ids[0] : 0,
+                            CustomerId = ids.Count > 0 ? ids[1] : 0,
+                            DepItems = new List<DepItem> { newitem }
+                        };
+                        _context.Deps.Add(process);
+                    }                    
             }  
             
             //3 - Update Selections table with SelectionStatus value
@@ -169,7 +177,7 @@ namespace api.Data.Repositories.Admin
             var sels = await _context.SelectionDecisions.Where(x => cvrefids.Contains(x.CvRefId)).ToListAsync();
                 
             foreach(var sel in sels) {
-                sel.SelectionStatus = dtos.Where(x => x.CVRefId == sel.CvRefId).Select(x => x.ConclusionStatus).FirstOrDefault();
+                sel.SelectionStatus = dtos.Where(x => x.CVRefId == sel.CvRefId).Select(x => x.OfferAccepted).FirstOrDefault();
                 _context.Entry(sel).State = EntityState.Modified;
             }
 
@@ -177,7 +185,7 @@ namespace api.Data.Repositories.Admin
         }
         
 
-        public async Task<string> EditEmployment(Employment model, string Username)
+        public async Task<int> EditEmployment(Employment model, string Username)
         {
              var existingObj = await _context.Employments
                .Where(p => p.Id == model.Id)
@@ -192,7 +200,7 @@ namespace api.Data.Repositories.Admin
             if (offerAcceptChanged) {
                 var postAcceptanceDto = new PostOfferAcceptanceDto
                 {
-                     ConclusionStatus = model.ConclusionStatus ?? "", 
+                     OfferAccepted = model.OfferAccepted ?? "", 
                      Charges=model.Charges, 
                      SelectedOn=model.SelectedOn, 
                      ConclusionDate= model.OfferAcceptedOn, 
@@ -201,16 +209,18 @@ namespace api.Data.Repositories.Admin
                 var postAcceptanceDtos = new List<PostOfferAcceptanceDto>{postAcceptanceDto};
 
                 var posted = await PostOfferAcceptanceWithNoSave(postAcceptanceDtos, Username);
-                if(!posted) return "Failed to execute Post Offer Acceptance tasks";
+                if(!posted) return 0;
             }
             
+            var Id = 0;
             try {
                 await _context.SaveChangesAsync();
-            } catch (Exception ex) {
-                throw new Exception(ex.Message, ex);
+                Id = existingObj.Id;
+            } catch {
+                Id = 0;
             }
 
-            return "";
+            return Id;
         }
 
 
@@ -233,7 +243,7 @@ namespace api.Data.Repositories.Admin
                 postOfferConclusionList.Add(new PostOfferAcceptanceDto {
                     Charges = emp.Charges,
                     ConclusionDate = dto.ConclusionDate,
-                    ConclusionStatus = dto.ConclusionStatus,
+                    OfferAccepted = dto.OfferAccepted,
                     CVRefId = emp.CvRefId,
                     SelectedOn = emp.SelectedOn
                 });
@@ -282,27 +292,27 @@ namespace api.Data.Repositories.Admin
             return paged;
         }
 
-        public async Task<string> SaveNewEmployment(Employment newObject)
+        public async Task<int> SaveNewEmployment(Employment newObject)
         {
             var emp = await _context.Employments.Where(x => x.SelectionDecisionId==newObject.SelectionDecisionId).FirstOrDefaultAsync();
 
-            if(emp != null) return "Employment Object for selection decision Id already exists";
+            if(emp != null) return 0;
 
             var strError = VerifyEmploymentObject(newObject);
 
-            if(!string.IsNullOrEmpty(strError)) return strError;
+            if(!string.IsNullOrEmpty(strError)) return 0;
 
             _context.Employments.Add(newObject);
 
+            var Id = 0;
             try {
                 await _context.SaveChangesAsync();
-            } catch (DbException ex) {
-                strError = ex.Message;
-            } catch (Exception ex) {
-                strError = ex.Message;
+                Id = newObject.Id;
+            } catch {
+                Id = 0;
             }
 
-            return strError;
+            return Id;
         }
     }
 }

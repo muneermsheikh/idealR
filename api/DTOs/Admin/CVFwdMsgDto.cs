@@ -28,5 +28,6 @@ namespace api.DTOs.Admin
         public string PPNo { get; set; }
         public int CumulativeSentSoFar { get; set; }
         public string AssessmentGrade { get; set; }
+        public int SalaryExpected { get; set; }
     }
 }

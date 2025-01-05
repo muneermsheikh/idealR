@@ -32,16 +32,7 @@ namespace api.Controllers
             return Ok(checkobj.checklistDto);
         }
 
-        [HttpPost("newchecklist")]
-        public async Task<ActionResult<ChecklistHR>> SaveNewChecklist (ChecklistHR checklisthr)
-        {
-            var checklist = await _repo.SaveNewChecklist(checklisthr, User.GetUsername());
-
-            if(!string.IsNullOrEmpty(checklist.ErrorString)) return BadRequest(checklist.ErrorString);
-
-            return Ok(checklist.ChecklistHR);
-        }
-
+        
         [HttpDelete("checklistData")]
         public async Task<ActionResult<bool>> DeleteChecklistData (ChecklistHRData checklistHRData)
         {
@@ -73,7 +64,7 @@ namespace api.Controllers
         }
 
         [HttpPut("checklisthr")]
-        public async Task<ActionResult<string>> EditChecklistHR (ChecklistHRDto checklistHR)
+        public async Task<ActionResult<string>> EditChecklistHR (ChecklistHR checklistHR)
         {
             var errorList = await _repo.EditChecklistHR(checklistHR, User.GetUsername());
 

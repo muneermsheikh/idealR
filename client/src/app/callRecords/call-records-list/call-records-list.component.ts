@@ -12,6 +12,7 @@ import { IContactResult } from 'src/app/_models/admin/contactResult';
 import { CallRecordParams, ICallRecordParams } from 'src/app/_models/params/callRecordParams';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { AccountService } from 'src/app/_services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-call-records-list',
@@ -36,7 +37,7 @@ export class CallRecordsListComponent implements OnInit{
     
   constructor(private service: UserHistoryService, private confirm: ConfirmService,
       private toastr: ToastrService, private bsModalRef: BsModalRef, private accountService: AccountService,
-      private bsModalService: BsModalService){
+      private bsModalService: BsModalService, private router: Router){
         this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
       }
   
@@ -196,4 +197,6 @@ export class CallRecordsListComponent implements OnInit{
    onReset() {
 
    }
+
+  
 }

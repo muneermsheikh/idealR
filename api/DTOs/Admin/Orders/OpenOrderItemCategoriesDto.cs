@@ -14,5 +14,7 @@ namespace api.DTOs.Admin.Orders
         public string RequireInternalReview { get; set; }
         public bool AssessmentQDesigned { get; set; }
         public int Quantity { get; set; }
+        public int SalaryMin { get; set; }
+        public int SalaryMax { get; set; }
     }
 }

@@ -15,6 +15,8 @@ export interface IOrderItemBriefDto
      quantity: number;
      status: string;
      assessmentQDesigned: boolean;
+     salaryMin: number;
+     salaryMax: number;
 }
 
 export class OrderItemBriefDto implements IOrderItemBriefDto
@@ -25,7 +27,7 @@ export class OrderItemBriefDto implements IOrderItemBriefDto
      orderDate= new Date();
      customerName='';
      orderItemId=0;
-     requireInternalReview = "N";
+     requireInternalReview = '';
      categoryId = 0;
      categoryRef='';
      categoryName = '';
@@ -33,4 +35,6 @@ export class OrderItemBriefDto implements IOrderItemBriefDto
      quantity=0;
      status='';
      assessmentQDesigned = false;
+     salaryMax = 0;
+     salaryMin = 0;
 }

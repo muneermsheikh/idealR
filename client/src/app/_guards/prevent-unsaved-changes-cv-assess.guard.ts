@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { CvAssessComponent } from '../hr/cv-assess/cv-assess.component';
+import { CvAssessComponent } from '../profiles/cv-assess/cv-assess.component';
 
 @Injectable({
   providedIn: 'root'

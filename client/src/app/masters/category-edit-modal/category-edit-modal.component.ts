@@ -10,10 +10,10 @@ import { categoryRefParam } from 'src/app/_models/params/Admin/categoryRefParam'
 })
 export class CategoryEditModalComponent {
 
-  Category: {"id": number, "professionName": string} | undefined;
+  Category: IProfession | undefined;  
   title: string='';
 
-  @Output() updateEvent = new EventEmitter<{"id": number, "professionName": string}>();
+  @Output() updateEvent = new EventEmitter<IProfession>();
  
   constructor (public bsModalService: BsModalService){};
 

@@ -1,0 +1,38 @@
+.stdd {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 1px;
+    font-size: small;
+    word-wrap: break-word !important;
+    vertical-align: top;
+}
+
+.btn {color:aliceblue; vertical-align: top;}
+
+.fSmallest{
+    font-size: smaller; 
+    font-weight: bold; 
+    border-style: groove;
+    vertical-align: top;
+    cursor: pointer;
+    color: yellow;
+    margin: 0 2px 0 2px;
+    padding: 0 2px 0 2px;
+}
+
+.undefinedColor {color:burlywood}
+
+.disabled {
+    pointer-events: none; 
+    display: none; 
+  }
+
+
+.red {color: red;}
+.w15 {width: 15px;}
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}

@@ -1,0 +1,46 @@
+<div *ngIf="!prospective">
+    No active prospetive candidates on record matching the conditions
+</div>
+
+<div *ngIf="prospective">
+    <div class="stdd" style="width: max-content;">
+        
+        <input type="checkbox" style="margin-left: 10px;border-color: black;"
+            class="form-check-input w20 hAlignCenter"
+            [(ngModel)]="prospective.checked"
+            (click)="selectedClicked()" >
+
+        <div class="stdd w125" style="margin-left: 25px;">{{prospective.candidateName}}</div>
+        <div class="stdd w150">{{prospective.categoryRef}}</div>
+        <div class="stdd w100">{{prospective.phoneNo}}</div>
+        <!-- <div class="stdd w150">{{prospective.email}}</div>
+        <div class="stdd w100">{{prospective.source}}</div>
+        <div class="stdd w75">{{prospective.personId.substring(0,15)}}</div> -->
+        <div class="stdd w75">{{prospective.nationality}}</div>
+        <div class="stdd w75">{{prospective.dateRegistered | date : 'dd-MMM-yy'}}</div>
+        
+        <div class="stdd w100">{{prospective.status ?? "undefined"}}</div>
+        <div class="stdd w100">{{prospective.statusDate | timeago}}</div>
+        
+        <input type="checkbox" style="border-color: black;"
+            class="form-check-input w20 hAlignCenter" value="mailSMSOption">
+        
+        <input type="checkbox" style="margin-left: 30px; margin-right: 10px; vertical-align:top; border-color: black"
+            class="form-check-input w20 hAlignCenter" value="mailSMSOption">
+        <button class="stdd w20 fa fa-pencil" (click)="editEventClicked()" ></button>
+        <button class="stdd w20 fa fa-arrow-right" (click)="convertToCandidateClicked()" 
+            title="converts this prospective candidate to a candidate, and removes it from the prospectives list"    ></button>
+        <button class="stdd w20 fa fa-trash red" (click)="deleteEventClicked()" ></button>
+
+        <app-register-call-records
+            [id]="prospective.id"
+            [status]="prospective.status!"
+            [categoryRef]="prospective.categoryRef"
+            [personId]="prospective.personId"
+            [personType]= "'Prospective'"
+            (callStatusEvent)="callStatusChanged($event)"
+            (eventClickedEvent)="optionChanged($event)"
+        ></app-register-call-records>
+    </div>
+</div>
+

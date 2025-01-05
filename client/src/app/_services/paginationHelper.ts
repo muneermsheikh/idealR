@@ -134,6 +134,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageNumber', oParams.pageNumber);
     params = params.append('pageSize', oParams.pageSize);
 
+    console.log('orderno', oParams.orderno);
+    if(oParams.orderno !== '' && oParams.orderno !== '0') params = params.append('orderno', oParams.orderno);
     if (oParams.status !== ''  && oParams.status !== undefined)  params = params.append('status', oParams.status);
     if (oParams.categoryRef !== ''  && oParams.categoryRef !== undefined)  params = params.append('categoryRef', oParams.categoryRef);
     if (oParams.dateRegistered.getFullYear() < 2000 && oParams.dateRegistered !== undefined ){
@@ -193,6 +195,11 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
       params = params.append('includeEmployment', "true");
       st += ", Include Employment: " + sParams.includeEmployment;
     }
+    if(sParams.selectionStatus !== '') {
+      params = params.append('selectionStatus', sParams.selectionStatus);
+      st += ", SelectionStatus: " + sParams.selectionStatus;
+    }
+    
     if (sParams.search) {
       params = params.append('search', sParams.search);
       st += ", Search criteria: " + sParams.search;
@@ -481,6 +488,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     } else if (dParams.candidateName !== '') {
       params = params.append('candidateName', dParams.candidateName);
     }
+
+    if(dParams.currentStatus !== '') params = params.append('currentStatus', dParams.currentStatus);
 
     if(dParams.status !== '') params=params.append('status', dParams.status);
 

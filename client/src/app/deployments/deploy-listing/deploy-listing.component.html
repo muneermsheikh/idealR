@@ -1,7 +1,6 @@
-<h4 style="display: inline-block; width: 150px; margin-left: 50px; vertical-align: top; word-wrap: break-word;" >{{title}}</h4>
-<div *ngIf="deploys && pagination" 
-    style="display: inline-block; margin-left: 15px; vertical-align: top;" >
     <pagination
+        *ngIf="deploys && pagination"
+        style="margin-left: 5px;"
         style="display: inline-block;"
          [totalItems]="pagination!.totalItems"
          [itemsPerPage]="pagination!.itemsPerPage"
@@ -12,9 +11,9 @@
          firstText="&laquo;"
          lastText="&raquo;">
     ></pagination>
-</div>
 
-    <label style="display: inline-block; vertical-align: top; font-size: small; font-size: bold; margin-left: 5px;">Search:</label>
+    <label style="display: inline-block; vertical-align: top; font-size: small; 
+        font-size: bold; margin-left: 5px;">Search:</label>
     <ng-select 
         style="display: inline-block; vertical-align: top; width: 150px; font-size: small;margin-left: 20px; vertical-align: top;"
         [items]="searchOptions"
@@ -45,9 +44,10 @@
     <button (click)="onSearch()"  style="color: aliceblue; vertical-align: top;" 
         class="btn mx-3 w20 fa fa-search fa-2x"></button>
    
-    <br><label style="display: inline-block; margin-left: 10px; font-size: small; font-weight: bold; vertical-align: top;" 
+    <br><label class="stdd b" style="margin-left: 30px !important;" 
         title="select a status to add new transaction for the candidates selected"
         >add new transaction</label>
+
     <ng-select 
         style="display: inline-block; border-style: solid; width: 200px; font-size: small;margin-left: 10px; vertical-align: top;"
         [items]="statusNameAndSeq"
@@ -64,16 +64,22 @@
     <input class="stdd w110 mx-2" type="text" placeholder="Order Date" [(ngModel)]="transDate"
     bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
     
-    <button class="btn w20 fa fa-check fa-2x mx-1" style="color: aliceblue; display: inline-block;" 
+    <button class="btn w20 fa fa-check fa-2x mx-1" style="display: inline-block;" 
         (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
- 
-    <button (click)="onReset()"  style="color: aliceblue; margin-left: 250px;" 
+
+    <button type="button" style="border:none" class="btn w20 fa fa-filter fa-2x mx-1" (click)="filterData()" [disabled]="sequenceSelected===''"
+        title="Filter the deployment records based on deployment status selected"></button>
+    <button (click)="onReset()"  style="margin-left: 25px;" 
         class="btn w20 fa fa-refresh fa-2x"></button>
 
-    <button class="btn w20 mx-1"  style="color: aliceblue;" 
-        title="List of deployment status" routerLink="/deployment/deployStatus" ><mat-icon>receipt</mat-icon> </button>
-    <button class="btn w20 fa fa-window-close fa-2x mx-2"  style="color: aliceblue; display: inline-block;" 
+    <button class="btn w20 mx-1"  title="List of deployment status" routerLink="/deployment/deployStatus" >
+        <mat-icon>receipt</mat-icon> </button>
+    <button class="btn w20 fa fa-window-close fa-2x mx-2"  style="display: inline-block;" 
         title="return to Main Menu" routerLink="/" ></button>
+    <button class="btn w20 mx-2"  style="display: inline-block;" (click)="houseKeeping()"
+        title="carries out housekeeping - corrects current status value in Deps to coincide with DepItems" 
+        routerLink="/" >HK</button>
+    <h4 class="stretched" >{{title}}</h4>
     
 <div class="my-2" style="margin-left: 25px;">
     <label class="stdd w50">Sel</label>

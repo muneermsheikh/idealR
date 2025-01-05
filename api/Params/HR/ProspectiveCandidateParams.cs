@@ -2,6 +2,7 @@ namespace api.Params.HR
 {
     public class ProspectiveCandidateParams: PaginationParams
     {
+        public string Orderno { get; set; }
         public int Id { get; set; }
         public int ResumeId { get; set; }
         public string Source {get; set;}

@@ -20,6 +20,6 @@ namespace api.DTOs.Process
         public int NextSequence { get; set; }
         //public DateTime CurrentSeqDate { get; set; }
         public DateTime NextStageDate { get; set; }
-        //public string CurrentStatus { get; set; }  
+        public string CurrentStatus { get; set; }  
      }
 }

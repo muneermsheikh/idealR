@@ -2,11 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Navigation, Route, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { filter, switchMap } from 'rxjs';
+import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { Pagination } from 'src/app/_models/pagination';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
 import { User } from 'src/app/_models/user';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
 import { CvrefService } from 'src/app/_services/hr/cvref.service';
 import { UploadDownloadService } from 'src/app/_services/upload-download.service';
@@ -43,7 +44,8 @@ export class CvsreferredComponent implements OnInit{
       private modalService: BsModalService, 
       private candAssessService: CandidateAssessmentService,
       private downloadService: UploadDownloadService,
-      private route: ActivatedRoute) {
+      private route: ActivatedRoute, 
+      private confirm: ConfirmService) {
 
         var routeid = this.route.snapshot.paramMap.get('id') ?? '0';
         this.id=+routeid;
@@ -58,10 +60,15 @@ export class CvsreferredComponent implements OnInit{
       }
 
   ngOnInit(): void {
-    if(this.id!==0) this.cvParams.orderId=this.id;
-    //if(this.id! !== 0) this.cvParams.cVRefStatus='';
-    this.loadCVsReferred();
-    //if(this.cvs.length > 0) this.paramNames=getPaginationHeadersCVRefParams(this.cvParams);
+      this.service.setParams(this.cvParams);
+      
+      this.route.data.subscribe(data => {
+        this.cvs = data['cvrefPaged'].result,
+        this.pagination = data['cvrefPaged'].pagination,
+        this.totalCount = data['cvrefPaged'].count
+      })
+    
+  
   }
 
   loadCVsReferred() {
@@ -175,7 +182,39 @@ export class CvsreferredComponent implements OnInit{
 
   }
 
+  deleteClicked(cvrefid: number) 
+  {
+      const observableInner = this.service.deleteCVRef(cvrefid);
+            
+      var messagePrompt = 'This will delete this CV Referral';
+      
+      const observableOuter = this.confirm.confirm('Confirm Delete', messagePrompt);
+    
+        observableOuter.pipe(
+          switchMap(confirmed => observableInner.pipe(
+            catchError(err => {
+              console.log('Error in deleting the CV Referral', err);
+              return of();
+            }),
+            tap(res => this.toastr.success('deleted the CV Referral')),
+          )),
+          catchError(err => {
+            this.toastr.error('Error in getting delete confirmation', err);
+            return of();
+          })
+        ).subscribe(
+          () => {
+            console.log('delete succeeded');
+            this.toastr.success('Selection record deleted');
+          },
+          (err: any) => {
+            console.log('any error NOT handed in catchError() or if throwError() is returned instead of of() inside catcherror()', err);
+        })
+        
+  }
+   
+
   close() {
-    this.router.navigateByUrl(this.returnUrl || '/candidates');
+    this.router.navigateByUrl(this.returnUrl || '/');
   }
 }

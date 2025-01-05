@@ -7,6 +7,8 @@ using api.Interfaces.Admin;
 using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Admin
@@ -16,8 +18,10 @@ namespace api.Data.Repositories.Admin
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly DateTime _today = DateTime.UtcNow;
-        public CallRecordRepository(DataContext context, IMapper mapper)
+        private readonly IComposeMsgForIntrviews _composeMsg;
+        public CallRecordRepository(DataContext context, IComposeMsgForIntrviews composeMsg, IMapper mapper)
         {
+            _composeMsg = composeMsg;
             _mapper = mapper;
             _context = context;
         }
@@ -148,7 +152,7 @@ namespace api.Data.Repositories.Admin
             model.Source ??= "Unknown";
 
             if(model.Id==0) {
-                model.Username = model.Username ?? Username;
+                model.Username ??= Username;
                 model.Status = model.CallRecordItems.FirstOrDefault().ContactResult;
                 model.StatusDate=model.CallRecordItems.FirstOrDefault().DateOfContact;
                 _context.CallRecords.Add(model);
@@ -284,9 +288,22 @@ namespace api.Data.Repositories.Admin
             }
             
             return itemList;
-
-
         }
+
+        public async Task<ICollection<CallRecordBriefDto>> GetCallRecordSummaryOfCandidate(string PersonId, string personType)
+        {
+            var qry = await (from item in _context.CallRecordItems
+                join callRec in _context.CallRecords on item.CallRecordId equals callRec.Id
+                    where callRec.PersonId == PersonId && callRec.PersonType == personType
+                    orderby item.DateOfContact
+                select new CallRecordBriefDto {
+                    CandidateId = Convert.ToInt32(callRec.PersonId), CategoryRef = callRec.CategoryRef,
+                    PersonName = callRec.PersonName, Status = item.ContactResult,
+                    CreatedOn = Convert.ToDateTime(item.DateOfContact)}
+            ).ToListAsync();
+                
+            return qry;
+        }       
 
 
         public async Task<PagedList<CallRecordBriefDto>> GetCallRecordPaginated(CallRecordParams hParams, string Username)
@@ -320,6 +337,20 @@ namespace api.Data.Repositories.Admin
             return paged;
 
         }
+        public async Task<ICollection<CallRecordBriefDto>> GetCallRecordsForReport(CallRecordParams hParams, string Username)
+        {
+
+            var report = _context.CallRecords.AsQueryable();
+            report = report.Where(x => x.CategoryRef.StartsWith(hParams.CategoryRef));
+
+            if(!string.IsNullOrEmpty(hParams.Status)) report = report.Where(x => x.Status == hParams.Status);
+
+            var obj = await report.ToListAsync();
+
+            return _mapper.Map<ICollection<CallRecordBriefDto>>(obj);
+            
+        }
+
 
         //creates a blank RecordItem and appends to existing/newly created CallRecord.  Does not save it.
         public async Task<CallRecord> GetOrGenerateCallRecord(string personType, string personId, string username) {
@@ -415,5 +446,135 @@ namespace api.Data.Repositories.Admin
 
             return await _context.SaveChangesAsync() > 0 ? existing : null;
         }
+
+        public async Task<CallRecordItemAddedReturnValueDto> InsertCallRecordItem(CallRecordItemToAddDto cRecordItem, string Username)
+        {
+            var dtoReturn = new CallRecordItemAddedReturnValueDto();
+           
+            CallRecordItem callrecordItem;
+
+            string NextAction = "";
+            string cResult = "";
+            CallRecordItem cItem = cRecordItem.callRecordItem;
+            if(cItem==null) return null;
+
+            cResult = cItem?.ContactResult;
+
+            if(cResult.Contains("Declined") || cResult.Contains("Interested") )  {  //INCLUDES Not Interested
+                NextAction = "Concluded";
+            } else if(cResult.Contains("Escalate")) {
+                NextAction = "Escalate To Supervisor";
+            } else if (cResult=="Call Again") {
+                NextAction = "Call Again";
+            } else {
+                NextAction = "Call Again";
+            }
+
+            var callRecord = await _context.CallRecords.Where(x => x.PersonId == cRecordItem.PersonId).AsNoTracking().FirstOrDefaultAsync();
+
+            if(callRecord == null) {
+                //create callRecord
+                switch (cRecordItem.PersonType.ToLower()) {
+                    case "prospective":
+                        callRecord = await (from prospect in _context.ProspectiveCandidates where prospect.PersonId==cRecordItem.PersonId
+                            select new CallRecord {
+                                CategoryRef = cRecordItem.CategoryRef, PersonType = "Prospective", 
+                                PersonId =  cRecordItem.PersonId, PersonName = prospect.CandidateName, 
+                                Source = prospect.Source, Subject = "Candidate Follow-up for interest",
+                                PhoneNo = prospect.PhoneNo, Email=prospect.Email, 
+                                Status = cRecordItem.callRecordItem.ContactResult,
+                                StatusDate = Convert.ToDateTime(cRecordItem.callRecordItem.DateOfContact), 
+                                CreatedOn = DateTime.UtcNow, 
+                                Username = Username, CallRecordItems = new List<CallRecordItem> {new() 
+                                    {IncomingOutgoing=cRecordItem.callRecordItem.IncomingOutgoing, PhoneNo=prospect.PhoneNo,
+                                    Email=prospect.Email, DateOfContact = DateTime.UtcNow, Username = Username, 
+                                    GistOfDiscussions = cRecordItem.callRecordItem.GistOfDiscussions, 
+                                    ContactResult = cRecordItem.callRecordItem.ContactResult, NextAction = NextAction, 
+                                    NextActionOn = cRecordItem.callRecordItem.DateOfContact.AddDays(1) }}
+                        }).FirstOrDefaultAsync();
+
+                        break;
+                    
+                    case "candidate":
+                        callRecord = await (from prospect in _context.Candidates where prospect.Id==Convert.ToInt32(cRecordItem.PersonId)
+                            select new CallRecord {
+                                CategoryRef = cRecordItem.CategoryRef, PersonType = "Candidate", 
+                                PersonId =  cRecordItem.PersonId, PersonName = prospect.FullName, 
+                                Source = prospect.Source, Subject = "Candidate Follow-up for interest",
+                                PhoneNo = prospect.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault(), 
+                                Email=prospect.Email, Status = cRecordItem.callRecordItem.ContactResult,
+                                StatusDate = Convert.ToDateTime(cRecordItem.callRecordItem.DateOfContact), 
+                                CreatedOn = DateTime.UtcNow, 
+                                Username = Username, CallRecordItems = new List<CallRecordItem> {new() 
+                                    {IncomingOutgoing=cRecordItem.callRecordItem.IncomingOutgoing, 
+                                    PhoneNo=prospect.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault(),
+                                    Email=prospect.Email, DateOfContact = DateTime.UtcNow, Username = Username, 
+                                    GistOfDiscussions = cRecordItem.callRecordItem.GistOfDiscussions, 
+                                    ContactResult = cRecordItem.callRecordItem.ContactResult, NextAction = NextAction, 
+                                    NextActionOn = cRecordItem.callRecordItem.DateOfContact.AddDays(1) }}
+                        }).FirstOrDefaultAsync();
+
+                        break;
+                    default:
+                        break;
+                }
+                if(callRecord == null) {
+                    _context.CallRecords.Add(callRecord);
+                    callrecordItem = callRecord.CallRecordItems.FirstOrDefault();
+                }
+            } else {
+                var item = new CallRecordItem {
+                    IncomingOutgoing=cRecordItem.callRecordItem.IncomingOutgoing, PhoneNo=callRecord.PhoneNo,
+                    Email= callRecord.Email, DateOfContact = DateTime.UtcNow, Username = Username, 
+                    GistOfDiscussions = cRecordItem.callRecordItem.GistOfDiscussions, CallRecordId = callRecord.Id,
+                    ContactResult = cRecordItem.callRecordItem.ContactResult, NextAction = NextAction, 
+                    NextActionOn = cRecordItem.callRecordItem.DateOfContact.AddDays(1) };
+                _context.CallRecordItems.Add(item);
+                callrecordItem = item;
+
+                await _context.SaveChangesAsync();
+            }
+
+            if(cRecordItem.AdviseByMail || cRecordItem.PersonType=="Candidate") {
+                var dto = new CallRecordCandidateAdviseDto {
+                    PersonId = cRecordItem.PersonId,
+                    CategoryRef = cRecordItem.CategoryRef,
+                    CustomerCity = cRecordItem.CustomerCity,
+                    CallRecordItem = cRecordItem.callRecordItem};
+
+                var msgWithErrDto = await _composeMsg.ComposeEmailsForEmploymentInterest(dto, Username);
+                if(string.IsNullOrEmpty(msgWithErrDto.ErrorString)) {
+                    var msgs = msgWithErrDto.Messages;
+                    if(msgs != null && msgs.Count > 0) {
+                        foreach(var msg in msgs) {
+                            _context.Messages.Add(msg);
+                        }
+                    }
+                } 
+                dtoReturn.MessageComposed = string.IsNullOrEmpty(msgWithErrDto.ErrorString);
+            }
+            
+            callrecordItem = callRecord.CallRecordItems.FirstOrDefault();
+            var prospective = await _context.ProspectiveCandidates.Where(x => x.PersonId==cRecordItem.PersonId).FirstOrDefaultAsync();
+            if(prospective != null) {
+                prospective.Status = cItem.ContactResult;
+                prospective.StatusDate = cItem.DateOfContact;
+                _context.Entry(prospective).State= EntityState.Modified;
+            }
+
+            try {
+                var ct = await _context.SaveChangesAsync();
+                if(callrecordItem != null) {
+                    dtoReturn.ContactResult = callrecordItem.ContactResult;
+                    dtoReturn.DateOfContact = callrecordItem.DateOfContact;
+                }
+            
+            } catch (Exception ex) {
+                dtoReturn.ErrorString =  ex.Message;
+            }
+
+            return dtoReturn;
+        }
+         
     }
 }

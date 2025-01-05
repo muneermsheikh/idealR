@@ -55,7 +55,6 @@ export class CategoryService {
         })
       )
   }
-
   
   getCategory(professionid: number) {
     let category: IProfession;
@@ -74,15 +73,25 @@ export class CategoryService {
     return this.http.delete<boolean>(this.apiUrl + 'Profession/deletebyid/' + id);
   }
 
-  updateCategory(id: number, name: string) {
-    if(id===0) {
-        return this.http.post<IProfession>(this.apiUrl + 'Profession/add/' + name, {});
+  updateCategory(profession: IProfession) {
+
+    if(profession.id===0) {
+        return this.http.post<IProfession>(this.apiUrl + 'Profession/add', profession);
     } else {
-      var prof: IProfession = {id: id, professionName: name};
+      var prof = profession;
       return this.http.put<IProfession>(this.apiUrl + 'Profession/edit', prof);
     }
   }
   
+  
+  copyProfessionXLSFileToDB(model: any) {
+    return this.http.post<string>(this.apiUrl + 'ProfessionUpload/professionsFromXLS', model);
+  }
+
+  copyCandidateXLSFileToDB(model: any) {
+    return this.http.post<string>(this.apiUrl + 'FileUpload/candidateXLS', model);
+  }
+
   setParams(params: professionParams) {
     this.mParams = params;
   }

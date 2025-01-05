@@ -2,15 +2,14 @@
     display:inline-block;
     vertical-align: top;
     font-size: smaller;
-    margin-left: 1px;
-    margin-right: 1px;
+    margin: 0 2px 0 2px;
     word-wrap: normal;
 }
 
-.w50 {width: 50px;}
-.w75{width: 75px;}
 .w100{width: 100px;}
 .w150 {width: 150px;}
 .w175 {width: 175px;}
 
 .red {color: red;}
+
+.btn {color:aliceblue}

@@ -12,23 +12,23 @@
      ></pagination>
 
      <input (keyup.enter)="onSearch()" type="text" 
-          class="stdd form-control w300" #search placeholder="Search">
+          class="stdd form-control w175" #search placeholder="Search">
      <button (click)="onSearch()" title="search the records based upon search string entered"
           class="btn fa fa-search fa-2x mx-1"></button>
      <button (click)="onReset()" title="clears all search parameters"
           class="btn fa fa-refresh fa-2x mx-1"></button>
      <button class="btn fa fa-window-close fa-2x mx-1" title="go back to Administration Menu"
-          routerLink="/candidates" ></button>
+          routerLink="/" ></button>
+     
 </div>
 
 <div class="form-inline" style="margin-left: 50px;">
-     <label class="lbl w75">App No</label>
      <label class="lbl w175">Name</label>
      <label class="lbl w150">CategoryRef</label>
      <label class="lbl w100">Source</label>
      <label class="lbl w175">Email</label>
      <label class="lbl w100">Phone No</label>
-     <label class="lbl w100">Status</label>
+     <label class="lbl w150">Status</label>
 
      <div *ngIf="!callRecords || callRecords.length === 0" class="my-2">
           <h4 class="red">No call records on record as per parameters given</h4>

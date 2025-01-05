@@ -7,6 +7,6 @@ namespace api.Interfaces.Admin
     {
         Task<MessagesWithErrDto> InviteCandidatesForInterviews(ICollection<int> InterviewItemCandidateIds, string username);
         Task<MessagesWithErrDto> EditInviteForInterviews(ICollection<int> InterviewItemCandidateIds, string username);
-         
+        Task<MessagesWithErrDto> ComposeEmailsForEmploymentInterest(CallRecordCandidateAdviseDto Dtos, string username);
     }
 }

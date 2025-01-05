@@ -55,10 +55,7 @@ namespace api.Data.Repositories
 
             //find customerOfficialIds - which are recipients for the mail messages
             var candidateAndOrderItemIds = candidatesNotRefDto.Select(x => new {x.CandidateId, x.OrderItemId}).ToList();
-            
-            foreach(var candDtl in candidateAndOrderItemIds) {
-
-            }
+ 
             var distinctOrderItemIds = candidatesNotRefDto.Select(x => x.OrderItemId).Distinct().ToList();
 
             var customerids = candidatesNotRefDto.Select(x => x.CustomerId).Distinct().ToList();
@@ -77,7 +74,6 @@ namespace api.Data.Repositories
             foreach(var item in candidatesNotRefDto) 
             {
                 //var orderitem = distinctOrderItems.Where(x => x.OrderItemId==item.OrderItemId).FirstOrDefault();
-                var count = await _context.CVRefs.Where(x => x.OrderItemId == item.OrderItemId).CountAsync();
                 var Officials=SelectedCustomerOfficials.Where(x => x.CustomerId==item.CustomerId).ToList();
 
                 var customerOfficial = new CustomerOfficial();
@@ -102,7 +98,9 @@ namespace api.Data.Repositories
                 }
 
                 if(!string.IsNullOrEmpty(returnDto.ErrorString)) return returnDto;
-
+                
+                var count = await _context.CVRefs.Where(x => x.OrderItemId == item.OrderItemId).CountAsync();
+                                
                 dataToComposeMsg.Add(new CVFwdMsgDto{
                     CvRefId = item.CvRefId,
                     City=item.CustomerCity ?? "",
@@ -123,7 +121,9 @@ namespace api.Data.Repositories
                     CategoryName=item.CustomerName,
                     ApplicationNo=item.ApplicationNo,
                     CandidateName=item.CandidateName,
-                    CumulativeSentSoFar=count
+                    CumulativeSentSoFar=count,
+                    SalaryExpected = item.SalaryExpectation,
+                    AssessmentGrade = item.Grade
                 });
            }
            

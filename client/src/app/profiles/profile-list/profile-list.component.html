@@ -1,7 +1,7 @@
 <div *ngIf="pagination !== undefined" class="stdd">
-
+     <h4 class="stdd b">Listing of Candidates</h4>
      <pagination
-          class="stdd"
+          class="stdd mx-4"
           [totalItems]="pagination!.totalItems"
           [itemsPerPage]="pagination!.itemsPerPage"
           (pageChanged)="onPageChanged($event)"
@@ -14,7 +14,7 @@
  
      <br>
      <div *ngIf="cvs">
-          <label class="lbl w180">Name or App Nos to search, separated by commas</label>
+          <label class="lbl w160">Name or App Nos to search, separated by commas</label>
           <input type="text" title="enter name or app nos, separated by commma" 
                class="stdd form-control w200" style="margin-left: 20px;" #search placeholder="Search on name or app nos">
           <label class="lbl w100 mx-2">Category Name to search</label>
@@ -31,10 +31,10 @@
                title="return to calling program" routerLink="/"></button>
      </div>
  
-      <div style="margin-left: 75px; margin-top: 10px;">
+      <div style="margin-left: 60px; margin-top: 5px;">
            <div class="stddm w15"></div>
-           <div class="stddM w75">Appl No</div>
-           <div class="stddM w180 mx-2">Candidate Name</div>
+           <div class="stddM w70">Appl No</div>
+           <div class="stddM w160 mx-2">Candidate Name</div>
            <div class="stddM w100 mx-1">City</div>
            <div class="stddM w200 mx-1">Agent</div>
            <div class="stddM w300 mx-1">Professions</div>

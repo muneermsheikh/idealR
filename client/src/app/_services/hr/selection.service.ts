@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
 import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
@@ -8,12 +8,10 @@ import { Pagination } from 'src/app/_models/pagination';
 import { AccountService } from '../account.service';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 import { getPaginatedResult, getPaginationHeadersSelectionParams} from '../paginationHelper';
-import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { IEmployment } from 'src/app/_models/admin/employment';
 import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
 import { IOfferConclusioDto } from 'src/app/_dtos/admin/offerConclusionDto';
-import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +44,7 @@ export class SelectionService {
      return this.sParams;
   }
 
-  getPendingSelections(useCache: boolean=true) {   //: Observable<IPagination<ISelPendingDto[]>> {
+  getPendingSelections(useCache: boolean=false) {   //: Observable<IPagination<ISelPendingDto[]>> {
 
     var oParams = this.sParams;
 
@@ -54,9 +52,9 @@ export class SelectionService {
       const response = this.cache.get(Object.values(oParams).join('-'));
       if(response) return of(response);
     }
-    console.log('params in service:', oParams);
-    let params = getPaginationHeadersSelectionParams(oParams);
 
+    let params = getPaginationHeadersSelectionParams(oParams);
+    
     return getPaginatedResult<ISelPendingDto[]>(this.apiUrl + 'CVRef/cvsreferred', params, this.http).pipe(
       map(response => {
         this.cache.set(Object.values(oParams).join('-'), response);
@@ -116,7 +114,7 @@ export class SelectionService {
   }
 
   updateEmploymentWithUploads(emp: any) {
-    return this.http.post<string>(this.apiUrl + 'employment/savewithupload', emp);
+    return this.http.post<number>(this.apiUrl + 'employment/savewithupload', emp);
   }
 
 

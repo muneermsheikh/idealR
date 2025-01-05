@@ -1,4 +1,7 @@
 using api.Data;
+using api.DTOs.Admin;
+using api.Entities.Identity;
+using api.Interfaces.Admin;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Extensions
@@ -29,14 +32,28 @@ namespace api.Extensions
             return appusername;
         }
 
-        public static async Task<string> GetAppUsernameFromDepId (this DataContext context, int depId)
+        public static async Task<ReturnStringsDto> GetAppUsernameFromDepId (this DataContext context, ISelDecisionRepository selRepo, int depId)
         {
-           var appusername = await (from dep in context.Deps where dep.Id==depId
+            var dto = new ReturnStringsDto();
+
+            var obj = await (from dep in context.Deps where dep.Id==depId
                 join cvref in context.CVRefs on dep.CvRefId equals cvref.Id
                 join cand in context.Candidates on cvref.CandidateId equals cand.Id
-                select cand.Username).FirstOrDefaultAsync();
+                select new {UserName = cand.Username, CandidateId=cand.Id}).FirstOrDefaultAsync();
             
-            return appusername;
+            if(string.IsNullOrEmpty(obj.UserName) && obj.CandidateId != 0) {
+                var appUser = await selRepo.AppUserFromCandidateId(obj.CandidateId);
+                if (appUser != null) {
+                    dto.SuccessString = appUser.UserName;
+                } else {
+                    dto.ErrorString = "Failed to retrieve/create Username"; 
+                }
+            } else {
+                dto.SuccessString = obj.UserName;
+            }
+
+            return dto;
+            
         }
 
 

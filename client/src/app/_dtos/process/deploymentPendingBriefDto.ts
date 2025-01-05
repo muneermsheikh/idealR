@@ -15,7 +15,7 @@ export interface IDeploymentPendingBriefDto {
 
     categoryName: string;
     transactionDate: Date;
-    //currentStatus: string;
+    currentStatus: string;
 
     ecnr: boolean;
     deploySequence: number;
@@ -35,7 +35,7 @@ export class DeploymentPendinBriefDto implements IDeploymentPendingBriefDto {
     applicationNo: number=0;
     candidateName: string='';
     ecnr=false;
-    //currentStatus = '';
+    currentStatus = '';
     
     customerName: string='';
     customerId=0;

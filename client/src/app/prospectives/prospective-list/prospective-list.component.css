@@ -1,0 +1,27 @@
+
+.stdd {display: inline-block;}
+
+.lbl {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 1px;
+    font-size: smaller;
+    word-wrap: normal;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+.w400 {width: 400px;}
+
+.b {font-weight: bold;}
+
+.tAlignRight {text-align: right;}
+
+.btn {color:aliceblue}

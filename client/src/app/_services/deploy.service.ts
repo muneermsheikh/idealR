@@ -24,6 +24,7 @@ import { ICandidateFlightGrp } from '../_models/process/candidateFlightGrp';
 import { CandidateFlightParams } from '../_models/params/process/CandidateFlightParams';
 import { ICandidateFlightGrpDto } from '../_dtos/process/candidateFlightGrpDto';
 import { ICandiateFlightItem } from '../_models/process/candidateFlightItem';
+import { IReturnStringsDto } from '../_dtos/admin/returnStringsDto';
 
 
 @Injectable({
@@ -120,6 +121,7 @@ export class DeployService {
 
     let params = GetHttpParamsForDepProcess(dParams);
 
+    console.log('depParams', params);
     return getPaginatedResult<IDeploymentPendingDto[]>(this.apiUrl + 
         'Deployment/deployments', params, this.http).pipe(
       map(response => {
@@ -295,4 +297,7 @@ export class DeployService {
     return this.http.get<string>(this.apiUrl + 'FileUpload/deleteattachmentbyfullpath', {params});
   }
 
+  housekeeping() {
+    return this.http.get<IReturnStringsDto>(this.apiUrl + 'Deployment/Housekeeping');
+  }
 }

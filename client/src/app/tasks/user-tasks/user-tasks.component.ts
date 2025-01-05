@@ -54,9 +54,11 @@ export class UserTasksComponent implements OnInit {
     {"type": "CV Forward", "Value": "CVFwdTask"},
     {"type": "Employment Acceptance", "Value": "EmploymentAcceptance"},
     {"type": "Selection Followup", "Value": "SelectionFollowupWithClient"},
-    {"type": "Prospective Candidates", "Value": "Prospective"}, {"type": "Portal Task", "Value": "PortalTask"},
-    {"type": "Order Forward To HR", "Value":"OrderFwdToHR"}, {"type": "Assign Task To HR Exec", "Value": "AssignTaskToHRExec"},
-    
+    {"type": "Prospective Candidates", "Value": "Prospective"}, 
+    {"type": "Portal Task", "Value": "PortalTask"},
+    {"type": "Order Forward To HR", "Value":"OrderFwdToHR"}, 
+    {"type": "Assign Task To HR Exec", "Value": "AssignTaskToHRExec"},
+    {"type": "Calling list status", "Value": "CallingListStatus"}    
   ]
 
   ngOnInit(): void {

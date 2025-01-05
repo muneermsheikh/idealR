@@ -38,6 +38,15 @@ namespace api.Controllers
             
             return Ok(pagedList);
         }
+
+        [HttpGet("report")]
+        public async Task<ActionResult<ICollection<CallRecordBriefDto>>> GetCallRecordsReport([FromQuery] CallRecordParams histParams )
+        {
+            var list = await _histRepo.GetCallRecordsForReport(histParams, User.GetUsername());
+            if (list==null) return NotFound(new ApiException(404, "Bad Request", "No records found"));
+            
+            return Ok(list);
+        }
         
         
         [HttpPost("newCallRecord")]
@@ -77,10 +86,19 @@ namespace api.Controllers
         [HttpPut("UpdateNewItem")]
         public async Task<ActionResult<CallRecord>> UpdateCallRecordWithSingleItem(CallRecord callRecord)
         {
-            callRecord.Username = callRecord.Username ?? User.GetUsername();
+            callRecord.Username ??= User.GetUsername();
             var returnDto = await _histRepo.EditCallRecordWithSingleItem(callRecord, User.GetUsername());
 
             return Ok(returnDto.CallRecord);
+        }
+
+        [HttpPut("InsertCallRecordItem")]
+        public async Task<ActionResult<CallRecordItemAddedReturnValueDto>> UpdateOrInsertCallRecordItem(CallRecordItemToAddDto callItem)
+        {
+            var item = await _histRepo.InsertCallRecordItem(callItem, User.GetUsername());
+            if(item == null || !string.IsNullOrEmpty(item.ErrorString)) return BadRequest(new ApiException(400,"Failed to insert the call record item", item.ErrorString));
+
+            return Ok(item);
         }
 
         [HttpGet("callRecordWithItems/{personType}/{personId}")]
@@ -93,6 +111,11 @@ namespace api.Controllers
             return Ok(obj);
         }
 
+        [HttpGet("CallRecordSummary/{PersonType}/{PersonId}")]
+        public async Task<ICollection<CallRecordBriefDto>> GetCallRecordSummaryOfCandidate(string PersonType, string PersonId)
+        {
+            return await _histRepo.GetCallRecordSummaryOfCandidate(PersonId, PersonType);
+        }
 
     }
 }

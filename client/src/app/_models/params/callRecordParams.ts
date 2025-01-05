@@ -46,6 +46,6 @@ export class CallRecordParams implements ICallRecordParams
     search = '';
     sort = '';
     pageNumber=1;
-    pageSize=10;
+    pageSize=15;
 }
 

@@ -11,6 +11,7 @@ export class deployParams
 	candidateName = '';
 	categoryName = '';
 	customerName = '';
+	currentStatus = '';
 	selectedOn = new Date();
 	
 	search = '';

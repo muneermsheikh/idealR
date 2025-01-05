@@ -4,6 +4,7 @@ import { take } from 'rxjs';
 import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
+import { CategoryService } from 'src/app/_services/category.service';
 
 @Component({
   selector: 'app-excel-conversion-menu',
@@ -18,19 +19,34 @@ export class ExcelConversionMenuComponent {
   uploadEmployeeExcel=false;
   uploadOrderExcel=false;
   uploadCandidateExcel=false;
-
+  uploadProfessionExcel=false;
 
   user?: User;
   
   formData = new FormData();
 
-  constructor(private toastr:ToastrService, private accountService: AccountService) {
+  constructor(private toastr:ToastrService, private accountService: AccountService,
+      private catService: CategoryService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) this.user = user;
         //console.log('user', this.user);
       }
     })
+  }
+  
+  //Professions
+  //prospective
+  toggleProfessionExcel() {
+    this.uploadProfessionExcel=!this.uploadProfessionExcel;
+    this.uploadNaukriExcel=false;
+    this.uploadExcel=false;
+    this.uploadCustomerExcel=false;
+    this.uploadCandidateExcel=false;
+    this.uploadEmployeeExcel=false;
+    this.uploadOrderExcel=false;
+
+    console.log('rglprof', this.uploadProfessionExcel);
   }
   
   //prospective
@@ -41,6 +57,7 @@ export class ExcelConversionMenuComponent {
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
     this.uploadOrderExcel=false;
+    this.uploadProfessionExcel=false;
   }
 
   //prospective
@@ -51,7 +68,9 @@ export class ExcelConversionMenuComponent {
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
     this.uploadOrderExcel=false;
+    this.uploadProfessionExcel=false;
   }
+
 
   exportProspectiveFile() {
     this.accountService.copyProspectiveXLSFileToDB(this.formData).subscribe({
@@ -66,7 +85,6 @@ export class ExcelConversionMenuComponent {
       }
     })
   }
-
   
   exportNaukriProspectiveFile() {
     this.accountService.copyProspectiveNaukriXLSFileToDB(this.formData).subscribe({
@@ -81,6 +99,17 @@ export class ExcelConversionMenuComponent {
         this.toastr.error(err.error.text, 'Error in copying the excel data to database');
       }
     })
+  }
+
+  onFileInputChange(event: Event)
+  {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    const f = files[0];
+    this.formData = new FormData();
+
+    if(f.size > 0) this.formData.append('file', f, f.name);
+  
   }
 
   onNaukriProspectiveFileInputChange(event: Event) {
@@ -104,6 +133,10 @@ export class ExcelConversionMenuComponent {
 
     if(f.size > 0) this.formData.append('file', f, f.name);
         
+  }
+
+  closeProfessionFileInput() {
+    this.uploadProfessionExcel=false;
   }
   
   closeProspectiveFileInput() {
@@ -159,7 +192,6 @@ export class ExcelConversionMenuComponent {
   }
 
   //candidate
-
   toggleCandidatesExcel() {
     this.uploadCandidateExcel = !this.uploadCandidateExcel;
     this.uploadExcel=false;
@@ -167,8 +199,26 @@ export class ExcelConversionMenuComponent {
     this.uploadCustomerExcel=false;
     this.uploadEmployeeExcel=false;
     this.uploadOrderExcel=false;
+
   }
 
+  exportProfessionFile() {
+    this.catService.copyProfessionXLSFileToDB(this.formData).subscribe({
+      next: (response: string) => {
+        if(response === '') {
+          this.toastr.success(response + ' file(s) copied to database', 'success');
+          this.uploadCandidateExcel=false;
+          } else {
+            this.toastr.warning(response, 'Failed to copy the excel data to database')
+          }
+      }
+      , error: (err: any) => {
+        console.log(err.error.details, 'Error encountered');
+        this.toastr.error(err.error.details, 'Error in copying the excel data to database');
+      }
+    })
+  }
+  
   exportCandidateFile() {
     this.accountService.copyCandidateXLSFileToDB(this.formData).subscribe({
       next: (response: string) => {
@@ -249,7 +299,6 @@ export class ExcelConversionMenuComponent {
     this.uploadCustomerExcel=false;
     this.uploadCandidateExcel=false;
     this.uploadEmployeeExcel=false;
-
   }
 
   exportOrderFile() {

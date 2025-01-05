@@ -14,6 +14,7 @@ export class SelDecisionParams
      includeSelection: boolean=false;
      includeEmployment: boolean=false;
      includeDeployment: boolean=false;
+     selectionStatus="Selected";
      
      pageNumber = 1;
      pageSize=15;

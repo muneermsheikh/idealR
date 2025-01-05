@@ -1,12 +1,20 @@
 using System.Net.Http.Headers;
+using System.Text.Json;
+using api.DTOs.Admin;
+using api.DTOs.HR;
+using api.Entities.Master;
+using api.Errors;
+using api.Interfaces.Masters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
     public class ExcelController : BaseApiController
     {
-        public ExcelController()
+        private readonly IProfessionRepository _profRepo;
+        public ExcelController( IProfessionRepository profRepo)
         {
+            _profRepo = profRepo;
         }
 
         [HttpPost("prospectiveorapplications"), DisableRequestSizeLimit]
@@ -112,6 +120,7 @@ namespace api.Controllers
 
             return Ok();
         }
+
 
     }
 }

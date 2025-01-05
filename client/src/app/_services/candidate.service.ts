@@ -14,6 +14,7 @@ import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
 import { ICandidateAndErrorStringDto } from '../_dtos/hr/candidateAndErrorStringDto';
 import { ICvsAvailableDto } from '../_dtos/admin/cvsAvailableDto';
+import { IIntervwItemCandidate } from '../_models/hr/intervwItemCandidate';
 
 @Injectable({
   providedIn: 'root'
@@ -126,8 +127,7 @@ export class CandidateService {
     
   }
 
-
-  UpdateCandidateWithFiles(model: any) {
+   UpdateCandidateWithFiles(model: any) {
       console.log('model in update service candidate', model);
       return this.http.put<IApiReturnDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }

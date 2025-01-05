@@ -12,3 +12,4 @@ export class userHistoryHeaderParams {
      pageSize = 10;
      search: string='';
 }
+

@@ -1157,6 +1157,10 @@ namespace api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CategoryRef")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<int>("EstimatedMinsToInterviewEachCandidate")
                         .HasColumnType("int");
 
@@ -1238,7 +1242,7 @@ namespace api.Data.Migrations
                     b.Property<string>("InterviewerRemarks")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IntervwItemId")
+                    b.Property<int>("IntervwItemId")
                         .HasColumnType("int");
 
                     b.Property<string>("PersonId")
@@ -1257,7 +1261,7 @@ namespace api.Data.Migrations
 
                     b.HasIndex("IntervwItemId");
 
-                    b.HasIndex("CandidateId", "InterviewItemId")
+                    b.HasIndex("CandidateId", "IntervwItemId")
                         .IsUnique()
                         .HasFilter("CandidateId <> 0");
 
@@ -1617,6 +1621,9 @@ namespace api.Data.Migrations
                     b.Property<int>("OrderNo")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProfessionGroup")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProfessionId")
                         .HasColumnType("int");
 
@@ -1736,6 +1743,9 @@ namespace api.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("OrderForwardToAgentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -1752,6 +1762,8 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderForwardToAgentId");
 
                     b.HasIndex("OrderItemId")
                         .IsUnique();
@@ -2130,6 +2142,10 @@ namespace api.Data.Migrations
                     b.Property<long>("OpBalance")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Section")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountName")
@@ -2163,6 +2179,9 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PartyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Section")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("VoucherDated")
@@ -2643,6 +2662,12 @@ namespace api.Data.Migrations
                     b.Property<int>("OrderItemId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SalaryExpectation")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SalaryOffered")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -2650,8 +2675,6 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CandidateId");
 
                     b.HasIndex("OrderItemId", "CandidateId")
                         .IsUnique();
@@ -2736,9 +2759,6 @@ namespace api.Data.Migrations
                     b.Property<int>("ChargesFixed")
                         .HasColumnType("int");
 
-                    b.Property<string>("ConclusionStatus")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ContractPeriodInMonths")
                         .HasColumnType("int");
 
@@ -2769,8 +2789,9 @@ namespace api.Data.Migrations
                     b.Property<int>("LeavePerYearInDays")
                         .HasColumnType("int");
 
-                    b.Property<bool>("OfferAccepted")
-                        .HasColumnType("bit");
+                    b.Property<string>("OfferAccepted")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("OfferAcceptedOn")
                         .HasColumnType("datetime2");
@@ -3398,7 +3419,7 @@ namespace api.Data.Migrations
                     b.Property<int>("HelpId")
                         .HasColumnType("int");
 
-                    b.Property<string>("HelpText")
+                    b.Property<string>("HelpSubTopic")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Sequence")
@@ -3420,16 +3441,13 @@ namespace api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("HelpItemId")
+                    b.Property<int>("HelpItemId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubText")
+                    b.Property<string>("HelpText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("helpId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("sequence")
+                    b.Property<int>("Sequence")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -3446,6 +3464,12 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IndustryClass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IndustryGroup")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IndustryName")
                         .HasColumnType("nvarchar(450)");
@@ -3466,6 +3490,9 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ProfessionGroup")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfessionName")
                         .HasColumnType("nvarchar(450)");
@@ -3774,8 +3801,8 @@ namespace api.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Remarks")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -3957,7 +3984,8 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Admin.IntervwItem", null)
                         .WithMany("InterviewItemCandidates")
                         .HasForeignKey("IntervwItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.ContractReview", b =>
@@ -4035,6 +4063,13 @@ namespace api.Data.Migrations
                     b.HasOne("api.Entities.Admin.Order.OrderItem", null)
                         .WithMany("OrderItemAssessmentQs")
                         .HasForeignKey("OrderItemId");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
+                {
+                    b.HasOne("api.Entities.Admin.Order.OrderForwardToAgent", null)
+                        .WithMany("OrderForwardCategories")
+                        .HasForeignKey("OrderForwardToAgentId");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategoryOfficial", b =>
@@ -4155,25 +4190,6 @@ namespace api.Data.Migrations
                         .HasForeignKey("CandidateAssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("api.Entities.HR.ChecklistHR", b =>
-                {
-                    b.HasOne("api.Entities.HR.Candidate", "Candidate")
-                        .WithMany()
-                        .HasForeignKey("CandidateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api.Entities.Admin.Order.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Candidate");
-
-                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("api.Entities.HR.ChecklistHRItem", b =>
@@ -4300,7 +4316,9 @@ namespace api.Data.Migrations
                 {
                     b.HasOne("api.Entities.Master.HelpItem", null)
                         .WithMany("HelpSubItems")
-                        .HasForeignKey("HelpItemId");
+                        .HasForeignKey("HelpItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Entities.Tasks.HRTaskItem", b =>
@@ -4401,6 +4419,11 @@ namespace api.Data.Migrations
             modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardCategory", b =>
                 {
                     b.Navigation("OrderForwardCategoryOfficials");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.Order.OrderForwardToAgent", b =>
+                {
+                    b.Navigation("OrderForwardCategories");
                 });
 
             modelBuilder.Entity("api.Entities.Admin.Order.OrderItem", b =>

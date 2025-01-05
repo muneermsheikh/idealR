@@ -13,6 +13,6 @@ namespace api.Params.Deployments
         public string CandidateName { get; set; }
         public string CategoryName { get; set; }
         public string CustomerName { get; set; }
-        
+        public string CurrentStatus { get; set; }
     }
 }

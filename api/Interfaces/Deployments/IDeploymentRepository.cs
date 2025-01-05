@@ -24,6 +24,6 @@ namespace api.Interfaces.Deployments
         Task<ICollection<DeployStatus>> GetDeploymentStatusData();
         Task<ICollection<DeployStatusAndName>> GetDeploymentSeqAndStatus();
         Task<DepItem> GetNextDepItemToAddFomCVRefId(int cvRefId);
-       
+        Task<ReturnStringsDto> DoHousekeepingOfDeployments();
     }
 }

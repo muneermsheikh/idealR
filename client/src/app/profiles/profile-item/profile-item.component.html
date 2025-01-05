@@ -14,13 +14,13 @@
      <div class="stdd w70" title="click to edit" mouseover="style.cursor = 'pointer'" 
           routerLink="/candidates/edit/{{cv.id}}">{{cv.applicationNo}}</div>
      
-     <div class="stdd mx-1 w180" routerLink = "/candidate/historyfromcvid/{{cv.id}}" 
+     <div class="stdd mx-1 w160" routerLink = "/candidate/historyfromcvid/{{cv.id}}" 
           title="contact history of the candidate" >{{cv.fullName}}</div> 
 
      <div class="stdd mx-1 w100">{{cv.city}}</div>
      <div class="stdd mx-1 w200" >{{cv.referredByName}}</div>
      
-     <div class="stdd mx-1 w300" style="border:aqua">{{cv.userProfessions.flat()}}     
+     <div class="stdd mx-1 w300" style="border:aqua">{{cv!.userProfessions!.flat()}}     
      </div>
      
      <!-- 
@@ -36,23 +36,25 @@
           <!-- <button class="w30 fa fa-pencil" style="display: inline-block;" type="button" routerLink="/candidate/edit/{{cv.id}}" ></button> -->
           <!-- <button class="stdd fSmall fa fa-eye" type="button" routerLink="/candidate/view/{{cv.id}}" ></button> -->
      <button (click)="editCV(cv.id)" type="button" 
-          class="btn btn-outline-secondary fa fa-solid fa-pencil w15" type="button" 
+          class="btn btn-outline-secondary w10 fa fa-solid fa-pencil" type="button" 
           title="edit the candidate profile">
      </button>
 
      <button (click)="cvAssessClicked(cv)" type="button" 
-          class="btn btn-outline-secondary mx-2 fa fa-solid fa-balance-scale w15" type="button" 
+          class="btn btn-outline-secondary w10 fa fa-solid fa-balance-scale" type="button" 
           title="Assess the CV">
      </button>
 
-     <button (click)="download(cv.id)" type="button" 
-          class="btn fa fa-download w15" type="button" 
+     <button (click)="download(cv.id)" type="button" class="btn w10 fa fa-download" type="button" 
           title="download the CV">
      </button>
      
-     <button (click)="deleteCV(cv.id)" type="button" 
-          class="btn fa fa-download w15" type="button" 
-          title="download the CV">
+     <button (click)="assignToInterview(cv.id)" type="button" class="btn w10" type="button" 
+          title="assign candidates to an open interview category"><mat-icon>forward</mat-icon>
+     </button>
+
+     <button (click)="deleteCV(cv.id)" type="button" class="btn w10 fa fa-trash" type="button" 
+          title="delete this CV along with all its attachments">
      </button>
 
      <!-- <app-cv-assess *ngIf="currentId===item.id" [header]="header" [candidateAssessment]="assessment" ></app-cv-assess> -->

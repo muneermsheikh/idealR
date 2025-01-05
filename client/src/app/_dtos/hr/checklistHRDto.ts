@@ -20,6 +20,8 @@ export interface IChecklistHRDto{
      exceptionApproved: boolean;
      exceptionApprovedBy: string;
      exceptionApprovedOn: Date;
+     salaryOffered: string;
+     salaryExpectation: number;
      checklistedOk: boolean;
      assessmentIsNull: boolean;
      requireInternalReview: boolean;
@@ -45,6 +47,8 @@ export class ChecklistHRDto implements IChecklistHRDto{
      exceptionApproved: boolean=false;
      exceptionApprovedBy: string='';
      exceptionApprovedOn: Date=new Date();
+     salaryOffered = "";
+     salaryExpectation = 0;
      checklistedOk: boolean=false;
      assessmentIsNull = false;
      requireInternalReview=false;

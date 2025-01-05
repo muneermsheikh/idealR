@@ -10,11 +10,11 @@ export interface ICandidateAssessment
      categoryRefAndName: string;
      orderDate: Date;
 
-     assessedByName: string;
+     assessedByEmployeeName: string;
      assessedOn: Date;
      assessResult: string;
-     requireInternalReview: string;
-     hrChecklistId: number;
+     requireInternalReview: boolean;
+     checklistHRId: number;
      taskIdDocControllerAdmin: number;
      remarks: string;
      candidateAssessmentItems: ICandidateAssessmentItem[];
@@ -30,11 +30,11 @@ export class CandidateAssessment implements ICandidateAssessment
      orderDate = new Date();
      
      candidateId= 0;
-     assessedByName= '';
+     assessedByEmployeeName= '';
      assessedOn= new Date();
      assessResult= "";
-     requireInternalReview = 'N';
-     hrChecklistId= 0;
+     requireInternalReview = false;
+     checklistHRId= 0;
      remarks= '';
      cvRefId= 0;
      taskIdDocControllerAdmin= 0;

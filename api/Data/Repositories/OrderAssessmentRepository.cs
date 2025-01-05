@@ -3,12 +3,10 @@ using api.DTOs.Admin;
 using api.DTOs.Admin.Orders;
 using api.DTOs.Orders;
 using api.Entities.Admin.Order;
-using api.Entities.HR;
 using api.Extensions;
 using api.Interfaces;
 using api.Interfaces.Admin;
 using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories
@@ -120,13 +118,20 @@ namespace api.Data.Repositories
                         _context.Entry(itemExisting).CurrentValues.SetValues(newItem);
                         _context.Entry(itemExisting).State = EntityState.Modified;
                     } else {    //insert new navigation record
+                        var profession = await (from item in _context.OrderItems where item.Id==newItem.OrderItemId
+                            join prof in _context.Professions on item.ProfessionId equals prof.Id
+                            select prof).FirstOrDefaultAsync();
                         var itemToInsert = new OrderAssessmentItem
                         {
                             CustomerName = newItem.CustomerName,
                             DateDesigned = _todaydate,
                             DesignedBy = Username,
                             OrderItemId = newItem.OrderItemId,
+                            ProfessionId =profession.Id,
+                            ProfessionName =profession.ProfessionName,
+                            ProfessionGroup=profession.ProfessionGroup,
                             OrderNo = newItem.OrderNo, 
+                            OrderId =newItem.OrderId,
                             RequireCandidateAssessment = itemExisting.RequireCandidateAssessment
                         };
 
@@ -187,12 +192,18 @@ namespace api.Data.Repositories
 
         public async Task<bool> EditOrderAssessmentItem(OrderAssessmentItem newObject, string username)
         {
+             if(string.IsNullOrEmpty(newObject.ProfessionGroup)) {
+                var prof = await _context.Professions.FindAsync(newObject.ProfessionId);
+                newObject.ProfessionGroup = prof.ProfessionGroup;
+             }
+
              if(newObject.Id == 0) {
                 var obj = new OrderAssessmentItem {
                     OrderAssessmentId = newObject.OrderAssessmentId,
                     AssessmentRef = newObject.AssessmentRef, OrderItemId = newObject.OrderItemId,
                     CustomerName = newObject.CustomerName, ProfessionName = newObject.ProfessionName,
-                    ProfessionId = newObject.ProfessionId, OrderNo = newObject.OrderNo, OrderId=newObject.OrderId,
+                    ProfessionId = newObject.ProfessionId, ProfessionGroup = newObject.ProfessionGroup,
+                    OrderNo = newObject.OrderNo, OrderId=newObject.OrderId,
                     ApprovedBy = newObject.ApprovedBy, DateDesigned = newObject.DateDesigned,
                     RequireCandidateAssessment = newObject.RequireCandidateAssessment,
                     DesignedBy = newObject.DesignedBy};
@@ -346,6 +357,9 @@ namespace api.Data.Repositories
 
                 var newAssessmentItem = new OrderAssessmentItem{
                     OrderItemId = item.Id,
+                    ProfessionGroup = item.Profession.ProfessionGroup,
+                    ProfessionId = item.ProfessionId,
+                    ProfessionName = item.Profession.ProfessionName,
                     CustomerName = order.Customer.CustomerName,
                     OrderNo = order.OrderNo,
                     AssessmentRef = order.OrderNo + "-" + item.SrNo,
@@ -381,7 +395,8 @@ namespace api.Data.Repositories
             }
 
             //verify orderItemId is valid
-            var orderitem = await _context.OrderItems.FindAsync(orderItemId);
+            var orderitem = await _context.OrderItems.Include(x => x.Profession).Where(x => x.Id==orderItemId).FirstOrDefaultAsync();
+
             if (orderitem == null) return null;
             
             var order = await _context.Orders.FindAsync(orderitem.OrderId);
@@ -402,6 +417,9 @@ namespace api.Data.Repositories
 
             var newAssessmentItem = new OrderAssessmentItem{
                 OrderItemId = orderItemId,
+                ProfessionGroup=orderitem.Profession.ProfessionGroup,
+                ProfessionId=orderitem.ProfessionId,
+                ProfessionName = orderitem.Profession.ProfessionName,
                 CustomerName = await _context.GetCustomerNameFromOrderItemId(orderItemId),
                 OrderNo = order.OrderNo,
                 AssessmentRef = order.OrderNo + "-" + _context.GetSrNoFromOrderItemId(orderItemId),
@@ -471,6 +489,7 @@ namespace api.Data.Repositories
                 join order in _context.Orders on item.OrderId equals order.Id 
                 select new {OrderId=order.Id, OrderNo=order.OrderNo, 
                     OrderDate=order.OrderDate, CustomerName=order.Customer.CustomerName,
+                    ProfessionGroup = item.Profession.ProfessionGroup,
                     ProfessionId = item.ProfessionId, ProfessionName = item.Profession.ProfessionName}
             ).FirstOrDefaultAsync();
 
@@ -487,7 +506,8 @@ namespace api.Data.Repositories
                     CustomerName = orderdata.CustomerName, OrderItemId = orderItemId,
                     OrderAssessmentId=assessmentItem.OrderAssessmentId, 
                     ProfessionId=assessmentItem.ProfessionId == 0 ? orderdata.ProfessionId : assessmentItem.ProfessionId, 
-                    ProfessionName=assessmentItem.ProfessionName ?? orderdata.ProfessionName, DesignedBy = assessmentItem.DesignedBy, 
+                    ProfessionName=assessmentItem.ProfessionName ?? orderdata.ProfessionName, 
+                    ProfessionGroup = orderdata.ProfessionGroup, DesignedBy = assessmentItem.DesignedBy, 
                     OrderAssessmentItemQs = assessmentItem.OrderAssessmentItemQs };
                 errDto.orderAssessmentItemDto=dto;
                 return errDto;                    
@@ -502,6 +522,7 @@ namespace api.Data.Repositories
                     , OrderDate = orderdata.OrderDate, OrderNo = orderdata.OrderNo
                     , ProfessionId = orderdata.ProfessionId
                     , ProfessionName = orderdata.ProfessionName
+                    , ProfessionGroup = orderdata.ProfessionGroup
                     , OrderItemId = orderItemId
                     , DesignedBy = loggedInUserName
                     , OrderAssessmentItemQs = new List<OrderAssessmentItemQ>()
@@ -550,7 +571,7 @@ namespace api.Data.Repositories
             return orderItemAssessment;
         }
 
-        public async Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQs(int orderitemid)
+        public async Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQsFromOrderItemId(int orderitemid)
         {
             var obj = await (from assessment in  _context.OrderAssessmentItems 
                     where assessment.OrderItemId == orderitemid
@@ -561,5 +582,44 @@ namespace api.Data.Repositories
 
         }
 
+        public async Task<ICollection<OrderAssessmentItemHeaderDto>> GetOrderAssessmentHeaders(string ProfessionGroup)
+        {
+            var query = await (from assessmt in _context.OrderAssessmentItems where assessmt.ProfessionGroup==ProfessionGroup
+                join item in _context.OrderItems on assessmt.OrderItemId equals item.Id 
+                orderby assessmt.DateDesigned descending, assessmt.OrderItemId
+            select new OrderAssessmentItemHeaderDto {
+                Id = assessmt.Id, CategoryRef = assessmt.OrderNo + "-" + item.SrNo,
+                CustomerName = assessmt.CustomerName, DateDesigned = assessmt.DateDesigned, 
+                ProfessionName = assessmt.ProfessionName, OrderItemId=assessmt.OrderItemId}).ToListAsync();
+            
+            return query;
+                        
+        }
+
+        public async Task<ICollection<OrderAssessmentItemQ>> GetOrderAssessmentItemQsFromId(int orderassessmentitemid)
+        {
+            var obj = await _context.OrderAssessmentItemQs.Where(x => x.OrderAssessmentItemId == orderassessmentitemid)
+                .OrderBy(x => x.QuestionNo).ToListAsync();
+                
+            return obj;
+        }
+
+        public async Task<SingleStringDto> GetAndSetProfessionGroupFromProfessionId(int ProfessionId, int OrderAssessmentItemId)
+        {
+            var grp = await _context.Professions.Where(x => x.Id == ProfessionId).Select(x => x.ProfessionGroup).FirstOrDefaultAsync();
+            var dto = new SingleStringDto {StringValue = grp};
+
+            /*if(OrderAssessmentItemId != 0) {
+                var OrderAssessmentItem = await _context.OrderAssessmentItems.FindAsync(OrderAssessmentItemId);
+                if(OrderAssessmentItem == null) return dto;
+
+                OrderAssessmentItem.ProfessionGroup = dto.StringValue;
+                _context.Entry(OrderAssessmentItem).State = EntityState.Modified;
+            } */
+
+            await _context.SaveChangesAsync();
+
+            return dto;
+        }
     }
 }

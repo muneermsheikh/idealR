@@ -16,5 +16,7 @@ namespace api.Interfaces.HR
         Task<ICollection<ProspectiveSummaryDto>> GetProspectiveSummary(ProspectiveSummaryParams pParams);
         Task<ProspectiveCandidate> GetProspectiveCandidate(ProspectiveSummaryParams pParams);
         Task<bool> DeleteProspectiveCandidate(int ProspectiveId);
+        Task<ICollection<ProspectiveHeaderDto>> GetProspectiveHeaders(string status);
+        Task<ICollection<ProspectiveBriefDto>> GetProspectiveList(string orderno, string status);
     }
 }

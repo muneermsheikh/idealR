@@ -14,10 +14,11 @@ namespace api.Data.Repositories.Admin
      {
           private readonly DataContext _context;
           private readonly IMapper _mapper;
-        private readonly IOrderForwardRepository _orderFwdRepo;
-          public ContractReviewRepository(DataContext context, IOrderForwardRepository orderFwdRepo, IMapper mapper)
+          private readonly IOrderForwardRepository _orderFwdRepo;
+          public ContractReviewRepository(DataContext context, IOrderForwardRepository orderFwdRepo, 
+               IMapper mapper, IOrderForwardRepository fwdRepo)
           {
-            _orderFwdRepo = orderFwdRepo;
+               _orderFwdRepo = orderFwdRepo;
                _mapper = mapper;
                _context = context;
           }
@@ -134,9 +135,8 @@ namespace api.Data.Repositories.Admin
                _context.Entry(existingObj).State = EntityState.Modified;
 
                //update orderitem.reviewitemstatusId     
-               existingObj.ReviewItemStatus = model.ReviewItemStatus;
-               
-               
+               existingObj.ReviewItemStatus = model.ReviewItemStatus;    
+
                if(calledByThis) {
                     return existingObj;
                } else {
@@ -352,21 +352,23 @@ namespace api.Data.Repositories.Admin
                     .Include(x => x.ContractReviewItemQs.Where(x => x.ReviewParameter=="Service Charges in INR"))
                     .ToListAsync();
                
-               if(reviewitems == null || reviewitems.Count == 0) {
-                    if(order.Status != "Awaiting Review") {
-                         order.Status="Awaiting Review";
-                         order.ContractReviewStatus = "Not Reviewed";
-                         _context.Entry(order).State = EntityState.Modified;
-                    }
-               } else {
-                    order.ContractReviewStatus = order.OrderItems.Any(x => x.ReviewItemStatus.ToLower() == "regretted")
-                         ? order.OrderItems.Any(x => x.ReviewItemStatus.ToLower()=="accepted") 
-                              ? "Accepted With Regrets"
-                              :  "Regretted"
-                         : "Accepted";
-                    _context.Entry(order).State= EntityState.Modified;
-               }
+               order.Status = reviewitems.Any(x => x.ReviewItemStatus.ToLower() == "not reviewed") ? "Not Reviewed"
+                    : reviewitems.Any(x => x.ReviewItemStatus.ToLower() == "regretted") && reviewitems.Any(x => x.ReviewItemStatus.ToLower() == "accepted")
+                    ? "Accepted With Regrets" : "Accepted";
+                    
+               _context.Entry(order).State= EntityState.Modified;
+               
+               if(order.Status != "Not Reviewed") {
+                    var extn = await _context.OrderExtns.Where(x => x.OrderId == orderId).FirstOrDefaultAsync() 
+                              ?? new OrderExtn{OrderId=orderId, OrderNo=order.OrderNo};
 
+                    extn.ContractReviewedOn=DateTime.UtcNow;
+                    extn.ContratReviewResult = order.ContractReviewStatus;
+                    extn.ContractReviewId = reviewitems.Select(x => x.Id).FirstOrDefault();
+
+                    _context.Entry(extn).State = extn.Id == 0 ? EntityState.Added:EntityState.Modified;
+               }
+ 
                return order.ContractReviewStatus;
           }
 
@@ -666,11 +668,19 @@ namespace api.Data.Repositories.Admin
 
                try {
                     await _context.SaveChangesAsync();
+                    /*
+                    //once save has succeeded, update orderitem
+                    var orderitem = await _context.OrderItems.FindAsync(model.OrderItemId);
+                    orderitem.ReviewItemStatus = reviewItem.ReviewItemStatus;
+                    _context.Entry(orderitem).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    */
                     return reviewItem;
                } catch {
                     return null;
                }
         }
+
     }
 
 }

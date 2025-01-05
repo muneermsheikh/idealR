@@ -1,13 +1,10 @@
-using System.Security.Claims;
 using api.DTOs;
-using api.Entities;
 using api.Entities.Identity;
 using api.Errors;
 using api.Extensions;
 using api.Helpers;
 using api.Params;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

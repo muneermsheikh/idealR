@@ -23,7 +23,8 @@
      <div class="stdd fSmall mx-1 w100">{{cv.city}}</div>
      <div class="stdd fSmaller mx-1 w300" >{{cv.orderCategoryRef}}</div>
      <div class="stdd fSmall mx-1 w100" >{{cv.assessedOn | date: 'dd-MMM-yy'}}</div>
-     <div class="stdd fSmall w50 mx-1 blue cursorpointer" style="text-align: center;" (click)="displayAssessment()" >{{cv.gradeAssessed}}</div>
+     <div class="stdd fSmall w50 mx-1 cursorpointer" style="text-align: center;" 
+          (click)="displayAssessment()" >{{cv.gradeAssessed}}</div>
      
      <div class="stdd mx-1 fSmall w200 mx-1" style="border:aqua" >
           <span style="white-space: normal;" *ngFor="let item of cv.userProfessions">
@@ -33,7 +34,7 @@
      </div> 
      
      
-     <button (click)="download(cv.candidateId)" type="button" 
+     <button (click)="download(cv)" type="button" 
           class="btn btn-outline-secondary fa fa-regular fa-download w40" type="button" 
           title="download the CV">
      </button>

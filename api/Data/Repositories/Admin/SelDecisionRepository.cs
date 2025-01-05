@@ -76,13 +76,11 @@ namespace api.Data.Repositories.Admin
         //returns selectionMessagesDtos with employments present.  All selections are accompanied with employment details.  So this will return all selection candidates
         private async Task<ICollection<SelectionMessageDto>> GetSelectionMessageWithEmpDtos(List<int> cvrefids) {
             
-            var dtos = await (from sel in _context.SelectionDecisions where cvrefids.Contains(sel.CvRefId)
+            var dtos = await (from sel in _context.SelectionDecisions where cvrefids.Contains(sel.Id)
                 join item in _context.OrderItems on sel.OrderItemId equals item.Id 
                 join order in _context.Orders on item.OrderId equals order.Id
                 join cv in _context.Candidates on sel.CandidateId equals cv.Id
                 join emp in _context.Employments on sel.CvRefId equals emp.CvRefId
-                /*join employmt in _context.Employments on sel.CvRefId equals employmt.CvRefId into employments
-                from emp in employments.DefaultIfEmpty() */
                 select new SelectionMessageDto {
                     CustomerName = order.Customer.CustomerName,
                     CustomerCity = order.Customer.City,
@@ -123,20 +121,34 @@ namespace api.Data.Repositories.Admin
             return msgErr;
         }
 
-        public async Task<ICollection<Message>> ComposeSelMessagesToCandidates(List<int> cvrefids, string Username)
+        public async Task<MessagesWithErrDto> ComposeSelMessagesToCandidates(List<int> cvrefids, string Username)
         {
-            if(cvrefids.Count == 0) return null;
+            var dtoToReturn = new MessagesWithErrDto();
+
+            if(cvrefids.Count == 0) {
+                dtoToReturn.ErrorString = "parameter with zero count";
+                return dtoToReturn;
+            }
 
             var selectedDetails = await GetSelectionMessageWithEmpDtos(cvrefids);
-            
-            if(selectedDetails.Count == 0) throw new Exception ("Failed to retrieve any records from database.  For Selection Messages to be composed, the relevant Employment data must be defined");
+            if(selectedDetails == null || selectedDetails.Count == 0) {
+                dtoToReturn.ErrorString = "Selections/rejections registered; however, failed to compose " + 
+                    "messages as employment data not defined";
+                return dtoToReturn;
+            }
 
             var ErrorString = await VerifyAppUserAvailableForCandidates(selectedDetails);
-            if(!string.IsNullOrEmpty(ErrorString)) throw new Exception(ErrorString) ;
+
+            if(!string.IsNullOrEmpty(ErrorString)) {
+                dtoToReturn.ErrorString= ErrorString;
+                return dtoToReturn;
+            }
 
             var msgs = await _msgAdmRepo.ComposeSelectionStatusMessagesForCandidate(selectedDetails, Username);
 
-            return msgs;
+            dtoToReturn.Messages= msgs;
+
+            return dtoToReturn;
         }
 
         
@@ -146,7 +158,8 @@ namespace api.Data.Repositories.Admin
 
             var selectedDetails = await GetSelectionMessageWithEmpDtos(cvrefids);
 
-            if(selectedDetails == null || selectedDetails.Count == 0) return "For acceptance reminder messages, the relevant employment record must be defined. Cannot retrieve selection details for the candidates selected";
+            if(selectedDetails == null || selectedDetails.Count == 0) 
+                return "Cannot compose reminder message for the candidates as no employment data exist";
             
             string ErrorString="";
             ErrorString = await VerifyAppUserAvailableForCandidates(selectedDetails);
@@ -165,7 +178,9 @@ namespace api.Data.Repositories.Admin
             return await _context.SaveChangesAsync() > 0 ? "" : "Failed to save messages";
 
         }
-        private async Task<AppUser> AppUserFromCandidateId(int CandidateId) {
+
+        //returns AppUser; creates new if not exists
+        public async Task<AppUser> AppUserFromCandidateId(int CandidateId) {
             var candidateObj = await _context.Candidates.FindAsync(CandidateId);
             if(candidateObj == null) return null;
 
@@ -174,13 +189,14 @@ namespace api.Data.Repositories.Admin
             //user does not have appuser object
             
             //there might be an AppUser record for the candidate, but the candidate object does not have the AppUserId info
-            var newAppUser = new AppUser();
-
-            if(!string.IsNullOrEmpty(candidateObj.Username)) {
-                newAppUser = await _userManager.FindByNameAsync(candidateObj.Username);
-            }
+            var newAppUser = await _userManager.FindByEmailAsync(candidateObj.Email)
+                    ?? await _userManager.FindByNameAsync(candidateObj.Username);
             
-            if(newAppUser.Id == 0) {        //appuser not found
+            if(newAppUser != null) {
+                candidateObj.AppUserId = newAppUser.Id;
+                _context.Entry(candidateObj).State = EntityState.Modified;
+                await _context.SaveChangesAsync(); 
+            } else {        //appuser not found
                 newAppUser = new AppUser{
                     Gender = candidateObj.Gender ?? "Male",
                     KnownAs=candidateObj.KnownAs ?? "",
@@ -194,15 +210,8 @@ namespace api.Data.Repositories.Admin
                 };
                 
                 var result = await _userManager.CreateAsync(newAppUser, _tempPassword);
-                if(result.Succeeded) newAppUser = await _userManager.FindByEmailAsync(candidateObj.Email);
             }
 
-            if(newAppUser.Id != 0) {
-                candidateObj.AppUserId = newAppUser.Id;
-                _context.Entry(candidateObj).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            
             return newAppUser.Id == 0 ? null : newAppUser;
 
         }
@@ -341,12 +350,13 @@ namespace api.Data.Repositories.Admin
                     SelectedOn = sel.SelectedOn, 
                     SelectionStatus = sel.SelectionStatus,
                     EmploymentId = emp==null ? 0 : emp.Id
-                }).OrderBy(x => x.OrderItemId).ThenBy(x => x.SelectionStatus)
+                }).OrderByDescending(x => x.SelectedOn).ThenBy(x => x.SelectionStatus)
                 .AsQueryable();
 
             if(selParams.CVRefId > 0) query = query.Where(x => x.CvRefId == selParams.CVRefId);
             if(selParams.OrderItemId > 0) query = query.Where(x => x.OrderItemId == selParams.OrderItemId);
             if(selParams.OrderId > 0) query = query.Where(x => x.OrderId == selParams.OrderId);
+            if(!string.IsNullOrEmpty(selParams.SelectionStatus)) query = query.Where(x => x.SelectionStatus.ToLower() == selParams.SelectionStatus.ToLower());
             //if(selParams.ProfessionId > 0) query = query.Where(x => x.ProfessionId == selParams.ProfessionId);
             if(selParams.SelectedOn.Year > 2000) query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(selParams.SelectedOn));
 
@@ -454,7 +464,7 @@ namespace api.Data.Repositories.Admin
 
             if(!string.IsNullOrEmpty(dtoToReturn.ErrorString)) return dtoToReturn;
 
-            dtoToReturn.CVRefIdsInserted=cvrefids;
+            dtoToReturn.CvRefIdsInserted=cvrefids;
 
             //2 - create employment records
             var orderItemIdsForSelected = selDetails.Where(x => x.SelectionStatus=="Selected").Distinct().Select(x => x.OrderItemId).ToList();
@@ -523,7 +533,12 @@ namespace api.Data.Repositories.Admin
 
             if(selectedCVRefIds.Count > 0) {
                 var selMessages = await ComposeSelMessagesToCandidates(selectedCVRefIds, Username);
-                foreach(var msg in selMessages) { _context.Entry(msg).State = EntityState.Added;}
+                if(!string.IsNullOrEmpty(selMessages.ErrorString)) {
+                    dtoToReturn.ErrorString = selMessages.ErrorString;
+                    return dtoToReturn;
+                }
+
+                foreach(var msg in selMessages.Messages) { _context.Entry(msg).State = EntityState.Added;}
             } 
             
             var rejCVRefIds = selDetails.Where(x => x.SelectionStatus != "Selected").Select(x => x.CvRefId).ToList();
@@ -558,7 +573,7 @@ namespace api.Data.Repositories.Admin
                 dtoToReturn.ErrorString += ", " + ex.Message;
             }
 
-            if (string.IsNullOrEmpty(dtoToReturn.ErrorString)) return dtoToReturn;
+            //if (string.IsNullOrEmpty(dtoToReturn.ErrorString)) return dtoToReturn;
 
             if(!string.IsNullOrEmpty(dtoToReturn.ErrorString)) dtoToReturn.ErrorString = "Selection/Rejection decisions registered, but failed to create Tasks and compose selection messages";
             return dtoToReturn;
@@ -623,7 +638,7 @@ namespace api.Data.Repositories.Admin
         }
         public async Task<PagedList<EmploymentsNotConcludedDto>> EmploymentsAwaitingConclusion(EmploymentParams empParams)
         {
-             var query = _context.Employments.Where(x => !x.OfferAccepted).AsQueryable();
+             var query = _context.Employments.Where(x => x.OfferAccepted != "Accepted").AsQueryable();
              
              var paged = await PagedList<EmploymentsNotConcludedDto>.CreateAsync(
                 query.AsNoTracking()

@@ -1,0 +1,21 @@
+.w20 {width: 20px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+
+.fSmallest{font-size: x-small;}
+
+.btn {color:aliceblue}
+
+.b {font-weight: bold;}
+
+.menuStyle{
+    font-size: smaller; 
+    font-weight: bold; 
+    border-style: groove;
+    vertical-align: top;
+    cursor: pointer;
+    color: yellow;
+    margin: 0 2px 0 2px;
+    padding: 0 2px 0 2px;
+}

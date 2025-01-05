@@ -24,10 +24,12 @@ namespace api.DTOs.Admin
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }
         public string ProfessionName { get; set; }
+        public string Grade {get; set;}
         public int DocControllerAdminTaskId { get; set; }
         public int ChargesAgreed { get; set; }
         public string HRExecUsername { get; set; }
         public string TaskDescription { get; set; }
+        public int SalaryExpectation { get; set; }
         public string Candidatedescription { get; set; }
     }
 }

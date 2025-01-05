@@ -10,6 +10,7 @@ export interface IOrderAssessmentItem
      customerName: string;
      professionId: number;
      professionName: string;
+     professionGroup: string;
      orderId: number;
      orderNo: number;
      approvedBy: string;
@@ -28,6 +29,7 @@ export class OrderAssessmentItem implements IOrderAssessmentItem
      customerName= '';
      professionId= 0;
      professionName= '';
+     professionGroup='';
      orderId= 0;
      orderNo= 0;
      approvedBy= '';

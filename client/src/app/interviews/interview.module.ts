@@ -11,9 +11,11 @@ import { EditComponent } from './edit/edit.component';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { InterviewAttendanceComponent } from './interview-attendance/interview-attendance.component';
 import { AttendanceLineComponent } from './attendance-line/attendance-line.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
 import { EditAttendanceModalComponent } from './edit-attendance-modal/edit-attendance-modal.component';
+import { InterviewBriefPendingModalComponent } from './interview-brief-pending-modal/interview-brief-pending-modal.component';
+import { SelectionHistoryComponent } from './selection-history/selection-history.component';
+import { CallRecordModule } from '../callRecords/call-record.module';
 
 
 @NgModule({
@@ -26,14 +28,19 @@ import { EditAttendanceModalComponent } from './edit-attendance-modal/edit-atten
     EditScheduleComponent,
     InterviewAttendanceComponent,
     AttendanceLineComponent,
-    EditAttendanceModalComponent
+    EditAttendanceModalComponent,
+    InterviewBriefPendingModalComponent,
+    SelectionHistoryComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     MatStepperModule,
     //BrowserAnimationsModule,
-    InterviewRoutingModule
+    InterviewRoutingModule,
+
+    //material
+    
   ]
 })
 export class InterviewModule { }

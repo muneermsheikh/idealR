@@ -9,5 +9,6 @@ namespace api.Params.Admin
         public string ProfessionName { get; set; }
         public DateTime SelectedOn { get; set; }
         public string RefStatus { get; set; }
+        public string SelectionStatus { get; set; }
     }
 }

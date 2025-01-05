@@ -4,10 +4,15 @@
 	<div *ngIf="voucher.id === 0" class="b my-2" >Create new finance voucher</div>
 	<div *ngIf="voucher.id > 0" class="b my-2" > Edit finance voucher</div>
 
-	<br><label class="lbl w100" >Voucher No.:</label>
+	<br><label class="lbl w100" >Section:</label>
+	<app-text-input class="stdd w150" [label]="'Section'" formControlName="section"></app-text-input>
+	<label class="lbl w100">Divn:</label>
+	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
+	
+	<label class="lbl w100" >Voucher No.:</label>
 	<app-text-input class="stdd w100" [label]="'Voucher No'" formControlName="voucherNo"></app-text-input>
 	
-	<label class="stdd w100">Dated:</label>
+	<label class="stdd w100 tAlignRight">Dated:</label>
 	<input class="stdd w150"
 		type="text"
 		placeholder="Voucher dated"
@@ -21,7 +26,7 @@
 		[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
 	>
 
-	<label class="lbl w100" style="margin-top: 2px;">Account:<b>CR</b></label>
+	<br><label class="lbl w100" style="margin-top: 2px;">Account:<b>CR</b></label>
 	<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
 		[items]="coas"
 		bindLabel="accountName"
@@ -37,14 +42,12 @@
 	</div>
 
 	<div class="stdd w30 fa fa-plus" title="insert a new Chart of Account" disabled="isAddMode" (click)="addNewCOA()"></div>
-	<label class="lbl w100">Divn:</label>
-	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
 	
-	<br><label class="stdd w100">Narration:</label>
+	<label class="stdd w100">Narration:</label>
 	<textarea class="stdd" formControlName="narration" cols="25" rows="2"></textarea>
 
-	<label class="lbl w100 my-0" >Amount:</label>
-	<input type="number" (change)="updateVoucherAmount()" class="stdd w100" formControlName="amount" > 
+	<br><label class="lbl w100 my-0" >Amount:</label>
+	<input type="number" (change)="updateVoucherAmount()" class="stdd w200" formControlName="amount" > 
 	
 	<div class="stdd b" style="margin-left: 50px;">Totals:</div>
 	<span class="stdd">DR</span><div class="stdd w75" style="text-align:right; border: solid;" >{{totalAmountDR}}</div>

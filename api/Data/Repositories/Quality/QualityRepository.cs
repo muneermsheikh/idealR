@@ -115,7 +115,7 @@ namespace api.Data.Repositories.Quality
                 {
                     OrderId = order.Id, CustomerId = order.CustomerId, CustomerName = order.Customer.CustomerName,
                     AboutEmployer = order.Customer.Introduction, OrderNo = order.OrderNo,
-                    OrderDate = order.OrderDate, OrderItemId = item.Id, RequireInternalReview = rvw.RequireAssess,
+                    OrderDate = order.OrderDate, OrderItemId = item.Id, RequireInternalReview = rvw.RequireAssess == "Y",
                     SrNo = item.SrNo, ProfessionId = item.ProfessionId,
                     ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity, Ecnr = item.Ecnr,
                     CompleteBefore = item.CompleteBefore, Status = item.Status, 

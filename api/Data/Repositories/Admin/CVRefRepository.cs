@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Security.Cryptography.Xml;
 using api.DTOs.Admin;
 using api.Entities.HR;
@@ -10,6 +11,7 @@ using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace api.Data.Repositories.Admin
 {
@@ -25,10 +27,12 @@ namespace api.Data.Repositories.Admin
         readonly int _docControllerAdminAppUserId=0;
         readonly string _docControllerAdminAppUsername= "";
         readonly string _docControllerAdminAppUserEmail= "";
+        private readonly ILogger<CVRefRepository> _logger;
 
-        public CVRefRepository(DataContext context, IMapper mapper, IComposeMessagesAdminRepository composeMsgAdmin, 
+        public CVRefRepository(DataContext context, IMapper mapper, IComposeMessagesAdminRepository composeMsgAdmin, ILogger<CVRefRepository> logger,
             IConfiguration config, ITaskRepository taskRepo, IQueryableRepository queryRepo, IMessageRepository msgRepo)
         {
+            _logger = logger;
             _msgRepo = msgRepo;
             _queryRepo = queryRepo;
             _taskRepo = taskRepo;
@@ -200,7 +204,8 @@ namespace api.Data.Repositories.Admin
             var selStatus = refParams.SelectionStatus ?? "";
             if(!string.IsNullOrEmpty(selStatus))  {
                 if(selStatus == "Pending") {
-                    query = query.Where(x => x.RefStatus.ToLower()=="referred");
+                    query = query.Where(x => x.RefStatus.ToLower()=="referred" 
+                        && (x.SelectionStatus==null || x.SelectionStatus==""));
                 } else if(selStatus== "Rejected") {
                     query = query.Where(x => x.SelectionStatus.ToLower().Contains("rejected"));
                 } else {
@@ -276,7 +281,7 @@ namespace api.Data.Repositories.Admin
 
             var cvrefsAlreadyReferred = await _context.CVRefs.Where(x => CandidateAssessmentIds.Contains(x.CandidateAssessmentId)).ToListAsync();
 
-            if(cvrefsAlreadyReferred.Count > 0) {       //remove the entry from CandidateAsessmentIds and also update
+            if(cvrefsAlreadyReferred.Count > 0) {       //remove the entry from CandidateAsessmentIds and also update so that it is marked as referred and not available to refer further
                 foreach(var id in cvrefsAlreadyReferred) {      //candidateAssessment with CVRefId
                     CandidateAssessmentIds.Remove(id.CandidateAssessmentId);
                     var assessment = await _context.CandidateAssessments.FindAsync(id.CandidateAssessmentId);
@@ -324,6 +329,8 @@ namespace api.Data.Repositories.Admin
                     DocControllerAdminTaskId = candAssess.TaskIdDocControllerAdmin,
                     ChargesAgreed = chklst==null ? 0 : chklst.ChargesAgreed,
                     HRExecUsername = chklst.HrExecUsername,
+                    SalaryExpectation = chklst.SalaryExpectation,
+                    Grade = candAssess.AssessResult,
                     TaskDescription= "CV approved to send to client: Application No.:" + 
                         cand.ApplicationNo + ", Candidate: " + cand.FullName +
                         "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 
@@ -377,6 +384,7 @@ namespace api.Data.Repositories.Admin
             if(!isSaved) return dtoToReturn;
             
             dtoToReturn.Notification = await TasksPostCVRef(Username, itemdetails);
+            
             return dtoToReturn;
         }
         
@@ -439,9 +447,12 @@ namespace api.Data.Repositories.Admin
                         var task = await _context.Tasks.Include(x => x.TaskItems).Where(x => x.Id==id).FirstOrDefaultAsync();
                         if(task != null) {
                             task.TaskStatus = "Completed";
+                            task.CompletedOn = DateTime.UtcNow;
+                        
                             task.TaskItems.Add(new TaskItem{AppTaskId=id, 
                                 TransactionDate=DateTime.UtcNow,
-                                TaskItemDescription="Task Completed", UserName=Username});
+                                TaskItemDescription="Task Completed", UserName=Username,
+                                TaskStatus=task.TaskStatus});
                             _context.Entry(task).State = EntityState.Modified;
                         }
                     }
@@ -452,16 +463,17 @@ namespace api.Data.Repositories.Admin
             
             //7 - HRExecTask
             var tasksHRExec = await _context.HRTasks.Where(x => 
-                x.TaskStatus !="Completed" 
-                && candidatesNotRefDto
-                .Select(x => x.OrderItemId).ToList().Contains(x.OrderItemId))
+                candidatesNotRefDto.Select(x => x.OrderItemId).ToList().Contains(x.OrderItemId))
                 .ToListAsync();
 
-            foreach(var item in candidatesNotRefDto) {
+            foreach(var item in candidatesNotRefDto) 
+            {
                 //3 - create cvfwdtask - DocController to register CVRef in the system
                 categoryDescription ="Candidate-" + await _context.GetCandidateDescriptionFromCandidateId(item.CandidateId) + 
                         " refer to " + await _context.GetOrderItemDescriptionFromOrderItemId(item.OrderItemId);
-                var cvrefid=query.Where(x => x.candidateassessment.Id == item.CandidateAssessment.Id).FirstOrDefault().cvrefid;
+                
+                var cvrefid=query.Where(x => x.candidateassessment.Id == item.CandidateAssessment.Id)
+                    .FirstOrDefault()?.cvrefid;
 
                 var cvfwdTask = new AppTask{
                     TaskDate=DateTime.UtcNow, 
@@ -476,11 +488,12 @@ namespace api.Data.Repositories.Admin
                     CandidateId = item.CandidateId, CandidateAssessmentId = item.CandidateAssessment.Id,
                     OrderNo=item.OrderNo, ApplicationNo=item.ApplicationNo, PostTaskAction="Do not auto-send message",
                     TaskItems = new List<TaskItem>(){
-                        new() { TaskItemDescription="Refer CVs to customer in the system", NextFollowupByName = _docControllerAdminAppUsername }
+                        new() { TaskItemDescription="Refer CVs to customer in the system", 
+                        NextFollowupByName = _docControllerAdminAppUsername, TaskStatus="Not Started" }
                      }
                 };
                 _context.Entry(cvfwdTask).State = EntityState.Added;
-
+            
                 //4 - create task to Doc Controller to send the email to the client
                 var cvrefTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername,
@@ -491,12 +504,13 @@ namespace api.Data.Repositories.Admin
                     CandidateId=item.CandidateId, OrderItemId=item.OrderItemId, OrderId = item.OrderId, 
                     OrderNo=item.OrderNo, PostTaskAction="Do not auto-send message",
                     TaskItems = new List<TaskItem>(){
-                        new() { TaskItemDescription="Refer CVs to customer by email", NextFollowupByName = _docControllerAdminAppUsername }
+                        new() { TaskItemDescription="Refer CVs to customer by email", 
+                        NextFollowupByName = _docControllerAdminAppUsername, TaskStatus="Not Started" }
                     }};
                 _context.Entry(cvrefTask).State = EntityState.Added;
-
+           
                  //5 - create selectionTasks
-                  var selTask = new AppTask{TaskDate=DateTime.UtcNow, 
+                var selTask = new AppTask{TaskDate=DateTime.UtcNow, 
                     AssignedToUsername=_docControllerAdminAppUsername, CVRefId = cvrefid,
                     AssignedByUsername = Username, CompleteBy= DateTime.UtcNow.AddDays(5), 
                     TaskDescription= "Follow up with clients for selection-" + categoryDescription, 
@@ -506,22 +520,22 @@ namespace api.Data.Repositories.Admin
                     ApplicationNo=item.ApplicationNo, PostTaskAction="Do not auto-send message",
                     TaskItems = new List<TaskItem>(){
                     new() { TaskItemDescription="Follow up with clients for selection", 
-                        NextFollowupByName = _docControllerAdminAppUsername }
+                        NextFollowupByName = _docControllerAdminAppUsername, TaskStatus="Not Started"}
                     }};
-                _context.Entry(selTask).State = EntityState.Added;
-
+                       
                 var hrtask = tasksHRExec.Where(x => x.OrderItemId == item.OrderItemId
                     && x.AssignedToUsername == item.HRExecUsername).FirstOrDefault();
-                
-                
+
                 var hritem = new HRTaskItem{TransactionDate=DateTime.UtcNow, 
                     ApplicationNo=item.ApplicationNo, CandidateId=item.CandidateId,
                     HRExecutiveUsername=item.HRExecUsername, CandidateAssessmentId=item.CandidateAssessment.Id,
-                    CVRefId=item.CvRefId, Remarks="Candidate " + item.ApplicationNo + "-" + item.CandidateName +
+                    CVRefId=item.CvRefId,
+                    Remarks="Candidate " + item.ApplicationNo + "-" + item.CandidateName +
                     "- for " + item.CustomerName + " " + item.CustomerCity + " forwarded today."};
-                
-                if(hrtask !=null) {
-                    hritem.HRTaskId = hrtask.Id;
+
+                if(hrtask != null)
+                {
+                    hritem.HRTaskId=hrtask.Id;
                     _context.HRTaskItems.Add(hritem); 
                 } else {
                     hrtask = new HRTask {TaskDate=DateTime.UtcNow, AssignedByUsername = Username, 
@@ -533,7 +547,7 @@ namespace api.Data.Repositories.Admin
                             " since the User does not have a task assigned to him. ",
                         HRTaskItems = new List<HRTaskItem>{hritem}};
                     _context.HRTasks.Add(hrtask);                 
-                    //**TODO** raise alert logged in HR Executive has not been assigned this task        
+                    //**TODO** raise alert logged in HR Executive has not been assigned this task    
                 }
             }
             
@@ -552,8 +566,16 @@ namespace api.Data.Repositories.Admin
 
             try {
                 await _context.SaveChangesAsync();  //this is required, as flg function reads from tasks generated
+            } catch (DbException ex) {
+                if(ex.Message.Contains("IX_HRTasks_OrderItemId_AssignedToUsername")
+                    || ex.Message.Contains("The duplicate key value is")) {
+                    ErrorString = "Unique Index key (Tasks_OrderItemId + Username) violation";
+                } else {
+                    ErrorString += ex.Message;
+                }
             } catch (Exception ex) {
                 ErrorString += ex.Message;
+                _logger.LogError(ex.StackTrace);
             }
             if(!string.IsNullOrEmpty(ErrorString)) return ErrorString;
                         

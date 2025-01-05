@@ -55,7 +55,7 @@ namespace api.Data.Repositories.Admin
                {
                     var candidateAppUserId = await _context.GetAppUserIdOfCandidate(sel.CandidateId);
                     var recipientObj = await _userManager.FindByIdAsync(candidateAppUserId.ToString());
-                    if(recipientObj == null) continue;
+                    if(recipientObj == null) continue; 
 
                     var HRSupobj = await _userManager.FindByIdAsync(_confg["HRSupAppUserId"]);
 
@@ -105,7 +105,8 @@ namespace api.Data.Repositories.Admin
             var subjectInBody = "";
             var msgBody = "";
             var msgs = new List<Message>();
- 
+            var HRSupobj = await _userManager.FindByIdAsync(_confg["HRSupAppUserId"]);  
+            var RAName =  _confg["RAName"]; 
             foreach(var sel in selectionsDto)
             {
                 var candidateAppUserId = await _context.GetAppUserIdOfCandidate(sel.CandidateId);
@@ -120,19 +121,18 @@ namespace api.Data.Repositories.Admin
                     continue;
                 }
 
-                var HRSupobj = await _userManager.FindByIdAsync(_confg["HRSupAppUserId"]); 
-
-                subject = "Your selection as " + sel.ProfessionName + " for " + sel.CustomerCity;
-                subjectInBody = "<b><u>Subject: </b>Your selection as " + sel.ProfessionName + " for " + 
-                    sel.CustomerName + "</u>";
-                msgBody = string.Format("{0: dd-MMMM-yyyy-hh:nn}", _today) + "<br><br>" + 
-                        sel.CandidateTitle + " " + sel.CandidateName + "email: " + sel.CandidateEmail ?? "" + "<br><br>" + 
-                        "copy: " + HRSupobj?.UserName?? "" + ", email: " + HRSupobj?.Email?? "" + "<br><br>Dear " + 
-                        sel.CandidateTitle + " " + sel.CandidateName + ":" + "<br><br>" + subject + "<br><br>";
+                subject = "Subject: Your selection as " + sel.ProfessionName + " for " + sel.CustomerCity;
+                subjectInBody = "<b><u>Subject: Your selection as " + sel.ProfessionName + " for " + 
+                    sel.CustomerName + " for " + sel.CustomerCity + "</b></u>";
+                msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + 
+                        sel.CandidateTitle + " " + sel.CandidateName + "<br>email: " + recipientUserNmAndEmail.Email ?? "";
+                if(string.IsNullOrEmpty(HRSupobj.UserName)) msgBody += "<br><br>copy: " + HRSupobj?.Email?? "";
+                msgBody += "<br><br>Dear " + sel.CandidateTitle + " " + sel.CandidateName + ":";
+                msgBody += "<br><br>" + subjectInBody + "<br><br>";
 
                 msgBody += await GetEmailMessageBodyContents("acceptanceremindertocandidate", 
                     sel.CandidateName, sel.ApplicationNo, sel.CustomerName, sel.ProfessionName, sel.Employment);
-                msgBody += "<br>Best Regards<br>HR Supervisor";
+                msgBody += "<br><br>Best Regards<br><br>HR Supervisor<br>" + RAName;
                 var recipientAppUserId = Convert.ToString(await _context.GetAppUserIdOfCandidate(sel.CandidateId));
                 var recipientObj = await _userManager.FindByIdAsync(recipientAppUserId);
 
@@ -257,23 +257,23 @@ namespace api.Data.Repositories.Admin
                     
                     if(recipientObj == null) {
                         returnDto.ErrorString="Unable to retrieve Candidate User Object";
-                        return returnDto;
+                        continue;
                     }
                     
-                    subject = "Your candidature as " + rej.ProfessionName + " for " + rej.CustomerCity + " is NOT approved";
+                    subject = "<b><u>Subject: Your candidature as " + rej.ProfessionName + " for " + rej.CustomerCity + " is NOT approved</u></b>";
                     subjectInBody = "<b><u>Subject: </b>Your candidature for " + rej.ProfessionName + " for " + rej.CustomerName + "</u>";
                     msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + 
-                            rej.CandidateTitle + " " + rej.CandidateName + "email: " + rej.CandidateEmail + "<br><br>" + 
+                            rej.CandidateTitle + " " + rej.CandidateName + "<br>email: " + rej.CandidateEmail + "<br><br>" + 
                         "copy: " + "" + ", email: " + "" + "<br><br>Dear " + rej.CandidateTitle + " " + rej.CandidateName + ":" +
                         "<br><br>" + subject + "<br><br>";
 
                     msgBody += "We regret to inform you that M/S " + rej.CustomerName + " have not approved of your candidature for the position " +
-                            "of " + rej.ProfessionName + " giving following reason:<br><ul><li>" + rej.SelectionStatus + "</li></ul><br>";
-                    msgBody += "The rejection by the Customer is indicative of only their specific needs and does not reflect your suitabiity for the position in general. " +
+                            "of " + rej.ProfessionName + " giving following reason:<br><ul><li>" + rej.SelectionStatus + "</li></ul>";
+                    msgBody += "The rejection by the Customer is indicative of only their specific needs for the position and does not reflect your suitabiity for the position in general. " +
                             "We will therefore be continuing to look for " +
                             "alternate opportunities for you and hope to revert to you as soon as possible.<br><br>" + 
                             "In case you do not want us to continue looking for opportunities for you, please do mark yourself as unavailable by cicking here " + 
-                                "so as not to include your profile in our future searches<br><br>Best regards/HR Supervisor";
+                                "so as not to include your profile in our active search profioes for the position<br><br>Best regards/HR Supervisor";
                     msgBody += "<br><br>This is a system generated message";
                     
                     msgBody += "<br>Best Regards<br>HR Supervisor";
@@ -489,12 +489,11 @@ namespace api.Data.Repositories.Admin
 
             string concludingMsg ="</table><br>Please review the CVs and provide us your feedback at the very earliest.<br><br>" +
                     "While we try to retain candidates as long as possible, due to the dynamic market conditions, " +
-                    "candidates availability becomes volatile, and it is always preferable to keep candidates positively " +
-                    "engaged.  While you may take a little longer to make up your minds for selections, the candidates " +
-                    "that you are not interested in can be advised to us, so that they may be released for other opportunities.";
+                    "candidates availability becomes volatile, and it is always good to keep candidates positively " +
+                    "engaged.";
 
             concludingMsg += "While rejecting a profile, if you also advise us reasons for the rejection, it will help us " +
-                    "adjust our criteria for shortlistings, which will ultimately help in minimizing rejections at your end.";
+                    "adjust our criteria for further shortlistings, which will ultimately help in minimizing your rejections.";
             
             concludingMsg +="<br><br>Regards<br><br>This is system generated message";
 
@@ -527,16 +526,16 @@ namespace api.Data.Repositories.Admin
                     msg = _today + "<br><br>"+  cvref.OfficialTitle + " " + cvref.OfficialName + ", " + 
                         cvref.Designation + "<br>M/S " + cvref.CustomerName + ", " + cvref.City + "<br>Email:" + cvref.OfficialEmail +
                         "<br><br>Dear Sir:<br><br>We are pleased to enclose following CVs for your consideration against your requirements mentioned:<br>" +
-                        "<table border='1'><tr><th width=10%>Order ref and dated</th><th width=20%>Category</th><th width=5%>Application<br>No</th>" + 
-                        "<th width=20%>Candidate Name</th><th width=5%>Passport No</th><th width=15%>Attachments</th><th width=5%>Forwarded<br>so far</th>" + 
-                        "<th width=10%>Our assessment<br>Grade</th><th width=10%>Salary Expectation</th></tr>";
+                        "<table border='1'><tr><th width=10%>Order ref and dated</th><th width=15%>Category</th><th width=12%>Appli-<br>cation</th>" + 
+                        "<th width=20%>Candidate Name</th><th width=5%>PP No</th><th width=15%>Attachments</th><th width=5%>Total Fwd</th>" + 
+                        "<th width=10%>assessmt<br>Grade</th><th width=10%>Salary Expectation</th></tr>";
                     counter=0;
                 }
 
                 msg += "<tr><td>" + cvref.OrderNo +"-"+ cvref.ItemSrNo + "/<br>" + cvref.OrderDated.ToString("ddMMMyy") + "</td><td>" +
                     cvref.CategoryName + "</td><td>" + cvref.ApplicationNo + "</td><td>" + cvref.CandidateName + 
                     "</td><td>"+ cvref.PPNo + "</td><td></td><td>" + cvref.CumulativeSentSoFar + "</td><td>" + 
-                    cvref.AssessmentGrade + "</td></tr>";
+                    cvref.AssessmentGrade + "</td><td>" + cvref.SalaryExpected + "</td></tr>";
                 
                 counter+=1;
                 lastOfficialId=cvref.OfficialId;

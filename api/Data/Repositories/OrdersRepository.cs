@@ -310,7 +310,6 @@ namespace api.Data.Repositories
                     OrderNo = order.OrderNo, Ecnr = item.Ecnr, ProfessionId = item.ProfessionId,
                     ProfessionName = item.Profession.ProfessionName, Quantity = item.Quantity,
                     Remuneration = item.Remuneration, SrNo = item.SrNo, Status = item.Status,
-
                 
                 }).AsQueryable();
             
@@ -428,7 +427,7 @@ namespace api.Data.Repositories
                     CityOfWorking = order.CityOfWorking, 
                     //ContractReviewId = oextn.ContractReviewId,        //this gives NULLABLE OBJECT MUST HAVE A VALUE
                     CustomerId = order.CustomerId
-                }).OrderBy(x => x.OrderNo)
+                }).OrderByDescending(x => x.OrderNo)
                 .AsQueryable();
             
             var paged = await PagedList<OrderBriefDto>.CreateAsync(qry.AsNoTracking()
@@ -474,6 +473,8 @@ namespace api.Data.Repositories
                     where order.Status != "Completed" orderby order.OrderNo
                 join assmtItem in _context.OrderAssessmentItems on item.Id equals assmtItem.OrderItemId
                 join rvwitem in _context.ContractReviewItems on item.Id equals rvwitem.OrderItemId 
+                join remun in _context.Remunerations on item.Id equals remun.OrderItemId into remuneration
+                    from salary in remuneration.DefaultIfEmpty()                
                 //into rvwGroup
                 //from rg in rvwGroup.DefaultIfEmpty()
                 //join prof in _context.Professions on item.ProfessionId equals prof.Id

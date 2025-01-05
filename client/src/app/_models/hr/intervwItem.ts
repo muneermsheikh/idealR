@@ -1,6 +1,7 @@
 import { IIntervwItemCandidate } from "./intervwItemCandidate";
 
 export interface IIntervwItem {  
+     visible: boolean;
      id: number;
      intervwId: number;
      interviewVenue: string;
@@ -13,6 +14,7 @@ export interface IIntervwItem {
      orderItemId: number;
      professionId: number;
      professionName: string;
+     categoryRef: string;
      interviewMode: string;
      interviewerName: string;
      estimatedMinsToInterviewEachCandidate: number;

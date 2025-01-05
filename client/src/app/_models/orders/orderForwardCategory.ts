@@ -14,6 +14,7 @@ export interface IOrderForwardCategory
 	orderItemId: number;
 	professionId: number;
 	professionName: string;
+	quantity: number;
 	charges: number;
 	orderForwardCategoryOfficials: IOrderForwardCategoryOfficial[]
 }
@@ -32,6 +33,7 @@ export class OrderForwardCategory implements IOrderForwardCategory
 	agentId= 0;
 	professionId= 0;
 	professionName= '';
+	quantity = 0;
 	charges= 0;
 	orderForwardCategoryOfficials: IOrderForwardCategoryOfficial[]=[];
 }

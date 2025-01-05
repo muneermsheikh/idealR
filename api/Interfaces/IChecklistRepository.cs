@@ -12,13 +12,13 @@ namespace api.Interfaces
         Task<bool> DeleteChecklistHRDataAsync(ChecklistHRData checklistHRData);
         Task<bool> EditChecklistHRDataAsync(ChecklistHRData checklistHRData);
         Task<ICollection<ChecklistHRData>> GetChecklistHRDataListAsync();
-        Task<ChecklistObj> SaveNewChecklist (ChecklistHR checklisthr, string Username);
+        //Task<ChecklistAndCandidateAssessmentDto> SaveNewChecklist (ChecklistHR checklisthr, string Username);
 
         //checklistHR
-        Task<string> EditChecklistHR(ChecklistHRDto model, string Username);
+        Task<string> EditChecklistHR(ChecklistHR chklst, string Username);
         Task<bool> DeleteChecklistHR(int id);
         Task<ChecklistHRDto> GetChecklistHRFromCandidateIdAndOrderDetailId(int candidateid, int orderitemid, string username);
         Task<ICollection<ChecklistHR>> GetChecklistHROfCandidate(int candidateid);
-
+        Task<string> VerifyChecklist(ChecklistHR checklisthr);
     }
 }

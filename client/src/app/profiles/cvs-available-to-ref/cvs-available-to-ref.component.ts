@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { ICvsAvailableDto } from 'src/app/_dtos/admin/cvsAvailableDto';
 import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { IProfession } from 'src/app/_models/masters/profession';
 import { Pagination } from 'src/app/_models/pagination';
@@ -13,6 +14,7 @@ import { candidateParams } from 'src/app/_models/params/hr/candidateParams';
 import { User } from 'src/app/_models/user';
 import { OrderService } from 'src/app/_services/admin/order.service';
 import { CandidateService } from 'src/app/_services/candidate.service';
+import { FileService } from 'src/app/_services/file.service';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
 import { CvrefService } from 'src/app/_services/hr/cvref.service';
 import { UploadDownloadService } from 'src/app/_services/upload-download.service';
@@ -52,6 +54,7 @@ export class CvsAvailableToRefComponent implements OnInit {
       private toastr: ToastrService, 
       private modalService: BsModalService, 
       private orderService: OrderService,
+      private fileService: FileService,
       private downloadService: UploadDownloadService) {
         this.cvParams.typeOfCandidate="available";
 
@@ -66,9 +69,12 @@ export class CvsAvailableToRefComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.loadCandidates(false);
+    //this.loadCandidates(false);
+    
     
     this.activatedRoute.data.subscribe(data => {
+        this.cvs = data['cvs'].result,
+        this.pagination = data['cvs'].pagination,
         this.professions = data['professions'],
         this.agents = data['agents']
       }
@@ -112,8 +118,7 @@ export class CvsAvailableToRefComponent implements OnInit {
         })
     }
   }
-  
-  
+    
   onSearch() {
     const params = this.service.getCVParams() ?? new candidateParams();
     
@@ -141,7 +146,6 @@ export class CvsAvailableToRefComponent implements OnInit {
       }
     }
   
-
   //Having selected candidates, refer them to internal reviews or directly to client
   openChecklistModal(user: User) {
     const title = 'Choose Order Item to refer selected CVs to';
@@ -182,8 +186,29 @@ export class CvsAvailableToRefComponent implements OnInit {
     })
     return aitems;
   }
-
   
+  downloadcv(cv: ICvsAvailableDto) {
+    
+    var filenameWithExtn = cv.fullName;
+
+    this.fileService.downloadCV(cv.candidateId).subscribe({
+      next: (blob: Blob) => {
+        console.log('downloadcv blob: ', blob);
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = filenameWithExtn;
+
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: (err: any) => {
+        this.toastr.error(err.error?.details, 'Error while downloading');
+        console.log('error', err);
+      }
+    })
+  }
+
   downloadFileEvent(candidateid: any) {
     return this.downloadService.downloadFile(candidateid).subscribe(() => {
       this.toastr.success('document downloaded');
@@ -192,7 +217,7 @@ export class CvsAvailableToRefComponent implements OnInit {
     })
   }
 
-  displayAssessmentModal(cvbrief: any)
+  /*displayAssessmentModal(cvbrief: any)
   {
         var orderitemid = cvbrief.orderItemId;
         var candidateid = cvbrief.candidateId;
@@ -216,6 +241,7 @@ export class CvsAvailableToRefComponent implements OnInit {
           })
     
   }
+  */
 
   displayAssessmentModalBySwitchMap(cvbrief: any) {
 
@@ -244,7 +270,7 @@ export class CvsAvailableToRefComponent implements OnInit {
     })
 
   }
-
+  
   navigateByUrl(route: string, cvObject: any|undefined, toedit: boolean) {
     this.router.navigate(
       [route],
@@ -261,19 +287,16 @@ export class CvsAvailableToRefComponent implements OnInit {
   }
 
   cvCheckedEvent(cvbrief: any){   // ICandidateBriefDto) {
-      var cv = this.selectedCVs.find(x => x.candidateId==cvbrief.id);
-      var index = this.selectedCVs.findIndex(x => x.candidateId===cvbrief.id);
-
-      if(cv !==undefined) {
-        if(!cv.checked) {
-          this.selectedCVs.splice(index,1);
-        } else {
-          this.selectedCVs.push(cvbrief);  
+      var indx = this.cvs.findIndex(x => x.candAssessmentId==cvbrief.candAssessmentId);
+    
+      if(indx !== -1) {
+        var selCV = this.cvs[indx];
+        if(selCV.checked) {this.selectedCVs.push(selCV)} else {
+          var index = this.selectedCVs.findIndex(x => x.candAssessmentId==selCV.candAssessmentId);
+          if(index !==-1) {this.selectedCVs.splice(index,1)} else {this.selectedCVs.push(selCV)}
         }
-      } else {
-        this.selectedCVs.push(cvbrief);
       }
-
+     
   }
 
   referCVs() {
@@ -287,27 +310,48 @@ export class CvsAvailableToRefComponent implements OnInit {
     var ids = this.selectedCVs.map(x => x.candAssessmentId);
 
     this.referService.referCVs(ids).subscribe({
-      next: response => {
-
-        if(response === '') {
-          this.toastr.success('selected CVs referred, and CV Referral message available in Messages section for edits', 'success');
-          this.cvs.forEach(x => {
-            if(x.checked) x.checked=false;
-          })
-          this.selectedCVs=[];
-        } else {
-          this.toastr.warning(response, 'failed to refer CVs');
-        }
+      
+      next: (response: IReturnStringsDto) => {
+        console.log('refer cvs response:', response);
+        if(response.successString !== '') {
+          this.toastr.success(response.successString, 'success');
+          this.clearSelections(ids);
+          this.toastr.success("CVs referred", "Success");
+        } else if(response.errorString !== '') {
+          this.clearSelections(ids);          
+          this.toastr.error(response.errorString, "Error in referrals")
+        } 
       },
       error: (err: any) => {
+        console.log('error in cvref', err);
         if(err.length > 0) {
-          this.toastr.error(err.error.message, 'error in referring the CVs1')
+          this.toastr.error(err.error?.details, 'error in referring the CVs')
         } else {
-          this.toastr.error(err, 'Error in referring the CVs;')
+          this.toastr.error(err.error?.details, 'Error in referring the CVs;')
         }
       }
     })
+
+    this.selectedCVs = [];
     
+  }
+
+  clearSelections(ids: number[]) {
+    /*this.selectedCVs.forEach(x => {
+      if(x.checked) x.checked=false;
+    }) */
+    this.removeReferredRows(ids);
+  }
+
+  removeReferredRows(candidateAssessmentIds: number[]) {
+    candidateAssessmentIds.forEach(x => {
+      var index = this.selectedCVs.findIndex(x => x.candAssessmentId == x.candAssessmentId);
+      
+      if(index !==-1) {
+        console.log('deleted row', this.selectedCVs[index]!.applicationNo);
+        this.selectedCVs.splice(index,1);
+      }
+    })
   }
 
   close() {

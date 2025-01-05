@@ -14,6 +14,8 @@ export interface IChecklistHR{
      exceptionApproved: boolean;
      exceptionApprovedOn: Date;
      exceptionApprovedBy: string;
+     salaryOffered: string;
+     salaryExpectation: number;
      checklistedOk: boolean;
      
      checklistHRItems: IChecklistHRItem[];

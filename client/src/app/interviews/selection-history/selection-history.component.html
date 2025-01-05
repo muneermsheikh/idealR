@@ -1,0 +1,13 @@
+<div *ngIf="callRecordDtos === null || callRecordDtos.length === 0">
+    No selection progress records available
+</div>
+
+<button class="btn fa fa-window-close" (click)="close()"></button>
+
+<div *ngIf="callRecordDtos !== null && callRecordDtos.length  > 0">
+    <div *ngFor="let st of callRecordDtos">
+        <div class="stdd w90">{{st.createdOn | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w125">{{st.status}}</div>
+
+    </div>
+</div>

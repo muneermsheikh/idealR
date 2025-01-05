@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CallRecordsItemComponent } from './call-records-item/call-records-item.component';
 import { CallRecordsEditModalComponent } from './call-records-edit-modal/call-records-edit-modal.component';
@@ -6,6 +6,7 @@ import { CallRecordsListComponent } from './call-records-list/call-records-list.
 import { SharedModule } from '../_modules/shared.module';
 import { CallRecordRoutingModule } from './call-record-routing.module';
 import { CallRecordMenuComponent } from './call-record-menu/call-record-menu.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -19,8 +20,10 @@ import { CallRecordMenuComponent } from './call-record-menu/call-record-menu.com
   imports: [
     CommonModule,
     SharedModule,
-    CallRecordRoutingModule
-  ]
+    CallRecordRoutingModule,
+    MatIconModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CallRecordModule { }
 

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { IProfession } from 'src/app/_models/masters/profession';
+import { IProfession, Profession } from 'src/app/_models/masters/profession';
 import { Pagination } from 'src/app/_models/pagination';
 import { professionParams } from 'src/app/_models/params/masters/ProfessionParams';
 import { User } from 'src/app/_models/user';
@@ -9,7 +9,6 @@ import { CategoryService } from 'src/app/_services/category.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
-import { OrderAssessmentService } from 'src/app/_services/hr/orderAssessment.service';
 import { CategoryQBankModalComponent } from '../category-qbank-modal/category-qbank-modal.component';
 import { QbankService } from 'src/app/_services/hr/qbank.service';
 import { IAssessmentBank } from 'src/app/_models/admin/assessmentBank';
@@ -69,11 +68,11 @@ export class CategoriesComponent implements OnInit {
   }
   
   addCategory() {
-    this.editCategory(0, '');
+    this.editCategory(new Profession());
   }
 
-  editCategory(catId: number,catName: string) {
-    var category={id: catId, professionName: catName};
+  editCategory(cat: IProfession) {
+    var category=cat;
     
     const config = {
       class: 'modal-dialog-centered modal-md',
@@ -91,17 +90,18 @@ export class CategoriesComponent implements OnInit {
       filter((response: IProfession) => response !== undefined),
       
       switchMap((response: IProfession) => {
-          return this.service.updateCategory(response.id, response.professionName)
+          return this.service.updateCategory(response)
       })
     ).subscribe((response: IProfession) => {
-        if(response !== null) {
-          if(catId===0) {
-            this.categories.push(response);
-          } else {
-            var index=this.categories.findIndex(x => x.id === catId);
-            if(index !== -1) this.categories.splice(index, 1, response );
+        console.log('profession update:', response);
+        if(response !== null || response === true) {
+          if(cat.id===0) {
+            this.categories.push(response);   //added
+          } else {                            //updated
+            var index=this.categories.findIndex(x => x.id === cat.id);
+            if(index !== -1) this.categories[index]=cat; //.splice(index, 1, response );
           }
-        this.toastr.success('Success', catId===0 ? 'Inserted' : 'Updated' );
+        this.toastr.success('Success', cat.id===0 ? 'Inserted' : 'Updated' );
 
         }
     }) 

@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CallRecordsListComponent } from './call-records-list/call-records-list.component';
 import { CallRecordMenuComponent } from './call-record-menu/call-record-menu.component';
 import { RouterModule } from '@angular/router';
-
+//callRecords is parent route
 const routes = [
   {path: '', component: CallRecordMenuComponent},
 
   {path: 'callRecordList', component: CallRecordsListComponent},
 
-  {path: 'callRecordListLoggedinUsername', component: CallRecordsListComponent},
+  {path: 'callRecordListLoggedinUsername', component: CallRecordsListComponent}
+
 ]
 
 

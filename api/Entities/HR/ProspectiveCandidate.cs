@@ -4,7 +4,7 @@ namespace api.Entities.HR
 {
     public class ProspectiveCandidate: BaseEntity
     {
-         public string Gender { get; set; }
+        public string Gender { get; set; }
         [MaxLength(12)]
         public string Source { get; set; }
         public DateTime? Date { get; set; }
@@ -24,11 +24,11 @@ namespace api.Entities.HR
         [MaxLength(50)]
         [Required]
         public string CandidateName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }   //
         [MaxLength(10)]
-        public string Age { get; set; }
-        [MaxLength(15)]
-        [Required]
+        public string Age { get; set; }             //
+        [MaxLength(15), Required]
+
         public string PhoneNo { get; set; }
         [MaxLength(15)]
         public string AlternateNumber { get; set; }

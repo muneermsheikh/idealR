@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h4 class="b">Interviews available matching the category {{categoryMatching}}</h4>
+    <button class="btn fa fa-check" (click)="assignToInterviewItem()"></button>
+    <button class="btn fa fa-window-close" (click)="close()"></button>
+</div>
+
+<div class="modal-body">
+    <label class="lbl w50">Select</label>
+    <label class="lbl w200">Interview Category</label>
+    <label class="lbl w200">Customer</label>
+    <label class="lbl w50">Order Ref</label>
+    <label class="lbl w100">Interview On</label>
+    
+    <div *ngIf="!interviews" class="text-danger">No interview categories found matching the candidate's professions'</div>
+    
+    <div *ngFor="let intervw of interviews">
+        <input type="checkbox" style="margin: 0 10px 0 10px;"
+            class="form-check-input w20 hAlignCenter"
+            [(ngModel)]="intervw.checked"
+            (click)="selectedClicked(intervw.id, intervw.checked)"
+        >
+
+        <div class="stdd w200">{{intervw.categoryName}}</div>
+        <div class="stdd w50">{{intervw.id}}</div>
+        <div class="stdd w200">{{intervw.customerName}}</div>
+        <div class="stdd w100">{{intervw.interviewDateFrom | date: 'dd-MMM-yy'}}</div>
+    </div>
+</div>
+<div class="modal-footer">
+
+</div>

@@ -35,13 +35,13 @@ export class InterviewListComponent implements OnInit {
     private confirm: ConfirmService) {}
 
   ngOnInit(): void {
-    this.getInterviewsPaged();
+    this.getInterviewsPaged(false);
   }
 
-  getInterviewsPaged() {
+  getInterviewsPaged(useCache: boolean) {
 
     this.service.setParams(this.iParams);
-    this.service.getInterviewsPaged().subscribe({
+    this.service.getInterviewsPaged(useCache).subscribe({
       next: response => {
         this.interviews = response.result;
         this.pagination = response.pagination;
@@ -96,7 +96,7 @@ export class InterviewListComponent implements OnInit {
     if (params.pageNumber !== event.page) {
       params.pageNumber = event.page;
       this.service.setParams(params);
-      this.getInterviewsPaged();
+      this.getInterviewsPaged(true);
     }
   }
 
@@ -105,14 +105,14 @@ export class InterviewListComponent implements OnInit {
     params.search = this.searchTerm?.nativeElement.value;
     params.pageNumber = 1;
     this.service.setParams(params);
-    this.getInterviewsPaged();
+    this.getInterviewsPaged(false);
   }
 
   onReset() {
     this.searchTerm!.nativeElement.value = '';
     const params = this.service.getParams();
     this.service.setParams(params);
-    this.getInterviewsPaged();
+    this.getInterviewsPaged(false);
   }
 
   getInterviewR() {

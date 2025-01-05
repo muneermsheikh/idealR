@@ -1,6 +1,10 @@
 <div class="container">
 
     <!-- *appHasRole="['HR Manager','HR Supervisor', 'HR Executive', 'Admin', 'Admin Manager']" -->
+    <div  class="nav-item menuStdd" title="import data from Excel Sheets - for Professions" >
+        <a  routerLinkActive="active" (click)="toggleProfessionExcel()" class="nav-link">Professions XL Conversion</a>
+    </div> 
+    
     <div  class="nav-item menuStdd" title="import data from Excel Sheets - downloaded from TimesJob.Com" >
         <a  routerLinkActive="active" (click)="toggleProspectiveExcel()" class="nav-link">Prospective XL Conversion-TimesJob</a>
     </div> 
@@ -28,6 +32,14 @@
     <div *ngIf="uploadExcel" class="my-10" >
         
         <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Profession Excel File, read the data and insert into the database.</li>
+            <li>About Excel Sheet formatting, this option has the following requirements:</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 4</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            <li>Data should begin from row 5th row.</li>
+        </div>
+        
+        <div style="word-wrap: normal; width: 800px;">
             <li>This option will upload your Prospective Excel File downloaded from TimesJob, read the data and insert into the database.</li>
             <li>About Excel Sheet formatting, this option has the following requirements:</li>
             <li>The Worksheet name must be named 'Sheet1'</li>
@@ -35,7 +47,6 @@
             <li>Source tag should be in row 2 col 3, value in column 4</li>
             <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 4</li>
             <li>Data should begin from row 5th row.</li>
-            
         </div>
         
         <br>
@@ -47,14 +58,34 @@
             (click)="closeProspectiveFileInput()" ></button>
     </div>
 
+    
+    <div *ngIf="uploadProfessionExcel" class="my-10" >
+        
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Profession Excel File, read the data and insert into the database.</li>
+            <li>About Excel Sheet formatting, this option has the following requirements:</li>
+            <li>The Worksheet name must be named 'MySheet'</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 4</li>
+            <li>Data should begin from row 5th row.</li>
+        </div>
+        
+        <br>
+        <input class="stdd d-flex align-items-center" type="file" id="file" (change)="onFileInputChange($event)"
+            title="click to choose an excel file containing the profession data"  >
+        <button class="stdd btn fa fa-check green fa-2x" title="convert the uploaded profession file to database" 
+            (click)="exportProfessionFile()" ></button>
+        <button class="stdd btn fa fa-window-close" title="close this prospective file input" 
+            (click)="closeProfessionFileInput()" ></button>
+    </div>
+
     <div *ngIf="uploadNaukriExcel" class="my-10" >
         
         <div style="word-wrap: normal; width: 800px;">
             <li>This option will upload your Prospective Excel File downloaded from Naukri.Com, read the data and insert into the database.</li>
             <li>About Excel Sheet formatting, this option has the following requirements:</li>
             <li>The Worksheet name must be named 'MySheet'</li>
-            <li>The OrderItem Id should be in row 2, and column 1, value in col 3</li>
-            <li>Source tag should be in row 2 col 3, value in column 4</li>
+            <li>CategoryRef : In Row 2, the label 'CategoryRef' should be in column 1, and its value should be in Column 2</li>
+            <li>Source: In Row 2, the label 'Source' should be in Row 2, col 3, value in column 4</li>
             <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 4</li>
             <li>Data should begin from row 5th row.</li>
             
@@ -116,7 +147,6 @@
     </div>
 
     <div *ngIf="uploadEmployeeExcel" class="my-10" >
-        
         <div style="word-wrap: normal; width: 800px;">
             <li>This option will upload your Employee Excel File, read the data and insert into the database.</li>
             <li>This option needs following requirements to be met:</li>
@@ -129,9 +159,24 @@
                 <li style="font-size: smaller;">Known As</li>
                 <li style="font-size: smaller;">Position</li>
             </ul>
-            
         </div>
-        
+
+    <br>
+    <div *ngIf="uploadProfessionExcel" class="my-10" >
+        <div style="word-wrap: normal; width: 800px;">
+            <li>This option will upload your Profession Excel File, read the data and insert into the database.</li>
+            <li>This option needs following requirements to be met:</li>
+            <li>The file must be an Excel Workbook, with XLSX extension.  Column Titles should be in row 2</li>
+            <li>The Worksheet name must be named 'Sheet1'</li>
+            
+            <li>Data should begin from row 5th row.</li>
+            <ul>
+                Following fields are required:
+                <li style="font-size: smaller;">Profession Name</li>
+                <li style="font-size: smaller;">Profession Group</li>
+            </ul>
+        </div>
+
         <br>
         <input class="stdd d-flex align-items-center w450" type="file" id="file" 
             (change)="onEmployeeFileInputChange($event)" >

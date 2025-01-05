@@ -4,7 +4,7 @@ namespace api.DTOs.Admin
 {
     public class PostOfferAcceptanceDto
     {
-        public string ConclusionStatus { get; set; }
+        public string OfferAccepted { get; set; }
         public int CVRefId { get; set; }
         public int EmploymentId { get; set; }
         public int CandidateId { get; set; }

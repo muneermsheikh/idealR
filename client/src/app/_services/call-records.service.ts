@@ -11,6 +11,9 @@ import { ICallRecordDto } from '../_dtos/admin/callRecordDto';
 import { ICallRecord } from '../_models/admin/callRecord';
 import { ICallRecordResult } from '../_dtos/admin/callRecordResult';
 import { CallRecordStatusReturnDto } from '../_dtos/admin/callRecordStatusReturnDto';
+import { ICallRecordItemToAddDto } from '../_dtos/admin/callRecordItemToAddDto';
+import { ICallRecordItemAddedReturnValueDto } from '../_dtos/admin/callRecordItemAddedReturnValueDto';
+import { IUserHistoryBriefDto } from '../_dtos/admin/useHistoryBriefDto';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +31,7 @@ export class CallRecordsService {
   callRecordStatus: ICallRecordResult[] = [{status: "wrong number"}, {status: "Not Responding"}, {status: "Will Revert later"},
     {status: "Declined-Family issues"}, {status: "Declined for overseas"}, {status: "Declined-Low remuneration"},
     {status: "Declined - SC Not agreed"}, {status: "Interested - to negotiate remuneration"},
-    {status: "Interested, and keen"}, {status: "Interested, but doubtful"}]
+    {status: "Interested, and keen"}, {status: "Interested, but doubtful"}, {status: "Declined - other reasons"}]
     
   constructor(private http: HttpClient) { }
 
@@ -47,6 +50,12 @@ export class CallRecordsService {
             })
           )
     }
+
+  getCallRecordReport(hParams:CallRecordParams) {
+
+    let params = GetHttpParamsForCallRecord(hParams);
+    return this.http.get<IUserHistoryBriefDto[]>(this.apiUrl + 'CallRecord/report', {params} )
+  }
 
   getCallRecordWithItems(personType: string, personid: string) {
     
@@ -81,6 +90,11 @@ export class CallRecordsService {
     return this.http.put<ICallRecord>(this.apiUrl + 'CallRecord/UpdateNewItem', model);
   }
 
+  updateCallRecordItem(model: ICallRecordItemToAddDto) {
+    console.log('updatecallrecorditem, model');
+    return this.http.put<ICallRecordItemAddedReturnValueDto>(this.apiUrl + 'CallRecord/InsertCallRecordItem', model);
+  }
+
   deleteHistory(historyid: number) {
     return this.http.delete<boolean>(this.apiUrl + 'userHistory/' + historyid);
   }
@@ -91,6 +105,11 @@ export class CallRecordsService {
 
   getCallRecordFromPhoneNo(phoneno: string) {
     return this.http.get<ICallRecord>(this.apiUrl + 'callRecord/callRecordFromPhoneNo/' + phoneno);
+  }
+
+  getCallRecordsOfACandidate(persontype: string, personid: string)
+  {
+    return this.http.get<ICallRecordDto[]>(this.apiUrl + 'callRecord/CallRecordSummary/' + persontype + '/' + personid);
   }
      
 }

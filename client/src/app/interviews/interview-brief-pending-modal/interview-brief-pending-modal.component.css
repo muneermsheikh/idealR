@@ -1,0 +1,26 @@
+.stdd {
+	display: inline-block;
+	margin: 2px 0 2px 0;
+	vertical-align: top;
+	font-size: smaller;
+	word-wrap:break-word;
+ }
+
+ .w50 {width: 50px;}
+ .w100 {width: 100px;}
+.w200 {width: 200px;}
+
+
+
+input[type="checkbox"] {
+    outline: 1px solid #1e5180;
+}
+
+.b {font-weight: bold;}
+
+::ng-deep .ng-select-container {
+	height: 5px !important;
+	font-size: 0.8em!important;
+    }
+
+.cursorPointer{cursor:pointer; }

@@ -1,0 +1,18 @@
+<div *ngIf="headers && headers.length > 0" style="border-style: solid; border-color: yellow;">
+    <button class="btn fa fa-check" 
+        title="On selecting a Assessment Item, click this to populate the current Order Assessment Item Parameters"
+        (click)="populateQs()" [disabled]="headers===null" ></button>
+
+    <button class="btn fa fa-window-close" (click)="closeClicked()" ></button>
+        
+    <div *ngFor="let hdr of headers">
+        <input type="checkbox" style="margin-left: 25px;border-color: black;"
+            class="form-check-input w20 hAlignCenter"
+            [(ngModel)]="hdr.checked"
+            (click)="selectedClicked(hdr.id)" >
+        <div class="stdd w200">{{hdr.customerName}}</div>
+        <div class="stdd w50">{{hdr.categoryRef}}</div>
+        <div class="stdd w200">{{hdr.professionName}}</div>
+        <div class="stdd w90">{{hdr.dateDesigned | date: 'ddMMMyy'}}</div>
+    </div>
+</div>

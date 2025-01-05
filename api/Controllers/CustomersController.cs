@@ -43,20 +43,26 @@ namespace api.Controllers
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPost]
-        public async Task<ActionResult<string>> CreateCustomer(CreateCustomerDto createDto)
+        public async Task<ActionResult<ReturnStringsDto>> CreateCustomer(CreateCustomerDto createDto)
         {
             var newCustomer = _mapper.Map<Customer>(createDto);
-
-            if (await _customerRepo.InsertCustomer(newCustomer)) return Ok("");
+            var dto = new ReturnStringsDto();
+            var st = await _customerRepo.InsertCustomer(newCustomer);
+            if(!string.IsNullOrEmpty(st)) {
+                dto.ErrorString = st;
+            } else {
+                dto.SuccessString = "Customer Created";
+            }
             
-            return BadRequest("Failed to create the Customer Object");
+            return dto;
+            
         }
 
         [HttpGet("customercities/{customerType}")]
         public async Task<ActionResult<ICollection<string>>> GetCustomerCities(string customerType)
         {
             var cities = await _customerRepo.GetCustomerCities(customerType);
-
+            if(cities == null) return NotFound();
             return Ok(cities);
         }
 
@@ -81,19 +87,30 @@ namespace api.Controllers
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPut("edit")]
-        public async Task<ActionResult<string>> EditCustomer(Customer customer)
+        public async Task<ActionResult<ReturnStringsDto>> EditCustomer(Customer customer)
         {
             var edited = await _customerRepo.UpdateCustomer(customer);
-            if(edited) return Ok("");
-            return BadRequest("Failed to edit the customer");
+            var dto = new ReturnStringsDto();
+            if (edited) {
+                dto.SuccessString = "Customer Updated successfully";
+            } else {
+                dto.ErrorString = "Failed to update the customer";
+            }
+            
+            return Ok(dto);
         }
 
         [HttpGet("customernamefromId/{customerId}")]
-        public async Task<string> GetCustomerNameFromCustomerId(int customerId)
+        public async Task<ReturnStringsDto> GetCustomerNameFromCustomerId(int customerId)
         {
+            var dto = new ReturnStringsDto();
             var cust = await _customerRepo.GetCustomerById(customerId);
-            if(cust == null) return "";
-            return cust.CustomerName;
+            if(cust == null) {
+                dto.ErrorString = "Failed to retrieve the customer data";
+            } else {
+                dto.SuccessString = cust.CustomerName + " retrieved";
+            }
+            return dto;
         }
 
 
@@ -119,7 +136,7 @@ namespace api.Controllers
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPut("updateofficialwithappuserid")]
-        public async Task<ActionResult<bool>> UpdateCustomerOfficialWithAppUserId(CustomerOfficial official)
+        public async Task<ActionResult<ReturnStringsDto>> UpdateCustomerOfficialWithAppUserId(CustomerOfficial official)
         {
             var succeeded = await _customerRepo.UpdateCustomerOfficialWithAppuserId(official);
             if(succeeded) return Ok();

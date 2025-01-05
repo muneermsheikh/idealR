@@ -19,7 +19,7 @@ namespace api.Interfaces
          Task<bool> UpdateCustomer(Customer customer);
          Task<bool> DeleteCustomer(int CustomerId);
          Task<bool> DeleteCustomerOfficial(int officialId);
-         Task<bool> InsertCustomer(Customer customer);
+         Task<string> InsertCustomer(Customer customer);
          
          Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official);
          Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official);

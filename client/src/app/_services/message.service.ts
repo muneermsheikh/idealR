@@ -18,11 +18,13 @@ export class MessageService {
   cache = new Map();
 
   msgTypes = [
-    {"MessageType" : "EmigrationClearanceAdviseByEmail"}, {"MessageType" : "MedicalFitnessAdviseByEmail"},
-    {"MessageType" : "MedicalUnfitnessAdvise"}, {"MessageType" : "TravelAdviseToClient"},
-    {"MessageType" : "VisaIssueAdviseByMail"}, {"MessageType" : "VisaRejectionAdviseByMail"},
+    {"MessageType" : "DeploymentProgress"}, // "EmigrationClearanceAdviseByEmail"}, {"MessageType" : "MedicalFitnessAdviseByEmail"},
+    //{"MessageType" : "MedicalUnfitnessAdvise"}, {"MessageType" : "TravelAdviseToClient"},
+    //{"MessageType" : "VisaIssueAdviseByMail"}, {"MessageType" : "VisaRejectionAdviseByMail"},
     {"MessageType" : "CustomerFeedback"}, {"MessageType": "AdviseToHRDeptHead"}, {"MessageType": "AssignTaskToHRExec"},
-    {"MessageType" : "CVFwdTask"}, {"MessageType": "OrderFwdToHR"}, {"MessageType": "InterviewInvitation"}
+    {"MessageType" : "CVFwdTask"}, {"MessageType": "OrderFwdToHR"}, {"MessageType": "InterviewInvitation"},
+    {"MessageType" : "CandidateInterest"}, {"MessageType": "cv forward"}, {"MessageType": "SelectionAdvisebyemail"},
+    {"MessageType" : "acceptanceremindertocandidate"}
   ]
 
   constructor(private http: HttpClient) { }

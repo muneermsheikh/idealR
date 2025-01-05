@@ -1,11 +1,9 @@
 using api.DTOs.Admin;
-using api.Entities.Admin;
 using api.Entities.Identity;
 using api.Entities.Master;
 using api.Interfaces;
 using api.Interfaces.Admin;
 using api.Interfaces.HR;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +36,7 @@ namespace api.Data.Repositories.Master
 
         public async Task<HelpItem> AddANewHelpSubTopic(int helpId, int seq, string helpText)
         {
-            var helpItem = new HelpItem{HelpId = helpId, Sequence = seq, HelpText = helpText};
+            var helpItem = new HelpItem{HelpId = helpId, Sequence = seq, HelpSubTopic = helpText};
 
             _context.HelpItems.Add(helpItem);
 

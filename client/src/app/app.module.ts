@@ -5,7 +5,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavComponent } from './nav/nav.component';
 
 import { HomeComponent } from './home/home.component';
 import { SharedModule } from './_modules/shared.module';
@@ -15,16 +14,11 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
-import { HasRoleDirective } from './_directives/has-role.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
-import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
 import { IdsModalComponent } from './modals/ids-modal/ids-modal.component';
 import { HelpModalComponent } from './modals/help-modal/help-modal.component';
-import { CvAssessComponent } from './hr/cv-assess/cv-assess.component';
-import { CandidateAssessmentComponent } from './hr/candidate-assessment/candidate-assessment.component';
-import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 //material includes
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,39 +27,37 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SelectAssociatesModalComponent } from './modals/select-associates-modal/select-associates-modal.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { SelectAssociatesModalComponent } from './select-associates-modal/select-associates-modal.component';
+import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { InputModalComponent } from './modals/input-modal/input-modal.component';
+import { DisplayTextModalComponent } from './modals/display-text-modal/display-text-modal.component';
 import { DateInputRangeModalComponent } from './modals/date-input-range-modal/date-input-range-modal.component';
 import { CandidatesAvailableModalComponent } from './modals/candidates-available-modal/candidates-available-modal.component';
-import { DisplayTextModalComponent } from './modals/display-text-modal/display-text-modal.component';
+import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent,
     HomeComponent,
     TestErrorComponent,
     NotFoundComponent,
     ServerErrorComponent,
-  
     UserManagementComponent,
     PhotoManagementComponent,
-    RolesModalComponent,
     ConfirmDialogComponent,
     IdsModalComponent,
-   
     HelpModalComponent,
-    CvAssessComponent,
-    CandidateAssessmentComponent,
+    //CandidateAssessmentComponent,
     CvAssessModalComponent,
     SelectAssociatesModalComponent,
+    
+    RolesModalComponent,
     InputModalComponent,
-    DateInputRangeModalComponent,
-    CandidatesAvailableModalComponent,
     DisplayTextModalComponent,
-      
-        
+    DateInputRangeModalComponent,
+    CandidatesAvailableModalComponent
   ],
   imports: [
     BrowserModule,

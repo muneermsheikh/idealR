@@ -15,7 +15,7 @@ namespace api.Entities.Tasks
         public int CandidateAssessmentId { get; set; }
         [Required]
         public int CVRefId { get; set; }
-        [MaxLength(100)]
+        [MaxLength(150)]
         public string Remarks { get; set; }
     
     }

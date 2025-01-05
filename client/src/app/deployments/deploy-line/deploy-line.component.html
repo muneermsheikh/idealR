@@ -14,15 +14,17 @@
     <!-- <div class="stdd w75">{{dep.referredOn | date: 'ddMMMyy'}}</div> -->
     <div class="stdd w75" >{{dep.referredOn | date: 'dd-MMM'}}</div> 
     <div class="stdd w75" >{{dep.selectedOn | date: 'dd-MMM'}}</div> 
-
-    <div *ngIf="dep.deploySequence!==1300" class="stdd w150 mx-2" >{{dep.deploySequence | depStatus}}</div>
-    <div *ngIf="dep.deploySequence===1300" class="stdd w150 mx-2 cursorPointer" (click)="showFlight()" 
-        title="Press this to display flight details">{{dep.deploySequence | depStatus}}</div>
+    <div class="stdd w150 mx-2" >{{dep.currentStatus}}</div>
+    <!-- <div *ngIf="dep.deploySequence!==1300" class="stdd w150 mx-2" >{{dep.deploySequence | depStatus}}</div> -->
+    <!-- <div *ngIf="dep.deploySequence===1300" class="stdd w150 mx-2 cursorPointer" (click)="showFlight()" 
+        title="Press this to display flight details">{{dep.deploySequence | depStatus}}</div> -->
     
-    <div class="stdd w150">{{dep.nextSequence | depStatus}}</div>
-    <div class="stdd w75">{{dep.nextStageDate | date :'dd-MMM'}}</div>
+    <!--<div class="stdd w150">{{dep.nextSequence | depStatus}}</div>
+    <div class="stdd w75">{{dep.nextStageDate | date :'dd-MMM'}}</div> -->
 
     <button class="btn fa fa-pencil fa-sm"  style="color: aliceblue;" (click)="editDep()" title="edit Deployment Transactions.  This option also provides for addition of a transaction"></button>
     <button class="btn fa fa-upload"  style="color: aliceblue;" (click)="editAttachment()" 
         title="upload/download attachments."></button>
+    
+
 </div>

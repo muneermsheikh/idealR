@@ -5,7 +5,7 @@
 	color: aliceblue;
 }
 
-.cursorPointer {cursor: pointer; color: white;}
+.cursorPointer {cursor: pointer; color: yellow;}
 .red {color:pink;}
 
 .rAlign{text-align: right;}
@@ -13,4 +13,5 @@
 .w30 {width: 30px;}
 .w75 {width: 75px;}
 .w100 {width: 100px;}
-.w300 {width: 300px;}
+.w125 {width: 125px;}
+.w250 {width: 250px;}

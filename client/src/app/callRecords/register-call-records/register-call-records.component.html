@@ -1,0 +1,53 @@
+<button class="btn fa fa-check" (click)="InterestedClicked(id)" title="Register as Interested" >
+</button>
+
+<button class="btn w20 b" (click)="NotInterestedClicked(id)" 
+    title="Not Interested - you can choose reasons for the non-interest" >X
+</button>
+<button class="btn w20" (click)="CallMissedClicked(id)"
+    title="Failed to reach on phone - wrong number or call not received"><i class="fa-solid fa-tty"></i>
+</button>
+
+<div *ngIf="Interested" class="my-0">
+    <span style="font-size: smaller; font-weight:bold; margin-left: 800px;">Interested Types:</span>
+    <span class="menuStyle w50" title="Register as Interested and keen" 
+        [class.disabled]="status === 'Interested, and keen'"
+        (click)="Interested_keen(id)">Keen to Join</span>
+    <span class="menuStyle w100" title="Register as Interested, but doubtful." 
+        [class.disabled]="status === 'Interested, but doubtful'"
+        (click)="Interested_doubtful(id)">Interested, but doubtful</span>
+    <span class="menuStyle w100" title="Undecided - will discuss and advise." 
+        [class.disabled]="status === 'Interested_undecided'"
+        (click)="Interested_undecided(id)">Undecided</span>
+    <button class="fa fa-window-close mx-2" (click)="Interested=false" ></button>
+</div>
+
+<div *ngIf="NotInterested" class="my-0">
+    <span style="font-size: smaller; font-weight:bold; margin-left: 700px;">No-Interest Reasons:</span>
+    <span class="menuStyle w50" title="Register as Not Interested due to Salary" 
+        [class.disabled]="status === 'Declined-Low remuneration'"
+        (click)="NI_DueToSalary(id)">Salary</span>
+    <span class="menuStyle w100" title="Register as Not Interested for overseas countries" 
+        [class.disabled]="status === 'Declined for overseas'"
+        (click)="NI_ForOverseas(id)">Not For Overseas</span>
+    <span class="menuStyle w50" title="Register as Not Willing to pay service charges" 
+        [class.disabled]="status === 'Declined - SC Not agreed'"
+        (click)="NI_DueToSC(id)">S.C.</span>
+    <span class="menuStyle w75" title="Register as not interested - reason not disclosed" 
+        [class.disabled]="status === 'Declined - other reasons'"
+        (click)="NI_DueToUnknownReasons(id)">Unknown Reasons</span>
+    <button class="fa fa-window-close mx-2" (click)="NotInterested=false" ></button>
+</div>
+
+<div *ngIf="CallMissed" class="my-0">
+    <span class="menuStyle w50" style="margin-left: 900px;" title="register the candidate's phone number as wrong number" 
+    (click)="CallMissed_WrongNo(id)">Wrong Number</span>
+
+    <span class="menuStyle w50" title="candidate did not respond to the call" 
+    (click)="CallMissed_NoResponse(id)">No response</span>
+
+    <span class="menuStyle w50" title="Asked to call later" 
+    (click)="CallMissed_CallLater(id)">Asked to call later</span>
+
+    <span class="fa fa-window-close mx-2" (click)="CallMissed=false" ></span>
+</div>

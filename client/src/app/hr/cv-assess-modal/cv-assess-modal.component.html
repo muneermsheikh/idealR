@@ -1,9 +1,7 @@
 <div class="modal-header">
-    <div class="stdd" style="font-weight: bold">Candidate Assessment</div>
+    <h4 class="stdd b">Candidate Assessment</h4>
     
-    <button type="button" class="stdd pull-right" (click)="bsModalRef.hide()">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="pull-right fa fa-window-close" (click)="bsModalRef.hide()"></button>
     
 </div>
 
@@ -13,64 +11,43 @@
     </div>
     <form [formGroup]="form" (ngSubmit)="form.valid" autocomplete="off" *ngIf="assess" >
         <div class="stdd mt-2">
-            <label class="lbl w100">Application No</label>
-            <div class="stdd w50">{{assess.applicationNo}}</div>
-            <label class="lbl w125 mx-5">Candidate Name</label>
-            <div class="stdd w250">{{assess.candidateName}}</div>
+            <label class="stdd w100">Application No</label>
+            <div class="stdd w50 b">{{assess.applicationNo}}</div>
+            <label class="stdd w125">Candidate Name</label>
+            <div class="stdd w250 b">{{assess.candidateName}}</div>
             
             <br>
-            <label class="lbl w100">Customer</label>
-            <div class="stdd w250">
-                <app-text-input [label]="'Customer'" formControlName="customerName"></app-text-input>
-            </div>
-            <label class="lbl w100 mx-2">Category Name</label>
-            <div class="stdd w250">
-                <app-text-input [label]="'Category'" formControlName="professionName" style="font-size: small;"></app-text-input>
-            </div>
+            <label class="stdd w100">Customer</label>
+            <div class="stdd w250 b"> {{assess.customerName}}</div>
+            <label class="stdd w100">Category Name</label>
+            <div class="stdd w250 b"> {{assess.professionName}}</div>
             <br>
-            <label class="lbl w100 mx-2">Assessed On</label>
-            <div class="stdd w125">{{assess.assessedOn | date: 'dd-MMM-yy'}}</div>
+            <label class="stdd w100">Assessed On</label>
+            <div class="stdd w125 b">{{assess.assessedOn | date: 'dd-MMM-yy'}}</div>
             
-            <label class="lbl w50 mx-2">Result</label>
-            <div class="stdd w50">
-                <app-text-input 
-                    [label]="'Assess Result'" formControlName="assessResult" style="font-size: small; font-weight: bold;"
-                ></app-text-input>
+            <label class="stdd w50">Grade:</label> 
+            <div class="stdd w50 b">{{assess.assessResult}}</div> 
+
+            <hr class="b my-0 py-0">
+            <label class="stdd w50 vAlignM">Ass'd</label>
+            <label class="stdd w50 vAlignM">Q No.</label>
+            <label class="stdd w425 vAlignM">Question</label>
+            <label class="stdd w50 vAlignM">Max<br>Points</label>
+            <label class="stdd w50 vAlignM">Points</label>
+            <hr class="b my-0 py-0">
+
+            <div *ngFor="let item of assess.assessmentItemsDto">
+                <div class="stdd w50 alignC">{{item.assessed ? "Y" : "N"}}</div>
+                <div class="stdd w50 alignC">{{item.questionNo}}</div>
+                <textarea class="stdd" rows="1" cols="60" name="question" id="question">{{item.question}}</textarea>
+                <div class="stdd w50 alignR">{{item.maxPoints}}</div>
+                <div class="stdd w50 alignR">{{item.points}}</div>
             </div>
-            <br>
-            <label class="lbl w25 mx-2">Ass'd</label>
-            <label class="lbl w50 mx-2">Q No.</label>
-            <label class="lbl w400 mx-2">Question</label>
             
-            <label class="lbl w50 mx-2">Max<br>Points</label>
-            <label class="lbl w50 mx-2">Points</label>
-            
-    
-            <div formArrayName="items" class="formArray">
-                <div *ngFor="let item of items.controls; let qIndex=index">
-                    <div [formGroupName]="qIndex">
-                        <input class="stdd w25 mx-2" type="checkbox" formControlName="assessed" style="font-size: small;">
-                        <div class="stdd w50 mx-2">
-                            <app-text-input [label]="'Q No'" formControlName="questionNo" style="font-size: small;"></app-text-input>
-                        </div>
-                        <div class="stdd w400 mx-2">
-                            <app-text-input [label]="'Question'" formControlName="question" style="font-size: small;" ></app-text-input>
-                        </div>
-                        <div class="stdd w50 mx-2 alignR">
-                            <app-text-input [label]="'Max Points'" formControlName="maxPoints" style="font-size: small; text-align: right;" ></app-text-input>
-                        </div>
-                        <div class="stdd w50 mx-2 alignR">
-                            <app-text-input [label]="'Points'" formControlName="points" style="font-size: small; text-align: right;" ></app-text-input>
-                        </div>
-                    </div>
-                    
-                </div>
-                <label style="margin-left: 458px;" class="lbl w50 b">Total</label>
-                    <div class="stdd w50 alignR mx-2 b">{{totalMaxPoints}}</div>
-                    <div class="stdd w50 alignR mx-2 b">{{totalPoints}}</div>
+            <label style="margin-left: 465px;" class="stdd w50 b">Total</label>
+                <div class="stdd w50 alignR b">{{totalMaxPoints}}</div>
+                <div class="stdd w50 alignR b">{{totalPoints}}</div>
             </div>
-                   
-        </div>
     </form>
 </div>
 

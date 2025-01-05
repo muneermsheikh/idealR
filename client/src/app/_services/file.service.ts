@@ -35,7 +35,15 @@ export class FileService {
     });
   }
 
-  public downloadFile(attachmentid: number) {
+  downloadCV(candidateId: number) {
+    return this.http.get(this.apiUrl + 'FileUpload/downloadcv/' + candidateId, {
+      reportProgress: true,
+      //observe: 'events',
+      responseType: 'blob',
+    });
+  }
+
+  /*public downloadFile(attachmentid: number) {
     
       const headers = new HttpHeaders().set('Accept', 'application/vnd.ms-excel');
 
@@ -52,7 +60,7 @@ export class FileService {
             // show error message to the user
           }
         );
-  }
+    } */
 
 }
 

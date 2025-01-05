@@ -82,12 +82,16 @@
                                     <span class="sidenav">CVs ready to refer</span>
                                 </a>
                                 <a mat-list-item routerLink="/candidates/cvsreferred" 
+                                    matTooltip="CVs referred" >
+                                    <span class="sidenav">CVs Referred</span>
+                                </a>
+                                <a mat-list-item routerLink="/candidates/cvsreferred" 
                                     matTooltip="CVs referred and awaiting client decision" >
                                     <span class="sidenav">CVs awaiting selections</span>
                                 </a>
-                                <a mat-list-item routerLink="/candidates/prospective"
+                                <a mat-list-item routerLink="/prospectives/prospective"
                                     matTooltip="prospective candidates - downloaded from portals.  These are contacted to ascertain their interest in the recruitment" >
-                                    <span class="sidenav">Prospective Candidates</span>
+                                    <span class="sidenav">Calling Lists</span>
                                 </a>
                                 <a mat-list-item routerLink="/interviews"
                                     matTooltip="interview list, create new interview schedule" >
@@ -105,13 +109,17 @@
                     <mat-expansion-panel [class.mat-elevation-z0]="true" >
                         <mat-expansion-panel-header>Orders</mat-expansion-panel-header>
                         <mat-nav-list>
-                            <a mat-list-item routerLink="/administration/orders" matTooltip="listing of orders">
+                            <a mat-list-item routerLink="/orders/edit/0" matTooltip="create a new Demand Letter">
+                                <span class="sidenav">New Demand Letter</span>
+                            </a>
+
+                            <a mat-list-item routerLink="/orders/orders" matTooltip="listing of orders">
                                 <span class="sidenav">Orders Listing</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/ordersforwarded" matTooltip="Orders already forwarded to Associates" >
+                            <a mat-list-item routerLink="/orders/ordersforwarded" matTooltip="Orders already forwarded to Associates" >
                                 <span class="sidenav">Orders Forwarded</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/ordersforwarded" 
+                            <a mat-list-item routerLink="/masters/categories" 
                                 matTooltip="Category Assessment Questions" >
                                 <span class="sidenav">Category Assessment Questions</span>
                             </a>
@@ -141,7 +149,7 @@
                             <a mat-list-item routerLink="/masters/industries" matTooltip="Industries" >
                                 <span class="sidenav">Industries</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/messages" matTooltip="Messages concerning the logged-in User" >
+                            <a mat-list-item routerLink="/messages/messages" matTooltip="Messages concerning the logged-in User" >
                                 <span class="sidenav" >Messages</span>
                             </a>
                        
@@ -154,12 +162,12 @@
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Selections</mat-expansion-panel-header>
                         <mat-nav-list>
-                            <a mat-list-item routerLink="/administration/pendingSelections"
+                            <a mat-list-item routerLink="/selections/pendingSelections"
                                 matTooltip="presents all pending selections to conclude"
                             >
                                 <span>Selections Pending</span>
                             </a>
-                            <a mat-list-item routerLink="/administration/selections" 
+                            <a mat-list-item routerLink="/selections/selections" 
                                 matTooltip="selections as well as Rejections finalized">
                                 <span>Selections finalized</span>
                             </a>
@@ -188,7 +196,22 @@
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
-               
+                    
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Interviews</mat-expansion-panel-header>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/interviews"
+                                matTooltip="Presents list of interviews, latest at the top">
+                                <span>Interviews List</span>
+                            </a>
+                        </mat-nav-list>
+                        <mat-nav-list>
+                            <a mat-list-item routerLink="/interviews/editSchedule"
+                                matTooltip="Edit an interview schedule">
+                                <span>Edit Interview</span>
+                            ></a>
+                        </mat-nav-list>
+                    </mat-expansion-panel>
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Finance</mat-expansion-panel-header>
                         <mat-nav-list>
@@ -237,7 +260,15 @@
                                 matTooltip="all tasks pending - only for administrators" >
                                 <span class="sidenav">Pending Tasks of all users</span>
                             </a>
-                           
+                            <a mat-list-item routerLink="/tasks/tasksforadmin" 
+                                matTooltip="result of Call Lists" >
+                                <span class="sidenav">Call List Status</span>
+                            </a>
+                            <a mat-list-item routerLink="/callRecords/callRecordList" 
+                                matTooltip="callling list" >
+                                <span class="sidenav">Call Record History</span>
+                            </a>
+                   
                         </mat-nav-list>
                     </mat-expansion-panel>
 
@@ -284,4 +315,3 @@
 <!--<div style="margin-top: 80px;">
     <router-outlet></router-outlet> 
 </div> -->
-

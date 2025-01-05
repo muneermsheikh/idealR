@@ -6,13 +6,14 @@ import { SharedModule } from '../_modules/shared.module';
 import { MasterRoutingModule } from './master-routing.module';
 import { CategoriesComponent } from './categories/categories.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
-import { IndustriesComponent } from '../Administration/industries/industries.component';
+import { IndustriesComponent } from './industries/industries.component';
 import { EmpEditComponent } from './emp-edit/emp-edit.component';
 import { EmpAttachmentComponent } from './emp-attachment/emp-attachment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoryEditModalComponent } from './category-edit-modal/category-edit-modal.component';
 import { CategoryQBankModalComponent } from './category-qbank-modal/category-qbank-modal.component';
 import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.component';
+import { IndustryEditModalComponent } from './industry-edit-modal/industry-edit-modal.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.
     EmpAttachmentComponent,
     CategoryEditModalComponent,
     CategoryQBankModalComponent,
-    CategoryQBankQsComponent
+    CategoryQBankQsComponent,
+    IndustryEditModalComponent
   ],
 
   imports: [

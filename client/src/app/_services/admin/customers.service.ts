@@ -17,6 +17,7 @@ import { customerParams } from 'src/app/_models/params/Admin/customerParams';
 import { getDateOffset } from 'ngx-bootstrap/chronos/units/offset';
 import { ICustomerReview } from 'src/app/_models/admin/customerReview';
 import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
+import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class CustomersService {
       var custBrief = this.customersBrief.find(x => x.id ===id);
       if(custBrief !==null) return of(custBrief?.knownAs);
     }
-    return this.http.get<string>(this.apiUrl + 'customers/customernamefromId/' + id);
+    return this.http.get<IReturnStringsDto>(this.apiUrl + 'customers/customernamefromId/' + id);
   }
 
   getCustomers(oParams: customerParams) { 
@@ -71,7 +72,7 @@ export class CustomersService {
   }
 
   register(model: IRegisterCustomerDto) {
-    return this.http.post<string>(this.apiUrl + 'customers', model )
+    return this.http.post<IReturnStringsDto>(this.apiUrl + 'customers', model )
   }
   
   getCustomerCities(customerType: string) {
@@ -95,7 +96,7 @@ export class CustomersService {
   }
 
   updateCustomer(model: any) {
-    return this.http.put<string>(this.apiUrl + 'customers/edit', model);
+    return this.http.put<IReturnStringsDto>(this.apiUrl + 'customers/edit', model);
   }
 
   //associates

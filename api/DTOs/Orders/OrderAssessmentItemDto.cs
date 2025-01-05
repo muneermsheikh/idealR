@@ -17,6 +17,7 @@ namespace api.DTOs.Orders
         public DateTime OrderDate { get; set; }
         public string CustomerName { get; set; }
         public int ProfessionId { get; set; }
+        public string ProfessionGroup { get; set; }
         public string ProfessionName { get; set; }
         public string DesignedBy { get; set; }
         public ICollection<OrderAssessmentItemQ> OrderAssessmentItemQs { get; set; }

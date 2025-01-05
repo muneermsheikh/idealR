@@ -4,7 +4,9 @@ namespace api.Entities.Finance
 {
     public class COA: BaseEntity
     {
-        [MaxLength(1), Required]    
+        [MaxLength(50)]
+		public string Section { get; set; }
+		[MaxLength(1), Required]    
 		public string Divn { get; set; }
 		[MaxLength(1), Required]
 		public string AccountType { get; set; }

@@ -41,8 +41,8 @@ namespace api.Controllers
         [HttpPut("assessment")]
         public async Task<ActionResult<bool>> UpdateCandidateAssessment(CandidateAssessment candidateAssessment)
         {
-            var errorString = await _repo.EditCandidateAssessment(candidateAssessment, User.GetUsername());
-            if(!string.IsNullOrEmpty(errorString)) return BadRequest(errorString);
+            var obj = await _repo.EditCandidateAssessment(candidateAssessment, User.GetUsername());
+            if(!string.IsNullOrEmpty(obj.ErrorString)) return BadRequest(obj.ErrorString);
 
             return Ok(true);
         }
@@ -89,12 +89,12 @@ namespace api.Controllers
         [HttpGet("assessmentbyid/{candidateAssessmentId}")]
         public async Task<ActionResult<CandidateAssessmentAndChecklistDto>> GetCandidateAssessmentById(int candidateAssessmentId)
         {
-            var assessmentAndChecklist = await _repo.GetCandidateAssessmentById(candidateAssessmentId, User.GetUsername());
+            var assessmentAndChecklist = await _repo.GetCandidateAssessmentWithChecklistByAssessmentId(candidateAssessmentId, User.GetUsername());
 
             if(assessmentAndChecklist.Assessed == null && assessmentAndChecklist.ChecklistHRDto == null) 
                 return BadRequest("Your parameters did not produce any result");
 
-            return Ok(assessmentAndChecklist);
+            return Ok(assessmentAndChecklist.Assessed);
 
         }
 
@@ -140,6 +140,16 @@ namespace api.Controllers
 
 
             return Ok(dto);
+        }
+
+        [HttpPost("newchecklist")]
+        public async Task<ActionResult<ChecklistAndCandidateAssessmentDto>> SaveNewChecklist (ChecklistHR checklisthr)
+        {
+            var checklist = await _repo .SaveNewChecklist(checklisthr, User.GetUsername());
+
+            if(!string.IsNullOrEmpty(checklist.ErrorString)) return BadRequest(checklist.ErrorString);
+
+            return Ok(checklist);
         }
     }
 }

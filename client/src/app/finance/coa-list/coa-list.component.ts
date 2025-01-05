@@ -50,7 +50,8 @@ export class CoaListComponent implements OnInit {
       private toastr: ToastrService,
       private router: Router,
       private confirmService: ConfirmService,
-      private modalService: BsModalService
+      private modalService: BsModalService,
+      
       ) {
         //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
 
@@ -148,7 +149,7 @@ export class CoaListComponent implements OnInit {
 
   editCOAModal(edit: ICOA | null) {
     if(edit===null) edit = new coa();
-
+    
     const config = {
       class: 'modal-dialog-centered modal-md',
       initialState: {
@@ -217,7 +218,7 @@ export class CoaListComponent implements OnInit {
     const config = {
       class:'modal-dialog-centered modal-md',
       initialState: {
-        title: 'get Date Range Input for Statement of Account'
+        title: 'get Date Range Input for a details for this Account'
       }
     };
     
@@ -308,7 +309,7 @@ export class CoaListComponent implements OnInit {
 
   
   returnToCaller() {
-    this.router.navigateByUrl(this.returnUrl || '/finance' );
+    this.router.navigateByUrl('/' );
   }
 }
 

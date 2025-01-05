@@ -1,5 +1,3 @@
-using System.Data.Common;
-using System.Runtime.CompilerServices;
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Master;
@@ -15,7 +13,7 @@ namespace api.Data.Repositories
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly DateTime _today = DateTime.UtcNow;
-        public ChecklistRepository(DataContext context, IMapper mapper)
+        public ChecklistRepository(DataContext context,IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
@@ -93,13 +91,20 @@ namespace api.Data.Repositories
             return errorStrings;
         }
 
-        private async Task<string> verifyChecklist(ChecklistHR checklisthr)
+        public async Task<string> VerifyChecklist(ChecklistHR checklisthr)
         {
             var strErr="";
+            var checklist = await _context.ChecklistHRs.Where(x => x.CandidateId == checklisthr.CandidateId
+                && x.OrderItemId==checklisthr.OrderItemId).FirstOrDefaultAsync();
+            if(checklist != null) strErr = "Unique Index violation - The candidate has already been checklisted for the given Order Category on " +
+                checklist.CheckedOn;
+            if(!string.IsNullOrEmpty(strErr)) return strErr;
+
             var candidate = await _context.Candidates.FindAsync(checklisthr.CandidateId);
             if(candidate == null) strErr = "Invalid Candidate Id";
             var item = await _context.OrderItems.FindAsync(checklisthr.OrderItemId);
             if(item == null) strErr +=" Invalid Order Item Id code";
+
 
             return strErr;
         }
@@ -131,14 +136,22 @@ namespace api.Data.Repositories
                 itemList.Add(newItem);
             }
 
-            var hrexecusername = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
+            var HRExec = await _context.ContractReviewItems.Where(x => x.OrderItemId==orderItemId)
                 .Select(x => x.HrExecUsername).FirstOrDefaultAsync();
+            var salary = await _context.Remunerations.Where(x => x.OrderItemId == orderItemId)
+                .Select(x => new {x.SalaryCurrency, x.SalaryMin, x.SalaryMax})
+                .FirstOrDefaultAsync();
+                
+            //var hrexecusername = await _context.ContractReviewItems.Where(x => x.OrderItemId == orderItemId)
+                //.Select(x => x.HrExecUsername).FirstOrDefaultAsync();
 
             var hrTask = new ChecklistHR{
                 CandidateId=candidateId, OrderItemId= orderItemId, 
                 Username = Username, CheckedOn = _today, 
                 Charges = charges,
-                ChecklistHRItems = itemList, HrExecUsername = hrexecusername };
+                ChecklistHRItems = itemList, HrExecUsername = HRExec,
+                SalaryOffered = salary == null ? "undefined" : salary.SalaryCurrency + " " + salary.SalaryMin + " to " + salary.SalaryMax
+            };
             
             checkobj.ChecklistHR = hrTask;
 
@@ -146,40 +159,13 @@ namespace api.Data.Repositories
 
         }
 
-        public async Task<ChecklistObj> SaveNewChecklist (ChecklistHR checklisthr, string Username)
+
+        public async Task<string> EditChecklistHR(ChecklistHR model, string Username)
         {
-            var checkobj = new ChecklistObj();
+             if(string.IsNullOrEmpty(model.Username)) model.Username=Username;
 
-            var errStr = await verifyChecklist(checklisthr);
-            if(!string.IsNullOrEmpty(errStr)) {
-                checkobj.ErrorString = errStr;
-                return checkobj;
-            }
-
-            _context.ChecklistHRs.Add(checklisthr);
-            _context.Entry(checklisthr).State = EntityState.Added;
-
-            try {
-                await _context.SaveChangesAsync();
-            } catch (DbException ex) {
-                checkobj.ErrorString = ex.Message;
-                return checkobj;
-            } catch (Exception ex) {
-                checkobj.ErrorString = ex.Message;
-                return checkobj;
-            }
-
-            checkobj.ChecklistHR  = checklisthr;
-
-            return checkobj;
+            var errorList = ChecklistErrors(model);
             
-        }
-
-        public async Task<string> EditChecklistHR(ChecklistHRDto dto, string Username)
-        {
-             var model = _mapper.Map<ChecklistHR>(dto);
-
-             var errorList = ChecklistErrors(model);
             if(!string.IsNullOrEmpty(errorList)) return errorList;
 
             var existing =  await GetChecklistHRIfEditable(model, Username);     //returns ChecklistHR

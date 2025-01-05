@@ -12,6 +12,9 @@ import { IIntervw } from 'src/app/_models/hr/intervw';
 import { CvsMatchingProfAvailableDto } from 'src/app/_dtos/hr/cvsMatchingProfAvailableDto';
 import { IIntervwItem } from 'src/app/_models/hr/intervwItem';
 import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
+import { defaultInterviewAddress } from 'src/app/_dtos/hr/defaultInterviewAddress';
+import { IInterviewMatchingCategoryDto } from 'src/app/_dtos/hr/interviewMatchingCategoryDto';
+import { IIntervwItemCandidate } from 'src/app/_models/hr/intervwItemCandidate';
 
 @Injectable({
   providedIn: 'root'
@@ -28,22 +31,28 @@ export class InterviewService {
 
     constructor(private http: HttpClient) { }
 
-    getInterviewsPaged() { 
-      
+    getInterviewsPaged(useCache: boolean=false) { 
+  
       var oParams = this.iParams; 
-      const response = this.cache.get(Object.values(oParams).join('-'));
-        if(response) return of(response);
-      
-        let params = getPaginationHeadersInterviewParams(oParams);
 
-        return getPaginatedResult<IInterviewBrief[]>(this.apiUrl 
-          + 'interview/pagedlist', params, this.http).pipe(
-          map(response => {
-            this.cache.set(Object.values(oParams).join('-'), response);
-            return response;
-          }))
+      if(useCache) {
+        const response = this.cache.get(Object.values(oParams).join('-'));
+          if(response) return of(response);
+      }
+      
+      let params = getPaginationHeadersInterviewParams(oParams);
+
+      return getPaginatedResult<IInterviewBrief[]>(this.apiUrl 
+        + 'interview/pagedlist', params, this.http).pipe(
+        map(response => {
+          this.cache.set(Object.values(oParams).join('-'), response);
+          return response;
+        }))
     }
 
+    getDefaultInterviewAddress() {
+      return new defaultInterviewAddress();
+    }
     getOrGenerateinterview(orderno: number) {
       return this.http.get<IInterview>(this.apiUrl + 'interview/getorgenerate/' + orderno);
     }
@@ -117,6 +126,15 @@ export class InterviewService {
       return this.http.get<CvsMatchingProfAvailableDto[]>(this.apiUrl + 'users/candidatesmatchingprof/' + professionid);
     }
     
+    getInterviewItemsMatchingCategory(categoryName: string[]) {
+      return this.http.get<IInterviewMatchingCategoryDto[]>(this.apiUrl + 'interview/interviewCategoryMatching/' + categoryName.flat());
+    }
+    
+    insertInterviewItemCandidate(model: IIntervwItemCandidate) {
+      console.log('insert interview item cndidate', model);
+      return this.http.put<boolean>(this.apiUrl + 'Interview/addCandidateToInterviewItem', model);
+    }
+  
     getParams(){
       return this.iParams;
     }

@@ -1,5 +1,6 @@
 export class prospectiveCandidateParams {
      
+     orderno='';
      categoryRef?='';
      dateAdded?: string;
      status= '';
@@ -10,6 +11,6 @@ export class prospectiveCandidateParams {
      
      sort = "date";
      pageNumber = 1;
-     pageSize = 10;
+     pageSize = 15;
      search: string='';
 }

@@ -6,6 +6,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
 import { CvsMatchingProfAvailableDto } from 'src/app/_dtos/hr/cvsMatchingProfAvailableDto';
+import { defaultInterviewAddress } from 'src/app/_dtos/hr/defaultInterviewAddress';
 import { IntervwCandAttachment } from 'src/app/_models/hr/intervwCandAttachment';
 import { IIntervwItem } from 'src/app/_models/hr/intervwItem';
 import { IntervwItemCandidate } from 'src/app/_models/hr/intervwItemCandidate';
@@ -24,15 +25,19 @@ export class EditScheduleComponent implements OnInit{
   @Input() interviewDateFrom: Date | undefined;
   @Input() interviewDateUpto: Date | undefined;
 
+  personType = '';
+  personId = '';
   lastTimeCalled: number= Date.now();
   userFiles: File[] = [];
   attachment: IntervwCandAttachment | undefined;
   selectedIndex: number=0;
+  
 
   upload=false;
   itemCandidateSelected: IntervwItemCandidate|undefined;
 
   bsModalRef: BsModalRef | undefined;
+  displayHistory: boolean = false;
 
   interviewResults=[{result: 'Not Interviewed'}, {result: 'Selected'}, 
     {result: 'Rejected-Exp irrelevant'}, {result: 'Rejected-Low Exp'}, {result: 'Rejected-Overage'}, 
@@ -48,8 +53,7 @@ export class EditScheduleComponent implements OnInit{
       var dt = new Date(this.interviewDateFrom);
       this.interviewDateFrom = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(),10,30);
     }
-    console.log('interviewDateFrom in NgONInit', this.interviewDateFrom);
-      this.InitializeForm(this.interviewItem!);
+    this.InitializeForm(this.interviewItem!);
   }
 
   form: FormGroup = new FormGroup({});
@@ -76,9 +80,10 @@ export class EditScheduleComponent implements OnInit{
           item.interviewItemCandidates.map(cand => (
             this.fb.group({
               id: cand.id,
-              interviewItemId: [cand.interviewItemId ?? item.id, Validators.required],
+              
+              intervwItemId: [cand.interviewItemId ?? item.id, Validators.required],
               candidateId: [cand.candidateId,Validators.required],
-              persosnId: [cand.personId],
+              personId: [cand.personId],
               applicationNo: cand.applicationNo,
               candidateName: [cand.candidateName, Validators.required],
               passportNo: cand.passportNo,
@@ -92,6 +97,19 @@ export class EditScheduleComponent implements OnInit{
           ))
         )
       })
+  }
+
+  findCandidateId(index: number) {
+    return this.interviewItemCandidates.at(index).get('candidateId')?.value;
+  }
+
+  findIntervwItemCandidateId(index: number) {
+    return  this.interviewItemCandidates.at(index).get('id')?.value ?? 0;
+  }
+
+
+  findCandidateStatus(index: number): string {
+    return this.interviewItemCandidates.at(index).get('interviewStatus')?.value ?? '';
   }
 
   get interviewItemCandidates(): FormArray {
@@ -151,7 +169,6 @@ export class EditScheduleComponent implements OnInit{
     if(this.userFiles.length > 0) {
       this.userFiles.forEach(f => {
         formData.append('file', f, f.name);
-        
       })
     }
 
@@ -159,10 +176,12 @@ export class EditScheduleComponent implements OnInit{
 
     this.service.editOrInsertInterviewItemWithFile(formData).subscribe({
       next: (response: IInterviewItemWithErrDto) => {
+        console.log(response);
         if(response.error !== '') {
-          this.toastr.error(response.error, 'failed to save the interview data')
+          this.toastr.error(response.error, 'failed to save the interview Item data')
         } else {
-          this.toastr.success('interview saved', 'success')
+          this.toastr.success('interview Item saved', 'success');
+          this.form.markAsPristine();
         }
       }, error: (err: any) => this.toastr.error(err.error.details, 'Error encountered')
     })
@@ -253,7 +272,13 @@ export class EditScheduleComponent implements OnInit{
   }
   
   registerReportedAt(index: number) {
-    this.interviewItemCandidates.at(index).get('reportedAt')?.setValue(formatDate(new Date(), 'MM-dd-yyyyTHH:mm', 'en'));
+    this.interviewItemCandidates.at(index).get('reportedAt')?.setValue(formatDate(new Date(), 'yyyy-MM-ddThh:mm', 'en'));
+    this.form.markAsDirty();
+  }
+
+  setInterviewedAt(index: number) {
+    this.interviewItemCandidates.at(index).get('interviewedAt')?.setValue(formatDate(new Date(), 'yyyy-MM-ddThh:mm', 'en'));
+    this.form.markAsDirty();
   }
 
   getMatchingCVs(item:IIntervwItem) {
@@ -270,24 +295,17 @@ export class EditScheduleComponent implements OnInit{
         return;
     }
 
-    console.log('interviewDateFrom', this.interviewDateFrom);
-
     var venue = this.form.get('interviewVenue')?.value;
     var interviewer = this.form.get('interviewerName')?.value;
     if(venue === '' || venue === 'To Be Annoounced'|| interviewer === '' || interviewer === 'To Be Announced') {
       this.toastr.warning('Interview Venue and Interviewer Name not provided');
       return;
     }
-      
-    if(this.interviewItemCandidates.length > 0) console.log(this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value);
-    console.log('interviewDateFrom def', interviewBeginDateTime);
+    
     var interviewBeginDateTime = this.interviewItemCandidates.length === 0 ? this.interviewDateFrom 
       : this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value;
 
     //interviewBeginDateTime=addHours(interviewBeginDateTime, 10);
-
-    
-    console.log('interviewDateFrom updated', interviewBeginDateTime);
     //**todo** instead of last index, find max value of the scheduledFrom column
     var interviewDuration=30; //minutes
 
@@ -299,7 +317,7 @@ export class EditScheduleComponent implements OnInit{
       }
   
       this.bsModalRef = this.bsModalService.show(CandidatesAvailableModalComponent, config);
-      console.log('interviewBeginDateTime', interviewBeginDateTime);
+
       this.bsModalRef.content.emittedEvent.subscribe({      //calls interview.service.getMatchingCandidates based on profession selected
         next: (response: CvsMatchingProfAvailableDto[]) => {
           if(response !== null) {
@@ -321,7 +339,6 @@ export class EditScheduleComponent implements OnInit{
                   prospectiveCandidateId: [x.prospectiveCandidateId]
                 }))
                 interviewBeginDateTime = addMinutes(interviewBeginDateTime, interviewDuration);
-                console.log('interviewbegindate', interviewBeginDateTime);
               })
               this.toastr.success(response.length + ' candidates assigned.  Pl note the form needs to be saved for changes to take effect', 'Success');
           } else {
@@ -333,6 +350,28 @@ export class EditScheduleComponent implements OnInit{
       })
     }
   
+    copyDefaultVenueAddress() {
+      var address = new defaultInterviewAddress();
+      this.form.get('interviewVenue')?.setValue(address.venue);
+      this.form.get('venueAddress')?.setValue(address.address);
+      this.form.get('venueAddress2')?.setValue(address.address2);
+      this.form.get('venueCityAndPIN')?.setValue(address.city);
+      this.form.get('siteRepName')?.setValue(address.siteRepName);
+      this.form.get('sitePhoneNo')?.setValue(address.sitePhoneNo);
+    }
+
+    hideSelectionProgress() {
+      //this.displayHistory = false;
+    }
+
+    getCandidateId(index: number): string {
+      return this.interviewItemCandidates.at(index).get('candidateId')?.value.toString();
+    }
+
+    callStatusChanged(index: number, status: string) {
+      this.interviewItemCandidates.at(index).setValue(status);
+    }
+
 }
 function addMinutes(date: Date, minutes: number): Date {
   let result = new Date(date);
@@ -345,5 +384,7 @@ function addHours(date: Date, hours: number): Date {
   result.setHours(result.getHours() + hours);
   return result;
 }
+
+
 
 

@@ -1,14 +1,15 @@
+using System;
 using System.Data.Common;
+using System.Linq;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.DTOs.Process;
-using api.Entities.Admin;
-using api.Entities.Admin.Order;
 using api.Entities.Deployments;
 using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Extensions;
 using api.Helpers;
+using api.Interfaces.Admin;
 using api.Interfaces.Deployments;
 using api.Interfaces.HR;
 using api.Interfaces.Messages;
@@ -37,9 +38,11 @@ namespace api.Data.Repositories.Deployment
         private readonly IComposeMessagesHRRepository _composeHR;
         private readonly IComposeMsgsForCandidates _composeCandMsg;
         private readonly UserManager<AppUser> _userManager;
-        public DeploymentRepository(DataContext context, IComposeMessagesHRRepository composeHR, UserManager<AppUser> userManager,
-            IComposeMsgsForCandidates composeCandMsg, IMapper mapper)
+        private readonly ISelDecisionRepository _selRepo;
+        public DeploymentRepository(DataContext context, IComposeMessagesHRRepository composeHR, ISelDecisionRepository selRepo, 
+            UserManager<AppUser> userManager, IComposeMsgsForCandidates composeCandMsg, IMapper mapper)
         {
+            _selRepo = selRepo;
             _userManager = userManager;
             _composeCandMsg = composeCandMsg;
             _composeHR = composeHR;
@@ -100,15 +103,19 @@ namespace api.Data.Repositories.Deployment
             foreach(var item in dto) {
 
                 //create candidateObject for composing msgs at the endof this loop
-                
                 switch(item.Sequence) {
                     case _mEDICALLY_FIT: case _mEDICALLY_UNFIT: case _vISA_REJECTED: case _vISA_ISSUED:
                     case _eMIGRATION_CLEARED: case _eMIGRATION_DENIED: case _tICKET_BOOKED: case _oFFER_ACCEPTED:
-                        var candidateAppUsername = await _context.GetAppUsernameFromDepId(item.DepId);
-                        var recipientObj = await _userManager.FindByNameAsync(candidateAppUsername);
+                        var candidateAppUsername = await _context.GetAppUsernameFromDepId(_selRepo, item.DepId);   //returns RturnStringDto
+                        if(string.IsNullOrEmpty(candidateAppUsername.SuccessString)) {
+                            returnDto.ErrorString += ", " + candidateAppUsername?.ErrorString + " does not have Username defined";
+                            continue;
+                        }
+                        var recipientObj = await _userManager.FindByNameAsync(candidateAppUsername.SuccessString);
                         
                         if(recipientObj == null) {
                             returnDto.ErrorString = "Failed to retrieve User Identity of the candidate";
+                            //**TODO** create new appuser if not exist
                             return returnDto;       
                         }
 
@@ -124,11 +131,12 @@ namespace api.Data.Repositories.Deployment
                                 CandidateName = sel.CandidateName, CandidateGender=sel.Gender ?? "M",
                                 CandidateEmail = recipientObj.Email, CandidateUsername=cand.Username,
                                 CustomerName = dep.CustomerName,
-                                SelectedAs = sel.SelectedAs ?? rvw.ProfessionName, HrExecEmail= cand.Email,
+                                SelectedAs = sel.SelectedAs ?? rvw.ProfessionName, 
+                                HrExecEmail= cand.Email,
                                 TransactionDate = DateOnly.FromDateTime(item.TransactionDate)
                             }).FirstOrDefaultAsync();
-                        candDetail.SenderObj=await _userManager.FindByNameAsync(candDetail.CandidateUsername);
-                        if(candDetail.SenderObj==null) continue;
+                        //candDetail.SenderObj=await _userManager.FindByNameAsync(candDetail.CandidateUsername);
+                        //if(candDetail.SenderObj==null) continue;
                         break;
                     default:
                         break;
@@ -246,22 +254,22 @@ namespace api.Data.Repositories.Deployment
 
             switch(Sequence) {
                 case _mEDICALLY_FIT:
-                    msgWithErr =  _composeCandMsg.AdviseCandidate_MedicallyFit(candDetail, TransactionDate);
+                    msgWithErr =  await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "MedicallyFit");
                     break;
                 case _mEDICALLY_UNFIT:
-                    msgWithErr = _composeCandMsg.AdviseCandidate_MedicallyUnfit(candDetail, TransactionDate);
+                    msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "MedicallyUnfit");
                     break;
                 case _vISA_REJECTED:
-                    msgWithErr = _composeCandMsg.AdviseCandidate_VisaRejected(candDetail, TransactionDate);
+                    msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "VisaRejected");
                     break;
                 case _vISA_ISSUED:
-                    msgWithErr = _composeCandMsg.AdviseCandidate_VisaIssued(candDetail, TransactionDate);
+                    msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "VisaIssued");
                     break;
                 case _eMIGRATION_CLEARED:
-                    msgWithErr = _composeCandMsg.AdviseCandidate_EmigrationCleared(candDetail, TransactionDate);
+                    msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "EmigrationCleared");
                     break;
                 case _tICKET_BOOKED:
-                    msgWithErr = await _composeCandMsg.AdviseCandidate_TicketBooked(candDetail, TransactionDate);
+                    msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "TicketBooked");
                     break;
                 case _oFFER_ACCEPTED:
                     msgWithErr = _composeCandMsg.AdviseCandidate_OfferAccepted(candDetail, TransactionDate);
@@ -502,11 +510,14 @@ namespace api.Data.Repositories.Deployment
 
             return item;
         }
-
+        
         public async Task<PagedList<DeploymentPendingDto>> GetDeployments(DeployParams depParams)
         {
-            var query = (from dep in _context.Deps 
-                join depitem in _context.DepItems on dep.Id equals depitem.DepId orderby depitem.Sequence descending
+     
+            //var dto = await DoHousekeepingOfDeployments();
+            
+            var query = (from dep in _context.Deps //where dep.CurrentStatus != "Concluded"
+                //join dep in _context.Deps on depitem.DepId equals dep.Id //where dep.CurrentStatus != "Concluded"
                 join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id
@@ -515,7 +526,72 @@ namespace api.Data.Repositories.Deployment
                 select new DeploymentPendingDto {
                     DepId = dep.Id,
                     ApplicationNo = cv.ApplicationNo,
-                    TransactionDate = depitem.TransactionDate,
+                    TransactionDate = dep.CurrentStatusDate,
+                    CandidateName = cv.FirstName + " " + cv.FamilyName,
+                    CategoryName = item.Profession.ProfessionName,
+                    CustomerName = order.Customer.KnownAs,
+                    Ecnr = cv.Ecnr == "true",
+                    CustomerId = order.CustomerId,
+                    CvRefId = cvref.Id,
+                    SelectedOn = cvref.SelectionStatusDate,
+                    ReferredOn = cvref.ReferredOn,
+                    OrderNo = order.OrderNo,
+                    CityOfWorking = order.CityOfWorking,
+                    OrderDate = order.OrderDate,
+                    CurrentStatus =dep.CurrentStatus,
+                    OrderItemId = item.Id,
+                    //NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
+                        //.Select(x => x.NextSequenceDate).FirstOrDefault()
+                })
+                .OrderByDescending(x => x.ApplicationNo)
+                .AsQueryable();
+            
+            depParams.Status ??= "Concluded";
+
+            if(!string.IsNullOrEmpty(depParams.Status)) 
+                query = query.Where(x => x.CurrentStatus.ToLower() != depParams.Status.ToLower());
+            if(depParams.OrderNo != 0) {
+                query = query.Where(x => x.OrderNo == depParams.OrderNo);
+            } else if(depParams.CvRefId != 0) {
+                query = query.Where(x => x.CvRefId == depParams.CvRefId);
+            } else if(depParams.OrderItemId !=0) {
+                query = query.Where(x => x.OrderItemId== depParams.OrderItemId);
+            } else if (!string.IsNullOrEmpty(depParams.CandidateName)) {
+                query = query.Where(x => x.CandidateName.ToLower().Contains(depParams.CandidateName.ToLower()));
+            } else if (depParams.ApplicationNo != 0) {
+                query = query.Where(x => x.ApplicationNo == depParams.ApplicationNo);
+            } else if (!string.IsNullOrEmpty(depParams.CustomerName)) {
+                query = query.Where(x => x.CustomerName.ToLower().Contains(depParams.CustomerName.ToLower()));
+            } else if(depParams.SelectedOn.Year > 2000) {
+                query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
+            }
+
+            if(!string.IsNullOrEmpty(depParams.CurrentStatus)) 
+                query = query.Where(x => x.CurrentStatus.ToLower().Contains(depParams.CurrentStatus.ToLower()));
+
+            var paged = await PagedList<DeploymentPendingDto>.CreateAsync(query.AsNoTracking()
+                .ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
+                , depParams.PageNumber, depParams.PageSize);
+
+            //var depids = paged.Select(x => x.DepId).ToList();
+            //var depitems = await _context.DepItems.Where(x => depids.Contains(x.DepId)).ToListAsync();
+
+            return paged;
+        }
+
+        public async Task<PagedList<DeploymentPendingDto>> GetDployments(DeployParams depParams)
+        {
+            var query = (from dep in _context.Deps 
+                join depitem in _context.DepItems   on dep.Id equals depitem.DepId orderby depitem.Sequence descending
+                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
+                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
+                join item in _context.OrderItems on cvref.OrderItemId equals item.Id
+                join order in _context.Orders on item.OrderId equals order.Id
+                
+                select new DeploymentPendingDto {
+                    DepId = dep.Id,
+                    ApplicationNo = cv.ApplicationNo,
+                    TransactionDate = dep.CurrentStatusDate,
                     CandidateName = cv.FirstName + " " + cv.FamilyName,
                     CategoryName = item.Profession.ProfessionName,
                     CustomerName = order.Customer.KnownAs,
@@ -535,7 +611,9 @@ namespace api.Data.Repositories.Deployment
                     CurrentStatus = dep.CurrentStatus,
                     NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
                         .Select(x => x.NextSequenceDate).FirstOrDefault()
-                }).AsQueryable();
+                })
+                .OrderByDescending(x => x.ApplicationNo)
+                .AsQueryable();
             
             if(depParams.OrderNo != 0) {
                 query = query.Where(x => x.OrderNo == depParams.OrderNo);
@@ -591,7 +669,46 @@ namespace api.Data.Repositories.Deployment
             return obj;
         }
 
+        //Dep.CurrentStatus is expected to reflect the latest status of DepItems.
+        public async Task<ReturnStringsDto> DoHousekeepingOfDeployments()
+        {
 
+            var deps = await _context.Deps.Include(x => x.DepItems).Select(x => new {
+                DepId = x.Id, CurrentStatus = x.CurrentStatus, currentStatusDate = x.CurrentStatusDate,
+                depItemLatestStatus = x.DepItems
+                    .OrderByDescending(x => x.Sequence).Take(1)
+                .Select(m => new {ItemLatestSeq = m.Sequence, ItemLatestDate = m.TransactionDate})
+                .FirstOrDefault()})
+                .AsNoTracking()
+                .ToListAsync();
+            var depStatuses = await _context.DeployStatuses.Select(x => new {Seq=x.Sequence, SeqName=x.StatusName}).ToListAsync();
+
+            int Updated=0;
+            foreach(var dep in deps) {
+                var stNameShdBe = depStatuses.Find(x => x.Seq == dep.depItemLatestStatus.ItemLatestSeq).SeqName;
+                if(dep.CurrentStatus != stNameShdBe) {
+                    Updated++;
+                    var deployment = await _context.Deps.FindAsync(dep.DepId);
+                    deployment.CurrentStatus = stNameShdBe;
+                    _context.Entry(deployment).State = EntityState.Modified;
+                }
+            }
+
+            int ct=0;
+            if(_context.ChangeTracker.HasChanges()) {
+                ct = await _context.SaveChangesAsync();
+            }
+            var dto = new ReturnStringsDto();
+
+            if(Updated > ct) {
+                dto.ErrorString = "Out of " + Updated + " Deps records found not matching latest status in DepItems, " 
+                    + (Updated - ct) + " records were NOT updated";
+            } else if(Updated == ct) {
+                dto.SuccessString = "A total of " + Updated + " Dep records were updated";
+            }
+
+            return dto;
+        }
    
     }
 }
