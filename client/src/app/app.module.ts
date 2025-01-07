@@ -57,7 +57,7 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     InputModalComponent,
     DisplayTextModalComponent,
     DateInputRangeModalComponent,
-    CandidatesAvailableModalComponent
+    CandidatesAvailableModalComponent,
   ],
   imports: [
     BrowserModule,

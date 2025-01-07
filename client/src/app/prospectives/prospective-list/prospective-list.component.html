@@ -38,7 +38,8 @@
     <button (click)="onSearch()" title="search the text entered" class="btn fa fa-search"></button>
 
     <button (click)="onReset()" class="btn fa fa-refresh"></button>
-    <!-- <div class="stdd w100 mx-2">
+    <!-- <label class="lbl w75 tAlignRight">Choose Order No</label>
+    <div class="stdd w100 mx-2">
         <ng-select 
             [items]="headers"
             bindLabel="orderno"
@@ -50,7 +51,7 @@
     </div>
     
     <button class="btn fa fa-print fa-2x mx-1" title="print pdf for current category Ref"
-        [disabled]="distinctRefCat===''"  (click)="printPDF()"></button> -->
+        [disabled]="distinctRefCat===''"  (click)="generatePDF()"></button> -->
     <!-- <button printTitle="List of Prospective Candidates" 
         styleSheetFile="prospective-list.component.css"
         printSectionId="print-section" [previewOnly]="true" 

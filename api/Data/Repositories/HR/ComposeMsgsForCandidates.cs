@@ -35,6 +35,9 @@ namespace api.Data.Repositories.HR
             var senderObj = await _userManager.FindByIdAsync(appUserIdHRSup);
             
             var candidateName = candDetail.CandidateTitle + " " + candDetail.CandidateName;
+
+            var Notification = new FCNMessage();
+
             switch (ProcessName.ToLower()) {
                 
                 case "emigrationcleared":
@@ -53,9 +56,13 @@ namespace api.Data.Repositories.HR
                         "We are now booking your air ticket for your overseas travel, and will advise you once it is booked.";
                     
                     //FCM Push Notifications
-                    var Notification = new Notification{Title="Your Emigration Cleared", 
-                        Body = candidateName  + " - Your emigration clarance has been received. " +
-                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "};
+                    Notification = new FCNMessage{
+                        Topic = "Notification - Emigration Cleared",
+                        Notification = {Title = "Your Emigration Cleared",
+                            Body = candidateName  + " - Your emigration clarance has been received. " +
+                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                        Android = new AndroidConfig ()
+                    };
 
                     break;
                 
@@ -71,6 +78,15 @@ namespace api.Data.Repositories.HR
 
                     msgBody += "Pleased to advise you have been declared medically Fit.  Your visa formalities are now proceeding.";
                     msgType = "DeploymentProcess";   //"MedicalFitnessAdviseByEmail";
+
+                    //FCM Push Notifications
+                    Notification = new FCNMessage{
+                        Topic = "Notification - Medically Fit",
+                        Notification = {Title = "You are medically declared FIT",
+                            Body = candidateName  + " - You are declared medically Fit. Your Visa Processing is initiated.  " +
+                            "Please check the email sent to you on this subject. Regards/AG Enterprises, Processing Division "},
+                        Android = new AndroidConfig ()
+                    };
 
                     break;
 
@@ -92,6 +108,15 @@ namespace api.Data.Repositories.HR
 
                     msgType = "DeploymentProgress";     // "MedicalUnfitnessAdvise";
 
+                    //FCM Push Notifications
+                    Notification  = new FCNMessage{
+                        Topic = "Notification - Medicaly Unfit",
+                        Notification = {Title = "You are medically Unfit",
+                            Body = candidateName  + " - You are declared medically unfit.  It ceases all further deployment procesemigration clarance has been received. " +
+                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                        Android = new AndroidConfig ()
+                    };
+
                     break;
                 
                 case "visaissued":
@@ -106,6 +131,15 @@ namespace api.Data.Repositories.HR
 
                     msgBody += "Pleased to advise your Visa has been issued.  Your travel formalities are under process and we will advise you of the updates.";
                     msgType = "DeploymentProgress"; // "VisaIssueAdviseByMail";
+
+                    //FCM Push Notifications
+                    Notification  = new FCNMessage{
+                        Topic = "Notification - Visa Issued",
+                        Notification = {Title = "Your Visa is issued",
+                            Body = candidateName  + " - Your Visa is issued.  Next Process is Emigration Clearance. " +
+                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                        Android = new AndroidConfig ()
+                    };
 
                     break;
                 
@@ -122,6 +156,16 @@ namespace api.Data.Repositories.HR
                     msgBody += "Regret to advise you your Visa has been rejected by the Consulate.  Therefore, your employment with the foreign country " +
                         " cannot take effect.  If you want, we will continue with our efforts to find you an alternate employment opportunity.";
                     msgType = "DeploymentProgress"; // "VisaRejectionAdviseByMail";
+
+                    //FCM Push Notifications
+                    Notification  = new FCNMessage{
+                        Topic = "Notification - Visa Rejected",
+                        Notification = {Title = "Your visa has been rejected",
+                            Body = candidateName  + " - Your Visa is Rejected.  Please discuss with our Office or visit in person " +
+                            "if you can visit, to understand reasons for the rejection and if it can be resolved.  " +
+                            "Please read the email message sent to you.  Regards/Processing Department"},
+                        Android = new AndroidConfig ()
+                    };
 
                     break;
                 
@@ -144,6 +188,14 @@ namespace api.Data.Repositories.HR
                         .Where(x => x.CvRefId == candDetail.CVRefId).FirstOrDefaultAsync();
                     
                     if(flight != null) msgBody +=  GetBookingDetails(flight, candDetail.SelectedAs);
+
+                    //FCM Push Notifications
+                    Notification  = new FCNMessage{
+                        Topic = "Notification - Your travel is booked",
+                        Notification = {Title = "Your air travel is booked",
+                            Body = candidateName  + " - Your travel plan is finalized.  Please check your email for travel details. "},
+                        Android = new AndroidConfig ()
+                    };
 
                     break;
 

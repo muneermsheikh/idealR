@@ -1,11 +1,13 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
+import jsPDF from 'jspdf';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
 import { Pagination } from 'src/app/_models/pagination';
 import { prospectiveCandidateParams } from 'src/app/_models/params/hr/prospectiveCandidateParams';
@@ -44,12 +46,13 @@ export class ProspectiveListComponent implements OnInit {
   statusSelected: string='';
   categoryReferences: string[]=[];
 
-  /* headers: IProspectiveHeaderDto[]=[];
+  ProspList: IProspectiveBriefDto[]=[];
+
+  headers: IProspectiveHeaderDto[]=[];
   PrintPreview = false;
   distinctRefCats: string[]=[];
   distinctRefCat = '';
-  ProspList: IProspectiveBriefDto[]=[];
-*/
+  
 
   paramsStatus: ICallRecordResult[] = [{status:"All"}, {status: "Active"}, {status: "Declined"}, {status: "Interested"}];
 
@@ -73,26 +76,22 @@ export class ProspectiveListComponent implements OnInit {
 
   ngOnInit(): void {
       this.activatedRoute.data.subscribe(data => {
-        var prospects = data['prospectives'];
-        if(prospects !== undefined) {
-          this.prospectives = prospects.result;
-          this.pagination = prospects.pagination;
-          this.totalCount = prospects.totalCount;
+        
+          this.prospectives = data['prospectives'].result;
+          this.pagination = data['prospectives'].pagination;
+          this.totalCount = data['prospectives'].totalCount;
           //this.headers = data['headers'];
 
-          this.loadProspectives();
-        }
-        
       })
   }
   
-  /*getHeadersDto(status:string) {
-    return this.service.getProspectiveHeadersDto(status).subscribe({
-      next: (response: IProspectiveHeaderDto[]) => {
-        this.headers = response;
+      /*getHeadersDto(status:string) {
+        return this.service.getProspectiveHeadersDto(status).subscribe({
+          next: (response: IProspectiveHeaderDto[]) => {
+            this.headers = response;
+          }
+        })
       }
-    })
-  }
     */
   
   onPageChanged(event: any){
@@ -268,8 +267,55 @@ export class ProspectiveListComponent implements OnInit {
       this.loadProspectives();
     }
 
-    
+    /* distinctRefChanged() {
+      if (this.headers.length === 0) {
+        this.service.getProspectiveHeadersDto(this.pParams.statusClass).subscribe({
+          next: (response: IProspectiveHeaderDto[]) => {
+            if(response !== null && response.length > 0) {
+              this.headers = response
+            } else {
+              this.toastr.warning('Failed to retrieve headers', 'Failed')
+            }
+          }
+        })
+      }
     }
+      */
+    generatePDF() {
+
+      if(this.distinctRefCat !== '' && this.pParams.statusClass !== '') {
+        var prospcs = this.prospectives.filter(x => 
+            x.categoryRef.startsWith(this.distinctRefCat) && x.status?.startsWith(this.pParams.statusClass));
+        
+        if(prospcs.length === 0) {
+          this.toastr.warning('Your filtered conditions did not return any record');
+          return;
+        }
+
+        const doc = new jsPDF('p', 'px', 'a4');
+        var YPos=10;
+        prospcs.forEach(x => {
+            var XPos = 10;
+            doc.text(x.candidateName, XPos+=150, YPos);
+            doc.text(x.categoryRef, XPos+=150, YPos);
+            doc.text(x.customerName, XPos+=100, YPos);
+            doc.text(x.phoneNo, XPos+=75, YPos);
+            doc.text(x.nationality, XPos+=75, YPos);
+            doc.text(x.dateRegistered.toDateString().substring(4,10), XPos+=75, YPos);
+            doc.text(x.statusDate.toDateString().substring(4,10), XPos, YPos);
+      
+            YPos +=15;
+          })
+    
+      var today = new Date();
+      var fileNameSaved = "Prospective" + today.getFullYear + today.getMonth + today.getDate + today.getHours;
+      doc.save(fileNameSaved);
+    
+      if(fileNameSaved !== '') this.toastr.success('PDF Saved with the name ' + fileNameSaved, 'Success')
+      }
+    }
+
+}
 
    
 
