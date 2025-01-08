@@ -8,5 +8,5 @@ export class MedicalParams
     orderItemId = 0;
 
     pageNumber = 1;
-    pageSize = 15;
+    pageSize = 20;
 }

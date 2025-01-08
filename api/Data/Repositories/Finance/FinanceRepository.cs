@@ -107,6 +107,7 @@ namespace api.Data.Repositories.Finance
         public async Task<PagedList<COA>> GetCOAPagedList(ParamsCOA coaParams)
         {
             var query = _context.COAs.AsQueryable();
+
             if(coaParams.Id != 0) {
                 query = query.Where(x => x.Id == coaParams.Id);
             } else {
@@ -147,28 +148,42 @@ namespace api.Data.Repositories.Finance
             return null;
         }
 
+        //confirms receipt of cash or bank
         public async Task<PagedList<PendingDebitApprovalDto>> GetPendingDebitApprovals(DrApprovalParams pParams)
         {
             var cashandbank = await _context.COAs.Where(x => x.AccountClass=="banks" || x.AccountClass=="personalaccount").Select(x => x.Id).ToListAsync();
 
-			var qry = (from e in _context.VoucherEntries
-				where (e.DrEntryApproved != true || e.DrEntryApproved == null) && e.Dr > 0  && cashandbank.Contains(e.CoaId)
-				join v in _context.FinanceVouchers on e.FinanceVoucherId equals v.Id
-				select new PendingDebitApprovalDto{
-                     DrAccountId=e.CoaId, DrAccountName=e.AccountName, DrAmount=e.Dr, VoucherEntryId=e.Id, 
-                     DrEntryApproved = Convert.ToBoolean(e.DrEntryApproved), Id=e.FinanceVoucherId,
-                     VoucherDated = DateOnly.FromDateTime(v.VoucherDated), VoucherNo=v.VoucherNo
+            var tempDateOnly = DateOnly.FromDateTime(new DateTime());
+
+            var query = _context.VoucherEntries
+                .Where(x => cashandbank.Contains(x.CoaId) && (x.DrEntryApproved==null || x.DrEntryApproved == false))
+                .Select(x => new PendingDebitApprovalDto{
+                    DrAccountId=x.CoaId, DrAccountName=x.AccountName, DrAmount=x.Dr, 
+                     VoucherEntryId=x.Id, DrEntryApproved = Convert.ToBoolean(x.DrEntryApproved), 
+                     Id=x.FinanceVoucherId,
+                     VoucherDated = tempDateOnly, 
+                     VoucherNo=0
                 }).AsQueryable();
-			
+
             if(!string.IsNullOrEmpty(pParams.AccountName)) 
-                qry = qry.Where(x => x.DrAccountName.ToLower() == pParams.AccountName.ToLower());
-           
-            var test = await qry.ToListAsync();
+                query = query.Where(x => x.DrAccountName.ToLower() == pParams.AccountName.ToLower());
 
 			var paged = await PagedList<PendingDebitApprovalDto>.CreateAsync(
-                qry.AsNoTracking()
+                query.AsNoTracking()
                 //.ProjectTo<PendingDebitApprovalDto>(_mapper.ConfigurationProvider)
                 , pParams.PageNumber, pParams.PageSize);
+
+            var voucherIds = paged.Select(x => x.Id).ToList();
+
+            var vouchers = await _context.FinanceVouchers.Where(x => voucherIds.Contains(x.Id))
+                .Select(x => new {x.Id, x.VoucherNo, x.VoucherDated})
+                .ToListAsync();
+
+            foreach(var q in paged) {
+                q.VoucherNo = vouchers.Where(x => x.Id == q.Id).Select(x => x.VoucherNo).FirstOrDefault();
+                q.VoucherDated = DateOnly.FromDateTime(vouchers.Where(x => x.Id == q.Id).Select(x => x.VoucherDated).FirstOrDefault());
+            }
+
             return paged;
         }
 

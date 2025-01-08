@@ -97,7 +97,9 @@ export class COAService {
     return this.http.get<ICOA[]>(this.apiUrl + 'Finance/coasforpayment/' + appno);
   }
 
-    setParams(params: ParamsCOA) {
+
+  
+  setParams(params: ParamsCOA) {
     this.sParams = params;
   }
   

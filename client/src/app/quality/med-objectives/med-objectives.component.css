@@ -12,6 +12,14 @@
     vertical-align: middle;
     margin: 0 2px 0 2px;
 }
+
+.stddS {
+    display: inline-block;
+    font-size: smaller;
+    vertical-align: middle;
+    margin: 0 2px 0 2px;
+}
+.w150 {width: 150px;}
 .w125 {width: 125px;}
 .w75 {width: 75px;}
 .w50 {width: 50px;}

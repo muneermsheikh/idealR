@@ -8,7 +8,7 @@ export class ParamsCOA
     divisionToExclude='';
     
     pageNumber = 1;
-    pageSize = 15;
+    pageSize = 20;
     sort = 'accountName';
     search = '';
 }

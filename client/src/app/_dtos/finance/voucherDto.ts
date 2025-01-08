@@ -7,8 +7,8 @@ export interface IVoucherDto
 	voucherDated: Date;
 	amount: number;
 	narration: string;
-	approved: boolean;
-    reviewedByName: string;
-	reviewedOn: Date;
+	drEntryApproved: boolean;
+	drEntryApprovedOn: Date;
+	drEntryApprovedByUsername: string;
 	loggedInName: string;
 }

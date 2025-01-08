@@ -1,12 +1,18 @@
+	
+	<label class="title">Voucher Type: </label><input type="radio"  [(ngModel)]="type" value="DR" id="Type"> <span>Debit</span>
+		<input type="radio"  [(ngModel)]="type" value="CR" id="Type"> <span>Credit</span>
 
 <form [formGroup]="form" *ngIf="voucher" autocomplete="off" style="margin-left: 15px;">
 	
 	<div *ngIf="voucher.id === 0" class="b my-2" >Create new finance voucher</div>
 	<div *ngIf="voucher.id > 0" class="b my-2" > Edit finance voucher</div>
+	<button type="button" class="btn fa fa-window-close fa-2x pull-right" 
+		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
+		(click)="returnToCaller()" ></button>
 
-	<br><label class="lbl w100" >Section:</label>
-	<app-text-input class="stdd w150" [label]="'Section'" formControlName="section"></app-text-input>
-	<label class="lbl w100">Divn:</label>
+	<br><label class="lbl w100" >Div Name:</label>
+	<app-text-input class="stdd w150" [label]="'Company Name'" formControlName="section"></app-text-input>
+	<label class="lbl w100">Section:</label>
 	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
 	
 	<label class="lbl w100" >Voucher No.:</label>
@@ -26,7 +32,9 @@
 		[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
 	>
 
-	<br><label class="lbl w100" style="margin-top: 2px;">Account:<b>CR</b></label>
+	<br>
+
+	<label class="lbl w100" style="margin-top: 2px;">Account:<b>{{type}}</b></label>
 	<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
 		[items]="coas"
 		bindLabel="accountName"
@@ -38,13 +46,13 @@
 	</ng-select>
 
 	<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
-		Please enter the credit Account
+		Please enter the {{type}} Account
 	</div>
 
 	<div class="stdd w30 fa fa-plus" title="insert a new Chart of Account" disabled="isAddMode" (click)="addNewCOA()"></div>
 	
-	<label class="stdd w100">Narration:</label>
-	<textarea class="stdd" formControlName="narration" cols="25" rows="2"></textarea>
+	<label class="stdd w100 tAlignRight">Narration:</label>
+	<textarea class="stdd" formControlName="narration" cols="50" rows="1"></textarea>
 
 	<br><label class="lbl w100 my-0" >Amount:</label>
 	<input type="number" (change)="updateVoucherAmount()" class="stdd w200" formControlName="amount" > 
@@ -55,16 +63,13 @@
 	<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
 	<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
 		Voucher Amount NOT totally disbursed</div>
-	<button type="button" class="btn fa fa-window-close fa-2x pull-right" 
-		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
-		(click)="returnToCaller()" ></button>
 		
 	<br class="my-1"><label class="stdd w90 b">Date</label>
 	<label class="stdd w300 b">Account</label>
 	<label class="stdd w75 b">Debit</label>
 	<label class="stdd w75 b">Credit</label>
-	<label class="stdd w290 b">Narration</label>
-	<label class="stdd2 w60 b">Approved</label>
+	<label class="stdd w300 b">Narration</label>
+	<label class="stdd2 w60 b">Dr Approved</label>
 	<label class="stdd2 w50 b">by / on</label>
 
 	<button (click)="updateVoucher()" 
@@ -103,9 +108,9 @@
 				<input class="stdd w75 tAlignRight"  type="number" (change)="recalculateTotal()" formControlName="dr">
 				<input class="stdd w75 tAlignRight" type="number" (change)="recalculateTotal()" formControlName="cr">
 				<input class="stdd w300" type="text" formControlName="narration">
-				
-				<input type="checkbox" style="border-color: black;"
-					class="stdd2 form-check-input" formControlName="drEntryApproved"
+
+				<input type="checkbox" style="border-color: black;" 
+					class="stdd2" formControlName="drEntryApproved"
 				>
 				
 				<input type="text" class="stdd2 w75" formControlName="drEntryApprovedByUsername">

@@ -33,3 +33,5 @@
 	padding-right: 130px;
 	text-align: right;
 }
+
+.cursorPointer {cursor: pointer; color:yellow;}

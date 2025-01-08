@@ -11,12 +11,17 @@ export class VoucherItemComponent {
   @Input() t?: IVoucherDto;
   
   @Output() editEvent = new EventEmitter<number>();
+  @Output() viewEvent = new EventEmitter<number>();
   @Output() deleteEvent = new EventEmitter<number>();
 
   constructor() { }
   
   editTransaction(id: number) {
     this.editEvent.emit(id);
+  }
+  
+  viewTransaction(id: number) {
+    this.viewEvent.emit(id);
   }
   
   deleteTransaction(id: number) {

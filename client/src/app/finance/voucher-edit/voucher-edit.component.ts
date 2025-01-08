@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -49,6 +49,7 @@ export class VoucherEditComponent implements OnInit{
   routeId: string='';
   routeResumeId: string='';
 
+  type="";
 
   isAddMode: boolean = false;
   isEditable: boolean = false;
@@ -101,9 +102,8 @@ export class VoucherEditComponent implements OnInit{
          
         this.routeId = this.activatedRoute.snapshot.params['id'];
         if(this.routeId==undefined) this.routeId='';
-        if(this.routeId==='' 
-          //&&  (this.voucher===null || this.voucher===undefined)
-        ) this.isAddMode=true;
+
+        if(this.routeId==='' ) this.isAddMode=true;
 
         //read navigationExtras
         let nav: Navigation | null= this.router.getCurrentNavigation();
@@ -112,6 +112,7 @@ export class VoucherEditComponent implements OnInit{
             this.bolNavigationExtras=true;
             if(nav.extras.state['userObject']) this.user = nav.extras.state['userObject'];
             if(nav.extras.state['returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
+            if(nav.extras.state['readonly']) this.isEditable = false;
 
             this.isEditable = nav.extras.state['toedit'] || this.isAddMode;
         }
@@ -134,7 +135,7 @@ export class VoucherEditComponent implements OnInit{
         this.recalculateTotal();
       }
       
-      if(!this.isEditable)this.form.disable;
+      if(!this.isEditable) this.form.disable;
     }
 
     createForm(vch: IVoucher) {
@@ -145,7 +146,7 @@ export class VoucherEditComponent implements OnInit{
         divn: [vch.divn, Validators.maxLength(1)],
         voucherNo: [vch.voucherNo, Validators.required],
         voucherDated: [vch.voucherDated, Validators.required],
-        coaId: [vch.coaId, Validators.required],
+        coaId: [vch.coaId, [Validators.required, Validators.min(1)]],
         amount: [vch.amount, [Validators.required, Validators.min(1)]],
         totalAmountDR: [this.totalAmountDR, this.matchValues('amount')],
         narration: vch.narration,
@@ -154,14 +155,20 @@ export class VoucherEditComponent implements OnInit{
         voucherEntries: this.fb.array(
           vch.voucherEntries.map(x => (
             this.fb.group({
-              id: x.id, financeVoucherId: x.id, coaId: [x.coaId, Validators.required], 
-              accountName: x.accountName, transDate: x.transDate, 
-              dr: x.dr, cr: x.cr, narration: x.narration,
-              drEntryApproved: x.drEntryApproved, drEntryApprovedOn: x.drEntryApprovedOn,
+              id: x.id, 
+              financeVoucherId: x.id, 
+              coaId: [x.coaId, Validators.required], 
+              accountName: x.accountName, 
+              transDate: x.transDate, 
+              dr: x.dr, 
+              cr: x.cr, 
+              narration: x.narration,
+              drEntryApproved: [x.drEntryApproved], 
+              drEntryApprovedOn: x.drEntryApprovedOn,
               drEntryApprovedByUsername: x.drEntryApprovedByUsername
             })
           )))
-        
+          
         /*, voucherAttachments: this.fb.array(
           vch.voucherAttachments.map(x => (
             this.fb.group({
@@ -176,6 +183,7 @@ export class VoucherEditComponent implements OnInit{
           ))
         ) */
       });
+
       
       /*this.form.controls['amount'].valueChanges.subscribe({
         next: () => this.form.controls['totalAmountDR'].updateValueAndValidity()
@@ -183,7 +191,6 @@ export class VoucherEditComponent implements OnInit{
       */
     }
 
-      
     matchValues(matchTo: string): ValidatorFn {
       return (control: AbstractControl) => {
         return control.value === control.parent?.get(matchTo)?.value ? null : {isMatching: true}
@@ -196,14 +203,18 @@ export class VoucherEditComponent implements OnInit{
     }
     
     addVoucherEntry() {
+      if(this.type === undefined || this.type === '') {
+        this.toastr.warning('Please select the option of Debit or Credit Voucher', 'invalid input');
+        return;
+      }
+      
       if(this.voucherEntries.length==0) { 
           this.setDefaultEntryValues();
           this.voucherEntries.push(this.newDRVoucherEntry());
           this.voucherEntries.push(this.newCRVoucherEntry());
       } else {
         this.iDiff = - this.totalAmountCR + this.form.get('amount')?.value;
-        console.log('totalAmountCR', this.totalAmountCR, 'amount', this.form.get('amount')?.value);
-
+       
         if(this.iDiff < 0) {    //CREDIT
           this.suggestedDefaultAmountDR = Math.abs(this.iDiff);
           this.voucherEntries.push(this.newDRVoucherEntry());
@@ -222,7 +233,7 @@ export class VoucherEditComponent implements OnInit{
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 
         transDate: new Date(), 
-        coaId: [this.suggestedDefaultCoaIdDR, Validators.required], 
+        coaId: [this.type==='CR' ? null: this.suggestedDefaultCoaIdDR, Validators.required], 
         accountName:'', 
         dr: this.suggestedDefaultAmountDR, 
         cr: 0,
@@ -240,12 +251,11 @@ export class VoucherEditComponent implements OnInit{
 
     newCRVoucherEntry(): any {
       var craccountid = this.form.get('coaId')?.value;
-      console.log('craccountid', craccountid, this.suggestedDefaultCoaIdCR);
       return this.fb.group({
         id: 0,
         financeVoucherId: this.voucher?.id === undefined ? 0 : this.voucher.id, 
         transDate: new Date(), 
-        coaId: [craccountid ?? this.suggestedDefaultCoaIdCR, Validators.required], 
+        coaId:  [this.type==='DR' ? null: craccountid ?? this.suggestedDefaultCoaIdCR, Validators.required], 
         accountName:'', 
         cr: this.suggestedDefaultAmountCR ?? 0,
         dr: 0,
@@ -323,24 +333,25 @@ export class VoucherEditComponent implements OnInit{
       this.suggestedDefaultAmountDR = vAmount;
       
       switch(accountclass[0]) {
-        case 'exp':  //refeshment
-          this.suggestedDefaultCoaIdCR = this.suggestedDefaultAmountCR > 5000 ? 14: 2;  //Bank or petty cash
-          this.suggestedDefaultCoaIdDR =  icOAId;
-          break;
-
-        case 'salary':   //salary
-        case 'businessvisit': //business visits
-          this.suggestedDefaultCoaIdDR = icOAId;
-          this.suggestedDefaultCoaIdCR =  14;  //Afreen kapur c/a
-          break;
-          break;
-        
         case 'candidate':
-          this.suggestedDefaultCoaIdDR = icOAId;
-          this.suggestedDefaultCoaIdCR = 20;    //sales recruitment
+          if(this.type === 'CR') {
+            console.log('CR', icOAId)
+            this.suggestedDefaultCoaIdCR = icOAId;
+            this.suggestedDefaultCoaIdDR = 20;    //sales recruitment
+          } else {
+            console.log('DR', icOAId);
+            this.suggestedDefaultCoaIdDR = icOAId;
+            this.suggestedDefaultCoaIdCR = 20;    //sales recruitment
+          }
+          
           break;
 
         default:
+          if(this.type==='CR') {
+            this.suggestedDefaultCoaIdCR = icOAId;
+          } else {
+            this.suggestedDefaultCoaIdDR = icOAId;
+          }
           break;
       }
 
@@ -368,7 +379,7 @@ export class VoucherEditComponent implements OnInit{
     }
 
     returnToCaller() {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/finance/voucherlist');
     }
 
     addNewCOA() {
@@ -449,6 +460,10 @@ export class VoucherEditComponent implements OnInit{
       
       this.voucherEntries.value.forEach((element: VoucherEntry) => {
         if(element.cr===null) element.cr = 0;
+        if(element.coaId === null || element.coaId === 0) {
+          this.toastr.warning('One of the Accounts not selected', 'invalid input');
+          return;
+        }
       });
 
       if(this.form.get('id')?.value === 0) {
@@ -537,5 +552,5 @@ export class VoucherEditComponent implements OnInit{
     uploadFinished = (event: any) => { 
       this.response = event; 
     }
-   
+    
 }

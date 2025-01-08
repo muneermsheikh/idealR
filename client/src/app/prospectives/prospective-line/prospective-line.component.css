@@ -1,8 +1,15 @@
 .stdd {
     display: inline-block;
-    margin-left: 2px;
-    margin-right: 1px;
+    margin: 0 2px 0 1px;
     font-size: small;
+    word-wrap: break-word !important;
+    vertical-align: top;
+}
+
+.stddS {
+    display: inline-block;
+    margin: 0 2px 0 1px;
+    font-size: smaller;
     word-wrap: break-word !important;
     vertical-align: top;
 }

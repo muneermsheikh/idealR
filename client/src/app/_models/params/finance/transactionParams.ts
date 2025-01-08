@@ -7,7 +7,7 @@ export class transactionParams
     voucherNo = 0;
     voucherDated = '';
     pageNumber = 1;
-    pageSize = 10;
+    pageSize = 15;
     sort = 'voucherNo';
     search = '';
 }

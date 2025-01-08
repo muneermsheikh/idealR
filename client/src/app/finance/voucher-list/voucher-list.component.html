@@ -28,15 +28,13 @@
 	<div class="stdd vAlignM w100 b">Dated</div>
 	<div class="stdd vAlignM mx-1 w200 b">Account Name</div>
 	<div class="stdd vAlignM w90 b" style="text-align:center;">Amount</div>
-	<div class="stdd vAlignM w250 b">Narration</div>
-	<div class="stdd vAlignM hM w60 b">Approved</div>
-	<div class="stdd vAlignM hM w60 b">By</div>
-	<div class="stdd vAlignM hM w75 b">On</div>
+	<div class="stdd vAlignM w300 b">Narration</div>
 	
 <hr class="my-0 py-0 ml-5">
 	<div *ngFor="let item of vouchers">
 		<app-voucher-item
 			[t]="item"
+			(viewEvent)="viewTransaction($event, true)"
 			(editEvent)="editTransaction($event, true)"
 	    	(deleteEvent)="deleteVoucher($event)"
 			>

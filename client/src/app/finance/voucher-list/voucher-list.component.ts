@@ -97,6 +97,12 @@ export class VoucherListComponent implements OnInit{
   editTransaction(id: any, toedit: boolean) {
     let route = '/finance/voucherEdit/' + id;
     this.router.navigate([route], { state: { toedit: toedit, returnUrl: '/finance/voucherlist', userObject: this.user } });
+  }
+
+  
+  viewTransaction(id: any, readonly: boolean) {
+    let route = '/finance/voucherEdit/' + id;
+    this.router.navigate([route], { state: { toedit: false, readonly: readonly, returnUrl: '/finance/voucherlist', userObject: this.user } });
 
   }
 
@@ -139,7 +145,7 @@ export class VoucherListComponent implements OnInit{
   
   returnToCaller() {
     //console.log('return to caller:', this.returnUrl);
-    this.router.navigateByUrl(this.returnUrl || '/finance' );
+    this.router.navigateByUrl(this.returnUrl || '/' );
   }
 
 }
