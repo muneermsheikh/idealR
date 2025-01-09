@@ -7,6 +7,8 @@ namespace api.Entities.Identity
     {
         public string Gender { get; set; }
         public string KnownAs { get; set; }
+        public string UserType { get; set; }
+        public string Employer { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }

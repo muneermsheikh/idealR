@@ -5,7 +5,6 @@ import { FeedbackListComponent } from './feedback-list/feedback-list.component';
 import { SharedModule } from '../_modules/shared.module';
 import { FeedbackRoutingModule } from './feedback-routing.module';
 import { FeedbackMenuComponent } from './feedback-menu/feedback-menu.component';
-import { FeedbackStddQsComponent } from './feedback-stdd-qs/feedback-stdd-qs.component';
 import { FeedbackLineComponent } from './feedback-line/feedback-line.component';
 
 
@@ -15,7 +14,6 @@ import { FeedbackLineComponent } from './feedback-line/feedback-line.component';
     FeedbackComponent,
     FeedbackListComponent,
     FeedbackMenuComponent,
-    FeedbackStddQsComponent,
     FeedbackLineComponent
   ],
   imports: [

@@ -638,7 +638,7 @@ namespace api.Data.Repositories.Admin
                     msgWithErr.ErrorString="Failed to retrieve any official from divisions 'Admin', 'HR', or 'accounts'.  Cannot generate Identity User for the official";
                     return msgWithErr;
                 } else {
-                    recipientObj = await _custRepo.CreateAppUserForCustomerOfficial(official);
+                    recipientObj = await _custRepo.CreateAppUserForCustomerOfficial(official, "");
                 }
             } else {
                 recipientObj = await _userManager.FindByNameAsync(fdbk.OfficialUsername);

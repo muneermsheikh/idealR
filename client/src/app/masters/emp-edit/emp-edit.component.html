@@ -13,6 +13,9 @@
     
         <br><label class="lbl w100 fSmall">Known As:</label> 
         <app-text-input [label]="'Known As'" formControlName="knownAs" class="stdd w150"></app-text-input>
+        <br><label class="lbl w100 fSmall">Employer:</label> 
+        <app-text-input [label]="'Employer'" formControlName="Employer" class="stdd w150"></app-text-input>
+        
         <label class="lbl w100 hAlignR">Joined On:</label> 
         <input class="stdd w100" type="text" placeholder="Joined On" formControlName="dateOfJoining"
             bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">

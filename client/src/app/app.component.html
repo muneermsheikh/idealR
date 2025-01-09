@@ -12,7 +12,8 @@
         <button mat-icon-button (click)="sidenav.toggle()" matTooltip="Menu">
             <mat-icon>menu</mat-icon>
         </button>
-        <span style="font-size: small;">Ideal Solutions - Welcome {{user?.knownAs| titlecase}}</span>
+        <span style="font-size: small;">Ideal Solutions - Welcome 
+            <strong>{{user?.employer | uppercase}} </strong> (user:{{user?.knownAs}})</span>
         <span class="toolbar-item-spacer"></span>
     
         <form *ngIf="!(accountService.currentUser$|async)" #loginForm = "ngForm" (ngSubmit)="login()" 
@@ -235,10 +236,10 @@
                     </mat-expansion-panel>
                     
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Members</mat-expansion-panel-header>
+                        <mat-expansion-panel-header>Identity</mat-expansion-panel-header>
                         <mat-nav-list>
                             <a mat-list-item routerLink="/members" matTooltip="List of members" >
-                                <span class="sidenav">Member List</span>
+                                <span class="sidenav">Identity List Members</span>
                             </a>
                      
                             <a mat-list-item routerLink="/userroles" matTooltip="Authorities and roles of all Users" >
@@ -256,14 +257,14 @@
                                 <span class="sidenav">Pending Tasks - {{user?.knownAs}}</span>
                             </a>
                      
-                            <a mat-list-item routerLink="/tasks/tasksforadmin" 
+                            <!-- <a mat-list-item routerLink="/tasks/tasksforadmin" 
                                 matTooltip="all tasks pending - only for administrators" >
                                 <span class="sidenav">Pending Tasks of all users</span>
-                            </a>
+                            </a> 
                             <a mat-list-item routerLink="/tasks/tasksforadmin" 
                                 matTooltip="result of Call Lists" >
                                 <span class="sidenav">Call List Status</span>
-                            </a>
+                            </a> -->
                             <a mat-list-item routerLink="/callRecords/callRecordList" 
                                 matTooltip="callling list" >
                                 <span class="sidenav">Call Record History</span>

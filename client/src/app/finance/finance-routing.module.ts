@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { FinanceMenuComponent } from './finance-menu/finance-menu.component';
 import { VoucherListComponent } from './voucher-list/voucher-list.component';
 import { COAListResolver } from '../_resolvers/finance/COAListResolver';
 import { CoaListComponent } from './coa-list/coa-list.component';
@@ -13,7 +12,6 @@ import { VoucherEditComponent } from './voucher-edit/voucher-edit.component';
 import { FinanceVoucherResolver } from '../_resolvers/finance/financeVoucherResolver';
 
 const routes: Routes = [
-  {path: '', component: FinanceMenuComponent, data: {breadcrumb: 'Finances'}},
   
   {path: 'voucherlist', component: VoucherListComponent },
 

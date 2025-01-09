@@ -4,7 +4,6 @@ import { CoaItemComponent } from './coa-item/coa-item.component';
 import { CoaListComponent } from './coa-list/coa-list.component';
 import { CoaEditModalComponent } from './coa-edit-modal/coa-edit-modal.component';
 import { ConfirmFundReceiptComponent } from './confirm-fund-receipt/confirm-fund-receipt.component';
-import { FinanceMenuComponent } from './finance-menu/finance-menu.component';
 import { SoaLineComponent } from './soa-line/soa-line.component';
 import { SoaComponent } from './soa/soa.component';
 import { VoucherItemComponent } from './voucher-item/voucher-item.component';
@@ -22,7 +21,6 @@ import { VoucherEditComponent } from './voucher-edit/voucher-edit.component';
     CoaListComponent,
     CoaEditModalComponent,
     ConfirmFundReceiptComponent,
-    FinanceMenuComponent,
     SoaLineComponent,
     SoaComponent,
     VoucherItemComponent,

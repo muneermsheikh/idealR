@@ -15,6 +15,7 @@ namespace api.Data.Repositories.HR
         private readonly UserManager<AppUser> _userManager;
         private readonly DateTime _today = DateTime.Now;
         private readonly IConfiguration _config;
+        private readonly string _RAName;
         
 
         public ComposeMsgsForCandidates(DataContext context, UserManager<AppUser> userManager, IConfiguration config)
@@ -22,6 +23,7 @@ namespace api.Data.Repositories.HR
             _config = config;
             _userManager = userManager;
             _context = context;
+            _RAName = _config["_RAName"] ?? "";
         }
         public async Task<MessageWithError> AdviseCandidate_DeploymentStatus(CandidateAdviseDto candDetail, DateTime TransactionDate, string ProcessName)
         {
@@ -60,7 +62,7 @@ namespace api.Data.Repositories.HR
                         Topic = "Notification - Emigration Cleared",
                         Notification = {Title = "Your Emigration Cleared",
                             Body = candidateName  + " - Your emigration clarance has been received. " +
-                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                            "Please check the email sent to you. Regards/" + _RAName + ", Processing Division "},
                         Android = new AndroidConfig ()
                     };
 
@@ -84,7 +86,7 @@ namespace api.Data.Repositories.HR
                         Topic = "Notification - Medically Fit",
                         Notification = {Title = "You are medically declared FIT",
                             Body = candidateName  + " - You are declared medically Fit. Your Visa Processing is initiated.  " +
-                            "Please check the email sent to you on this subject. Regards/AG Enterprises, Processing Division "},
+                            "Please check the email sent to you on this subject. Regards/" + _RAName + ", Processing Division "},
                         Android = new AndroidConfig ()
                     };
 
@@ -113,7 +115,7 @@ namespace api.Data.Repositories.HR
                         Topic = "Notification - Medicaly Unfit",
                         Notification = {Title = "You are medically Unfit",
                             Body = candidateName  + " - You are declared medically unfit.  It ceases all further deployment procesemigration clarance has been received. " +
-                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                            "Please check the email sent to you. Regards/" + _RAName + ", Processing Division "},
                         Android = new AndroidConfig ()
                     };
 
@@ -137,7 +139,7 @@ namespace api.Data.Repositories.HR
                         Topic = "Notification - Visa Issued",
                         Notification = {Title = "Your Visa is issued",
                             Body = candidateName  + " - Your Visa is issued.  Next Process is Emigration Clearance. " +
-                            "Please check the email sent to you. Regards/AG Enterprises, Processing Division "},
+                            "Please check the email sent to you. Regards/" + _RAName + ", Processing Division "},
                         Android = new AndroidConfig ()
                     };
 

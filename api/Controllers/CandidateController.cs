@@ -252,6 +252,11 @@ namespace api.Controllers
                     } 
                 }
             }
+
+            if(registerDto.UserType != "Candidate" && string.IsNullOrEmpty(registerDto.Employer) ) {
+                dtoToReturn.ErrorMessage = "For non candidate type Users, Employer Name is mandatory";
+                return dtoToReturn;
+            }
             
             //create and save AppUser 
             var user = new AppUser();
@@ -259,6 +264,7 @@ namespace api.Controllers
             user = new AppUser
             {
                 KnownAs = registerDto.KnownAs,
+                Employer = registerDto.Employer,
                 Gender = registerDto.Gender,
                 PhoneNumber = registerDto.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault(),
                 Email = registerDto.Email,
@@ -276,6 +282,7 @@ namespace api.Controllers
             var userDtoToReturn = new UserDto
             {
                 KnownAs = user.KnownAs,
+                Employer = user.Employer,
                 Token = await _tokenService.CreateToken(user), 
                 UserName = Username, 
                 Gender = registerDto.Gender

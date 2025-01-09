@@ -117,6 +117,10 @@ namespace api.Data.Repositories
             
             try {
                 await _context.SaveChangesAsync();
+                offs = customer.CustomerOfficials;
+                foreach(var off in offs) {
+                    await CreateAppUserForCustomerOfficial(off, customer.CustomerName);
+                }
             } catch (DbException ex) {
                 if(ex.Message.Contains("IX_Customers_CustomerName_City")) {
                     return "Index violation - CustomerName & City - this combination must be unique, meaning this customer is already inserted";
@@ -162,7 +166,7 @@ namespace api.Data.Repositories
                     .Where(c => c.Id == newItem.Id && c.Id != default(int)).SingleOrDefault();
                 if(existingItem != null)    //update navigation record
                 {
-                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem);
+                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem, newObject.CustomerName);
                     if(newAppUser != null && newItem.AppUserId == 0) newItem.AppUserId=newAppUser.Id;
                     existingItem.UserName = newItem.UserName ?? newItem.Email;
                     _context.Entry(existingItem).CurrentValues.SetValues(newItem);
@@ -170,7 +174,7 @@ namespace api.Data.Repositories
                     _context.Entry(existingItem).State = EntityState.Modified;
                 } else {    //insert new navigation record
                         
-                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem);
+                    var newAppUser = await CreateAppUserForCustomerOfficial(newItem, newObject.CustomerName);
                     if(newAppUser == null) continue;
                     var itemToInsert = new CustomerOfficial
                     {
@@ -233,13 +237,17 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official) {
+        public async Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official, string employername) {
 
             var userExists = await _userManager.FindByNameAsync(official.UserName);
             if(userExists != null) return userExists;
 
             var appUserData = new AppUser{
-                UserName = official.UserName ?? official.Email, Gender=official.Gender ?? "Male", Email=official.Email,
+                UserName = official.UserName ?? official.Email, 
+                Gender=official.Gender ?? "Male", Email=official.Email,
+                Employer = string.IsNullOrEmpty(employername) 
+                            ? await _context.Customers.Where(x => x.Id == official.CustomerId).Select(x => x.CustomerName).FirstOrDefaultAsync()
+                            : employername,
                 KnownAs=official.KnownAs, PhoneNumber=official.Mobile, Position=official.Designation
             };
             var userAdded =await _userManager.CreateAsync(appUserData, "Pa$$w0rd");
@@ -252,7 +260,7 @@ namespace api.Data.Repositories
         public async Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official) {
             if(official.AppUserId != 0) return false;
 
-            var user = await CreateAppUserForCustomerOfficial(official);
+            var user = await CreateAppUserForCustomerOfficial(official, "");
             if(user != null) {
                 official.AppUserId=user.Id;
                 _context.Entry(official).State = EntityState.Modified;

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeesComponent } from './employees/employees.component';
 import { EmployeeFromIdResolver } from '../_resolvers/employeeFromIdResolver';
-import { MastersMenuComponent } from './masters-menu/masters-menu.component';
 import { QualificationsComponent } from './qualifications/qualifications.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { IndustriesComponent } from './industries/industries.component';
@@ -14,7 +13,7 @@ import { CategoryListResolver } from '../_resolvers/admin/categoryListResolver';
 
 
 const routes = [
-  {path: '', component: MastersMenuComponent},
+  //{path: '', component: MastersMenuComponent},
   
 
   {path: 'employees', component: EmployeesComponent },

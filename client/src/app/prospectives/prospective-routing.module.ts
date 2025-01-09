@@ -4,7 +4,6 @@ import { MenuComponent } from './menu/menu.component';
 import { ProspectiveListComponent } from './prospective-list/prospective-list.component';
 import { RouterModule } from '@angular/router';
 import { ProspectivePagedResolver } from '../_resolvers/admin/prospectivePagedResolver';
-import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
 import { ProspectiveListResolver } from '../_resolvers/admin/prospectiveListResolver';
 
 //parent route: prospectives

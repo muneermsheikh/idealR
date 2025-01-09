@@ -5,7 +5,6 @@ import { UserTaskRoutingModule } from './user-task-routing.module';
 import { SharedModule } from '../_modules/shared.module';
 import { TaskMenuComponent } from './task-menu/task-menu.component';
 import { TaskLineComponent } from './task-line/task-line.component';
-import { PendingTasksComponent } from './pending-tasks/pending-tasks.component';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
 
 
@@ -14,7 +13,6 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
     UserTasksComponent,
     TaskMenuComponent,
     TaskLineComponent,
-    PendingTasksComponent,
     EditModalComponent,
   ],
   imports: [

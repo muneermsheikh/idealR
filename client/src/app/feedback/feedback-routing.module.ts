@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { FeedbackListComponent } from './feedback-list/feedback-list.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackMenuComponent } from './feedback-menu/feedback-menu.component';
-import { FeedbackStddQsComponent } from './feedback-stdd-qs/feedback-stdd-qs.component';
 import { FeedbackInputResolver } from '../_resolvers/admin/feedbackInputResolver';
 import { FeedbackHistoryResolver } from '../_resolvers/admin/feedbackHistoryResolver';
 
@@ -17,8 +16,7 @@ const routes = [
         feedback: FeedbackInputResolver,
         history: FeedbackHistoryResolver
       }
-  },
-  {path: 'stddQs', component: FeedbackStddQsComponent}
+  }
 ];
 
 

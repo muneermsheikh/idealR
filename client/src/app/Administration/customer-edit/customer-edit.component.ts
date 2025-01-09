@@ -159,7 +159,6 @@ export class CustomerEditComponent implements OnInit {
 
       this.service.updateCustomer(formdata).subscribe({
         next: (response: IReturnStringsDto) => {
-          console.log('update customer response:', response);
           if(response.successString !== '') {
             this.toastr.success('The Customer is successfully updated', 'success');
             this.close();

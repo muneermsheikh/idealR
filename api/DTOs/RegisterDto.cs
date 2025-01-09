@@ -7,10 +7,12 @@ namespace api.DTOs
     {
         public int AppUserId { get; set; }
         [Required] public string Username { get; set; }
+        public string UserType { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string FamilyName { get; set; }
         [Required] public string KnownAs { get; set; }
+        public string Employer { get; set; }
         public string ReferredByName { get; set; }
         public string Email { get; set; }
         [Required] public string Gender { get; set; }
@@ -25,16 +27,16 @@ namespace api.DTOs
         /*[Required, StringLength(8, MinimumLength = 4)]
         public string Password { get; set; }*/
         public string Source { get; set; }
-        
-        public ICollection<UserPhone> UserPhones { get; set; }
-        public ICollection<UserProfession> UserProfessions { get; set; }
-        public ICollection<UserQualification> UserQualifications { get; set; }
-        public ICollection<UserAttachment> UserAttachments { get; set; }
         public bool NotificationDesired { get; set; }
         public string Nationality { get; set; }
         public int CompanyId { get; set; }
         public DateTime DOB { get; set; }
         public string Role { get; set; }
+        public ICollection<UserPhone> UserPhones { get; set; }
+        public ICollection<UserProfession> UserProfessions { get; set; }
+        public ICollection<UserQualification> UserQualifications { get; set; }
+        public ICollection<UserAttachment> UserAttachments { get; set; }
+        
     }
 
 }

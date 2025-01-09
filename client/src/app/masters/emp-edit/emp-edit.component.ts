@@ -82,7 +82,7 @@ export class EmpEditComponent {
         placeOfBirth: [emp.placeOfBirth], department: [emp.department, Validators.required], 
         aadharNo: [emp.aadharNo, [Validators.required, Validators.minLength(12), Validators.maxLength(12)]], 
         introduction: [emp.introduction], position: [emp.position, Validators.required], appUserId: [emp.appUserId], 
-        qualification: [emp.qualification], userName: [emp.userName], 
+        qualification: [emp.qualification], userName: [emp.userName], employer: [emp.employer ?? this.user?.employer],
         status: [emp.status],
         
         hrSkills: this.fb.array(

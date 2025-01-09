@@ -9,6 +9,7 @@ export interface IEmployee {
      secondName: string;
      familyName: string;
      knownAs: string;
+     employer: string;
      displayName: string;
      address: string;
      address2: string;
@@ -46,6 +47,7 @@ export class Employee implements IEmployee {
      secondName= '';
      familyName= '';
      knownAs= '';
+     employer = '';
      displayName= '';
      address='';
      address2= '';

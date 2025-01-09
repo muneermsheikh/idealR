@@ -9,7 +9,6 @@ import { CustomerLineComponent } from './customer-line/customer-line.component';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { CustomerEditModalComponent } from './customer-edit-modal/customer-edit-modal.component';
 import { CustomerEditComponent } from './customer-edit/customer-edit.component';
-import { CustomerReviewComponent } from './customer-review/customer-review.component';
 import { CustomerReviewModalComponent } from './customer-review-modal/customer-review-modal.component';
 //import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
@@ -25,7 +24,6 @@ import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-m
     CustomerListComponent,
     CustomerEditModalComponent,
     CustomerEditComponent,
-    CustomerReviewComponent,
     CustomerReviewModalComponent,
     CustRvwEditModalComponent,
     ExcelConversionMenuComponent
@@ -34,8 +32,6 @@ import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-m
   imports: [
     CommonModule,
     AdminRoutingModule,
-    //AngularEditorModule,
-    //MatButtonModule, MatIconModule,
     SharedModule
   ],
   schemas: [NO_ERRORS_SCHEMA]

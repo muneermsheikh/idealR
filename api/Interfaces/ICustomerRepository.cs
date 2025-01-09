@@ -21,7 +21,7 @@ namespace api.Interfaces
          Task<bool> DeleteCustomerOfficial(int officialId);
          Task<string> InsertCustomer(Customer customer);
          
-         Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official);
+         Task<AppUser> CreateAppUserForCustomerOfficial(CustomerOfficial official, string CustomerName);
          Task<bool> UpdateCustomerOfficialWithAppuserId(CustomerOfficial official);
         Task<string> WriteCustomerExcelToDB(string fileNameWithPath, string username);
          

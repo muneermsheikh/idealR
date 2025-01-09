@@ -33,6 +33,7 @@ namespace api.Controllers
             
             var usr = new UserDto {
                 UserName = user.UserName,
+                Employer = user.Employer,
                 Token = await _tokenService.CreateToken(user),
                 //photoUrl = user.photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,

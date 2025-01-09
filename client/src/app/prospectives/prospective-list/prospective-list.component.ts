@@ -1,8 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import jsPDF from 'jspdf';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastRef, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
@@ -281,7 +280,7 @@ export class ProspectiveListComponent implements OnInit {
       }
     }
       */
-    generatePDF() {
+    /* generatePDF() {
 
       if(this.distinctRefCat !== '' && this.pParams.statusClass !== '') {
         var prospcs = this.prospectives.filter(x => 
@@ -314,7 +313,7 @@ export class ProspectiveListComponent implements OnInit {
       if(fileNameSaved !== '') this.toastr.success('PDF Saved with the name ' + fileNameSaved, 'Success')
       }
     }
-
+    */
 }
 
    
