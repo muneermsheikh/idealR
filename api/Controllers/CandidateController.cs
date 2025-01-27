@@ -56,7 +56,7 @@ namespace api.Controllers
             return Ok(candidates);
 
         }
-
+     
         [HttpGet("cvsAvailable")]
         public async Task<ActionResult<PagedList<cvsAvailableDto>>> GetAvailableCandidates([FromQuery]CandidateParams candidateParams)
         { 

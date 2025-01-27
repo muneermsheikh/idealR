@@ -8,7 +8,6 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 })
 export class DisplayTextModalComponent implements OnInit{
 
- 
   @Output() textChangedEvent = new EventEmitter<string>();
   
   displayText = '';
@@ -16,11 +15,13 @@ export class DisplayTextModalComponent implements OnInit{
 
   displayCopy = '';
 
+  stream: any = new Blob();
+  MR : any | undefined;
+
   ngOnInit(): void {
     this.displayCopy = this.displayText;
   }
 
-  
  constructor(public bsModalRef: BsModalRef) { }
 
  emitText() {
@@ -31,4 +32,7 @@ export class DisplayTextModalComponent implements OnInit{
   }
   this.bsModalRef.hide();
  }
+
 }
+
+

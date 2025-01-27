@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Data.Common;
 using api.DTOs.Admin;
 using api.DTOs.Customer;
@@ -342,6 +343,19 @@ namespace api.Data.Repositories
             return await _context.ReadCustomerDataExcelFile(fileNameWithPath,Username);
         }
 
-       
+        public async Task<ICollection<CustomerDto>> GetCustomerList(string customerType)
+        {
+            var query =  await _context.Customers.Where(x => x.CustomerType.ToLower() == customerType.ToLower())
+                .OrderBy(x => x.CustomerName)
+                .Select(x => new CustomerDto {
+                    CustomerName = x.CustomerName, City = x.City, Country = x.Country, 
+                    CustomerStatus = x.CustomerStatus, CustomerType = x.CustomerType, 
+                    Email = x.Email, Id = x.Id, KnownAs = x.KnownAs
+                })
+                .ToListAsync();
+            
+            return query;
+        }
+
     }
 }

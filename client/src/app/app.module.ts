@@ -73,7 +73,7 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     MatListModule,
     MatExpansionModule,
     MatTooltipModule,
-    
+    MatSidenavModule,
     //FormsModule,
     //ReactiveFormsModule,
     SharedModule,

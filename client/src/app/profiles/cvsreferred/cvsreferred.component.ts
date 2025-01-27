@@ -4,8 +4,10 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
-import { Pagination } from 'src/app/_models/pagination';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
+import { PaginatedResult, Pagination } from 'src/app/_models/pagination';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
+import { SelDecisionParams } from 'src/app/_models/params/Admin/selDecisionParams';
 import { User } from 'src/app/_models/user';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { CandidateAssessmentService } from 'src/app/_services/hr/candidate-assessment.service';
@@ -37,6 +39,14 @@ export class CvsreferredComponent implements OnInit{
 
   paramNames='';
   id=0;
+
+  //pdfprint
+  headers: IProspectiveHeaderDto[]=[];    //contains only Orderno
+  printtitle: string='';
+  isPrintPDF = false;
+  distinctOrderNos: string[]=[];
+  distinctOrderNo = '';
+    
   
   constructor(private router: Router,
       private service: CvrefService, 
@@ -63,12 +73,13 @@ export class CvsreferredComponent implements OnInit{
       this.service.setParams(this.cvParams);
       
       this.route.data.subscribe(data => {
-        this.cvs = data['cvrefPaged'].result,
-        this.pagination = data['cvrefPaged'].pagination,
-        this.totalCount = data['cvrefPaged'].count
+        this.cvs = data['cvrefPaged'].result;
+        this.pagination = data['cvrefPaged'].pagination;
+        this.totalCount = data['cvrefPaged'].count;
+        this.headers = data['headers'];
+
+        console.log('headers', this.headers);
       })
-    
-  
   }
 
   loadCVsReferred() {
@@ -217,4 +228,41 @@ export class CvsreferredComponent implements OnInit{
   close() {
     this.router.navigateByUrl(this.returnUrl || '/');
   }
+
+  
+  distinctOrderNoChanged() {
+    var newParams = new CVRefParams();
+    newParams.orderNo = +this.distinctOrderNo;
+    newParams.selectionStatus = this.cvParams.selectionStatus;
+    this.service.setParams(newParams);
+
+    this.service.referredCVsPaginated(false).subscribe({
+      next: (response: PaginatedResult<ISelPendingDto[]>) => {
+        if(response !== undefined) {
+          this.cvs = response.result!,
+          this.pagination = response.pagination,
+          this.totalCount = response!.result!.length
+        } else {
+          this.toastr.warning('Failed to retrieve headers', 'Failed')
+        }
+      }
+    })
+    
+  }
+
+
+      generatePDF() {
+        this.isPrintPDF = !this.isPrintPDF;
+  
+        var orderno = this.distinctOrderNo;    //seleted value
+        var status = this.cvParams.selectionStatus;
+  
+        this.printtitle =  "Listing of CVS Referred, with Order No." + orderno + " and Selection Status " +status + ", as on " + new Date();
+          
+      }
+  
+      closePrintSection() {
+        this.isPrintPDF = false;
+        this.distinctOrderNo = '';
+      }
 }

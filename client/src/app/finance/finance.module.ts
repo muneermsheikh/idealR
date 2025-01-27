@@ -12,6 +12,8 @@ import { FinanceRoutingModule } from './finance-routing.module';
 import { SharedModule } from '../_modules/shared.module';
 import { AddPaymentModalComponent } from './add-payment-modal/add-payment-modal.component';
 import { VoucherEditComponent } from './voucher-edit/voucher-edit.component';
+import { MatIconModule } from '@angular/material/icon';
+import { NgxPrintModule } from 'ngx-print';
 
 
 
@@ -31,7 +33,9 @@ import { VoucherEditComponent } from './voucher-edit/voucher-edit.component';
   imports: [
     CommonModule, 
     FinanceRoutingModule,
-    SharedModule
+    SharedModule,
+    MatIconModule,
+    NgxPrintModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

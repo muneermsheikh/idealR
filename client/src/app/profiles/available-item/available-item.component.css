@@ -24,3 +24,11 @@
 .w300 {width: 300px;}
 
 .blue {color: darkblue;}
+
+.prof {
+    display: inline-block;
+    font-size: smaller;
+    margin: 0 2px 0 2px;
+    border: aqua;
+    width: 200px
+}

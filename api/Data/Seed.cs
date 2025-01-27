@@ -74,7 +74,7 @@ namespace api.Data
                 int counter  =4;
                 foreach(var user in users) {
 
-                    user.UserName = user.UserName.ToLower();
+                    //user.UserName = user.UserName.ToLower();      //the system checks with user.normalizedusername
                     await userManager.CreateAsync(user, "Pa$$w0rd");
                     await userManager.AddToRoleAsync(user, roles[counter++].Name);
                 }

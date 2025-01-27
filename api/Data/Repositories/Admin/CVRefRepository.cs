@@ -1,6 +1,7 @@
 using System.Data.Common;
 using System.Security.Cryptography.Xml;
 using api.DTOs.Admin;
+using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Tasks;
 using api.Extensions;
@@ -10,6 +11,7 @@ using api.Interfaces.Messages;
 using api.Params.Admin;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -631,6 +633,29 @@ namespace api.Data.Repositories.Admin
             return await _context.SaveChangesAsync() > 0 ? "" : "Message composed, but failed to save it";
         }
 
+        public async Task<ICollection<ProspectiveHeaderDto>> GetCVReferredOrderNoHeaders(string status)
+        {
+            var dto = new List<ProspectiveHeaderDto>();
+
+            dto = status.ToLower() switch
+            {
+                "pending" => await _context.CVRefs.Where(x => x.SelectionStatus == null)
+                        .Select(x => new ProspectiveHeaderDto
+                        {
+                            Orderno = x.CategoryRef.Substring(0, 6)
+                        })
+                    .Distinct()
+                    .ToListAsync(),
+                _ => await _context.CVRefs.Where(x => x.SelectionStatus.StartsWith(status))
+                        .Select(x => new ProspectiveHeaderDto
+                        {
+                            Orderno = x.CategoryRef.Substring(0, 6)
+                        })
+                    .Distinct()
+                    .ToListAsync(),
+            };
+            return dto;
+        }
     }
 }
 

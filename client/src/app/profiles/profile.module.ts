@@ -7,7 +7,6 @@ import { CandidateEditComponent } from './candidate-edit/candidate-edit.componen
 import { CvsAvailableToRefComponent } from './cvs-available-to-ref/cvs-available-to-ref.component';
 import { ProfileListComponent } from './profile-list/profile-list.component';
 import { ProfileItemComponent } from './profile-item/profile-item.component';
-import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { AvailableItemComponent } from './available-item/available-item.component';
 import { FileuploadComponent } from './fileupload/fileupload.component';
 import { CvsreferredComponent } from './cvsreferred/cvsreferred.component';
@@ -15,6 +14,7 @@ import { CvreferredLineComponent } from './cvreferred-line/cvreferred-line.compo
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CvAssessComponent } from './cv-assess/cv-assess.component';
+import { NgxPrintModule } from 'ngx-print';
 
 
 @NgModule({
@@ -25,7 +25,6 @@ import { CvAssessComponent } from './cv-assess/cv-assess.component';
     CvsAvailableToRefComponent,
     ProfileListComponent,
     ProfileItemComponent,
-    ProfileMenuComponent,
     AvailableItemComponent,
     FileuploadComponent,
     CvsreferredComponent,
@@ -36,7 +35,8 @@ import { CvAssessComponent } from './cv-assess/cv-assess.component';
     CommonModule,
     ProfileRoutingModule,
     SharedModule,
-    MatIconModule
+    MatIconModule,
+    NgxPrintModule
     //, MatButtonModule
   ]
 })

@@ -38,8 +38,19 @@ namespace api.Controllers
                 Customers.TotalCount, Customers.TotalPages));
             
             return Ok(Customers);
+        }
+
+        [HttpGet("list/{customerType}")]
+        public async Task<ActionResult<ICollection<CustomerDto>>> GetCustomerList(string customerType)
+        { 
+            var Customers = await _customerRepo.GetCustomerList(customerType);
+
+            if(Customers == null) return NotFound("No matching customers found");
+            
+            return Ok(Customers);
 
         }
+
 
         [Authorize(Policy="CustomerPolicy")]
         [HttpPost]

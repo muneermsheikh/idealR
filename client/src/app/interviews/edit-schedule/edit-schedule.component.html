@@ -72,7 +72,7 @@
                                 (dblclick)="displayInterviewerRemarks(i)" title="double click to edit in a larger window"
                                 [label]="'Interviewer Remarks'"></app-text-input>
                 
-                            <!--<app-text-input class="stdd w75" formControlName="attachmentFileNameWithPath"  
+                            <!-- <app-text-input class="stdd w75" formControlName="attachmentFileNameWithPath"  
                                 [label]="'Attachment Full File Name'"></app-text-input> -->
         
                             <button type="button" class="btn w15 fa fa-download" style="color: aliceblue;" title="download interviewer comments" 
@@ -84,7 +84,7 @@
                                 (click)="uploadattachment(i)" ></button>
                         
                             <button class="btn w15 fa fa-trash red" (click)="removeInterviewItem(i)" ></button>
-                            <div class="cursor" (click)="displayHistory=!displayHistory" >{{displayHistory ? 'hide Selection Progress': 'display Selection Progress'}}</div>
+                            <div class="cursor" (click)="displayHistory=!displayHistory" >{{displayHistory ? 'hide Sel Progress': 'display Sel Progress'}}</div>
                             
                             <app-register-call-records
                                 [id]="findIntervwItemCandidateId(i)"

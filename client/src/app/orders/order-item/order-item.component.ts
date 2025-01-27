@@ -12,6 +12,7 @@ import { InterviewService } from 'src/app/_services/hr/interview.service';
 export class OrderItemComponent implements OnInit{
 
   @Input() order: IOrderBriefDto | undefined;
+  @Input() isReportActive: boolean = false;
 
   @Output() editEvent = new EventEmitter<number>();
   @Output() contractReviewEvent = new EventEmitter<number>();

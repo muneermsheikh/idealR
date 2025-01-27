@@ -22,36 +22,61 @@
                (click)="referCVs()" ></button>
           <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
                (click)="close()" ></button>
+
+        <button printSectionId="print-section" 
+            printTitle="printTitle"
+            [previewOnly]="false"
+            [useExistingCss]="true"
+            ngxPrint
+            title="shows the report in pdf format and enables printing" 
+            style="display:inline-block; margin-left: 50px;"
+            title="print pdf for current category Ref"
+            (click)="generatePDF()"
+            >
+            <mat-icon>print</mat-icon>
+        </button>
+
     </div>
 
-     <div style="margin-left: 70px;">
-          <div class="lbl w30 mx-1">Select</div>
-          <div class="lbl w25 mx-1">Gndr</div>
-          <div class="lbl w50 mx-1">App No</div>
-        
-          <div class="lbl w130 mx-1">Candidate Name</div>
-          <div class="lbl w100 mx-1">City</div>
-          <div class="lbl w300 mx-1">Category Ref</div>
-          <div class="lbl w100 mx-1">Assessed On</div>
-          <div class="lbl w50 mx-1">Grade</div>
-          <div class="lbl w200 mx-1">Professions</div>
-     </div>
-     <div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; color: pink; ">
-          No candidates available to refer
-     </div>
-       <!--(msgEvent)="showDocumentViewerEvent($event)" -->    
-     <div *ngIf="cvs.length">
-          <div class="row" *ngFor="let cv of cvs" >
-                
-               <app-available-item
-                    (downloadEvent)="downloadcv($event)" 
-                    (cvCheckedEvent)="cvCheckedEvent($event)"
-                    (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
-                    [cv]="cv" 
-               ></app-available-item>
+    <div id="print-section">
+          <div style="margin-left: 70px;">
+               <div *ngIf="!isPrintPDF" class="lbl w30 mx-1">Select</div>
+               <div class="lbl w25 mx-1">Gndr</div>
+               <div class="lbl w50 mx-1">App No</div>
+          
+               <div class="lbl w130 mx-1">Candidate Name</div>
+               <div class="lbl w100 mx-1">City</div>
+               <div class="lbl w300 mx-1">Category Ref</div>
+               <div class="lbl w100 mx-1">Assessed On</div>
+               <div class="lbl w50 mx-1">Grade</div>
+               <div class="lbl w200 mx-1">Professions</div>
           </div>
-     </div>
+          <div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; color: pink; ">
+               No candidates available to refer
+          </div>
+          <!--(msgEvent)="showDocumentViewerEvent($event)" -->    
+          <div *ngIf="isPrintPDF">
+               <div class="row" *ngFor="let cv of printCVs" >
+                    <app-available-item
+                         [isPrintPDF]="true"
+                         [cv]="cv" 
+                    ></app-available-item>
+               </div>
+          </div>
+          <div *ngIf="cvs.length && !isPrintPDF">
+               <div class="row" *ngFor="let cv of cvs" >
+                    <app-available-item
+                         [isPrintPDF]="false"
+                         (downloadEvent)="downloadcv($event)" 
+                         (cvCheckedEvent)="cvCheckedEvent($event)"
+                         (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
+                         [cv]="cv" 
+                    ></app-available-item>
+               </div>
+          </div>
 
+    </div>
+     
 
 
    

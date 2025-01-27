@@ -35,7 +35,12 @@ export class InterviewListComponent implements OnInit {
     private confirm: ConfirmService) {}
 
   ngOnInit(): void {
-    this.getInterviewsPaged(false);
+
+    this.activatedRoute.data.subscribe(data => {
+      this.interviews = data['interviews'].result;
+        this.pagination = data['interviews'].pagination;
+        this.totalCount = data['interviews'].totalCount;
+    })
   }
 
   getInterviewsPaged(useCache: boolean) {

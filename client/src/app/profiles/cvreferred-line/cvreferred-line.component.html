@@ -1,7 +1,7 @@
 
 <div class="stdd row" style="margin-left: 75px; margin-top: 0px; margin-bottom: 0px;" *ngIf="cv!==null && cv!==undefined">
 
-     <input type="checkbox"
+     <input type="checkbox" *ngIf="isPrintPdf"
           class="stdd form-check-input"
           style="border-color: black ;"
           [checked]="cv!.checked"
@@ -20,13 +20,12 @@
      <div class="stdd fSmaller w100" >{{cv.selectionStatus}}</div>
      <div class="stdd fSmall w100" >{{cv.selectionStatusDate | date: 'dd-MMM-yy'}}</div>
           
-     
-     <button (click)="deleteClicked(cv.id)" type="button" 
+     <button (click)="deleteClicked(cv.id)" type="button" *ngIf="!isPrintPdf"
           class="btn fa fa-trash w20" type="button" 
           title="download the CV">
      </button>
      
-     <button (click)="download(cv.candidateId)" type="button" 
+     <button (click)="download(cv.candidateId)" type="button" *ngIf="!isPrintPdf"
           class="btn btn-outline-secondary fa fa-regular fa-download w20" type="button" 
           title="download the CV">
      </button>

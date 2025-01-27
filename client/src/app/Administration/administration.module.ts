@@ -13,6 +13,8 @@ import { CustomerReviewModalComponent } from './customer-review-modal/customer-r
 //import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ExcelConversionMenuComponent } from './excel-conversion-menu/excel-conversion-menu.component';
 import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-modal.component';
+import { MatIconModule } from '@angular/material/icon';
+import { NgxPrintModule } from 'ngx-print';
 
 
 @NgModule({
@@ -32,7 +34,9 @@ import { CustRvwEditModalComponent } from './cust-rvw-edit-modal/cust-rvw-edit-m
   imports: [
     CommonModule,
     AdminRoutingModule,
-    SharedModule
+    SharedModule,
+    MatIconModule,
+    NgxPrintModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

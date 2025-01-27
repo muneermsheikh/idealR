@@ -45,7 +45,7 @@ namespace api.Controllers
             var senderObj = await _userManager.FindByNameAsync(User.GetUsername());
             var recipientObj = await _userManager.FindByNameAsync(msgModel.RecipientUsername);
 
-            if(recipientObj == null) return NotFound(new ApiException(400, "Not Found", "recipient not on found in identity object"));
+            if(recipientObj == null || senderObj == null || recipientObj.UserName==null ) return NotFound(new ApiException(400, "Not Found", "recipient not on found in identity object"));
             if(senderObj == null) return NotFound(new ApiException(400, "Not Found", "Sender Username not found in Identity object"));
 
             var message = new Message{

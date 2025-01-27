@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using api.DTOs.Admin;
 using api.DTOs.Customer;
 using api.Entities.Admin.Client;
@@ -10,6 +11,7 @@ namespace api.Interfaces
     public interface ICustomerRepository
     {
          Task<PagedList<CustomerDto>> GetCustomers(CustomerParams customerParams);
+         Task<ICollection<CustomerDto>> GetCustomerList(string customerType);
          Task<Customer> GetCustomer(CustomerParams customerParams);
          Task<ICollection<CustomerAndOfficialsDto>> GetCustomerAndOfficials(string customerType);
          Task<CustomerOfficialDto> GetCustomerOfficialDto(int CustomerOfficialId);

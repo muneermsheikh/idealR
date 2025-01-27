@@ -10,6 +10,8 @@ import { ISelPendingDto } from 'src/app/_dtos/admin/selPendingDto';
 export class CvreferredLineComponent implements OnInit {
  
   @Input() cv: ISelPendingDto|undefined;
+  @Input() isPrintPdf: boolean = false;
+
   @Output() msgEvent = new EventEmitter<number>();
   @Output() downloadEvent = new EventEmitter<number>();
   @Output() cvAssessEvent = new EventEmitter<ISelPendingDto>();

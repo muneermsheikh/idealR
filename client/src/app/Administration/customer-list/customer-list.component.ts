@@ -24,6 +24,7 @@ export class CustomerListComponent implements OnInit{
   returnUrl = '';
 
   customerDtos: ICustomerBriefDto[]=[];
+  customersForPrint: ICustomerBriefDto[]=[];
   customerSelected: ICustomerBriefDto|undefined;
 
   customerTypeSelected='';
@@ -37,6 +38,9 @@ export class CustomerListComponent implements OnInit{
   display: boolean=false;
   customerIdSelected: number=0;
   history: IFeedbackHistoryDto[]=[];
+
+  isPrintPDF = false;
+  printtitle = "";
 
   constructor(private service: CustomersService, 
       private router: Router,
@@ -73,7 +77,6 @@ export class CustomerListComponent implements OnInit{
         },
         error: error => console.log(error)
       })
-      
     }
 
     onPageChanged(event: any){
@@ -229,5 +232,38 @@ export class CustomerListComponent implements OnInit{
         this.customerIdSelected = customerId;
     }
   }
+
+  loadCustomerList() {
+      
+      this.service.getCustomerList(this.cParams)?.subscribe({
+      next: response => {
+        if(response !== undefined && response !== null) {
+          this.customersForPrint = response;
+        } 
+        this.isPrintPDF = false;
+      },
+      error: error => {
+        this.toastr.error(error, 'Error enccountered');
+        this.isPrintPDF = false;
+      }
+    })
+  }
+
+
+  generatePDF() {
+        this.isPrintPDF = true;
+        if(!(this.customersForPrint.length > 0 && this.customersForPrint[0].customerType===this.cParams.customerType)) {
+          this.loadCustomerList();
+        }
+        
+
+        this.printtitle =  "Customer List for customer Type " + this.cParams.customerType;
+        
+        
+      }
+  
+      closePrintSection() {
+        this.isPrintPDF = false;
+      }
 
 }

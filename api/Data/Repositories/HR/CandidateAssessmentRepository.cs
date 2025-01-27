@@ -574,5 +574,47 @@ namespace api.Data.Repositories.HR
             
             return grade;
         }
+        
+        public async Task<ICollection<cvsAvailableDto>> GetAvailableCandidates()
+        {
+            var qry = await (from assesmt in _context.CandidateAssessments 
+                    where assesmt.CVRefId==0 && assesmt.AssessResult != "Not Assessed"
+                join cv in _context.Candidates on assesmt .CandidateId equals cv.Id  
+                join item in _context.OrderItems on assesmt.OrderItemId equals item.Id
+                join cat in _context.Professions on item.ProfessionId equals cat.Id
+                join order in _context.Orders on item.OrderId equals order.Id
+                orderby cv.ApplicationNo
+                select new cvsAvailableDto {
+                    CandAssessmentId = assesmt.Id, ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
+                    CandidateId = cv.Id, AssessedOn = assesmt.AssessedOn, 
+                    Gender=  (cv.Gender == "female" ? "F": "M").ToUpper(),
+                    GradeAssessed=assesmt.AssessResult,  Checked = false, OrderItemId = item.Id,
+                    OrderCategoryRef=cat.ProfessionName + " (" + order.OrderNo + "-" + item.SrNo + ") - " + order.Customer.KnownAs,
+                }).ToListAsync();
+           
+                foreach(var item in qry) {
+                    item.userProfessions = await _context.UserProfessions.Where(x => x.CandidateId == item.CandidateId).ToListAsync();
+                    foreach(var prof in item.userProfessions) {
+                        if(string.IsNullOrEmpty(prof.ProfessionName)) {
+                            prof.ProfessionName = await _context.GetProfessionNameFromId(prof.ProfessionId);
+                        }
+                        _context.Entry(prof).State = EntityState.Modified;
+                    }
+                }
+                
+                if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+                return qry;
+        }
+
+        public async Task<ICollection<ProspectiveHeaderDto>> CategoriesFromCVAvailableToRefer()
+        {
+            var query = await _context.CandidateAssessments
+                .Where(x => x.AssessResult != "Not Assessed" && x.CVRefId == 0 )
+                .Select(x => x.CategoryRefAndName)
+                .Distinct()
+                .ToListAsync();
+            return (ICollection<ProspectiveHeaderDto>)query;
+        }
+
     }
 }

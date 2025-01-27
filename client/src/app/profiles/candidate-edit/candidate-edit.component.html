@@ -1,8 +1,7 @@
 
 <div *ngIf="!candidate">
-     No valid object
+     No valid Candidate object
 </div>
-
 
 <form [formGroup]="registerForm" 
      (ngSubmit)="registerForm.valid && savewithattachments()" 
@@ -23,75 +22,47 @@
           <label class="lbl">Gender: </label>
           <input type="radio" class="inputcheck form-check-input " value="m" formControlName="gender" >Male
           <input type="radio" class="inputcheck form-check-input " value="f" formControlName="gender" >Female
-           <br>
-
+          
+          <br>
           <label for="firstName" class="lbl">First Name</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'First Name'" formControlName="firstName" ></app-text-input>
-          </div>
+          <app-text-input class="stdd w150" [label]="'First Name'" formControlName="firstName" ></app-text-input>
            
           <label for="secondName" class="lbl">Second Name</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Second Name'" formControlName="secondName"></app-text-input>
-          </div>
+          <app-text-input class="stdd w150" [label]="'Second Name'" formControlName="secondName"></app-text-input>
           
-          <label for="familyName" class="lbl">Family Name</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Family Name'" formControlName="familyName"></app-text-input>
-          </div>
-          
-     
+          <br><label for="familyName" class="lbl">Family Name</label>
+          <app-text-input class="stdd w150" [label]="'Family Name'" formControlName="familyName"></app-text-input>
           <label for="knownAs" class="lbl">Known As</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Known As'" formControlName="knownAs"></app-text-input>
-          </div>
-          <br>
-          <label for="aadharNo" class="lbl">Aadhar No</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Aadhar No'" formControlName="aadharNo" ></app-text-input>
-          </div>      
-          <br>
+          <app-text-input class="stdd w150" [label]="'Known As'" formControlName="knownAs"></app-text-input>
+          
+          <br><label for="aadharNo" class="lbl">Aadhar No</label>
+          <app-text-input class="stdd w150" [label]="'Aadhar No'" formControlName="aadharNo" ></app-text-input>
+
           <label for="ppNo" class="lbl" style="margin-left: 5px;">Passport No</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Passport No'" formControlName="ppNo" ></app-text-input>
-          </div>    
-          <label class="lbl" style="margin-left: 10px; margin-right: 10px;" >Emig Clearance: </label>
+          <app-text-input class="stdd w150" [label]="'Passport No'" formControlName="ppNo" ></app-text-input>
+          <br><label class="lbl">ECR/ECNR: </label>
           <input type="radio" formControlName="ecnr" value="true"  class="form-check-input inputcheck"> ECNR
           <input type="radio" formControlName="ecnr" value="false" class="form-check-input inputcheck"> ECR
           
           <br><label for="dOB" class="lbl">Date of Birth</label>
-          <div class="stdd w150">
-               <app-date-picker [maxDate]="maxDate" formControlName="dOB" [label]="'Date of birth'"></app-date-picker>
-          </div>
+          <app-date-picker  class="stdd w150" [maxDate]="maxDate" formControlName="dOB" [label]="'Date of birth'"></app-date-picker>
           
           <label for="placeOfBirth" class="lbl">Place of Birth</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'Place of birth'" formControlName="placeOfBirth" ></app-text-input>
-          </div>
+          <app-text-input class="stdd w150" [label]="'Place of birth'" formControlName="placeOfBirth" ></app-text-input>
           
           <br><label for="address" class="lbl">Address</label>
-          <div class="stdd w450">
-               <app-text-input [label]="'address'" formControlName="address" ></app-text-input>
-          </div>          
+          <app-text-input class="stdd w450" [label]="'address'" formControlName="address" ></app-text-input>
           
           <br><label for="city" class="lbl">City</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'city'" formControlName="city"></app-text-input>
-          </div>
+          <app-text-input class="stdd w150" [label]="'city'" formControlName="city"></app-text-input>
           <label for="pin" class="lbl" >PIN</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'pin'" formControlName="pin" ></app-text-input>
-          </div>
-
+          <app-text-input class="stdd w150" [label]="'pin'" formControlName="pin" ></app-text-input>
+          
           <br><label for="district" class="lbl" >District</label>
-          <div class="stdd w150">
-               <app-text-input [label]="'district'" formControlName="district" ></app-text-input>
-          </div>
+          <app-text-input class="stdd w150" [label]="'district'" formControlName="district" ></app-text-input>
           
           <label for="email" style="display: inline-block; width: 50px; font-size: small;" >Email</label>
-          <div class="stdd w250">
-               <app-text-input [label]="'email'" formControlName="email" ></app-text-input>
-          </div>
+          <app-text-input class="stdd w250" [label]="'email'" formControlName="email" ></app-text-input>
           
           <div class="stdd w500" *ngIf="candidate.id === 0" >
                <br><label for="password" class="lbl">Password</label>

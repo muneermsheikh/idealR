@@ -2405,6 +2405,10 @@ namespace api.Data.Migrations
                     b.Property<int>("CandidateId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CategoryRef")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 

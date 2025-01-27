@@ -33,6 +33,18 @@
     <button (click)="addClicked()" title="Add new "  
         class="btn btn-outline-success fa fa-plus mx-1"></button>
 
+        <button printSectionId="print-section" 
+        printTitle="printTitle"
+        [previewOnly]="false"
+        [useExistingCss]="true"
+        ngxPrint
+        title="shows the report in pdf format and enables printing" 
+        style="display:inline-block; margin-left: 50px;"
+        (click)="generatePDF()"
+        >
+        <mat-icon>print</mat-icon>
+    </button>
+
     <button (click)="close()" title="close this page" 
         class="btn btn-outline-success fa fa-window-close mx-1"></button>
 
@@ -58,15 +70,33 @@
     </div>
     
     <div *ngIf="customerDtos" class="col-9">
-        <div *ngFor="let dto of customerDtos">
-            <app-customer-line
-                [dto]="dto"
-                (editEvent)="editClicked($event)"
-                (deleteClicked)="deleteClicked($event)"
-                (feedbackEvent)="feedbackClicked($event)"
-                (EvaluationEvent)="evaluationClicked($event)"    
-                (displayHistoryEvent)="displayHistory($event)"
-            ></app-customer-line>
+        <div *ngIf="!isPrintPDF">
+            <div *ngFor="let dto of customerDtos" >
+                <app-customer-line
+                    [isPrintPDF]=false
+                    [dto]="dto"
+                    (editEvent)="editClicked($event)"
+                    (deleteClicked)="deleteClicked($event)"
+                    (feedbackEvent)="feedbackClicked($event)"
+                    (EvaluationEvent)="evaluationClicked($event)"    
+                    (displayHistoryEvent)="displayHistory($event)"
+                ></app-customer-line>
+            </div>
+        </div>
+        <div id="print-section">
+            <label style="font-weight: bold; font-size: large;">{{printtitle}}</label>
+            <br><label class="lbl w50" style="margin-left: 10px;">Type</label>
+            <label class="lbl w200">Customer Name</label>
+            <label class="lbl w125">Known As</label>
+            <label class="lbl w100">City</label>
+            <label class="lbl w125">Country</label>
+            <hr>
+            <div *ngFor="let dto of customersForPrint" >
+                <app-customer-line
+                    [isPrintPDF]=true
+                    [dto]="dto"
+                ></app-customer-line>
+            </div>
         </div>
     </div>
 

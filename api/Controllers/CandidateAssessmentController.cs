@@ -151,5 +151,23 @@ namespace api.Controllers
 
             return Ok(checklist);
         }
+    
+        [HttpGet("cvsAvailableList/{catRefWithName}")]
+        public async Task<ActionResult<ICollection<cvsAvailableDto>>> GetAvailableCandidateListing()
+        {
+            var cvs = await _repo.GetAvailableCandidates();
+
+            return Ok(cvs);
+
+        }
+
+
+        [HttpGet("categoryheaders")]
+        public async Task<ActionResult<ICollection<ProspectiveHeaderDto>>> GetCategoriesOfCVsAvailableToRef()
+        {
+            var dtos = await _repo.CategoriesFromCVAvailableToRefer();
+
+            return Ok(dtos);
+        }
     }
 }

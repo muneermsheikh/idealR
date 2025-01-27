@@ -18,6 +18,7 @@ import { RemunerationModalComponent } from './remuneration-modal/remuneration-mo
 import { OrderRoutingModule } from './order-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { OrderAssessmentItemHeaderComponent } from './order-assessment-item-header/order-assessment-item-header.component';
+import { NgxPrintModule } from 'ngx-print';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { OrderAssessmentItemHeaderComponent } from './order-assessment-item-head
   imports: [
     CommonModule,
     FormsModule,
+    NgxPrintModule,
     OrderRoutingModule,
     SharedModule,
     MatIconModule

@@ -12,6 +12,7 @@ import { ConfirmService } from 'src/app/_services/confirm.service';
 export class CustomerLineComponent {
 
   @Input() dto: ICustomerBriefDto | undefined;
+  @Input() isPrintPDF: boolean = false;
 
   @Output() editEvent = new EventEmitter<number>();
   @Output() deleteEvent = new EventEmitter<number>();

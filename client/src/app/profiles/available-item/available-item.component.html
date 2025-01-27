@@ -4,13 +4,15 @@
 
 <div class="stdd row" style="margin-left: 75px; margin-top: 0px; margin-bottom: 0px;" *ngIf="cv!==null && cv!==undefined">
 
-     <input type="checkbox"
-          class="stdd form-check-input"
-          style="border-color: black ;"
-          [checked]="cv!.checked"
-          value="cv.id"
-          (change)="CVChecked(cv!)"
-     >
+     <div class="stdd" *ngIf="!isPrintPDF">
+          <input type="checkbox"
+               class="stdd form-check-input"
+               style="border-color: black ;"
+               [checked]="cv!.checked"
+               value="cv.id"
+               (change)="CVChecked(cv!)"
+          >
+     </div>
      <!-- <div class="stdd fSmall w10">{{cv.id}}</div> -->
      <div class="stdd fSmall w25 mx-1" style="text-align: center;">{{cv.gender}}</div>
     
@@ -26,16 +28,17 @@
      <div class="stdd fSmall w50 mx-1 cursorpointer" style="text-align: center;" 
           (click)="displayAssessment()" >{{cv.gradeAssessed}}</div>
      
-     <div class="stdd mx-1 fSmall w200 mx-1" style="border:aqua" >
-          <span style="white-space: normal;" *ngFor="let item of cv.userProfessions">
-               {{item.professionName}} , 
-               <div style="display: inline-block" *ngIf="cv.userProfessions.length>1"></div> 
-          </span>
+     <div class="prof" *ngFor="let item of cv.userProfessions">
+          {{item.professionName}} - 
+          <!-- <div style="display: inline-block" *ngIf="cv.userProfessions.length>1"></div>  -->
+    </div> 
+    <div class="prof" *ngIf="cv.userProfessions.length > 0">
+     <pre></pre>
+          <!-- <div style="display: inline-block" *ngIf="cv.userProfessions.length>1"></div>  -->
      </div> 
-     
-     
-     <button (click)="download(cv)" type="button" 
-          class="btn btn-outline-secondary fa fa-regular fa-download w40" type="button" 
+
+     <button (click)="download(cv)" type="button" *ngIf="!isPrintPDF"
+          class="btn fa fa-download w20" type="button" 
           title="download the CV">
      </button>
      

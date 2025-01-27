@@ -64,14 +64,14 @@ namespace api.Data.Repositories.Orders
            var query = _context.OrderForwardCategories
                 .Include(x => x.OrderForwardCategoryOfficials.OrderByDescending(x => x.DateForwarded))
                 .AsQueryable();
-
-            //var temp = await query.ToListAsync();
-            
+           
             if(fParams.OrderId != 0) query = query.Where(x => x.OrderId == fParams.OrderId);
             
             var paged = await PagedList<OrderForwardCategory>.CreateAsync(query.AsNoTracking()
                     //.ProjectTo<OrderForwardToAgentDto>(_mapper.ConfigurationProvider)
-                    , fParams.PageNumber, fParams.PageSize);
+                    ,fParams.PageNumber, fParams.PageSize);
+            
+            
             return paged;
 
         }
@@ -127,7 +127,7 @@ namespace api.Data.Repositories.Orders
                         from rvwitem in rvwitems.DefaultIfEmpty()
                     select new OrderForwardCategory {
                         OrderId=orderid,
-                        OrderNo=order.OrderNo, 
+                        OrderNo=order.OrderNo,
                         OrderDate = order.OrderDate,
                         CustomerName=cust.CustomerName,
                         CustomerCity = cust.City,

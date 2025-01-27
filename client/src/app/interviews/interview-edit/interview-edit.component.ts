@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { IIntervw } from 'src/app/_models/hr/intervw';
 import { ConfirmService } from 'src/app/_services/confirm.service';

@@ -1,5 +1,6 @@
 using api.DTOs;
 using api.DTOs.Admin;
+using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Messages;
 using api.Helpers;
@@ -20,5 +21,7 @@ namespace api.Interfaces.Admin
         Task<CVRefDto> GetCVRefDto (int CVRefId);
         Task<string> ComposeSelectionDecisionReminderMessage(int customerId, string username);
         Task<int> UpdateCandidateAssessmentWithCVRefId();
+        Task<ICollection<ProspectiveHeaderDto>> GetCVReferredOrderNoHeaders(string status);
+        
     }
 }

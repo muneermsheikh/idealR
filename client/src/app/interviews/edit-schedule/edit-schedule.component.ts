@@ -1,7 +1,7 @@
 import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
@@ -44,6 +44,7 @@ export class EditScheduleComponent implements OnInit{
       {result: 'Rejected-No communication'}, {result: 'Rejected-other reasons'}, {result: 'Shortlisted'}];
 
   constructor(private fb: FormBuilder, private activatedRoute: ActivatedRoute, 
+      private router: Router,
       private service: InterviewService, private toastr: ToastrService, private bsModalService: BsModalService) {}
   
   bsValueDate = new Date();
@@ -129,7 +130,8 @@ export class EditScheduleComponent implements OnInit{
         interviewedAt: '',
         interviewStatus: ['', Validators.required],
         interviewerRemarks: '',
-        intervwCandAttachmentId: ''
+        intervwCandAttachmentId: '',
+        attachmentFileNameWithPath: ''
     })
   }
 
@@ -149,9 +151,12 @@ export class EditScheduleComponent implements OnInit{
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
+
     if(f.size > 0) {
       this.userFiles.push(f);
       itemCandidate.attachmentFileNameWithPath = f.name;      
+      this.interviewItemCandidates.at(this.selectedIndex)?.get('attachmentFileNameWithPath')?.setValue(f.name);
+      this.form.markAsDirty();
     }
     
   }
@@ -222,10 +227,10 @@ export class EditScheduleComponent implements OnInit{
 
       var remarks = this.interviewItemCandidates.at(index).get('interviewerRemarks')!.value;
       const config = {
-        class: 'modal-dialog-centered modal-md',
+        class: 'modal-dialog-centered modal-lg',
         initialState: {
           displayText: remarks,
-          title: 'edit Interviewer Remarks'
+          title: this.interviewItemCandidates.at(index).get('candidateName')!.value +  ' - edit Interviewer Remarks'
         }
       }
   
@@ -238,6 +243,7 @@ export class EditScheduleComponent implements OnInit{
           }
         }
       })
+        
   }
 
   downloadattachment(index: number) {

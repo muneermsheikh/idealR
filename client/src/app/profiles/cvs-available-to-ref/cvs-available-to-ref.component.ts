@@ -6,6 +6,8 @@ import { filter, switchMap } from 'rxjs';
 import { ICvsAvailableDto } from 'src/app/_dtos/admin/cvsAvailableDto';
 import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
 import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
+import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { IProfession } from 'src/app/_models/masters/profession';
 import { Pagination } from 'src/app/_models/pagination';
@@ -38,6 +40,7 @@ export class CvsAvailableToRefComponent implements OnInit {
 
   cvs: ICvsAvailableDto[]=[];
   selectedCVs: ICvsAvailableDto[]=[];
+  printCVs: ICvsAvailableDto[]=[];
 
   user: User | undefined;
   returnUrl = '';
@@ -46,7 +49,14 @@ export class CvsAvailableToRefComponent implements OnInit {
 
   totalCount: number=0;
 
+  ProspList: ICvsAvailableDto[]=[];
   
+    headers: IProspectiveHeaderDto[]=[];    //orderno, use as professionid
+    printtitle: string='';
+    isPrintPDF = false;
+    distinctRefCats: string[]=[];
+    distinctRefCat = '';
+    
   constructor(private router: Router, private activatedRoute: ActivatedRoute, 
       private service: CandidateService, 
       private candAssessService: CandidateAssessmentService,
@@ -217,32 +227,6 @@ export class CvsAvailableToRefComponent implements OnInit {
     })
   }
 
-  /*displayAssessmentModal(cvbrief: any)
-  {
-        var orderitemid = cvbrief.orderItemId;
-        var candidateid = cvbrief.candidateId;
-
-        this.candAssessService.getCandidateAssessmentDto(candidateid, orderitemid)
-          .subscribe(response => {
-            if(response === null) {
-              this.toastr.warning('failed to retrieve the assessment object');
-            } else {
-                const config = {
-                  class: 'modal-dialog-centered modal-lg',
-                  initialState: {
-                    assess: response
-                  }
-                }
-                this.bsModalRef = this.modalService.show(CvAssessModalComponent, config);
-                this.bsModalRef.content.candAssessEvent.subscribe(() => {
-                  console.log('succeeded');
-                })
-            }
-          })
-    
-  }
-  */
-
   displayAssessmentModalBySwitchMap(cvbrief: any) {
 
     var orderitemid = cvbrief.orderItemId;
@@ -357,4 +341,30 @@ export class CvsAvailableToRefComponent implements OnInit {
   close() {
     this.router.navigateByUrl(this.returnUrl);
   }
+
+    generatePDF() {
+        this.isPrintPDF = !this.isPrintPDF;
+  
+        this.printtitle =  "CVs Available to refer as on " + new Date();
+        
+        this.service.getAvailableCandidateList().subscribe({
+            next: (response: ICvsAvailableDto[]) => {
+            if(response !== null && response.length > 0) {
+              this.printCVs = response;
+              console.log('printCVs:', this.printCVs);
+            } else {
+              console.log('response is undefined');
+            }
+          },
+          error: error => console.log(error)
+        })
+  
+        //this.router.navigateByUrl("/prospectives/pdf/001012/'active'")
+      }
+  
+      closePrintSection() {
+        this.isPrintPDF = false;
+        this.distinctRefCat = '';
+      }
+
 }

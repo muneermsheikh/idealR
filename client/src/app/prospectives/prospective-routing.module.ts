@@ -5,6 +5,7 @@ import { ProspectiveListComponent } from './prospective-list/prospective-list.co
 import { RouterModule } from '@angular/router';
 import { ProspectivePagedResolver } from '../_resolvers/admin/prospectivePagedResolver';
 import { ProspectiveListResolver } from '../_resolvers/admin/prospectiveListResolver';
+import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
 
 //parent route: prospectives
 const routes = [
@@ -13,7 +14,7 @@ const routes = [
   {path: 'prospective', component: ProspectiveListComponent,
     resolve: {
       prospectives: ProspectivePagedResolver,
-      //headers: ProspectiveHeaderResolver
+      headers: ProspectiveHeaderResolver
     }
   },
 
@@ -21,7 +22,7 @@ const routes = [
     resolve: {
       reports: ProspectiveListResolver
     }
-  }
+  },
 ]
 
 @NgModule({

@@ -15,45 +15,67 @@
           </div>
           <div class="stdd w150">{{order.cityOfWorking}}</div>
           
-          <div class="stdd w100 cursorpointer" 
-               title="click to conduct Contract Review of this Order" 
-               [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'b' 
-                    : order.contractReviewStatus==='regretted' ? 'b' : ''" 
-               (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
-          
-          <div *ngIf="order.contractReviewedOn === null" class="stdd w100 b" title="click for technical & commercial review of this order" 
-               (click)="contractReviewClicked()">Not Reviewed</div>
-          <div *ngIf="order.contractReviewedOn !== null" class="stdd w100" title="click to review/edit technical & commercial review of this order" 
-               (click)="contractReviewClicked()">{{order.contractReviewedOn | date: 'dd-MMM-yy'}}
-          </div>
-
-          <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall b cursorpointer"
-               (click)="forwardOrderToHRDept()" title="click to forward this Order to HR Dept Head"
-          > Not forwarded</div>
-
-          <div *ngIf="order.forwardedToHRDeptOn !== null"  class="stdd w100">
-               {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
-          </div>
-          
-          <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button" (click)="editClicked()"></button>
-          
-          <button class="stdd w15 fa fa-users" (click)="dlForwardToAssociatesClicked()" 
-               title="Forward this order to Associates (to be selected)" ></button>
-          <button class="stdd w15 fa fa-users" (click)="DLForwardedClicked()" 
-               title="Associates to whom this DL is already forwardED" ></button>
-          <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
-               title="compose email message of acknowldgement to client" ></button>
+          <div class="stdd" *ngIf="!isReportActive">
+               <div class="stdd w100 cursorpointer" 
+                    title="click to conduct Contract Review of this Order" 
+                    [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'b' 
+                         : order.contractReviewStatus==='regretted' ? 'b' : ''" 
+                    (click)="contractReviewClicked()" >{{order.contractReviewStatus}}</div>
                
-          <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
-               title="CVs already referrED to clients for this Order"
-               (click)="cvReferredClicked()"
-          ></button>
+               <div *ngIf="order.contractReviewedOn === null" class="stdd w100 b" title="click for technical & commercial review of this order" 
+                    (click)="contractReviewClicked()">Not Reviewed</div>
+               <div *ngIf="order.contractReviewedOn !== null" class="stdd w100" title="click to review/edit technical & commercial review of this order" 
+                    (click)="contractReviewClicked()">{{order.contractReviewedOn | date: 'dd-MMM-yy'}}
+               </div>
 
-          <button class="stdd w30" title="selections and rejections against this order" type="button"
-               (click)="selectionClicked()"
-          ><i class="material-icons" style="font-size: medium;">assignment_ind</i></button>
+               <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall b cursorpointer"
+                    (click)="forwardOrderToHRDept()" title="click to forward this Order to HR Dept Head"
+               > Not forwarded</div>
 
-          <button class="stdd w15 fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
+               <div *ngIf="order.forwardedToHRDeptOn !== null"  class="stdd w100">
+                    {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
+               </div>
+               
+               <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button" (click)="editClicked()"></button>
+               
+               <button class="stdd w15 fa fa-users" (click)="dlForwardToAssociatesClicked()" 
+                    title="Forward this order to Associates (to be selected)" ></button>
+               <button class="stdd w15 fa fa-users" (click)="DLForwardedClicked()" 
+                    title="Associates to whom this DL is already forwardED" ></button>
+               <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
+                    title="compose email message of acknowldgement to client" ></button>
+                    
+               <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
+                    title="CVs already referrED to clients for this Order"
+                    (click)="cvReferredClicked()"
+               ></button>
 
+               <button class="stdd w30" title="selections and rejections against this order" type="button"
+                    (click)="selectionClicked()"
+               ><i class="material-icons" style="font-size: medium;">assignment_ind</i></button>
+
+               <button class="stdd w15 fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
+          </div>
+
+          <div *ngIf="isReportActive">
+               <div class="stdd w100" 
+                    [ngClass]="order.contractReviewStatus=='Not Reviewed' ? 'b' 
+                         : order.contractReviewStatus==='regretted' ? 'b' : ''" 
+                    >{{order.contractReviewStatus}}
+               </div>
+               
+               <div *ngIf="order.contractReviewedOn === null" class="stdd w100 b" 
+                    >Not Reviewed</div>
+               <div *ngIf="order.contractReviewedOn !== null" class="stdd w100" 
+                    >{{order.contractReviewedOn | date: 'dd-MMM-yy'}}
+               </div>
+
+               <div *ngIf="order.forwardedToHRDeptOn === null" class="stdd w100 fontSmall b"
+               > Not forwarded</div>
+
+               <div *ngIf="order.forwardedToHRDeptOn !== null"  class="stdd w100">
+                    {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
+               </div>
+          </div>
     </div>
 </div>

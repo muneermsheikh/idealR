@@ -49,6 +49,10 @@ export class CandidateService {
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
 
+  getAvailableCandidateList() {    
+    return this.http.get<ICvsAvailableDto[]>(this.apiUrl + 'CandidateAssessment/cvsAvailableList');
+  }
+
   getAvailableCandidatesPaged(cvParams: candidateParams, fromCache: boolean = true): Observable<any> { 
 
     if(!fromCache) {

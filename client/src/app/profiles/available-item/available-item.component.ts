@@ -11,6 +11,7 @@ export class AvailableItemComponent implements OnInit {
 
  
   @Input() cv: ICvsAvailableDto|undefined;
+  @Input() isPrintPDF: boolean=false;
   @Output() msgEvent = new EventEmitter<number>();
   @Output() downloadEvent = new EventEmitter<ICvsAvailableDto>();
   @Output() cvAssessEvent = new EventEmitter<ICvsAvailableDto>();
@@ -30,6 +31,7 @@ export class AvailableItemComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.isPrintPDF)
   }
   //right click
   rightClick(event: any) {

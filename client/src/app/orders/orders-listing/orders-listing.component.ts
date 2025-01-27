@@ -38,7 +38,11 @@ export class OrdersListingComponent implements OnInit {
   task?: IApplicationTask;   //to show in task.edit component
 
   user?: User;
-    
+
+  isReportActive: boolean = false;
+  printOrders: IOrderBriefDto[]=[];
+  distinctStatus: string = '';
+      
   //right click context menu
   title = 'context-menu';
 
@@ -245,6 +249,11 @@ export class OrdersListingComponent implements OnInit {
   @HostListener('document:click')
   documentClick(): void {
     //this.isDisplayContextMenu = false;
+  }
+
+  closePrintSection() {
+    this.isReportActive = false;
+    this.distinctStatus = '';
   }
 
 }

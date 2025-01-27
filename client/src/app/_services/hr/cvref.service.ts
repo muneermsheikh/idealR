@@ -15,6 +15,7 @@ import { createSelDecisionDto } from 'src/app/_dtos/admin/createSelDecisionDto';
 import { messageWithError } from 'src/app/_dtos/admin/messageWithError';
 import { ISelectionStatusDto } from 'src/app/_dtos/admin/selectionStatusDto';
 import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 
 
 @Injectable({
@@ -89,7 +90,11 @@ export class CvrefService {
       return this.http.post<messageWithError>(this.apiUrl + 'Selection', selDecisions);
     }
 
-  setParams(params: CVRefParams) {
+    getCVReferredOrderNosDto(status: string) {
+      return this.http.get<IProspectiveHeaderDto[]>(this.apiUrl + 'CVRef/headers/' + status);
+    }
+
+  setParams(params: CVRefParams) { 
     this.cvRefParams = params;
   }
   getParams() {

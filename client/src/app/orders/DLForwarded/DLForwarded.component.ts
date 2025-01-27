@@ -42,11 +42,16 @@ export class DLForwardedComponent implements OnInit {
           this.fwds = response['DLForwarded'].result;
           this.pagination = response['pagination'];
           this.totalCount = response['totalCount'];
-          console.log('fwds', this.fwds);
+
+          console.log('pagination', this.pagination);
           var fwd=this.fwds[0];
-          this.customerName = fwd.customerName;
-          this.orderNo = fwd.orderNo;
-          this.orderDate = fwd.orderDate;
+          if(fwd) {
+              this.customerName = fwd.customerName;
+              this.orderNo = fwd.orderNo;
+              this.orderDate = fwd.orderDate;
+          }
+
+          console.log('fwded', fwd);
       }
     })
   }

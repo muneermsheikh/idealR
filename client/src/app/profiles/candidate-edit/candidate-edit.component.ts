@@ -75,7 +75,7 @@ export class CandidateEditComponent implements OnInit {
   
   routeId='';
   user?: User;
-  returnUrl = '/candidates';
+  returnUrl = '/';
 
   attachmentTypes = [
     {'typeName':'CV'}, 

@@ -7,19 +7,22 @@ import { MenuComponent } from './menu/menu.component';
 import { ProspectiveLineComponent } from './prospective-line/prospective-line.component';
 import { ProspectiveListComponent } from './prospective-list/prospective-list.component';
 import { ProspectiveRoutingModule } from './prospective-routing.module';
+import { NgxPrintModule } from 'ngx-print';
 
 
 @NgModule({
   declarations: [
     MenuComponent,
     ProspectiveLineComponent,
-    ProspectiveListComponent
+    ProspectiveListComponent,
+  
   ],
 
   imports: [
     CommonModule,
     SharedModule,
     MatButtonModule, 
+    NgxPrintModule,
     MatIconModule,
     ProspectiveRoutingModule
   ]

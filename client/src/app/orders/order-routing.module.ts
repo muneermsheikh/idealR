@@ -44,10 +44,12 @@ const routes = [
     }
   },
 
-  {path: 'DLForwarded/:id', component: DLForwardedComponent,
-    resolve: {DLForwarded:DLForwardedResolver}},
+  {path: 'DLForwarded', component: DLForwardedComponent,
+    resolve: {
+      DLForwarded: DLForwardedResolver
+    }},
 
-  {path: 'ordersforwarded', component: OrderForwardComponent,
+  {path: 'ordersforwarded/:orderid', component: OrderForwardComponent,
     resolve: {
       orderfwd: OrderFwdToAgentResolver,
       customers: OfficialIdAndCustomerNamesResolver

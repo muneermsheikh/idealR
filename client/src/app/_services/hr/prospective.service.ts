@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, map, of } from 'rxjs';
+import { ReplaySubject, map, of, take } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { User } from 'src/app/_models/user';
@@ -17,6 +17,7 @@ import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCreateDto';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
+import { AccountService } from '../account.service';
 
 
 @Injectable({
@@ -36,7 +37,16 @@ export class ProspectiveService {
   cache = new Map();
   cacheSummary = new Map();
 
-  constructor(private http: HttpClient) { }
+  user?: User;
+
+  constructor(private http: HttpClient, private accountService: AccountService) { 
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+          next: user => {
+            if (user)
+              this.user = user;
+          }
+        })
+   }
 
   getProspectiveCandidates(oParams: prospectiveCandidateParams) {
         

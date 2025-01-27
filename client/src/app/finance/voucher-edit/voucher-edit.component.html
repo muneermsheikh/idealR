@@ -1,144 +1,276 @@
-	
-	<label class="title">Voucher Type: </label><input type="radio"  [(ngModel)]="type" value="DR" id="Type"> <span>Debit</span>
-		<input type="radio"  [(ngModel)]="type" value="CR" id="Type"> <span>Credit</span>
 
-<form [formGroup]="form" *ngIf="voucher" autocomplete="off" style="margin-left: 15px;">
+<div *ngIf="voucher!.id === 0" class="b my-2" >Create new finance voucher</div>
+<div *ngIf="voucher!.id > 0" class="b my-2" > Edit finance voucher</div>
+
+<div class="pull-right">
+	<button printSectionId="print-section" class="stdd"
+		printTitle="printTitle"
+		[previewOnly]="false"
+		[useExistingCss]="true"
+		ngxPrint
+		title="displays the voucher in pdf format and enables printing" 
+		style="display:inline-block; margin-left: 50px;"
+		[disabled]="(voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount))"
+		(click)="generatePDF()"
+		>
+		<mat-icon>print</mat-icon>
+	</button>
+
+</div>
+
+	<label class="title">Voucher Type: </label><input type="radio"  [(ngModel)]="type" value="DR" id="Type"> <span>Debit</span>
+	<input type="radio"  [(ngModel)]="type" value="CR" id="Type"> <span>Credit</span>
 	
-	<div *ngIf="voucher.id === 0" class="b my-2" >Create new finance voucher</div>
-	<div *ngIf="voucher.id > 0" class="b my-2" > Edit finance voucher</div>
 	<button type="button" class="btn fa fa-window-close fa-2x pull-right" 
-		style="color: aliceblue; vertical-align: top; margin-left: 50px;" title="return" 
+		style="color: aliceblue; vertical-align: top;" title="return" 
 		(click)="returnToCaller()" ></button>
 
-	<br><label class="lbl w100" >Div Name:</label>
-	<app-text-input class="stdd w150" [label]="'Company Name'" formControlName="section"></app-text-input>
-	<label class="lbl w100">Section:</label>
-	<app-text-input class="stdd w50 bgcolor" [label]="'Division'" formControlName="divn"></app-text-input>
+	<div *ngIf="!isPrintPDF">
+		<form [formGroup]="form" *ngIf="voucher" autocomplete="off" style="margin-left: 15px;">
 	
-	<label class="lbl w100" >Voucher No.:</label>
-	<app-text-input class="stdd w100" [label]="'Voucher No'" formControlName="voucherNo"></app-text-input>
-	
-	<label class="stdd w100 tAlignRight">Dated:</label>
-	<input class="stdd w150"
-		type="text"
-		placeholder="Voucher dated"
-		formControlName="voucherDated"
-		[minDate]="minTransDate"
-		[maxDate]="maxTransDate"
-		[bsValue]="bsValue"
-		bsDatepicker
-		#dp="bsDatepicker"
-		autocomplete="off"
-		[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
-	>
-
-	<br>
-
-	<label class="lbl w100" style="margin-top: 2px;">Account:<b>{{type}}</b></label>
-	<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
-		[items]="coas"
-		bindLabel="accountName"
-		bindValue="id"
-		labelForId="coaId"
-		placeholder="Select Account"
-		clearAllText="Clear"
-		formControlName="coaId">
-	</ng-select>
-
-	<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
-		Please enter the {{type}} Account
-	</div>
-
-	<div class="stdd w30 fa fa-plus" title="insert a new Chart of Account" disabled="isAddMode" (click)="addNewCOA()"></div>
-	
-	<label class="stdd w100 tAlignRight">Narration:</label>
-	<textarea class="stdd" formControlName="narration" cols="50" rows="1"></textarea>
-
-	<br><label class="lbl w100 my-0" >Amount:</label>
-	<input type="number" (change)="updateVoucherAmount()" class="stdd w200" formControlName="amount" > 
-	
-	<div class="stdd b" style="margin-left: 50px;">Totals:</div>
-	<span class="stdd">DR</span><div class="stdd w75" style="text-align:right; border: solid;" >{{totalAmountDR}}</div>
-	<span class="stdd">CR</span><div class="stdd w75" style="text-align:right; border: solid;">{{totalAmountCR}}</div>
-	<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
-	<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
-		Voucher Amount NOT totally disbursed</div>
-		
-	<br class="my-1"><label class="stdd w90 b">Date</label>
-	<label class="stdd w300 b">Account</label>
-	<label class="stdd w75 b">Debit</label>
-	<label class="stdd w75 b">Credit</label>
-	<label class="stdd w300 b">Narration</label>
-	<label class="stdd2 w60 b">Dr Approved</label>
-	<label class="stdd2 w50 b">by / on</label>
-
-	<button (click)="updateVoucher()" 
-		[disabled]="!form.dirty && voucherAmount !== 0 && iDiff !==0 && voucherAmount !== totalAmountDR" 
-		style="margin-left: 20px !important; color:aliceblue; vertical-align: top;" class="btn fa fa-save green mx-1" ></button>
-	<button type="button" class="btn fa fa-trash red mx-1" style="color: aliceblue; vertical-align: top;" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
-
-	<button type="button" (click)="addVoucherEntry()" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
-
-	<br>
-	<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
-		<div *ngFor="let t of voucherEntries.controls; let i=index;">
-			<hr class="my-0">
-			<div [formGroupName]="i" class="my-0">
-				<input class="stdd w90" style="font-size: x-small;"
-					type="text"
-					placeholder="Date"
-					formControlName="transDate"
-					bsDatepicker
-					[bsValue]="bsValueDate"
-					[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
-				>
-				<ng-select *ngIf="coas" class="stdd w300 bgcolor" style="font-size: x-small;" 
-					[items]="coas"
-					bindLabel="accountName"
-					bindValue="id"
-					labelForId="coaId"
-					placeholder="Select Account"
-					clearAllText="Clear"
-					formControlName="coaId">
-				</ng-select>
-				<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
-					Please enter the Account
-				</div>
-
-				<input class="stdd w75 tAlignRight"  type="number" (change)="recalculateTotal()" formControlName="dr">
-				<input class="stdd w75 tAlignRight" type="number" (change)="recalculateTotal()" formControlName="cr">
-				<input class="stdd w300" type="text" formControlName="narration">
-
-				<input type="checkbox" style="border-color: black;" 
-					class="stdd2" formControlName="drEntryApproved"
-				>
-				
-				<input type="text" class="stdd2 w75" formControlName="drEntryApprovedByUsername">
-		
-				<input class="stdd2 w75" 
-					type="text"
-					placeholder="Date"
-					formControlName="drEntryApprovedOn"
-					bsDatepicker
-					[bsValue]="bsValueDate"
-					[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
-				>
-				<button type="button" class="stdd red ml-2 fa fa-trash" (click)="removeVoucherEntry(i)" ></button>
-
-			</div>
-		</div>
-	</div>
+			<br><label class="lbl w100" >Div Name:</label>
+			<app-text-input class="stdd w150" [label]="'Company Name'" formControlName="section"></app-text-input>
+			<label class="lbl w100">Section:</label>
+			<app-text-input class="stdd w50 bgcolor" [label]="'Divn'" formControlName="divn"></app-text-input>
 			
-	<br>
-	<hr>
+			<label class="lbl w100" >Voucher No.:</label>
+			<app-text-input class="stdd w100" [label]="'Voucher No'" formControlName="voucherNo"></app-text-input>
+			
+			<label class="stdd w100 tAlignRight">Dated:</label>
+			<input class="stdd w150"
+				type="text"
+				placeholder="Voucher dated"
+				formControlName="voucherDated"
+				[minDate]="minTransDate"
+				[maxDate]="maxTransDate"
+				[bsValue]="bsValue"
+				bsDatepicker
+				#dp="bsDatepicker"
+				autocomplete="off"
+				[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
+			>
 		
-</form>  
-
+			<br>
+		
+			<label class="lbl w100" style="margin-top: 2px;">Account:<b>{{type}}</b></label>
+			<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
+				[items]="coas"
+				bindLabel="accountName"
+				bindValue="id"
+				labelForId="coaId"
+				placeholder="Select Account"
+				clearAllText="Clear"
+				formControlName="coaId">
+			</ng-select>
+		
+			<div class="invalid-feedback" *ngIf="form.get('coaId')?.hasError('required')">
+				Please enter the {{type}} Account
+			</div>
+	
+			<div class="stdd w30 fa fa-plus" title="insert a new Chart of Account" disabled="isAddMode" (click)="addNewCOA()"></div>
+			
+			<label class="stdd w100 tAlignRight">Narration:</label>
+			<textarea class="stdd" formControlName="narration" cols="50" rows="2"></textarea>
+		
+			<br><label class="lbl w100 my-0" >Amount:</label>
+			<input type="number" (change)="updateVoucherAmount()" class="stdd w200" formControlName="amount" > 
+			
+			<div class="stdd b" style="margin-left: 50px;">Totals:</div>
+			<span class="stdd">DR</span><div class="stdd w75" style="text-align:right; border: solid;" >{{totalAmountDR}}</div>
+			<span class="stdd">CR</span><div class="stdd w75" style="text-align:right; border: solid;">{{totalAmountCR}}</div>
+			<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
+			<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
+				Voucher Amount NOT totally disbursed</div>
+				
+			<br class="mt-5"><label class="stdd w90 b">Date</label>
+			<label class="stdd w300 b">Account</label>
+			<label class="stdd w75 b">Debit</label>
+			<label class="stdd w75 b">Credit</label>
+			<label class="stdd w300 b">Narration</label>
+			<label class="stdd2 w60 b">Dr Approved</label>
+			<label class="stdd2 w50 b">by / on</label>
+		
+			<button (click)="updateVoucher()" 
+				[disabled]="!form.dirty && voucherAmount !== 0 && iDiff !==0 && voucherAmount !== totalAmountDR" 
+				style="margin-left: 20px !important; color:aliceblue; vertical-align: top;" class="btn fa fa-save green mx-1" ></button>
+			<button type="button" class="btn fa fa-trash red mx-1" style="color: aliceblue; vertical-align: top;" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
+		
+			<button type="button" (click)="addVoucherEntry()" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
+		
+			<br>
+			<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
+				<div *ngFor="let t of voucherEntries.controls; let i=index;">
+					<hr class="my-0">
+					<div [formGroupName]="i" class="my-0">
+						<input class="stdd w90" style="font-size: x-small;"
+							type="text"
+							placeholder="Date"
+							formControlName="transDate"
+							bsDatepicker
+							[bsValue]="bsValueDate"
+							[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						>
+						<ng-select *ngIf="coas" class="stdd w300 bgcolor" style="font-size: x-small;" 
+							[items]="coas"
+							bindLabel="accountName"
+							bindValue="id"
+							labelForId="coaId"
+							placeholder="Select Account"
+							clearAllText="Clear"
+							formControlName="coaId">
+						</ng-select>
+						<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
+							Please enter the Account
+						</div>
+		
+						<input class="stdd w75 tAlignRight"  type="number" (change)="recalculateTotal()" formControlName="dr">
+						<input class="stdd w75 tAlignRight" type="number" (change)="recalculateTotal()" formControlName="cr">
+						<input class="stdd w300" type="text" formControlName="narration">
+		
+						<input type="checkbox" style="border-color: black;" 
+							class="stdd2" formControlName="drEntryApproved"
+						>
+						
+						<input type="text" class="stdd2 w75" formControlName="drEntryApprovedByUsername">
+				
+						<input class="stdd2 w75" 
+							type="text"
+							placeholder="Date"
+							formControlName="drEntryApprovedOn"
+							bsDatepicker
+							[bsValue]="bsValueDate"
+							[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						>
+						<button type="button" class="stdd red ml-2 fa fa-trash" (click)="removeVoucherEntry(i)" ></button>
+		
+					</div>
+				</div>
+			</div>
+					
+			<br>
+			<hr>
+		</form>  
+	</div>
+	
 <!--		
 <div style="vertical-align: bottom; font-size: smaller; margin-top: 10px;">
 	{{this.form.value | json}}
 </div> -->
-     
+    
+<div *ngIf="isPrintPDF" id="print-section">
+	<div style="display: inline-block; font-size: large; font-weight: bold;" >
+		{{user?.employer}}
+		{{voucher?.section}}
+	</div>
+
+	<form [formGroup]="form" *ngIf="voucher" autocomplete="off" style="margin-left: 15px;">
+		<div style="display: inline-block; font-size: large; font-weight: bold;" class="title">{{user?.employer}}</div>
+		<br>
+		
+		<label class="lbl w100" >Voucher No.:</label>
+		<app-text-input class="stdd w100" [label]="'Voucher No'" formControlName="voucherNo"></app-text-input>
+		
+		<label class="stdd w100 tAlignRight">Dated:</label>
+		<input class="stdd w150"
+			type="text"
+			placeholder="Voucher dated"
+			formControlName="voucherDated"
+			[minDate]="minTransDate"
+			[maxDate]="maxTransDate"
+			[bsValue]="bsValue"
+			bsDatepicker
+			#dp="bsDatepicker"
+			autocomplete="off"
+			[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
+		>
+	
+		<br>
+	
+		<label class="lbl w100" style="margin-top: 2px;">Account:<b>{{type}}</b></label>
+		<ng-select *ngIf="coas" class="stdd w250" name="accountnm" 
+			[items]="coas"
+			bindLabel="accountName"
+			bindValue="id"
+			labelForId="coaId"
+			placeholder="Select Account"
+			clearAllText="Clear"
+			formControlName="coaId">
+		</ng-select>
+	
+		<label class="stdd w100 tAlignRight">Narration:</label>
+		<textarea class="stdd mb-2" formControlName="narration" cols="50" rows="2"></textarea>
+	
+		<hr><label class="lbl w100 my-0" >Amount:</label>
+		<input type="number" (change)="updateVoucherAmount()" class="stdd w200" formControlName="amount" > 
+		
+		<div class="stdd b" style="margin-left: 50px;">Totals:</div>
+		<span class="stdd">DR</span><div class="stdd w75" style="text-align:right; border: solid;" >{{totalAmountDR}}</div>
+		<span class="stdd">CR</span><div class="stdd w75" style="text-align:right; border: solid;">{{totalAmountCR}}</div>
+		<span class="stdd">DR/CR Diff</span><div class="stdd w100" style="text-align:right; border: solid;">{{iDiff}} </div>
+		<div class="stdd" *ngIf="voucherAmount !== 0 && (totalAmountDR !== voucherAmount || totalAmountCR !== voucherAmount)">
+			Voucher Amount NOT totally disbursed</div>
+			
+		<hr style="margin-top: 3px;"><label class="stdd w90 b">Date</label>
+		<label class="stdd w250 b">Account</label>
+		<label class="stdd w75 b">Debit</label>
+		<label class="stdd w75 b">Credit</label>
+		<label class="stdd w300 b">Narration</label>
+		<label class="stdd2 w60 b">Dr Approved</label>
+		<label class="stdd2 w50 b">by / on</label>
+	
+		<br>
+		<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
+			<div *ngFor="let t of voucherEntries.controls; let i=index;">
+				<hr class="my-0">
+				<div [formGroupName]="i" class="my-0">
+					<input class="stdd w90" style="font-size: smaller"
+						type="text"
+						placeholder="Date"
+						formControlName="transDate"
+						bsDatepicker
+						[bsValue]="bsValueDate"
+						[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+					>
+					<ng-select *ngIf="coas" class="stdd w250 bgcolor" style="font-size: smaller;" 
+						[items]="coas"
+						bindLabel="accountName"
+						bindValue="id"
+						labelForId="coaId"
+						placeholder="Select Account"
+						clearAllText="Clear"
+						formControlName="coaId">
+					</ng-select>
+					<div class="invalid-feedback" *ngIf="form.get('cOAId')?.hasError('required')">
+						Please enter the Account
+					</div>
+	
+					<input class="stdd w75 tAlignRight"  type="number" (change)="recalculateTotal()" formControlName="dr">
+					<input class="stdd w75 tAlignRight" type="number" (change)="recalculateTotal()" formControlName="cr">
+					<input class="stdd w300" type="text" formControlName="narration">
+	
+					<input type="checkbox" style="border-color: black;" 
+						class="stdd2" formControlName="drEntryApproved"
+					>
+					
+					<input type="text" class="stdd2 w75" formControlName="drEntryApprovedByUsername">
+			
+					<input class="stdd2 w75" 
+						type="text"
+						placeholder="Date"
+						formControlName="drEntryApprovedOn"
+						bsDatepicker
+						[bsValue]="bsValueDate"
+						[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+					>
+					</div>
+			</div>
+		</div>
+				
+		<br>
+		<hr>
+			
+	</form>  
+</div>
  
  
  

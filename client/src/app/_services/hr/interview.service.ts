@@ -31,15 +31,16 @@ export class InterviewService {
 
     constructor(private http: HttpClient) { }
 
-    getInterviewsPaged(useCache: boolean=false) { 
+    getInterviewsPaged(useCache: boolean=true) { 
   
       var oParams = this.iParams; 
 
-      if(useCache) {
+      if(this.cache.size > 0 || !useCache) {
+      //if(useCache) {
         const response = this.cache.get(Object.values(oParams).join('-'));
           if(response) return of(response);
       }
-      
+
       let params = getPaginationHeadersInterviewParams(oParams);
 
       return getPaginatedResult<IInterviewBrief[]>(this.apiUrl 

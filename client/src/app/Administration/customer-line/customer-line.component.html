@@ -1,6 +1,7 @@
 <div *ngIf="dto">
 
     <input type="checkbox" style="margin-left: 25px;border-color: black;"
+        *ngIf="!isPrintPDF"
         class="form-check-input w20 hAlignCenter"
         [(ngModel)]="dto.checked"
         (click)="selectedClicked()" >
@@ -10,12 +11,14 @@
     <div class="stdd w125">{{dto.knownAs}}</div>
     <div class="stdd w100">{{dto.city}}</div>
     <div class="stdd w100">{{dto.country}}</div>
-    <button class="btn w25 fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" title="edit this customer" ></button>
-    <button class="btn w25 fa-regular fa-face-angry" style="color:aliceblue;"
-        (click)="displayEvaluationClicked()" title="display Evaluation of this customer" >
-        <i class="fa fa-check-circle-o" style="color: aliceblue;"></i></button>
-    <button class="btn w25 fa fa-list" (click)="feedbackFormClicked()" style="color: aliceblue;"
-        title="Feedback Form for this customer"></button>
-    <button class="btn w25 fa fa-trash red" (click)="deleteClicked()" style="color: red;"
-        title="delete this customer"></button>
+    <div class="stdd" *ngIf="!isPrintPDF">
+        <button class="btn w25 fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" title="edit this customer" ></button>
+        <button class="btn w25 fa-regular fa-face-angry" style="color:aliceblue;"
+            (click)="displayEvaluationClicked()" title="display Evaluation of this customer" >
+            <i class="fa fa-check-circle-o" style="color: aliceblue;"></i></button>
+        <button class="btn w25 fa fa-list" (click)="feedbackFormClicked()" style="color: aliceblue;"
+            title="Feedback Form for this customer"></button>
+        <button class="btn w25 fa fa-trash red" (click)="deleteClicked()" style="color: red;"
+            title="delete this customer"></button>
+    </div>
 </div>

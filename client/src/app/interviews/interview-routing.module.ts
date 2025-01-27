@@ -6,12 +6,16 @@ import { RouterModule } from '@angular/router';
 import { IntervwResolver } from '../_resolvers/hr/intervwResolver';
 import { EditScheduleComponent } from './edit-schedule/edit-schedule.component';
 import { InterviewAttendanceComponent } from './interview-attendance/interview-attendance.component';
+import { InterviewsBriefPagedResolver } from '../_resolvers/hr/interviewsBriefPagedResolver';
 
 
 const routes = [
-  {path: '', component: InterviewListComponent},
+  {path: '', component: InterviewListComponent,
+    resolve: {
+      interviews: InterviewsBriefPagedResolver
+    }
+  },
   
-
   {path: 'editintervw/:orderno', component: InterviewEditComponent, // EditComponent,
     resolve: {
       interview: IntervwResolver

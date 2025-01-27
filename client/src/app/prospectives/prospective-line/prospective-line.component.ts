@@ -15,6 +15,7 @@ import { CallRecordsService } from 'src/app/_services/call-records.service';
 export class ProspectiveLineComponent implements OnInit{
 
   @Input() prospective: IProspectiveBriefDto | undefined;
+  @Input() isReport: boolean =false;
   
   @Output() editEvent = new EventEmitter<ICallRecord | null>();
   @Output() deleteEvent = new EventEmitter<number>();

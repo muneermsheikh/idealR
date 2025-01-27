@@ -1,6 +1,6 @@
 
 <h4 class="my-0 mx-4" style="display: inline-block; font-weight: bold;">CVs refferred to clients</h4>
-<pagination *ngIf="pagination !== undefined"
+<pagination *ngIf="pagination !== undefined && !isPrintPDF"
     class="stdd"
     [totalItems]="pagination!.totalItems"
     [itemsPerPage]="pagination!.itemsPerPage"
@@ -12,7 +12,7 @@
     lastText="&raquo;">
 ></pagination>
 
-<div class="stdd" *ngIf="cvs">
+<div class="stdd" *ngIf="cvs && !isPrintPDF">
     <label class="stdd w75 fSmall b" style="text-align: right; vertical-align: middle !important;">Order#</label>
     <input type="text" title="enter Order No to search"  [(ngModel)]="cvParams.orderNo"
         class="stdd form-control fSmall w75" style="margin-left: 20px;" #search placeholder="Order No">
@@ -24,42 +24,80 @@
     <input type="radio" value="Rejected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Rejected
     <button type="button" (click)="onReset()" class="stdd mx-1 fa fa-refresh fa-2x" ></button>
     
-    <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
+    <label class="lbl w75 tAlignRight">Choose Order No</label>
+        <div class="stdd w100 mx-2">
+            <ng-select 
+                [items]="headers"
+                bindLabel="orderno"
+                bindValue="orderno"
+                labelForId="orderno"
+                clearAllText="Clear"
+                [(ngModel)]="distinctOrderNo"
+                (change)="distinctOrderNoChanged()"
+            ></ng-select>
+        </div>
+        
+        <button printSectionId="print-section" 
+            printTitle="printTitle"
+            [previewOnly]="false"
+            [useExistingCss]="true"
+            ngxPrint
+            title="shows the report in pdf format and enables printing" 
+            style="display:inline-block; margin-left: 50px;"
+            [disabled]="distinctOrderNo===''"
+            title="print pdf for current category Ref"
+            (click)="generatePDF()"
+            >
+            <mat-icon>print</mat-icon>
+        </button>
+
+        <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
         (click)="close()" ></button>
-</div>
+    </div>
 
-<div *ngIf="paramNames.length" class="my-1" >
-    "CVs referred based on following criteria: " + paramNames;
-</div>
-
-<div style="margin-left: 70px;">
-    <div class="lbl w30 mx-1">Select</div>
-    <!-- <div class="stdd fSmall w10 mx-1"></div> -->
-    <div class="lbl w50 mx-1">App No</div>
-    <div class="lbl w130 mx-1">Candidate Name</div>
-    <div class="lbl w200 mx-1">Category Ref</div>
-    <div class="lbl w150 mx-1">Customer Name</div>
-    <div class="lbl w100 mx-1">Referred On</div>
-    <div class="lbl w100 mx-1">Selection Decision</div>
-    <div class="lbl w100 mx-1">Sel Decision Dt</div>
-</div>
-
-<div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; ">
-    No candidates available to refer
-</div>
-
-<!--(msgEvent)="showDocumentViewerEvent($event)" -->    
-<div *ngIf="cvs.length">
- <div class="row" *ngFor="let cv of cvs" >
-       
-      <app-cvreferred-line
-           (downloadEvent)="downloadFileEvent($event)" 
-           (cvCheckedEvent)="cvCheckedEvent($event)"
-           (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
-           (deleteEvent)="deleteClicked($event)"
-           [cv]="cv" 
-      ></app-cvreferred-line>
- </div>
+<button *ngIf="isPrintPDF" class="btn fa fa-window-close fa-2x" (click)="isPrintPDF=false" ></button>
+<div id="print-section">
+    <div style="margin-left: 70px;">
+        <div *ngIf="isPrintPDF" class="b" >
+            CVs referred, with conditions: Order No.: {{distinctOrderNo}}, and Status {{cvParams.selectionStatus}}
+        </div>
+        <div *ngIf="isPrintPDF" class="lbl w30 mx-1">Select</div>
+        <!-- <div class="stdd fSmall w10 mx-1"></div> -->
+        <div class="lbl w50 mx-1">App No</div>
+        <div class="lbl w130 mx-1">Candidate Name</div>
+        <div class="lbl w200 mx-1">Category Ref</div>
+        <div class="lbl w150 mx-1">Customer Name</div>
+        <div class="lbl w100 mx-1">Referred On</div>
+        <div class="lbl w100 mx-1">Selection Decision</div>
+        <div class="lbl w100 mx-1">Sel Decision Dt</div>
+    </div>
+    
+    <div *ngIf="cvs.length === 0" style="margin-left: 100px; margin-top: 5px; font-weight: bold; ">
+        No candidates available to refer
+    </div>
+    
+    <!--(msgEvent)="showDocumentViewerEvent($event)" -->    
+    <div *ngIf="cvs.length">
+        <div class="row" *ngFor="let cv of cvs" >
+            <div *ngIf="isPrintPDF" >
+                <button class="btn fa fa-window-close" (click)="isPrintPDF=false"></button>
+                <app-cvreferred-line
+                    [cv]="cv" 
+                    [isPrintPdf]=true
+                ></app-cvreferred-line>
+            </div>
+            <div *ngIf="!isPrintPDF">
+                <app-cvreferred-line
+                    (downloadEvent)="downloadFileEvent($event)" 
+                    (cvCheckedEvent)="cvCheckedEvent($event)"
+                    (cvAssessEvent)="displayAssessmentModalBySwitchMap($event)"
+                    (deleteEvent)="deleteClicked($event)"
+                    [cv]="cv" 
+                    [isPrintPdf]=false
+                ></app-cvreferred-line>
+            </div>
+        </div>
+    </div>
 </div>
 
 

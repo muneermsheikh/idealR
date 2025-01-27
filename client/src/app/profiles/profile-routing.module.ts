@@ -7,7 +7,6 @@ import { CandidateEditComponent } from './candidate-edit/candidate-edit.componen
 import { QualificationListResolver } from '../_resolvers/qualificationListResolver';
 import { CandidateResolver } from '../_resolvers/admin/candidateResolver';
 import { CvsAvailableToRefComponent } from './cvs-available-to-ref/cvs-available-to-ref.component';
-import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { RouterModule } from '@angular/router';
 import { CvsreferredComponent } from './cvsreferred/cvsreferred.component';
 import { CandidatesAvailableToReferPagedResolver } from '../_resolvers/hr/candidatesAvailableToReferPagedResolver';
@@ -17,15 +16,18 @@ import { HrGuard } from '../_guards/hr.guard';
 import { OpenOrderItemsResolver } from '../_resolvers/openOrderItemsResolver';
 import { CandidateAssessedResolver } from '../_resolvers/hr/candidate-assessed.resolver';
 import { CandidateListingPagedResolver } from '../_resolvers/hr/candidateListingPagedResolver';
+import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
+import { OrderNosHeaderResolver } from '../_resolvers/hr/OrderNosHeaderResolver';
+import { HttpHeaderResponse } from '@angular/common/http';
+import { CategoriesFromCVsAvailableToRefResolver } from '../_resolvers/hr/CategoriesFromCVsAvailableToRefResolver';
 
 const routes = [
-    {path: '', component: ProfileMenuComponent},
-
     {path: 'listing', component: ProfileListComponent,
         resolve: {
           professions: CategoryListResolver,
           agents: AgentsResolver,
-          candidateBriefs: CandidateListingPagedResolver
+          candidateBriefs: CandidateListingPagedResolver,
+          headers: ProspectiveHeaderResolver
         },
     },
     {path: 'register/edit/:id', component:CandidateEditComponent, 
@@ -41,13 +43,14 @@ const routes = [
         resolve: {
           cvs: CandidatesAvailableToReferPagedResolver,
           professions: CategoryListResolver,
-          agents: AgentsResolver
+          agents: AgentsResolver,
         }
     },
 
     {path: 'cvsreferred', component: CvsreferredComponent,
       resolve: {
-        cvrefPaged: CvReferredPagedResolver
+        cvrefPaged: CvReferredPagedResolver,
+        headers: OrderNosHeaderResolver
       }
     },
     {path: 'cvassess/:id', component: CvAssessComponent, canActivate: [HrGuard],

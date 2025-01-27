@@ -33,6 +33,8 @@ export class ProspectiveListComponent implements OnInit {
   returnUrl = '';
 
   prospectives: IProspectiveBriefDto[]=[];
+  printProspectives: IProspectiveBriefDto[]=[];
+
   prospectiveSelected: IProspectiveBriefDto|undefined;
 
   pagination: Pagination | undefined;
@@ -47,8 +49,9 @@ export class ProspectiveListComponent implements OnInit {
 
   ProspList: IProspectiveBriefDto[]=[];
 
-  headers: IProspectiveHeaderDto[]=[];
-  PrintPreview = false;
+  headers: IProspectiveHeaderDto[]=[];    //contains only Orderno
+  printtitle: string='';
+  isPrintPDF = false;
   distinctRefCats: string[]=[];
   distinctRefCat = '';
   
@@ -79,7 +82,7 @@ export class ProspectiveListComponent implements OnInit {
           this.prospectives = data['prospectives'].result;
           this.pagination = data['prospectives'].pagination;
           this.totalCount = data['prospectives'].totalCount;
-          //this.headers = data['headers'];
+          this.headers = data['headers'];
 
       })
   }
@@ -266,12 +269,13 @@ export class ProspectiveListComponent implements OnInit {
       this.loadProspectives();
     }
 
-    /* distinctRefChanged() {
+    distinctRefChanged() {
       if (this.headers.length === 0) {
         this.service.getProspectiveHeadersDto(this.pParams.statusClass).subscribe({
           next: (response: IProspectiveHeaderDto[]) => {
             if(response !== null && response.length > 0) {
-              this.headers = response
+              this.headers = response;
+              this.isPrintPDF = true
             } else {
               this.toastr.warning('Failed to retrieve headers', 'Failed')
             }
@@ -279,7 +283,7 @@ export class ProspectiveListComponent implements OnInit {
         })
       }
     }
-      */
+      
     /* generatePDF() {
 
       if(this.distinctRefCat !== '' && this.pParams.statusClass !== '') {
@@ -314,6 +318,35 @@ export class ProspectiveListComponent implements OnInit {
       }
     }
     */
+
+    generatePDF() {
+      this.isPrintPDF = !this.isPrintPDF;
+
+      var orderno = this.distinctRefCat;    //seleted value
+      var status = this.pParams.statusClass;
+
+      this.printtitle =  "Prospective Candidate Availability Status as on " + new Date() + "<br>For Order No. " + orderno + ", status = " + status;
+        
+      var params = this.service.getParams();
+      
+      this.service.getProspectivesList(orderno, status).subscribe({
+          next: (response: IProspectiveBriefDto[]) => {
+          if(response !== null && response.length > 0) {
+            this.printProspectives = response
+          } else {
+            console.log('response is undefined');
+          }
+        },
+        error: error => console.log(error)
+      })
+
+      //this.router.navigateByUrl("/prospectives/pdf/001012/'active'")
+    }
+
+    closePrintSection() {
+      this.isPrintPDF = false;
+      this.distinctRefCat = '';
+    }
 }
 
    

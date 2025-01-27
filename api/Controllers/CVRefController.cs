@@ -133,5 +133,14 @@ namespace api.Controllers
           {
                return await _cvrefRepo.DeleteReferral(cvrefid);
           }
+
+          [HttpGet("headers/{status}")]
+          public async Task<ActionResult<ICollection<ProspectiveHeaderDto>>> GetCVReferredOrderNoHeaders(string status)
+          {
+               var dto = await _cvrefRepo.GetCVReferredOrderNoHeaders(status);
+
+               return Ok(dto);
+          }
+
     }
 }

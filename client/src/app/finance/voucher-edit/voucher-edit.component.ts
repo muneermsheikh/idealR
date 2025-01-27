@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap } from 'rxjs';
+import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { IEmployeeIdAndKnownAs } from 'src/app/_models/admin/employeeIdAndKnownAs';
 import { coa, ICOA } from 'src/app/_models/finance/coa';
 import { IVoucher } from 'src/app/_models/finance/voucher';
@@ -17,6 +17,7 @@ import { VouchersService } from 'src/app/_services/finance/vouchers.service';
 import { CoaEditModalComponent } from '../coa-edit-modal/coa-edit-modal.component';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Pagination } from 'src/app/_models/pagination';
+import { AccountService } from 'src/app/_services/account.service';
 
 @Component({
   selector: 'app-voucher-edit',
@@ -89,7 +90,10 @@ export class VoucherEditComponent implements OnInit{
 
   //filedownoads
   response?: {dbPath: ''};
-  
+
+  isPrintPDF=false;
+  printtitle = '';
+
   constructor(private service: VouchersService, 
     private coaService: COAService,
     private fileService: FileService,
@@ -98,7 +102,9 @@ export class VoucherEditComponent implements OnInit{
     private toastr: ToastrService, 
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private confirmService: ConfirmService) { 
+    private confirmService: ConfirmService,
+    private accountService: AccountService)
+     { 
          
         this.routeId = this.activatedRoute.snapshot.params['id'];
         if(this.routeId==undefined) this.routeId='';
@@ -136,6 +142,9 @@ export class VoucherEditComponent implements OnInit{
       }
       
       if(!this.isEditable) this.form.disable;
+
+      if(!this.user) this.accountService.currentUser$.pipe(map(user => this.user = user!));
+      console.log('user:', this.user);
     }
 
     createForm(vch: IVoucher) {
@@ -143,12 +152,12 @@ export class VoucherEditComponent implements OnInit{
       this.form = this.fb.group({
         id: vch.id,
         section: [vch.section, Validators.required],
-        divn: [vch.divn, Validators.maxLength(1)],
+        divn: [vch.divn, [Validators.maxLength(1), Validators.required]],
         voucherNo: [vch.voucherNo, Validators.required],
         voucherDated: [vch.voucherDated, Validators.required],
         coaId: [vch.coaId, [Validators.required, Validators.min(1)]],
         amount: [vch.amount, [Validators.required, Validators.min(1)]],
-        totalAmountDR: [this.totalAmountDR, this.matchValues('amount')],
+        totalAmountDR: [this.totalAmountDR], //, this.matchValues('amount')],
         narration: vch.narration,
         username: vch.username,
 
@@ -182,9 +191,11 @@ export class VoucherEditComponent implements OnInit{
             })
           ))
         ) */
+        
       });
 
-      
+      this.voucherAmount = vch.amount;
+
       /*this.form.controls['amount'].valueChanges.subscribe({
         next: () => this.form.controls['totalAmountDR'].updateValueAndValidity()
       })
@@ -335,11 +346,9 @@ export class VoucherEditComponent implements OnInit{
       switch(accountclass[0]) {
         case 'candidate':
           if(this.type === 'CR') {
-            console.log('CR', icOAId)
             this.suggestedDefaultCoaIdCR = icOAId;
             this.suggestedDefaultCoaIdDR = 20;    //sales recruitment
           } else {
-            console.log('DR', icOAId);
             this.suggestedDefaultCoaIdDR = icOAId;
             this.suggestedDefaultCoaIdCR = 20;    //sales recruitment
           }
@@ -379,7 +388,11 @@ export class VoucherEditComponent implements OnInit{
     }
 
     returnToCaller() {
-      this.router.navigateByUrl('/finance/voucherlist');
+      if(this.isPrintPDF) {
+        this.isPrintPDF=false;
+      }else {
+        this.router.navigateByUrl('/finance/voucherlist');
+      }
     }
 
     addNewCOA() {
@@ -489,7 +502,8 @@ export class VoucherEditComponent implements OnInit{
             }, error: (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
           })
       }
-        
+    
+      if(this.voucher) this.voucherAmount = this.voucher.amount;
     }
     
 
@@ -552,5 +566,13 @@ export class VoucherEditComponent implements OnInit{
     uploadFinished = (event: any) => { 
       this.response = event; 
     }
+
     
+    generatePDF() {
+      this.isPrintPDF=true;  
+  
+      this.printtitle =  "Finance Voucher No. " +  this.voucher?.voucherNo ;
+        
+    }
+  
 }

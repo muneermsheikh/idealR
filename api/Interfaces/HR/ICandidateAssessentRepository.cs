@@ -14,6 +14,8 @@ namespace api.Interfaces.HR
         Task<bool> DeleteCandidateAssessment(int id);
         Task<bool> DeleteCandidateAssessmentItem(int id);
         Task<PagedList<CandidateAssessedDto>> GetCandidateAssessments(CandidateAssessmentParams assessmentParams);
+        Task<ICollection<ProspectiveHeaderDto>> CategoriesFromCVAvailableToRefer();
+        Task<ICollection<cvsAvailableDto>> GetAvailableCandidates();
         Task<ICollection<CandidateAssessedShortDto>> GetCandidateAssessmentsByCandidateId(int candidateId);
         
         Task<CandidateAssessment> GetCandidateAssessment(CandidateAssessmentParams assessmentParams);

@@ -114,8 +114,8 @@ namespace api.Data.Repositories
 
         public async Task<PagedList<cvsAvailableDto>> GetAvailableCandidates(CandidateParams candidateParams)
         {
-                var query2 = (from cv in _context.Candidates 
-                    join asses in _context.CandidateAssessments on cv.Id equals asses.CandidateId where asses.CVRefId==0
+                var query2 = (from asses in _context.CandidateAssessments where asses.AssessResult != "Not Assessed" && asses.CVRefId==0
+                    join cv in _context.Candidates on asses.CandidateId equals cv.Id
                     join item in _context.OrderItems on asses.OrderItemId equals item.Id
                     join cat in _context.Professions on item.ProfessionId equals cat.Id
                     join order in _context.Orders on item.OrderId equals order.Id

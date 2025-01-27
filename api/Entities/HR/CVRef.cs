@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Entities.Deployments;
 
@@ -7,6 +8,8 @@ namespace api.Entities.HR
     {
         public int CandidateAssessmentId { get; set; }
         public int CVReviewId { get; set; }
+        [MaxLength(40)]
+        public string CategoryRef { get; set; }
         [ForeignKey("OrderItemId")]
         public int OrderItemId { get; set; }
         public int CustomerId { get; set; }

@@ -12,6 +12,7 @@ import { ICandidateAssessedDto } from 'src/app/_dtos/hr/candidateAssessedDto';
 import { ICandidateAssessmentWithErrorStringDto } from 'src/app/_dtos/hr/candidateAssessmentWithErrorStringDto';
 import { ICandidateAssessmentAndChecklistDto } from 'src/app/_dtos/hr/candidateAssessmentAndChecklistDto';
 import { ICandidateAssessmentDto } from 'src/app/_dtos/hr/candidateAssessmentDto';
+import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +95,10 @@ export class CandidateAssessmentService {
     generateCVAssessment(candidateid: number, orderitemid: number) {
       return this.http.get<ICandidateAssessment>(this.apiUrl + 'CandidateAssessment/generate/' 
         + candidateid + '/' + orderitemid);
+    }
+
+    categoriesOfCVsAvailableToRefer() {
+      return this.http.get<IProspectiveHeaderDto[]>(this.apiUrl + 'CandidateAssessment/categoryheaders');
     }
   
 }

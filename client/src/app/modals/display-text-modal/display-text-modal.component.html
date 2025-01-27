@@ -1,12 +1,17 @@
 <div class="modal-header">
-    <button type="button" class="close fa fa-window-close fa-2x mx-5" (click)="bsModalRef.hide()"> </button>
-     <button type="button" class="fa fa-check fa-2x mx-5" (click)="emitText()" > </button>
+    <button type="button" class="fa fa-check fa-2x mx-5" (click)="emitText()" > </button>
+    <button type="button" class="close fa fa-window-close fa-2x pull-right" (click)="bsModalRef.hide()"> </button>
+     
 </div>
 
 <div class="modal-body">
     <div>{{title}}</div>
-    <textarea name="displaytext" id="displaytext" cols="50" rows="5"
+    <!--comment text of the intrviewer-->
+    <textarea name="displaytext" id="displaytext" cols="90" rows="15"       
         [(ngModel)]="displayText"></textarea>
+        
 </div>
 
-<div class="modal-footer"></div>
+<div class="modal-footer">
+ 
+</div>
