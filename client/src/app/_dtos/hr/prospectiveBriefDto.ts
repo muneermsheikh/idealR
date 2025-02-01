@@ -15,6 +15,9 @@ export interface IProspectiveBriefDto
     currentLocation: string;
     workExperience: number;
     status?: string;
+    bySMS: boolean;
+    byMail: boolean;
+    byPhone: boolean;
     userName: string;
     statusDate: Date;
     remarks: string;

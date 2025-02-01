@@ -9,7 +9,7 @@
 </button>
 
 <div *ngIf="Interested" class="my-0">
-    <span style="font-size: smaller; font-weight:bold; margin-left: 800px;">Interested Types:</span>
+    <span style="font-size: smaller; font-weight:bold; ">Interested Types:</span>
     <span class="menuStyle w50" title="Register as Interested and keen" 
         [class.disabled]="status === 'Interested, and keen'"
         (click)="Interested_keen(id)">Keen to Join</span>
@@ -23,7 +23,7 @@
 </div>
 
 <div *ngIf="NotInterested" class="my-0">
-    <span style="font-size: smaller; font-weight:bold; margin-left: 700px;">No-Interest Reasons:</span>
+    <span style="font-size: smaller; font-weight:bold;">No-Interest Reasons:</span>
     <span class="menuStyle w50" title="Register as Not Interested due to Salary" 
         [class.disabled]="status === 'Declined-Low remuneration'"
         (click)="NI_DueToSalary(id)">Salary</span>
@@ -40,7 +40,7 @@
 </div>
 
 <div *ngIf="CallMissed" class="my-0">
-    <span class="menuStyle w50" style="margin-left: 900px;" title="register the candidate's phone number as wrong number" 
+    <span class="menuStyle w50"  title="register the candidate's phone number as wrong number" 
     (click)="CallMissed_WrongNo(id)">Wrong Number</span>
 
     <span class="menuStyle w50" title="candidate did not respond to the call" 

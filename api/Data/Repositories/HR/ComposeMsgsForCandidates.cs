@@ -16,7 +16,7 @@ namespace api.Data.Repositories.HR
         private readonly DateTime _today = DateTime.Now;
         private readonly IConfiguration _config;
         private readonly string _RAName;
-        
+        private readonly string _HRSupervisor, _HRSupervisorPhone;
 
         public ComposeMsgsForCandidates(DataContext context, UserManager<AppUser> userManager, IConfiguration config)
         {
@@ -24,6 +24,8 @@ namespace api.Data.Repositories.HR
             _userManager = userManager;
             _context = context;
             _RAName = _config["_RAName"] ?? "";
+            _HRSupervisor = _config["HRSupUsername"] ?? "";
+            _HRSupervisorPhone = _config["HRSupPhoneNo"] ?? "";
         }
         public async Task<MessageWithError> AdviseCandidate_DeploymentStatus(CandidateAdviseDto candDetail, DateTime TransactionDate, string ProcessName)
         {
@@ -248,11 +250,91 @@ namespace api.Data.Repositories.HR
             return FlightDetail;
         }
 
-        
-
         public MessageWithError AdviseCandidate_OfferAccepted(CandidateAdviseDto candDetail, DateTime TransactionDate)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<MessageWithError> AdviseCandidate_CallRecordInterest(ICollection<ComposeCallRecordMessageDto> dtls )
+        {
+            var msgWithErr = new MessageWithError();
+
+            var subject = "";
+            var subjectInBody = "";
+            var msgBody = "";
+            var msgType = "";
+            var appUserIdHRSup = _config["HRSupAppuserId"] ?? "0";
+            var senderObj = await _userManager.FindByIdAsync(appUserIdHRSup);
+                   
+            foreach(var dtl in dtls) {
+                
+                switch (dtl.ModeOfAdvise.ToLower()) {
+                    case "mail":
+                        var candidateName = dtl.CandidateTitle + " " + dtl.CandidateName;
+                        subject = dtl.Subject;
+                        subjectInBody  = dtl.Subject;
+
+                        msgBody = string.Format("{0: dd-MMMM-yyyy}", _today) + "<br><br>" + dtl.CandidateTitle + " " 
+                            + dtl.CandidateName + "<br>Email:" + dtl.EmailId + "<br><br>";
+
+                        msgBody += dtl.CandidateResponse.ToLower().StartsWith("interested") 
+                            ? "Thank you for your interest in the above opportunity"
+                            :dtl.CandidateResponse.ToLower().StartsWith("declined") 
+                                ? "We regret to note that you are not interested in the above opportunity, with the reason " + dtl.CandidateResponse
+                                : dtl.CandidateResponse.ToLower().StartsWith("not reachable")
+                                    ? "We failed to reach you on your above given telephone number " + "(" + dtl.PhoneNo + " - " 
+                                        + dtl.CandidateResponse + ").  Please get back to us on the below given numbers with your interest in the above opportunity."
+                                    : "";
+                        
+                        //var Notification = new FCNMessage();
+                                //FCM Push Notifications
+                        
+                        msgBody += "<br><br>Best Regards<br>HR Supervisor";
+
+                        var message = new Message
+                        {
+                            SenderUsername=senderObj.UserName,
+                            //RecipientAppUserId=candDetail.RecipientObj.Id,
+                            //SenderAppUserId=candDetail.SenderObj.Id,
+                            SenderEmail=senderObj.Email ?? "",
+                            RecipientUsername = dtl.CandidateUsername ?? "",
+                            RecipientEmail = dtl.EmailId ?? "",
+                            //CCEmail = HRSupobj?.Email ?? "",
+                            Subject = subject,
+                            Content = msgBody,
+                            MessageType = msgType,
+                            MessageComposedOn = _today
+                        };
+
+                        msgWithErr.Messages.Add(message);
+
+                        break;
+
+                    case "phone":
+                        msgBody = "Message For " + dtl.CandidateTitle + " " + dtl.CandidateName + ", Phone No. " + dtl.PhoneNo;
+
+                        msgBody += "We are " + _RAName + ", a licensed Recruitment Agency.";
+
+                        msgBody += dtl.CandidateResponse.ToLower().StartsWith("interested") 
+                            ? "Thank you for your interest in the above opportunity.  Your profile will be forwarded to the customer and we will be in touch with you with client's response."
+                            :dtl.CandidateResponse.ToLower().StartsWith("declined") 
+                                ? "We regret to note that you are not interested in the above opportunity, with the reason " + dtl.CandidateResponse
+                                : dtl.CandidateResponse.ToLower().StartsWith("not reachable")
+                                    ? "We failed to reach you on your above given telephone number " + "(" + dtl.PhoneNo + " - " 
+                                        + dtl.CandidateResponse + ").  Please get back to us on the below given numbers with your interest in the above opportunity."
+                                    : "";
+                        msgBody += "  For any query concerning this message, please contact Mr. " + _HRSupervisor + " on " + _HRSupervisorPhone + ".  ";   
+                        //var Notification = new FCNMessage();
+                            
+                        //save the speech audio
+                        
+                        break;
+                }
+                
+
+            }
+            
+            return msgWithErr;
         }
     }
 }

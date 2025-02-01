@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
-import { ICallRecordItemAddedReturnValueDto } from 'src/app/_dtos/admin/callRecordItemAddedReturnValueDto';
-import { ICallRecordItemToAddDto } from 'src/app/_dtos/admin/callRecordItemToAddDto';
+import { ToastrService } from 'ngx-toastr';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
-import { ICallRecordItem } from 'src/app/_models/admin/callRecordItem';
 import { CallRecordsService } from 'src/app/_services/call-records.service';
 
 @Component({
@@ -21,14 +18,9 @@ export class ProspectiveLineComponent implements OnInit{
   @Output() deleteEvent = new EventEmitter<number>();
   @Output() selectedEvent = new EventEmitter<IProspectiveBriefDto>();
   @Output() convertToCandidateEvent = new EventEmitter<number>();
+  @Output() ComposeMessageEvent = new EventEmitter<boolean>();
+  //@Output() modeOfAdviseEvent = new EventEmitter<string>();
 
-  MailSMSOption: boolean = false;
-
-    //Interested=false;
-    //NotInterested=false;
-    //CallMissed=false;
-    adviseByMail=false;
-    adviseBySMS=false;
 
       StatusSelected="";
 
@@ -72,12 +64,7 @@ export class ProspectiveLineComponent implements OnInit{
 
       callStatusChanged(status: string) {
         this.prospective!.status = status;
-        this.MailSMSOption=false;
       }
-
-      optionChanged(changed: any) {
-        console.log('prospective status:', this.prospective?.status);
-        //if(this.prospective!.status!.length > 0) this.prospective!.status = 'undefined';
-        this.MailSMSOption = changed;
-      }
+      
+     
   }

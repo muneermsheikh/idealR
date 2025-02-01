@@ -18,6 +18,7 @@ import { CallRecordItemToCreateDto } from 'src/app/_dtos/hr/callRecordItemToCrea
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
 import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 import { AccountService } from '../account.service';
+import { IComposeCallRecordMessageDto } from 'src/app/_dtos/hr/composeCallRecordMessageDto';
 
 
 @Injectable({
@@ -98,30 +99,34 @@ export class ProspectiveService {
       return this.http.get<IProspectiveHeaderDto[]>(this.apiUrl + 'Prospectives/headers/' + st);
     }
   
-  getProspectiveSummary(useCache: boolean)
-  {
-    if (useCache === false) this.cacheSummary = new Map();
-    
-    if (this.cacheSummary.size > 0 && useCache === true) {
-      if (this.cacheSummary.has(Object.values(this.sParams).join('-'))) {
-        this.summaries= this.cacheSummary.get(Object.values(this.sParams).join('-'));
-        return of(this.summaries);
+    getProspectiveSummary(useCache: boolean)
+    {
+      if (useCache === false) this.cacheSummary = new Map();
+      
+      if (this.cacheSummary.size > 0 && useCache === true) {
+        if (this.cacheSummary.has(Object.values(this.sParams).join('-'))) {
+          this.summaries= this.cacheSummary.get(Object.values(this.sParams).join('-'));
+          return of(this.summaries);
+        }
       }
+
+      let params = getHttpParamsForProspectiveSummary(this.sParams);
+      
+      return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'Prospectives/summary', {params})
+        .pipe(
+          map(response => {
+            this.cache.set(Object.values(this.sParams).join('-'), response);
+            this.summaries = response;
+            return response;
+          })
+        )
+    }
+    
+    composeCallRecordMessage(compose: IComposeCallRecordMessageDto[]) {
+      return this.http.post<IComposeCallRecordMessageDto[]>(this.apiUrl + 'Prospectives/ComposeMessages', compose);
     }
 
-    let params = getHttpParamsForProspectiveSummary(this.sParams);
-    
-    return this.http.get<IProspectiveSummaryDto[]>(this.apiUrl + 'Prospectives/summary', {params})
-      .pipe(
-        map(response => {
-          this.cache.set(Object.values(this.sParams).join('-'), response);
-          this.summaries = response;
-          return response;
-        })
-      )
-  }
-  
-  setParams(params: prospectiveCandidateParams) {
+    setParams(params: prospectiveCandidateParams) {
     this.oParams = params;
   }
   

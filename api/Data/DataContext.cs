@@ -27,6 +27,7 @@ namespace api.Data
         public DbSet<IdTable> idTables { get; set; }
         public DbSet<Employee> Employees {get; set;}
         public DbSet<EmployeeAttachment> EmployeeAttachments {get; set;}
+        public DbSet<AudioMessage> AudioMessages {get; set;}
         public DbSet<Message> Messages {get; set;}
         //public DbSet<UserLike> UserLikes {get; set;}
         //public DbSet<ContactResult> contactResults {get; set;}  

@@ -34,7 +34,12 @@
     display: none; 
   }
 
-
+.checkbox {
+    vertical-align: top;
+    border-color: black;
+    text-align: center;
+    width: 15px;
+}
 .red {color: red;}
 .w15 {width: 15px;}
 .w35 {width: 35px;}

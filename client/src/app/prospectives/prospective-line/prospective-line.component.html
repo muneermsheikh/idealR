@@ -23,13 +23,15 @@
         <div class="stdd w100">{{prospective.status ?? "undefined"}}</div>
         
         <div class="stdd" *ngIf="!isReport">
-            <div class="stdd w100">{{prospective.statusDate | timeago}}</div>
+            <!-- <div class="stdd w100">{{prospective.statusDate | timeago}}</div> -->
         
-            <input type="checkbox" style="border-color: black;"
-                class="form-check-input w20 hAlignCenter" value="mailSMSOption">
-           
-            <input type="checkbox" style="margin-left: 30px; margin-right: 10px; vertical-align:top; border-color: black"
-                class="form-check-input w20 hAlignCenter" value="mailSMSOption">
+            <input type="checkbox" [(ngModel)]="prospective.bySMS"
+                class="form-check-input checkbox">
+            <input type="checkbox" [(ngModel)]="prospective.byMail"
+                class="form-check-input checkbox">
+            <input type="checkbox" [(ngModel)]="prospective.byPhone"
+                class="form-check-input checkbox">
+
             <button class="stdd w20 fa fa-pencil" (click)="editEventClicked()" ></button>
             <button class="stdd w20 fa fa-arrow-right" (click)="convertToCandidateClicked()" 
                 title="converts this prospective candidate to a candidate, and removes it from the prospectives list"    ></button>
@@ -42,8 +44,8 @@
                 [personId]="prospective.personId"
                 [personType]= "'Prospective'"
                 (callStatusEvent)="callStatusChanged($event)"
-                (eventClickedEvent)="optionChanged($event)"
             ></app-register-call-records>
+            <!-- (eventClickedEvent)="modeAdviseChanged($event)" -->
         </div>
 
     </div>

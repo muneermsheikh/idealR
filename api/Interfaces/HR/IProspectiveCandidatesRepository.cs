@@ -1,6 +1,7 @@
 using api.DTOs;
 using api.DTOs.HR;
 using api.Entities.HR;
+using api.Entities.Messages;
 using api.Helpers;
 using api.Params.Admin;
 using api.Params.HR;
@@ -18,5 +19,7 @@ namespace api.Interfaces.HR
         Task<bool> DeleteProspectiveCandidate(int ProspectiveId);
         Task<ICollection<ProspectiveHeaderDto>> GetProspectiveHeaders(string status);
         Task<ICollection<ProspectiveBriefDto>> GetProspectiveList(string orderno, string status);
+        Task<ICollection<ComposeCallRecordMessageDto>> ComposeCallRecordMessages(ICollection<ComposeCallRecordMessageDto> dtos, string loggedInUsername);
+        Task<bool> InsertAudioFiles(ICollection<AudioMessage> audioMessages);
     }
 }

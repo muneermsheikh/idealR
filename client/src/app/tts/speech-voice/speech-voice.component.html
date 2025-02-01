@@ -1,0 +1,9 @@
+<ng-container>
+    <select name="voice" id="voices" #voices>
+      <option *ngFor="let voice of voices$ | async" [value]="voice.name">{{ voice.name }} ({{ voice.lang }})</option>
+    </select>
+    <label for="rate">Rate:</label>
+    <input name="rate" type="range" min="0" max="3" value="1" step="0.1" #rate />
+    <label for="pitch">Pitch:</label>
+    <input name="pitch" type="range" min="0" max="2" step="0.1" #pitch value="1" />
+</ng-container>

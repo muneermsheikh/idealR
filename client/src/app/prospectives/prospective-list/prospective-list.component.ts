@@ -2,9 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap, take, tap } from 'rxjs';
+import { catchError, filter, of, Subject, Subscription, switchMap, take, tap } from 'rxjs';
 import { ICallRecordResult } from 'src/app/_dtos/admin/callRecordResult';
 import { CallRecordStatusReturnDto } from 'src/app/_dtos/admin/callRecordStatusReturnDto';
+import { IComposeCallRecordMessageDto } from 'src/app/_dtos/hr/composeCallRecordMessageDto';
 import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 import { ICallRecord } from 'src/app/_models/admin/callRecord';
@@ -15,6 +16,8 @@ import { AccountService } from 'src/app/_services/account.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { ProspectiveService } from 'src/app/_services/hr/prospective.service';
 import { CallRecordsEditModalComponent } from 'src/app/callRecords/call-records-edit-modal/call-records-edit-modal.component';
+import { SpeechProperties } from 'src/app/tts/speech';
+import { SpeechService } from 'src/app/tts/speech.service';
 
 @Component({
   selector: 'app-prospective-list',
@@ -35,7 +38,7 @@ export class ProspectiveListComponent implements OnInit {
   prospectives: IProspectiveBriefDto[]=[];
   printProspectives: IProspectiveBriefDto[]=[];
 
-  prospectiveSelected: IProspectiveBriefDto|undefined;
+  //prospectiveSelected: IProspectiveBriefDto|undefined;
 
   pagination: Pagination | undefined;
   bsModalRef: BsModalRef | undefined;
@@ -65,7 +68,7 @@ export class ProspectiveListComponent implements OnInit {
 
   constructor(private service: ProspectiveService, private modalService: BsModalService,
     private router: Router, private toastr: ToastrService, private confirm: ConfirmService,
-    private activatedRoute: ActivatedRoute, private accountService: AccountService){
+    private activatedRoute: ActivatedRoute, private accountService: AccountService, private speechService: SpeechService){
     let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
         if (nav?.extras && nav.extras.state) {
@@ -132,12 +135,13 @@ export class ProspectiveListComponent implements OnInit {
   }
 
   selectedClicked(item: any) {
-    if(item.checked===true) {
+    /*if(item.checked===true) {
       this.prospectives.filter(x => x.id != item.id).forEach(x => x.checked=false);  
     } else {
       this.prospectives.forEach(x => x.checked=false);
     }
     this.prospectiveSelected = item.checked ? undefined : item;
+    */
 
   }
   
@@ -186,8 +190,7 @@ export class ProspectiveListComponent implements OnInit {
             candidateName: item.candidateName,
             userName: this.user?.userName
           }
-        }
-            
+        }            
         
         this.bsModalRef = this.modalService.show(CallRecordsEditModalComponent, config);
         const observableOuter = this.bsModalRef.content.passCallRecordEvent;
@@ -267,6 +270,64 @@ export class ProspectiveListComponent implements OnInit {
       this.pParams = new prospectiveCandidateParams();
       this.service.setParams(this.pParams);
       this.loadProspectives();
+    }
+    
+    
+    composeMessages() {
+      var subscription = new Subscription();
+      var textChanged$ = new Subject<void>();
+      var dtos:IComposeCallRecordMessageDto[]=[];
+      var prospects: IProspectiveBriefDto[]=this.prospectives.filter(x => x.checked === true);
+      if(prospects.length === 0) {
+        this.toastr.warning('No candidate selected', 'Entry Error');
+        return;
+      }
+
+      prospects.forEach(x => {
+          var msg : IComposeCallRecordMessageDto = {
+            modeOfAdvise: x.byMail ? "Mail" : x.bySMS ? "SMS" : x.byPhone ? "Phone" : "",
+            candidateResponse: x.status!, candidateName: x.candidateName, phoneNo: x.phoneNo, emailId: x.email,
+            candidateTitle: "Mr. ", subject: x.categoryRef, candidateUsername: x.userName, messageComposed: '' };
+            dtos.push(msg);
+      })
+      
+        this.service.composeCallRecordMessage(dtos).subscribe({
+          next: (response: IComposeCallRecordMessageDto[]) => {
+            if(response.length > 0) {
+              console.log('response from composecallrecordmessage', response);
+              response.forEach(x => {
+                if(x.modeOfAdvise==='Phone') {
+                  subscription.add(
+                    textChanged$.pipe(tap(() => this.speechService.updateSpeech({ name: 'text', value: x.messageComposed }))).subscribe(),
+                  );
+                  textChanged$.subscribe({
+                    next: (response: any) => {
+                      console.log('voice file name', response.name);
+                      response.save;
+                    }
+                  })
+                }
+              })
+              this.toastr.success('message composed', 'Success')
+            } else {
+              this.toastr.info('failed to compose message', 'Failed to compose msg')
+            }
+          }
+        })
+        
+    }
+
+    modeAdviseSelected(mode: any) {
+      switch (mode) {
+        case "sms":
+          break;
+        case "mail" :
+          break;
+        case "phone":
+          break;
+        default:
+          break;
+      }
     }
 
     distinctRefChanged() {

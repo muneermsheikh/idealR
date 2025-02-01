@@ -2,6 +2,7 @@ using api.DTOs;
 using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Identity;
+using api.Entities.Messages;
 using api.Helpers;
 using api.Interfaces;
 using api.Interfaces.HR;
@@ -23,9 +24,12 @@ namespace api.Data.Repositories.HR
         private readonly ICandidateRepository _candidateRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
         public ProspectiveCandidatesRepository(DataContext context, ITokenService tokenService, 
+            IConfiguration config,
             IMapper mapper,UserManager<AppUser> userManager, ICandidateRepository candidateRepository)
         {
+            _config = config;
             _mapper = mapper;
             _tokenService = tokenService;
             _candidateRepository = candidateRepository;
@@ -456,5 +460,150 @@ namespace api.Data.Repositories.HR
 
             return dto;
         }
+
+        public async Task<ICollection<ComposeCallRecordMessageDto>> ComposeCallRecordMessages(ICollection<ComposeCallRecordMessageDto> dtos, string loggedInUsername)
+        {
+            var audioMessages = new List<AudioMessage>();
+            var audioMessage = new AudioMessage();
+            var returnDtos = new List<ComposeCallRecordMessageDto>();
+            var returnDto = new ComposeCallRecordMessageDto();
+
+            string CandidateTitle="", CandidateName="", PhoneNo="", EmailId="", Response="";
+            string msgBody = "", Opportunity = "";
+            DateTime _today = DateTime.UtcNow;
+            var messages = new List<Message>();
+            foreach(var dto in dtos) {
+                CandidateTitle = dto.CandidateTitle;
+                CandidateName = dto.CandidateName;
+                PhoneNo = dto.PhoneNo;
+                EmailId = dto.EmailId;
+                Response = dto.CandidateResponse.ToLower();
+                Opportunity = dto.Subject;
+
+                msgBody = CandidateTitle + " " + CandidateName + "<br>Phone No.:" + PhoneNo + "<br>Email Id:" + EmailId;
+                msgBody += "<br><br>Dear Mr. " + CandidateName + "<br><br>";
+                msgBody += "<ul><b>Subject:" + Opportunity + "</ul></b><br><br>";
+                
+                switch(dto.ModeOfAdvise.ToLower()) {
+                    case "mail":
+                        msgBody +=  Response == "interested, and keen"
+                            ? "Thank you for confirming your interest in the above opportunity. We are accordingly proceeding with " +
+                                "processing your profile with the client and will soon revert with client's response"
+                            : Response == "interested, but doubtful"
+                                ? "Thank you for showing interest in the above opportunity.  We are accordingly proceeding with " 
+                                    + "processing your application with the client and will soon revert with client's response"
+                                : Response == "interested, undecided"
+                                    ? "Thank you for the courtesy extended when we spoke to you concerning the above opportunity.  " +
+                                        "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job."
+                                    : Response == "declined-low remuneration" 
+                                        ? "Thank you for the courtesy extended when we spoke to you " +
+                                            "concerning the above opportunity.  We note you have declined the opportunity due to low remuneration." +
+                                            "  Should the client agree to enhance their remuneration offer, we will revert to you for reconsideration."
+                                        : Response == "declined for overseas"
+                                            ? "Thank you for the courtesy extended when we spoke to you " +
+                                                "concerning the above opportunity.  We regret to note you have declined the opportunity because " +
+                                                "you are not interested to work overseas.  We have accordingly updated our records and in future you will not "
+                                                + "be approached for any overseas opportunity."
+                                            : Response == "declined - sc not agreed" 
+                                            ? "Thank you for the courtesy extended when we spoke to you " +
+                                            "concerning the above opportunity.  We regret to note you have declined the opportunity due to commercial terms.  "
+                                            + "We have suitably updated our records, and will approach you whenever new opportunity is available suitable to your needs."
+                                            : Response == "declined - other reasons"
+                                            ? "Thank you for the courtesy extended when we spoke to you " +
+                                                "concerning the above opportunity.  We regret to note you have declined to accept the above opportunity and " +
+                                                "have not offered any reason.  We have suitably updated our records.<br><br>Thank you for your time."
+                                                : Response == "wrong number"
+                                                    ? "We tried to reach you for the above opportunity on your given number, but the number is not correct. " +
+                                                        "Please advise your interest in the above opportunity and provide your correct telephone number to update our records."
+                                                    :Response == "not responding"
+                                                        ? "In connection with the above opportunity, we tried to reach you on your above mentioned number, " +
+                                                            "but we did not get any response.  Kindly advise your interest in the above opportunity " +
+                                                            "as soon as possible."
+                                                        : "";
+                          var message = new Message
+                            {
+                                SenderUsername=loggedInUsername,
+                                //RecipientAppUserId=recipientObj.Id,
+                                //SenderAppUserId=senderObj.Id,
+                                SenderEmail= _config["RAEmailId"] ?? "",
+                                RecipientUsername = dto.CandidateUsername ?? "",
+                                RecipientEmail = dto.EmailId ?? "",
+                                //CCEmail = HRSupobj?.Email ?? "",
+                                Subject = dto.Subject,
+                                Content = msgBody,
+                                MessageType = "CallRecordResponse",
+                                MessageComposedOn = _today
+                            };
+
+                        messages.Add(message);
+                        returnDto.CandidateResponse = dto.CandidateResponse;
+                        break;
+                    case "sms": case "phone":
+                        msgBody +=  Response == "interested, and keen"
+                            ? "You have confirmed yr interest in above opening. We are proceeding with " +
+                                "processing your profile and will soon revert with client's response"
+                            : Response == "interested, but doubtful"
+                                ? "You have confirmed yr interest in above opening.  We are proceeding with processing " +
+                                    "of your application and will soon revert with client's response"
+                                : Response == "interested, undecided"
+                                    ? "In connection with above opportunity, kindly advise your interest within 3 days, so as to retain your profile " +
+                                      "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job."
+                                    : Response == "declined-low remuneration" 
+                                        ? "We note you have declined to be considered for the above job due to low remuneration. " +
+                                            "Should the client enhance their remuneration, we will revert to you for reconsideration."
+                                        : Response == "declined for overseas"
+                                            ? "We note you have declined to be considered for the above job as you are not interested for overseas openings.  " +
+                                                "We have updated our records accordingly and you will not be approached for overseas openings again."
+                                            : Response == "declined - sc not agreed" 
+                                            ? "We note you have declined to be considered for the above openings due to commercial reasons.  We will approach you " +
+                                            "for other openings when the terms are better."
+                                            : Response == "declined - other reasons"
+                                            ? "We note you have declined to be considered for the above opening and have not given any reasons for the same. " +
+                                                "We have accordingly updated our records."
+                                            : "";
+                        returnDto.CandidateResponse = dto.CandidateResponse;
+
+                        //if(dto.ModeOfAdvise=="Phone") {
+                            audioMessage = new AudioMessage {
+                                RecipientUsername = dto.CandidateUsername,
+                                SenderUsername = loggedInUsername,
+                                MessageText = msgBody
+                            };
+                            audioMessages.Add(audioMessage);
+                        //}
+
+                        break;
+                    
+                    default:
+                        break;
+                }
+                
+                foreach(var msg in messages) {
+                    _context.Messages.Add(msg);
+                }
+                foreach(var audio in audioMessages) {
+                    _context.AudioMessages.Add(audio);
+                }
+
+                returnDto = dto;
+                returnDto.MessageComposed = msgBody;
+                returnDtos.Add(returnDto);
+                
+            }
+
+            if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+            
+            return returnDtos;
+        }
+
+        public async Task<bool> InsertAudioFiles(ICollection<AudioMessage> audioMessages)
+        {
+            foreach(var msg in audioMessages) {
+                _context.AudioMessages.Add(msg);
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

@@ -17,6 +17,9 @@ namespace api.DTOs.HR
         public string CurrentLocation { get; set; }
         public string WorkExperience { get; set; }
         public string Status { get; set; }
+        public bool BySMS {get; set; }
+        public bool ByMail {get; set; }
+        public bool ByPhone {get; set; }
         public string Username { get; set; }
         public DateTime StatusDate { get; set; }
         public string Remarks { get; set; }

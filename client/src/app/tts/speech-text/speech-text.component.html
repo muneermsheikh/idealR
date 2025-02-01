@@ -1,0 +1,9 @@
+<ng-container>
+    <textarea
+      name="text"
+      [(ngModel)]="msg"
+      (change)="textChanged$.next()"
+    ></textarea>
+    <button id="stop" #stop>Stop!</button>
+    <button id="speak" #speak>Speak</button>
+  </ng-container>

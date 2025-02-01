@@ -39,7 +39,8 @@
             class="stdd fa-solid fa-magnifying-glass w150" #searchName placeholder="Candidate Name">
         
         <button (click)="onSearch()" title="search the text entered" class="btn fa fa-search"></button>
-
+        <button (click)="composeMessages()" title="compose messages for changes in candidate interests" 
+            class="btn fa fa-check fa-2x" style="color:yellow"></button>
         <button (click)="onReset()" class="btn fa fa-refresh"></button>
         <label class="lbl w75 tAlignRight">Choose Order No</label>
         <div class="stdd w100 mx-2">
@@ -78,10 +79,15 @@
             <label class="lbl w100">Source</label>
             <label class="lbl w75">Person Id</label>-->
             <label class="lbl w75">Nationality</label>
-            <label class="lbl w75">Date<br>Registered</label>
+            <label class="lbl w75">Dt Regd</label>
             <label class="lbl w100">Status</label>
-            <label class="lbl w100">Duration</label>
-            <label class="lbl w75">Advise By<br>Mail --- SMS </label>
+            <!-- <label class="lbl w100">Duration</label> -->
+            <label class="lbl w75" style="margin-top:0px !important;">Advise By</label>
+            <div class="icon">
+                <mat-icon [inline]="true">mail_outline</mat-icon>
+                <mat-icon [inline]="true">textsms</mat-icon>
+                <mat-icon [inline]="true">phone_forwarded</mat-icon>
+            </div>
         </div>
         <hr class="my-0">
         
@@ -99,6 +105,7 @@
                         (selectedEvent)="selectedClicked($event)"
                         (convertToCandidateEvent)="convertProspectiveToCandidate($event)"
                     ></app-prospective-line>
+                    <!--(modeOfAdviseEvent)="modeAdviseSelected($event)"-->
                 </div>
                 <div *ngIf="isPrintPDF">
                     <app-prospective-line
@@ -110,8 +117,7 @@
         </div>
 </div>
         <!-- pdf print-->
-    <div *ngIf="isPrintPDF">
-        
+    <div *ngIf="isPrintPDF">        
         <button printSectionId="print-section" 
             printTitle="printtitle"
             [previewOnly]="false"
