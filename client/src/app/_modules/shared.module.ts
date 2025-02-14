@@ -47,7 +47,8 @@ import { RegisterCallRecordsComponent } from '../callRecords/register-call-recor
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
-  ],
+
+ ],
   
   exports: [
     BsDropdownModule,
@@ -65,7 +66,8 @@ import { RegisterCallRecordsComponent } from '../callRecords/register-call-recor
     TextInputComponent,
     DatePickerComponent,
     HasRoleDirective,
-    RegisterCallRecordsComponent
+    RegisterCallRecordsComponent,
+
   ]
 })
 export class SharedModule { }

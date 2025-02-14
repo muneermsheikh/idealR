@@ -249,7 +249,7 @@ namespace api.Data.Repositories.HR
 
             try {
                 await _context.SaveChangesAsync();
-                var prospReturnDtos = await _prosRepo.ConvertProspectiveToCandidates(prospectiveIds, Username);
+                /*var prospReturnDtos = await _prosRepo.ConvertProspectiveToCandidates(prospectiveIds, Username);
                 foreach(var dto in prospReturnDtos) {
                     var cand = candidatesInserted.FirstOrDefault(x => x.ProspectiveCandidateId == dto.ProspectiveCandidateId);
                     if(cand != null) {
@@ -262,6 +262,7 @@ namespace api.Data.Repositories.HR
                 
                 dtoErr.Error="";
                 dtoErr.intervwItem = existing;
+                */
             } catch (DbException ex) {
                 throw new Exception(ex.Message,ex);
             } catch (Exception ex) {
@@ -443,7 +444,7 @@ namespace api.Data.Repositories.HR
             //if prospective candidate, convert to candidates
             foreach(var cand in interviewItem.InterviewItemCandidates) {
                 if(cand.CandidateId == 0) {
-                    await _prosRepo.ConvertProspectiveToCandidate(cand.ProspectiveCandidateId, loggedInUsername);
+                    await _prosRepo.ConvertProspectiveToCandidate(cand.ProspectiveCandidateId, "","", loggedInUsername);
                 }
             }
             

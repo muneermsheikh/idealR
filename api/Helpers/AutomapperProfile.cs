@@ -18,6 +18,7 @@ using api.Entities.Master;
 using api.Entities.Messages;
 using api.Entities.Tasks;
 using api.Extensions;
+using api.HR.DTOs;
 using AutoMapper;
 using AutoMapper.Execution;
 
@@ -137,6 +138,8 @@ namespace api.Helpers
             CreateMap<Industry, Industry>();
             
             CreateMap<OrderItemBriefDto, OrderItemAssignmentDto>();
+
+            CreateMap<AudioMessage, AudioMessageDto>();
 
             CreateMap<AppTask, TaskInBriefDto>();
             CreateMap<AppTask, HRObjective>();

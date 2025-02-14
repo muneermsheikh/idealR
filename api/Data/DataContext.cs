@@ -12,6 +12,7 @@ using api.Entities.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace api.Data
 {
@@ -146,6 +147,9 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<AudioMessage>().Property(p => p.Id).ValueGeneratedOnAdd()
+                .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
            
             builder.Entity<ProspectiveCandidate>().HasIndex(x => x.PersonId).IsUnique();
             builder.Entity<CustomerReview>().HasMany(x => x.CustomerReviewItems).WithOne().OnDelete(DeleteBehavior.Cascade);

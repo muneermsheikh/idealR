@@ -3575,9 +3575,24 @@ namespace api.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CandidateName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ContentType")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("DateComposed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DatePlayedback")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FeedbackReceived")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(255)
@@ -3590,6 +3605,9 @@ namespace api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SenderUsername")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

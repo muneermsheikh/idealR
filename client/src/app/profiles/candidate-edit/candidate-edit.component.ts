@@ -77,6 +77,9 @@ export class CandidateEditComponent implements OnInit {
   user?: User;
   returnUrl = '/';
 
+  //qrcode
+  public qrDataPPNo: string = '';
+
   attachmentTypes = [
     {'typeName':'CV'}, 
     {'typeName':'Educational Certificate'},
@@ -493,11 +496,11 @@ export class CandidateEditComponent implements OnInit {
 
         this.candidateService.registerNewWithFiles(formData).subscribe({
           next: (response: IApiReturnDto) => {
-            console.log('response in angular:', response);
             if(response.errorMessage!=='') {
               this.toastrService.error('failed to save the candidate data', response.errorMessage);
             } else {
               this.toastrService.success('candidate saved, with Application No. ' + response.returnInt.toString(), 'Profile successfully inserted');
+              
               this.registerForm.setValue({'applicationNo': response.returnInt});
             }},
           error: error => {

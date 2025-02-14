@@ -480,7 +480,7 @@ namespace api.Data.Repositories.Admin
                             select new CallRecord {
                                 CategoryRef = cRecordItem.CategoryRef, PersonType = "Prospective", 
                                 PersonId =  cRecordItem.PersonId, PersonName = prospect.CandidateName, 
-                                Source = prospect.Source, Subject = "Candidate Follow-up for interest",
+                                Source = prospect.Source ?? "Prospective", Subject = "Candidate Follow-up for interest",
                                 PhoneNo = prospect.PhoneNo, Email=prospect.Email, 
                                 Status = cRecordItem.callRecordItem.ContactResult,
                                 StatusDate = Convert.ToDateTime(cRecordItem.callRecordItem.DateOfContact), 
@@ -500,7 +500,7 @@ namespace api.Data.Repositories.Admin
                             select new CallRecord {
                                 CategoryRef = cRecordItem.CategoryRef, PersonType = "Candidate", 
                                 PersonId =  cRecordItem.PersonId, PersonName = prospect.FullName, 
-                                Source = prospect.Source, Subject = "Candidate Follow-up for interest",
+                                Source = prospect.Source ?? "Prospective", Subject = "Candidate Follow-up for interest",
                                 PhoneNo = prospect.UserPhones.Where(x => x.IsMain).Select(x => x.MobileNo).FirstOrDefault(), 
                                 Email=prospect.Email, Status = cRecordItem.callRecordItem.ContactResult,
                                 StatusDate = Convert.ToDateTime(cRecordItem.callRecordItem.DateOfContact), 
@@ -518,6 +518,7 @@ namespace api.Data.Repositories.Admin
                     default:
                         break;
                 }
+
                 if(callRecord == null) {
                     _context.CallRecords.Add(callRecord);
                     callrecordItem = callRecord.CallRecordItems.FirstOrDefault();

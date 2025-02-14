@@ -270,8 +270,7 @@ export class ProspectiveListComponent implements OnInit {
       this.pParams = new prospectiveCandidateParams();
       this.service.setParams(this.pParams);
       this.loadProspectives();
-    }
-    
+    }    
     
     composeMessages() {
       var subscription = new Subscription();
@@ -287,33 +286,18 @@ export class ProspectiveListComponent implements OnInit {
           var msg : IComposeCallRecordMessageDto = {
             modeOfAdvise: x.byMail ? "Mail" : x.bySMS ? "SMS" : x.byPhone ? "Phone" : "",
             candidateResponse: x.status!, candidateName: x.candidateName, phoneNo: x.phoneNo, emailId: x.email,
-            candidateTitle: "Mr. ", subject: x.categoryRef, candidateUsername: x.userName, messageComposed: '' };
+            candidateTitle: "Mr. ", subject: x.categoryRef, candidateUsername: x.userName, messageText: '',
+            recipientUsername: '', senderUsername: '', dateComposed: new Date(), prospectiveId: x.id, candidateId:0  };
+            
             dtos.push(msg);
       })
       
-        this.service.composeCallRecordMessage(dtos).subscribe({
-          next: (response: IComposeCallRecordMessageDto[]) => {
-            if(response.length > 0) {
-              console.log('response from composecallrecordmessage', response);
-              response.forEach(x => {
-                if(x.modeOfAdvise==='Phone') {
-                  subscription.add(
-                    textChanged$.pipe(tap(() => this.speechService.updateSpeech({ name: 'text', value: x.messageComposed }))).subscribe(),
-                  );
-                  textChanged$.subscribe({
-                    next: (response: any) => {
-                      console.log('voice file name', response.name);
-                      response.save;
-                    }
-                  })
-                }
-              })
-              this.toastr.success('message composed', 'Success')
-            } else {
-              this.toastr.info('failed to compose message', 'Failed to compose msg')
-            }
-          }
-        })
+      this.service.composeCallRecordMessage(dtos).subscribe({
+        next: (response: IComposeCallRecordMessageDto[]) => {
+          if(response.length > 0) {
+            this.toastr.success('message composed', 'Success')
+          }}
+      })
         
     }
 

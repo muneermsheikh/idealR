@@ -8,6 +8,10 @@ import { ProspectiveLineComponent } from './prospective-line/prospective-line.co
 import { ProspectiveListComponent } from './prospective-list/prospective-list.component';
 import { ProspectiveRoutingModule } from './prospective-routing.module';
 import { NgxPrintModule } from 'ngx-print';
+import { AudioComponent } from './audio/audio.component';
+import { AutodialComponent } from './autodial/autodial.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+
 
 
 @NgModule({
@@ -15,7 +19,9 @@ import { NgxPrintModule } from 'ngx-print';
     MenuComponent,
     ProspectiveLineComponent,
     ProspectiveListComponent,
-  
+    AudioComponent,
+    AutodialComponent,
+    
   ],
 
   imports: [
@@ -24,7 +30,8 @@ import { NgxPrintModule } from 'ngx-print';
     MatButtonModule, 
     NgxPrintModule,
     MatIconModule,
-    ProspectiveRoutingModule
+    ProspectiveRoutingModule,
+    AngularEditorModule
   ]
 })
 export class ProspectiveModule { }

@@ -6,6 +6,10 @@ import { RouterModule } from '@angular/router';
 import { ProspectivePagedResolver } from '../_resolvers/admin/prospectivePagedResolver';
 import { ProspectiveListResolver } from '../_resolvers/admin/prospectiveListResolver';
 import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
+import { AudioComponent } from './audio/audio.component';
+import { AutodialComponent } from './autodial/autodial.component';
+import { AudioMessagesPendingPagedResolver } from '../_resolvers/admin/AudioMessagesPendingPagedResolver';
+
 
 //parent route: prospectives
 const routes = [
@@ -23,6 +27,13 @@ const routes = [
       reports: ProspectiveListResolver
     }
   },
+  
+  {path: 'audiomessages', component: AudioComponent },
+
+  {path: 'autodial', component: AutodialComponent,
+    resolve: {audioMessages: AudioMessagesPendingPagedResolver}
+  }
+  
 ]
 
 @NgModule({

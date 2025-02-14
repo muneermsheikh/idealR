@@ -71,7 +71,7 @@ namespace api.Extensions
                         join cat in context.Professions on item.ProfessionId equals cat.Id
                         select new {ProfessionId=item.ProfessionId, 
                         CategoryRef=order.OrderNo + "-" + item.SrNo + "-" + cat.ProfessionName,
-                        ProfessionName=cat.ProfessionName}
+                        ProfessionName=cat.ProfessionName, WorkCity=order.CityOfWorking}
                 ).FirstOrDefaultAsync();
 
                 if(query==null) {
@@ -82,7 +82,7 @@ namespace api.Extensions
                 ProfessionName = query.ProfessionName;
                 var lng = query.CategoryRef.Length;
                 var cutLength = lng > 50 ? 50 : lng;
-                CategoryRef = query.CategoryRef[..cutLength];
+                CategoryRef = query.CategoryRef[..cutLength]+ " for " + query.WorkCity;
                 ProfessionId = query.ProfessionId;
                 
                 

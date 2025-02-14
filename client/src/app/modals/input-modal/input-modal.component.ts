@@ -9,10 +9,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class InputModalComponent {
 
+  @Input() inputValue: string = '';
   @Output() outputEvent = new EventEmitter<string>();
   
-  inputValue: string = '';
-
   title: string= '';
 
   

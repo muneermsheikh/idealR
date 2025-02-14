@@ -2,10 +2,13 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using api.DTOs.HR;
+using api.Entities.Admin;
 using api.Entities.Messages;
 using api.Extensions;
 using api.Helpers;
+using api.HR.DTOs;
 using api.Interfaces.HR;
+using api.Params.Admin;
 using api.Params.HR;
 using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +70,7 @@ namespace api.Controllers
         [HttpPut("convertProspective/{prospectiveid}")]
         public async Task<ActionResult<int>> ConvertProspectiveToCandidate(int prospectiveid)
         {
-            var appno = await _ProspectiveRepo.ConvertProspectiveToCandidate(prospectiveid, User.GetUsername());
+            var appno = await _ProspectiveRepo.ConvertProspectiveToCandidate(prospectiveid,"","", User.GetUsername());
 
             return Ok(appno);
         }
@@ -79,6 +82,26 @@ namespace api.Controllers
             return Ok(dto);                
         }
 
+        [HttpGet("audioMessagePagedlist")]
+        public async Task<ActionResult<PagedList<AudioMessageDto>>> GetAudioMessageList([FromQuery]AudioMessageParams aParams)
+        {
+            var pagedList = await _ProspectiveRepo.GetAudioMessagePagedList(aParams);
+
+            if(pagedList.Count ==0) return Ok(null);    //  return BadRequest(new ApiException(400,"Bad Request", "failed to retrieve matching orders"));
+
+            Response.AddPaginationHeader(new PaginationHeader(pagedList.CurrentPage, 
+                pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages));
+            
+            return Ok(pagedList);
+            
+        }
+
+        [HttpPut("setAudioText")]
+        public async Task<ActionResult<bool>> SetAudioText(SetAudioText audioText) {
+
+            return await _ProspectiveRepo.SetAudioText(audioText);
+        }
+        
         [HttpPost("uploadAudioFiles")]
         public async Task<ActionResult<bool>> SaveAudioFiles(ICollection<IFormFile> audiofiles )
         {
@@ -108,16 +131,18 @@ namespace api.Controllers
                     file.CopyTo(stream);
 
                     await file.CopyToAsync(memoryStream);
-                    var fileBytes = memoryStream.ToArray();
+
+                    /*var fileBytes = memoryStream.ToArray();
                     var audioToSave = new AudioMessage {
                         FileName = file.Name,
                         ContentType = file.ContentType,
                         RecipientUsername = "RecipientUsername",
                         SenderUsername = "senderusername",
-                        MessageText = ""
+                        MessageText = "",
                     };
 
                     audiosToSave.Add(audioToSave);
+                    */
                 }
                 
 

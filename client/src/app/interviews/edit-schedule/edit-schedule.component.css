@@ -14,6 +14,9 @@
     font-weight: normal;
 }
 
+.nilMargin {margin: 0 0 0 0;
+    padding: 0 0 0 0;}
+    
 .dropdown {
     display: inline-block;
     font-size: smaller;

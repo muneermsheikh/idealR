@@ -2,6 +2,7 @@ using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.Entities.Identity;
 using api.Errors;
+using api.Extensions;
 using api.Interfaces;
 using API.Helpers;
 using AutoMapper;
@@ -58,7 +59,7 @@ namespace api.Controllers
         [HttpPost("newappuser/{usertype}/{usertypevalue}")]
         public async Task<ActionResult<AppUserReturnDto>> CreateAppUser(string usertype, int usertypevalue)
         {
-            var dtoErr = await _userRepository.CreateAppUser(usertype, usertypevalue);
+            var dtoErr = await _userRepository.CreateAppUser(usertype, usertypevalue, User.GetUsername());
             if(!string.IsNullOrEmpty(dtoErr.Error)) return BadRequest(new ApiException(400, dtoErr.Error, "Failed to create the App User"));
 
             return dtoErr;

@@ -3,6 +3,7 @@ using api.DTOs.HR;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Interfaces;
+using api.Interfaces.HR;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,11 @@ namespace api.Data.Repositories
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        public UserRepository(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
+        //private readonly IProspectiveCandidatesRepository _prospRepo;
+        public UserRepository(DataContext context, //IProspectiveCandidatesRepository prospRepo, 
+            UserManager<AppUser> userManager, IMapper mapper)
         {
+            //_prospRepo = prospRepo;
             _userManager = userManager;
             _mapper = mapper;
             _context = context;
@@ -95,13 +99,13 @@ namespace api.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<AppUserReturnDto> CreateAppUser(string userType, int userTypeValue)
+        public async Task<AppUserReturnDto> CreateAppUser(string userType, int userTypeValue, string loggedInUsername)
         {
             var dtoErr = new AppUserReturnDto();
 
             var appuser = new AppUser();
-            string role="";
-
+            var role = "";
+     
             switch (userType.ToLower()) {
                 case "employee":
                     var emp = await _context.Employees.FindAsync(userTypeValue);
@@ -146,29 +150,31 @@ namespace api.Data.Repositories
                     break;
 
                 case "candidate":
-                    var cand =  await _context.Candidates.FindAsync(userTypeValue);
-                    if(cand == null) {
+                    var candd =  await _context.Candidates.FindAsync(userTypeValue);
+                    if(candd == null) {
                         dtoErr.Error = "Candidate Not on record";
                         return dtoErr;
                     }
-                    if(string.IsNullOrEmpty(cand.Email)) {
+                    if(string.IsNullOrEmpty(candd.Email)) {
                         dtoErr.Error = "Candidate not on record";
                         return dtoErr;
                     } 
-                    appuser = await _context.Users.Where(x => x.Email == cand.Email).FirstOrDefaultAsync();
+                    
+                    appuser = await _context.Users.Where(x => x.Email == candd.Email).FirstOrDefaultAsync();
                     if(appuser != null) {
                         dtoErr.AppUserId = appuser.Id;
                         dtoErr.Username = appuser.UserName;
                         return dtoErr;
                     }
 
-                    appuser = new AppUser{Gender = cand.Gender, KnownAs = cand.KnownAs, Email = cand.Email,
-                    PhoneNumber = cand.UserPhones.Where(x => x.IsMain && x.IsValid).Select(x => x.MobileNo).FirstOrDefault(),
-                    City = cand.City, Country = cand.Country, DateOfBirth = Convert.ToDateTime(cand.DOB),
-                    Created = DateTime.UtcNow, UserName = cand.Email};
+                    appuser = new AppUser{Gender = candd.Gender, KnownAs = candd.KnownAs, Email = candd.Email,
+                    PhoneNumber = candd.UserPhones.Where(x => x.IsMain && x.IsValid).Select(x => x.MobileNo).FirstOrDefault(),
+                    City = candd.City, Country = candd.Country, //DateOfBirth = Convert.ToDateTime(cand.DOB),
+                    Created = DateTime.UtcNow, UserName = candd.Email};
 
                     role = "Candidate";
                     break;
+
                 default:
                     break;
             }

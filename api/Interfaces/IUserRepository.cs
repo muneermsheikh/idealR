@@ -12,7 +12,7 @@ namespace api.Interfaces
     public interface IUserRepository
     {
         void Update (AppUser user);
-        Task<AppUserReturnDto> CreateAppUser(string userType, int userTypeValue);
+        Task<AppUserReturnDto> CreateAppUser(string userType, int userTypeValue, string loggedInUsername);
         Task<bool> SaveAllAsync();
         Task<AppUser> GetUserByIdAsync (int id);
         Task<AppUser> GetUserByUserNameAsync (string username);

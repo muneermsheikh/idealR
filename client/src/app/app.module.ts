@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import { NO_ERRORS_SCHEMA, NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
@@ -35,6 +35,7 @@ import { DisplayTextModalComponent } from './modals/display-text-modal/display-t
 import { DateInputRangeModalComponent } from './modals/date-input-range-modal/date-input-range-modal.component';
 import { CandidatesAvailableModalComponent } from './modals/candidates-available-modal/candidates-available-modal.component';
 import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     DisplayTextModalComponent,
     DateInputRangeModalComponent,
     CandidatesAvailableModalComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -77,7 +79,13 @@ import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.com
     //FormsModule,
     //ReactiveFormsModule,
     SharedModule,
-  
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

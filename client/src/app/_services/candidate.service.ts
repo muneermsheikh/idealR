@@ -12,9 +12,7 @@ import { IApiReturnDto } from '../_dtos/admin/apiReturnDto';
 import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
-import { ICandidateAndErrorStringDto } from '../_dtos/hr/candidateAndErrorStringDto';
 import { ICvsAvailableDto } from '../_dtos/admin/cvsAvailableDto';
-import { IIntervwItemCandidate } from '../_models/hr/intervwItemCandidate';
 
 @Injectable({
   providedIn: 'root'

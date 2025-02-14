@@ -80,7 +80,7 @@ namespace api.Data.Repositories.Master
                 var existingInterviewCandidates = await _context.IntervwItemCandidates.Where(x => IntervwItemCandidateIds.Contains(x.Id)).ToListAsync();
                 foreach(var cand in existingInterviewCandidates) {
                     if(cand.CandidateId == 0) {
-                        await _prosRepo.ConvertProspectiveToCandidate(cand.ProspectiveCandidateId, loggedInUsername);
+                        await _prosRepo.ConvertProspectiveToCandidate(cand.ProspectiveCandidateId,"","", loggedInUsername);
                     }
                 }
             }

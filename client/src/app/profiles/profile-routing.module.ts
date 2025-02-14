@@ -18,8 +18,6 @@ import { CandidateAssessedResolver } from '../_resolvers/hr/candidate-assessed.r
 import { CandidateListingPagedResolver } from '../_resolvers/hr/candidateListingPagedResolver';
 import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
 import { OrderNosHeaderResolver } from '../_resolvers/hr/OrderNosHeaderResolver';
-import { HttpHeaderResponse } from '@angular/common/http';
-import { CategoriesFromCVsAvailableToRefResolver } from '../_resolvers/hr/CategoriesFromCVsAvailableToRefResolver';
 
 const routes = [
     {path: 'listing', component: ProfileListComponent,

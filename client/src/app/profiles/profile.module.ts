@@ -15,6 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CvAssessComponent } from './cv-assess/cv-assess.component';
 import { NgxPrintModule } from 'ngx-print';
+import { QrCodeModule } from 'ng-qrcode';
+
+
 
 
 @NgModule({
@@ -29,15 +32,17 @@ import { NgxPrintModule } from 'ngx-print';
     FileuploadComponent,
     CvsreferredComponent,
     CvreferredLineComponent,
-    CvAssessComponent
+    CvAssessComponent,
+    
   ],
+
   imports: [
     CommonModule,
     ProfileRoutingModule,
     SharedModule,
     MatIconModule,
-    NgxPrintModule
-    //, MatButtonModule
+    NgxPrintModule,
+    QrCodeModule
   ]
 })
 export class ProfileModule { }

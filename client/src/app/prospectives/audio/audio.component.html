@@ -1,0 +1,37 @@
+<h4>Audio Message Listing</h4>
+
+<pagination class="stdd" *ngIf="pagination !== undefined"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+
+<button (click)="close()" title="close this page" 
+class="stdd pull-right fa fa-window-close mx-5"></button>
+
+<hr class="my-0">
+<label class="lbl w100" style="margin-left: 25px !important;">App No</label>
+<label class="lbl w200" >Candidate Name</label>
+<label class="lbl w200">Subject</label>
+<label class="lbl w250">Message Text</label>
+<label class="lbl w100">Date Composed</label>
+<label class="lbl w75">Feedback</label>
+<hr>
+
+<div *ngIf="!audioDtos"> No matching audio messages on record </div>
+
+<div *ngIf="audioDtos">
+    <div *ngFor="let dto of audioDtos">
+        <div style="margin-left: 25px !important;" class="stdd w100">{{dto.applicationNo}}</div>
+        <div class="stdd w200">{{dto.candidateName}}</div>
+        <div class="stdd w200">{{dto.subject}}</div>
+        <div class="stdd w250">{{dto.messageText.substring(0,248)}}</div>
+        <div class="stdd w100">{{dto.dateComposed | date: 'dd-mmm-yy'}}</div>
+        <div class="stdd w75">{{dto.feedbackReceived}}</div>
+    </div>
+</div>

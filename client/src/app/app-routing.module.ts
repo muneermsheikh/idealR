@@ -20,6 +20,7 @@ const routes: Routes = [
     children: [
       {path: 'candidates', canActivate:[HrGuard],
         loadChildren:() => import('./profiles/profile.module').then(mod => mod.ProfileModule)},
+        
       {path: 'prospectives', canActivate:[HrGuard], loadChildren: () =>  import ('./prospectives/prospective.module').then(mod => mod.ProspectiveModule)},
 
       {path: 'feedback', loadChildren:() => import('./feedback/feedback.module').then(mod => mod.FeedbackModule)},

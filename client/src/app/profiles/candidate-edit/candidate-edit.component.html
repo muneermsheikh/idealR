@@ -16,9 +16,10 @@
           <button [disabled]="!registerForm.valid" title="Update" 
                class="btn btn-success me-2 fa fa-save " type="submit"></button>
      </div>
+  
      <br>
      <div class="stdd col-5 mt-1" style="border-style: groove; margin-left: 5px;">
-       
+          <!-- <qrcode [qrdata]="qrDataPPNo" [size]="256" [level]="'M'"></qrcode> -->
           <label class="lbl">Gender: </label>
           <input type="radio" class="inputcheck form-check-input " value="m" formControlName="gender" >Male
           <input type="radio" class="inputcheck form-check-input " value="f" formControlName="gender" >Female
@@ -236,6 +237,14 @@
                                    <!-- <input type="number" formControlName="id" readonly class="stdd w15" >  -->
                               </div>
                          </div>
+                    </div>
+               </tab>
+               <tab heading='QR Code' (selectTab)="onTabActivated($event)">
+                    <label class="lbl">QR Code</label>
+                    <div *ngIf="candidate.id">
+                         <qr-code value="candidate.id" 
+                         size="300" 
+                         errorCorrectionLevel="M" />
                     </div>
                </tab>
           </tabset>

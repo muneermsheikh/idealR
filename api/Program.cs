@@ -3,7 +3,6 @@ using api.Data;
 using api.Entities.Identity;
 using api.Extensions;
 using api.Middleware;
-
 //using api.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

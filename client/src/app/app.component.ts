@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   model: any = {};
   user?:User;
   userIsAdmin=false;
+  public qrDataPPNo: string = '';
   
   constructor(public accountService: AccountService, private toastr: ToastrService,
     private router: Router

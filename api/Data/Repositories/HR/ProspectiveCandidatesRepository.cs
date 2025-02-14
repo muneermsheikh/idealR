@@ -1,11 +1,15 @@
 using api.DTOs;
 using api.DTOs.HR;
+using api.Entities.Admin;
 using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Messages;
+using api.Extensions;
 using api.Helpers;
+using api.HR.DTOs;
 using api.Interfaces;
 using api.Interfaces.HR;
+using api.Params.Admin;
 using api.Params.HR;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -14,6 +18,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.Drawing.Controls;
 
 namespace api.Data.Repositories.HR
 {
@@ -25,10 +30,12 @@ namespace api.Data.Repositories.HR
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        private readonly IUserRepository _userRepo;
         public ProspectiveCandidatesRepository(DataContext context, ITokenService tokenService, 
-            IConfiguration config,
+            IConfiguration config, IUserRepository userRepo,
             IMapper mapper,UserManager<AppUser> userManager, ICandidateRepository candidateRepository)
         {
+            _userRepo = userRepo;
             _config = config;
             _mapper = mapper;
             _tokenService = tokenService;
@@ -37,71 +44,86 @@ namespace api.Data.Repositories.HR
             _context = context;
         }
 
-        public async Task<ProspectiveReturnDto> ConvertProspectiveToCandidate(int prospectiveId, string username)
+        public async Task<ProspectiveReturnDto> ConvertProspectiveToCandidate(int prospectiveId, string KnownAs, string EmailId, string username)
         {
             var prospective = await _context.ProspectiveCandidates.FindAsync(prospectiveId);
 
-            if(string.IsNullOrEmpty(prospective.Email)) return null;
-            
-               var user = await _userManager.FindByEmailAsync(prospective.Email);
-               var charPosition= !prospective.CandidateName.Contains(' ') ? prospective.CandidateName.IndexOf("-", StringComparison.Ordinal):0;
+            if(prospective == null || string.IsNullOrEmpty(prospective.Email)) {
+                //check if candidaate record exists
+                var candidt = await _context.Candidates
+                    .Where(x => x.Email.ToLower() == EmailId.ToLower() && x.KnownAs.ToLower()==KnownAs.ToLower())
+                    .Select(x => new{ x.FullName, x.Id, x.AppUserId, x.Username, x.ApplicationNo, x.Gender} )
+                    .FirstOrDefaultAsync();
 
-               var prospectiveKnownAs = charPosition <=0 ? prospective.CandidateName : prospective.CandidateName[..charPosition];
-               
-               if(user == null) {     
-                    user = new AppUser
-                    {
-                         //UserType = "Candidate",
-                         KnownAs = prospectiveKnownAs,
-                         Gender = prospective.Gender,
-                         PhoneNumber = prospective.PhoneNo,
-                         Email = prospective.Email,
-                         UserName = prospective.Email
-                    };
-                    var result = await _userManager.CreateAsync(user, "newPassword0#");
-                    if (!result.Succeeded) return null;
-               }
-
-               //create roles
-               //var succeeded = await _roleManager.CreateAsync(new AppRole{Name="Candidate"});
-               var roleResult = await _userManager.AddToRoleAsync(user, "Candidate");
-               //if (!roleResult.Succeeded) return null;
-                    
-               //var userAdded = await _userManager.FindByEmailAsync(registerDto.Email);
-               //no need to retreive obj from DB - the object 'user' can be used for the same
-               
-                var userphones = new List<UserPhone>{new() {MobileNo=prospective.PhoneNo, IsMain=true, IsValid=true}};
-                if(!string.IsNullOrEmpty(prospective.AlternateNumber)) {
-                    var userph=new UserPhone{MobileNo=prospective.AlternateNumber, IsMain=false, IsValid=true};
-                    userphones.Add(userph);
+                if(candidt != null) {
+                    if(!string.IsNullOrEmpty(candidt.Username)) {
+                        var appusr = await _userManager.FindByNameAsync(candidt.Username) 
+                            ?? await _userManager.FindByEmailAsync(EmailId) ?? await _userManager.FindByIdAsync(candidt.AppUserId.ToString());
+                        if(appusr != null) {
+                            var dtoRet = new ProspectiveReturnDto{CandidateId=candidt.Id, 
+                                ApplicationNo=candidt.ApplicationNo, CandidateUsername=appusr.UserName, ProspectiveCandidateId=prospectiveId};
+                            return dtoRet;
+                        } else {
+                            appusr = new AppUser {KnownAs = KnownAs, Gender = candidt.Gender, Email = EmailId,UserName = EmailId};
+                            var result = await _userManager.CreateAsync(appusr, "newPassword0#");
+                            if (!result.Succeeded) return null;
+                            await _userManager.AddToRoleAsync(appusr, "Candidate");
+                            var dtoRet = new ProspectiveReturnDto{CandidateId=candidt.Id, ApplicationNo=candidt.ApplicationNo, CandidateUsername=appusr.UserName, ProspectiveCandidateId=prospectiveId};
+                            return dtoRet;
+                        }
+                    }
                 }
+                return null;
+            }
+            
+            //prospective is not null
+            var user = await _userManager.FindByEmailAsync(prospective.Email);
+            var charPosition= !prospective.CandidateName.Contains(' ') ? prospective.CandidateName.IndexOf("-", StringComparison.Ordinal):0;
 
-                var userprofessions = new List<UserProfession>{new() {ProfessionId=prospective.ProfessionId}};
-                var cvDto = new RegisterDto{
-                    Gender="M", FirstName = prospective.CandidateName, KnownAs = prospectiveKnownAs, 
-                    Username = prospective.Email, Email = prospective.Email, AppUserId = user.Id,
-                    ReferredByName = prospective.Source, UserProfessions=userprofessions, UserPhones=userphones,
-                    City = prospective.CurrentLocation, Nationality = prospective.Nationality
-                };
+            var prospectiveKnownAs = charPosition <=0 ? prospective.CandidateName : prospective.CandidateName[..charPosition];
+            
+            if(user == null) {     
+                user = new AppUser
+                { KnownAs = prospectiveKnownAs, Gender = prospective.Gender, PhoneNumber = prospective.PhoneNo,
+                        Email = prospective.Email, UserName = prospective.Email};
+                var result = await _userManager.CreateAsync(user, "newPassword0#");
+                if (!result.Succeeded) return null;
+                var roleResult = await _userManager.AddToRoleAsync(user, "Candidate");
+            }
+
+            //prepare to convert prospective to candidate               
+            var userphones = new List<UserPhone>{new() {MobileNo=prospective.PhoneNo, IsMain=true, IsValid=true}};
+            if(!string.IsNullOrEmpty(prospective.AlternateNumber)) {
+                var userph=new UserPhone{MobileNo=prospective.AlternateNumber, IsMain=false, IsValid=true};
+                userphones.Add(userph);
+            }
+
+            var userprofessions = new List<UserProfession>{new() {ProfessionId=prospective.ProfessionId}};
+            var cvDto = new RegisterDto{
+                Gender="M", FirstName = prospective.CandidateName, KnownAs = prospectiveKnownAs, 
+                Username = prospective.Email, Email = prospective.Email, AppUserId = user.Id,
+                ReferredByName = prospective.Source, UserProfessions=userprofessions, UserPhones=userphones,
+                City = prospective.CurrentLocation, Nationality = prospective.Nationality
+            };
 
 
-               if (!string.IsNullOrEmpty(prospective.Age)) {
-                    var age = prospective.Age[..2];
-                    cvDto.DOB = DateTime.Today.AddYears(-Convert.ToInt32(age));
-               }
+            if (!string.IsNullOrEmpty(prospective.Age)) {
+                var age = prospective.Age[..2];
+                cvDto.DOB = DateTime.Today.AddYears(-Convert.ToInt32(age));
+            }
           
-               // finally, create the object candidate
-               var cand = await _candidateRepository.CreateCandidateAsync(cvDto, username);
+            // finally, create the object candidate
+            var cand = await _candidateRepository.CreateCandidateAsync(cvDto, username);
 
-               if (cand == null) return null;
-               
-               //once succeeded, delete the record from prospective list.
-                _context.ProspectiveCandidates.Remove(prospective);
-                _context.Entry(prospective).State=EntityState.Deleted;
+            if (cand == null) return null;
+            
+            //once succeeded, delete the record from prospective list.
+            _context.ProspectiveCandidates.Remove(prospective);
+            _context.Entry(prospective).State=EntityState.Deleted;
 
-                await _context.SaveChangesAsync();
-                var dto = new ProspectiveReturnDto {CandidateId = cand.Id, ApplicationNo = cand.ApplicationNo,
-                    ProspectiveCandidateId = prospectiveId };
+            await _context.SaveChangesAsync();
+            var dto = new ProspectiveReturnDto {CandidateId = cand.Id, ApplicationNo = cand.ApplicationNo,
+                ProspectiveCandidateId = prospectiveId, CandidateUsername = user.UserName };
 
             return dto;
         }
@@ -265,17 +287,7 @@ namespace api.Data.Repositories.HR
                 default:
                     break;
             }
-                          
-            /* qry = pParams.Sort.ToLower() switch
-            {
-                "date" => qry.OrderBy(x => x.DateRegistered).ThenBy(x => x.Status),
-                //"city" => (IQueryable<ProspectiveCandidate>)qry.OrderBy(x => x.City).ThenBy(x => x.Status),
-                "status" => qry.OrderBy(x => x.Status).ThenBy(X => X.CategoryRef),
-                "name" => (IQueryable<ProspectiveCandidate>)qry.OrderBy(x => x.CandidateName).ThenBy(x => x.Status),
-                "categoryref" => qry.OrderBy(x => x.CategoryRef).ThenBy(x => x.Status),
-                _ => qry.OrderBy(x => x.CategoryRef).ThenBy(x => x.Status),
-            }; */
-            
+         
             var totalCount = await qry.CountAsync();
 
             var lst = await qry.ToListAsync();            
@@ -287,7 +299,6 @@ namespace api.Data.Repositories.HR
             var dto = _mapper.Map<ICollection<ProspectiveBriefDto>>(lst);
             return dto;
         }
-
 
         public async Task<ICollection<ProspectiveSummaryDto>> GetProspectiveSummary(ProspectiveSummaryParams pParams)
         {
@@ -426,7 +437,7 @@ namespace api.Data.Repositories.HR
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<ICollection<ProspectiveReturnDto>> ConvertProspectiveToCandidates(ICollection<int> prospectiveids, string Username)
+        /*public async Task<ICollection<ProspectiveReturnDto>> ConvertProspectiveToCandidates(ICollection<int> prospectiveids, string Username)
         {
             var returnDto = new List<ProspectiveReturnDto>();
 
@@ -436,7 +447,7 @@ namespace api.Data.Repositories.HR
             }
 
             return returnDto;
-        }
+        }*/
     
         public async Task<ICollection<ProspectiveHeaderDto>> GetProspectiveHeaders(string status)
         {
@@ -447,13 +458,13 @@ namespace api.Data.Repositories.HR
                 dto = await (from prospect in  _context.ProspectiveCandidates 
                     where !prospect.Status.ToLower().Contains("declined")
                 select new ProspectiveHeaderDto {
-                    Orderno = prospect.CategoryRef.Substring(0,5)})
+                    Orderno = prospect.CategoryRef.Substring(0, prospect.CategoryRef.IndexOf("-") - 1)})       
                 .Distinct()
                 .ToListAsync();
             } else {
                 dto = await (from prospect in  _context.ProspectiveCandidates 
                     where prospect.Status.ToLower().StartsWith(status.ToLower())
-                    select new ProspectiveHeaderDto {Orderno = prospect.CategoryRef.Substring(0,5)})
+                    select new ProspectiveHeaderDto {Orderno = prospect.CategoryRef.Substring(0, prospect.CategoryRef.IndexOf("-")-1)})
                 .Distinct()
                 .ToListAsync();
             }
@@ -469,9 +480,12 @@ namespace api.Data.Repositories.HR
             var returnDto = new ComposeCallRecordMessageDto();
 
             string CandidateTitle="", CandidateName="", PhoneNo="", EmailId="", Response="";
-            string msgBody = "", Opportunity = "";
+            string msgBody = "", Opportunity = "", recipientUsername = "";
             DateTime _today = DateTime.UtcNow;
             var messages = new List<Message>();
+
+            var newLine = Environment.NewLine;
+            
             foreach(var dto in dtos) {
                 CandidateTitle = dto.CandidateTitle;
                 CandidateName = dto.CandidateName;
@@ -479,101 +493,127 @@ namespace api.Data.Repositories.HR
                 EmailId = dto.EmailId;
                 Response = dto.CandidateResponse.ToLower();
                 Opportunity = dto.Subject;
+                var candCreated = await ConvertProspectiveToCandidate(dto.ProspectiveId, dto.KnownAs, dto.EmailId, loggedInUsername);   //also creates AppUser
+                    
+                recipientUsername = candCreated.CandidateUsername;   // dto.CandidateUsername ?? await _context.GetAppUserIdOfCandidate
 
-                msgBody = CandidateTitle + " " + CandidateName + "<br>Phone No.:" + PhoneNo + "<br>Email Id:" + EmailId;
+                msgBody = CandidateTitle + " " + CandidateName + "<br>Phone No.:" + PhoneNo;    // + "<br>Email Id:" + EmailId;
                 msgBody += "<br><br>Dear Mr. " + CandidateName + "<br><br>";
                 msgBody += "<ul><b>Subject:" + Opportunity + "</ul></b><br><br>";
                 
                 switch(dto.ModeOfAdvise.ToLower()) {
                     case "mail":
-                        msgBody +=  Response == "interested, and keen"
-                            ? "Thank you for confirming your interest in the above opportunity. We are accordingly proceeding with " +
-                                "processing your profile with the client and will soon revert with client's response"
-                            : Response == "interested, but doubtful"
-                                ? "Thank you for showing interest in the above opportunity.  We are accordingly proceeding with " 
-                                    + "processing your application with the client and will soon revert with client's response"
-                                : Response == "interested, undecided"
-                                    ? "Thank you for the courtesy extended when we spoke to you concerning the above opportunity.  " +
-                                        "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job."
-                                    : Response == "declined-low remuneration" 
-                                        ? "Thank you for the courtesy extended when we spoke to you " +
-                                            "concerning the above opportunity.  We note you have declined the opportunity due to low remuneration." +
-                                            "  Should the client agree to enhance their remuneration offer, we will revert to you for reconsideration."
-                                        : Response == "declined for overseas"
-                                            ? "Thank you for the courtesy extended when we spoke to you " +
-                                                "concerning the above opportunity.  We regret to note you have declined the opportunity because " +
-                                                "you are not interested to work overseas.  We have accordingly updated our records and in future you will not "
-                                                + "be approached for any overseas opportunity."
-                                            : Response == "declined - sc not agreed" 
-                                            ? "Thank you for the courtesy extended when we spoke to you " +
-                                            "concerning the above opportunity.  We regret to note you have declined the opportunity due to commercial terms.  "
-                                            + "We have suitably updated our records, and will approach you whenever new opportunity is available suitable to your needs."
-                                            : Response == "declined - other reasons"
-                                            ? "Thank you for the courtesy extended when we spoke to you " +
-                                                "concerning the above opportunity.  We regret to note you have declined to accept the above opportunity and " +
-                                                "have not offered any reason.  We have suitably updated our records.<br><br>Thank you for your time."
-                                                : Response == "wrong number"
-                                                    ? "We tried to reach you for the above opportunity on your given number, but the number is not correct. " +
-                                                        "Please advise your interest in the above opportunity and provide your correct telephone number to update our records."
-                                                    :Response == "not responding"
-                                                        ? "In connection with the above opportunity, we tried to reach you on your above mentioned number, " +
-                                                            "but we did not get any response.  Kindly advise your interest in the above opportunity " +
-                                                            "as soon as possible."
-                                                        : "";
-                          var message = new Message
-                            {
-                                SenderUsername=loggedInUsername,
-                                //RecipientAppUserId=recipientObj.Id,
-                                //SenderAppUserId=senderObj.Id,
-                                SenderEmail= _config["RAEmailId"] ?? "",
-                                RecipientUsername = dto.CandidateUsername ?? "",
-                                RecipientEmail = dto.EmailId ?? "",
-                                //CCEmail = HRSupobj?.Email ?? "",
-                                Subject = dto.Subject,
-                                Content = msgBody,
-                                MessageType = "CallRecordResponse",
-                                MessageComposedOn = _today
-                            };
+                    if(Response == "interested, and keen") {
+                        msgBody += "Thank you for confirming your interest in the above opportunity. We are accordingly proceeding with " +
+                                "processing your profile with the client and will soon revert with client's response";
+                    } else if (Response == "interested, but doubtful" ) {
+                        msgBody += "Thank you for showing interest in the above opportunity.  We are accordingly proceeding with " 
+                            + "processing your application with the client and will soon revert with client's response";
+                    } else if(Response == "interested, undecided") {
+                        msgBody += "Thank you for the courtesy extended when we spoke to you concerning the above opportunity.  " +
+                                        "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job.";
+                    } else if(Response == "declined-low remuneration") {
+                        msgBody += "Thank you for the courtesy extended when we spoke to you " +
+                            "concerning the above opportunity.  We note you have declined the opportunity due to low remuneration." +
+                                            "  Should the client agree to enhance their remuneration offer, we will revert to you for reconsideration.";
+                    } else if (Response == "declined for overseas") {
+                        msgBody += "Thank you for the courtesy extended when we spoke to you " +
+                            "concerning the above opportunity.  We regret to note you have declined the opportunity because " +
+                            "you are not interested to work overseas.  We have accordingly updated our records and in future you will not "
+                            + "be approached for any overseas opportunity.";
+                     } else if (Response == "declined - sc not agreed") {
+                        msgBody += "Thank you for the courtesy extended when we spoke to you " +
+                            "concerning the above opportunity.  We regret to note you have declined the opportunity due to commercial terms.  "
+                            + "We have suitably updated our records, and will approach you whenever new opportunity is available suitable to your needs.";
+                    } else if (Response == "declined - other reasons") {
+                        msgBody += "Thank you for the courtesy extended when we spoke to you " +
+                            "concerning the above opportunity.  We regret to note you have declined to accept the above opportunity and " +
+                            "have not offered any reason.  We have suitably updated our records.<br><br>Thank you for your time.";
+                    } else if(Response == "wrong number") {
+                        msgBody += "We tried to reach you for the above opportunity on your given number, but the number is not correct. " +
+                            "Please advise your interest in the above opportunity and provide your correct telephone number to update our records.";
+                    } else if (Response == "not responding") {
+                        msgBody += "In connection with the above opportunity, we tried to reach you on your above mentioned number, " +
+                            "but we did not get any response.  Kindly advise your interest in the above opportunity " +
+                            "as soon as possible.";
+                    }
 
-                        messages.Add(message);
-                        returnDto.CandidateResponse = dto.CandidateResponse;
-                        break;
-                    case "sms": case "phone":
-                        msgBody +=  Response == "interested, and keen"
-                            ? "You have confirmed yr interest in above opening. We are proceeding with " +
-                                "processing your profile and will soon revert with client's response"
-                            : Response == "interested, but doubtful"
-                                ? "You have confirmed yr interest in above opening.  We are proceeding with processing " +
-                                    "of your application and will soon revert with client's response"
-                                : Response == "interested, undecided"
-                                    ? "In connection with above opportunity, kindly advise your interest within 3 days, so as to retain your profile " +
-                                      "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job."
-                                    : Response == "declined-low remuneration" 
-                                        ? "We note you have declined to be considered for the above job due to low remuneration. " +
-                                            "Should the client enhance their remuneration, we will revert to you for reconsideration."
-                                        : Response == "declined for overseas"
-                                            ? "We note you have declined to be considered for the above job as you are not interested for overseas openings.  " +
-                                                "We have updated our records accordingly and you will not be approached for overseas openings again."
-                                            : Response == "declined - sc not agreed" 
-                                            ? "We note you have declined to be considered for the above openings due to commercial reasons.  We will approach you " +
-                                            "for other openings when the terms are better."
-                                            : Response == "declined - other reasons"
-                                            ? "We note you have declined to be considered for the above opening and have not given any reasons for the same. " +
-                                                "We have accordingly updated our records."
-                                            : "";
-                        returnDto.CandidateResponse = dto.CandidateResponse;
+                    var message = new Message
+                    {
+                        SenderUsername=loggedInUsername,
+                        //RecipientAppUserId=recipientObj.Id,
+                        //SenderAppUserId=senderObj.Id,
+                        SenderEmail= _config["RAEmailId"] ?? "",
+                        RecipientUsername = dto.CandidateUsername ?? "",
+                        RecipientEmail = dto.EmailId ?? "",
+                        //CCEmail = HRSupobj?.Email ?? "",
+                        Subject = dto.Subject,
+                        Content = msgBody,
+                        MessageType = "CallRecordResponse",
+                        MessageComposedOn = _today
+                    };
 
-                        //if(dto.ModeOfAdvise=="Phone") {
+                    messages.Add(message);
+                    returnDto.CandidateResponse = dto.CandidateResponse;
+                    break;
+                    
+                    case "phone": case "sms":
+                        if(dto.ModeOfAdvise.ToLower() == "phone") {
+                            msgBody = msgBody.Replace("<br>", newLine);
+                            msgBody = msgBody.Replace("/ul>","");
+                            msgBody = msgBody.Replace("<ul>", "");
+                            msgBody = msgBody.Replace("</b>", "");
+                            msgBody = msgBody.Replace("<b>", "");
+                        }
+                        
+                        switch(Response) {
+                            case "interested, and keen":
+                                msgBody +="You have confirmed your interest in above opening. We are proceeding with " +
+                                    "processing your profile and will soon revert with client's response";
+                                break;
+                            case "interested, but doubtful":
+                                msgBody +="You have confirmed your interest in above opening.  We are proceeding with processing " +
+                                    "of your application and will soon revert with client's response";
+                                break;
+                            case "interested, undecided":
+                                msgBody +="In connection with above opportunity, kindly advise your interest within 3 days, so as to retain your profile " +
+                                      "Kindly confirm your interest within 3 days from today so as to mark you as interested for the job.";
+                                break;
+                            case "declined-low remuneration":
+                                msgBody +="We note you have declined to be considered for the above job due to low remuneration. " +
+                                    "Should the client enhance their remuneration, we will revert to you for reconsideration.";
+                                break;
+                            case "declined for overseas":
+                                msgBody += "We note you have declined to be considered for the above job as you are not interested for overseas openings.  " +
+                                    "We have updated our records accordingly and you will not be approached for overseas openings again.";
+                                break;
+                            case "declined - sc not agreed":
+                                msgBody += "We note you have declined to be considered for the above openings due to commercial reasons.  We will approach you " +
+                                    "for other openings when the terms are better.";
+                                break;
+                            case "declined - other reasons":
+                                msgBody += "We note you have declined to be considered for the above opening and have not given any reasons for the same. " +
+                                        "We have accordingly updated our records.";
+                                break;
+                            default:
+                                break;
+                        }
+                        returnDto.CandidateResponse = dto.CandidateResponse;
+                        if(dto.ModeOfAdvise.ToLower()=="phone") {
                             audioMessage = new AudioMessage {
-                                RecipientUsername = dto.CandidateUsername,
+                                RecipientUsername = recipientUsername,
                                 SenderUsername = loggedInUsername,
-                                MessageText = msgBody
+                                CandidateName = dto.CandidateName,
+                                MessageText = msgBody,
+                                DateComposed = DateTime.UtcNow,
+                                ApplicationNo = candCreated.ApplicationNo,
+                                Subject = dto.Subject
                             };
                             audioMessages.Add(audioMessage);
-                        //}
+                        } 
+                    returnDto.CandidateResponse = dto.CandidateResponse;
+                    break;
 
-                        break;
-                    
                     default:
                         break;
                 }
@@ -586,16 +626,16 @@ namespace api.Data.Repositories.HR
                 }
 
                 returnDto = dto;
-                returnDto.MessageComposed = msgBody;
+                returnDto.MessageText = msgBody;
                 returnDtos.Add(returnDto);
                 
             }
 
-            if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+            var recAffected = await _context.SaveChangesAsync();
+            returnDto.MessageText += recAffected + returnDto.MessageText;
             
             return returnDtos;
         }
-
         public async Task<bool> InsertAudioFiles(ICollection<AudioMessage> audioMessages)
         {
             foreach(var msg in audioMessages) {
@@ -605,5 +645,46 @@ namespace api.Data.Repositories.HR
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<PagedList<AudioMessageDto>> GetAudioMessagePagedList(AudioMessageParams pParams)
+        {
+            var qry = _context.AudioMessages.AsQueryable();
+               
+            if(pParams.ApplicationNo != 0) {
+                qry = qry.Where(x => x.ApplicationNo == pParams.ApplicationNo);
+            } else if (!string.IsNullOrEmpty(pParams.SenderUsername)) {
+                qry = qry.Where(x => x.SenderUsername == pParams.SenderUsername);
+            } else {
+                if(!string.IsNullOrEmpty(pParams.CandidateName) ) qry = qry.Where(x => x.CandidateName == pParams.CandidateName);
+                if(!string.IsNullOrEmpty(pParams.RecipientUsername)) qry = qry.Where(x => x.RecipientUsername == pParams.RecipientUsername);
+                if(pParams.FeedbackReceived > 0) qry = qry.Where(x => x.FeedbackReceived == pParams.FeedbackReceived);
+                
+                if(pParams.DateComposed.Year > 2000) qry = qry.Where(x => x.DateComposed.Year == pParams.DateComposed.Year);
+            }
+            
+            var totalCount = await qry.CountAsync();
+
+            var paged = await PagedList<AudioMessageDto>.CreateAsync(qry.AsNoTracking()
+                    .ProjectTo<AudioMessageDto>(_mapper.ConfigurationProvider),
+                    pParams.PageNumber, pParams.PageSize);
+            
+            foreach(var pg in paged) {
+                pg.MessageText = pg.MessageText.Replace("<br>", Environment.NewLine);
+                pg.MessageText = pg.MessageText.Replace("/ul>","");
+                pg.MessageText = pg.MessageText.Replace("<ul>", "");
+                pg.MessageText = pg.MessageText.Replace("</b>", "");
+                pg.MessageText = pg.MessageText.Replace("<b>", "");
+            }
+            return paged;
+        }
+
+        public async Task<bool> SetAudioText(SetAudioText AudioText) {
+            var record = await _context.AudioMessages.Where(x => x.Id == AudioText.Id).FirstOrDefaultAsync();
+
+            if(record == null) return false;
+            record.MessageText = AudioText.TextMessage;
+            _context.Entry(record).State = EntityState.Modified;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

@@ -1,0 +1,53 @@
+<h4 style="display: inline-block; font-weight: bold;">Audio Messages For Prospective Candidates</h4>
+<button class="fa fa-check fa-2x" style="margin-left: 300px;"(click)="update()" ></button>
+<button class="fa fa-window-close fa-2x" style="margin-left: 200px;" routerLink="/"  ></button>
+<br>
+<pagination class="stdd mx-2" *ngIf="pagination !== undefined"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="10"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+></pagination>
+    
+    <div class="form-inline">
+        <input type="checkbox" style="margin-left: 15px;border-color: black;"
+                class="form-check-input w20 hAlignCenter"
+                [(ngModel)]="AllSelected"
+                (change)="selectedChanged()">
+
+        <label class="lbl w75" style="margin-left: 10px;">App No</label>
+        <label class="lbl w150">Candidate Name</label>
+        <label class="lbl w150">Subject</label>
+        <label class="lbl w100">Composed On</label>
+        <!-- <label class="lbl w150">Email</label>
+        <label class="lbl w100">Source</label>
+        <label class="lbl w75">Person Id</label>-->
+        <label class="lbl w250">Message</label>
+        <label class="lbl w100">Played Bk On</label>
+        <label class="lbl w150">FileName</label>
+        <label class="lbl w100">Feedback</label>
+    </div>
+    
+    <div *ngIf="audioMessages.length > 0">
+        <div *ngFor="let msg of audioMessages">
+            <input type="checkbox" style="margin-left: 15px;border-color: black;"
+                class="form-check-input w20 hAlignCenter"
+                [(ngModel)]="msg.checked"
+                (click)="msg.checked= !msg.checked" >
+
+            <div class="stdd w75" style="margin-left: 10px; text-align: center;">{{msg.applicationNo}}</div>
+            <div class="stdd w150">{{msg.candidateName}}</div>
+            <div class="stdd w150">{{msg.subject}}</div>
+            <div class="stdd w100">{{msg.dateComposed |date:'dd-MMM-yy'}}</div>
+            <input type="text" class="stdd w250" [(ngModel)]="msg.messageText"
+                title="double-click to edit this value" (dblclick)="editMessageText(msg.id, msg.messageText)">
+            <div class="stdd w150">{{msg.fileName}}</div>
+            <div class="stdd w100">{{msg.feedbackReceived}}</div>
+            
+        </div>
+        
+    </div>
