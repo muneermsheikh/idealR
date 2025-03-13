@@ -93,7 +93,6 @@ export class CategoriesComponent implements OnInit {
           return this.service.updateCategory(response)
       })
     ).subscribe((response: IProfession) => {
-        console.log('profession update:', response);
         if(response !== null || response === true) {
           if(cat.id===0) {
             this.categories.push(response);   //added

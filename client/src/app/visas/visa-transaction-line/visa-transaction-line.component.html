@@ -1,0 +1,12 @@
+<div *ngIf="visa">
+
+    <div class="stdd w40" style="margin-left: 15px;">{{visa.applicationNo}}</div>
+    <div class="stdd w125">{{visa.candidateName}}</div>
+    <div class="stdd w125">{{visa.customerKnownAs}}</div>
+    <div class="stdd w80 ">{{visa.visaNo}}</div>
+    <div class="stdd w80">{{visa.visaDateG | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w125">{{visa.visaCategory}}</div>
+    <div class="stdd w80">{{visa.visaAppSubmitted | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w80">{{visa.visaApproved | date : 'dd-MMM-yy'}}</div>
+    
+</div>

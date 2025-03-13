@@ -6,7 +6,7 @@
     <div class="stdd w100">{{interview.interviewDateFrom | date: 'dd-MMM'}}</div>
     <div class="stdd w100">{{interview.interviewDateUpto | date: 'dd-MMM'}}</div>
     <div class="stdd w100">{{interview.interviewStatus}}</div>
-    <button class="btn fa fa-pencil" title="edit this interview schedule" (click)="editClicked()" ></button>
-    <button class="btn fa fa-users" title="display attendance for this interview" (click)="attendanceClicked()" ></button>
-    <button class="btn fa fa-trash red" title="delete this interview" (click)="deleteClicked()"></button>
+    <button class="btn" title="edit this interview schedule" (click)="editClicked()" ><mat-icon>edit</mat-icon></button>
+    <button class="btn" title="display attendance for this interview" (click)="attendanceClicked()" ><mat-icon>settings_input_component</mat-icon></button>
+    <button class="btn red" title="delete this interview" (click)="deleteClicked()"><mat-icon>delete</mat-icon></button>
 </div>

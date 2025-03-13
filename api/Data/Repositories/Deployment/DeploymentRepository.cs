@@ -4,6 +4,7 @@ using System.Linq;
 using api.DTOs.Admin;
 using api.DTOs.HR;
 using api.DTOs.Process;
+using api.Entities.Admin;
 using api.Entities.Deployments;
 using api.Entities.Identity;
 using api.Entities.Messages;
@@ -29,6 +30,7 @@ namespace api.Data.Repositories.Deployment
         private ICollection<DeployStatus> _deployStatuses;
         private const int _mEDICALLY_FIT=400;
         private const int _mEDICALLY_UNFIT=500;
+        private const int _vISA_DOCS_SUBMITTED=600;
         private const int _vISA_REJECTED=800;
         private const int _vISA_ISSUED=700;
         private const int _eMIGRATION_CLEARED=1100;
@@ -39,8 +41,10 @@ namespace api.Data.Repositories.Deployment
         private readonly IComposeMsgsForCandidates _composeCandMsg;
         private readonly UserManager<AppUser> _userManager;
         private readonly ISelDecisionRepository _selRepo;
-        public DeploymentRepository(DataContext context, IComposeMessagesHRRepository composeHR, ISelDecisionRepository selRepo, 
-            UserManager<AppUser> userManager, IComposeMsgsForCandidates composeCandMsg, IMapper mapper)
+        public DeploymentRepository(DataContext context, 
+            IComposeMessagesHRRepository composeHR, ISelDecisionRepository selRepo, 
+            IComposeMsgsForCandidates composeCandMsg, IMapper mapper, 
+            UserManager<AppUser> userManager)
         {
             _selRepo = selRepo;
             _userManager = userManager;
@@ -89,7 +93,7 @@ namespace api.Data.Repositories.Deployment
             
             return qry;
         }
-        public async Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItem> dto, string Username)
+        public async Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItem> dto, AppUser user)
         {
             int itemsWithErr=0, itemsSucceeded=0;
             int SeqToCompare=0;
@@ -104,6 +108,7 @@ namespace api.Data.Repositories.Deployment
 
                 //create candidateObject for composing msgs at the endof this loop
                 switch(item.Sequence) {
+                    
                     case _mEDICALLY_FIT: case _mEDICALLY_UNFIT: case _vISA_REJECTED: case _vISA_ISSUED:
                     case _eMIGRATION_CLEARED: case _eMIGRATION_DENIED: case _tICKET_BOOKED: case _oFFER_ACCEPTED:
                         var candidateAppUsername = await _context.GetAppUsernameFromDepId(_selRepo, item.DepId);   //returns RturnStringDto
@@ -153,7 +158,7 @@ namespace api.Data.Repositories.Deployment
                         .Select(x => new {x.NextSequence, x.isOptional})
                         .FirstOrDefault();
                     
-                    if(SequenceShdBe==status.NextSequence) continue;        //SeqShdBe is  verified
+                    if(SequenceShdBe==status.NextSequence) continue;        //SeqShdBe is  verified, so exit the loop
                     
                     if(!status.isOptional) continue;        //no further checks needed, as SeqShdBe is not optional
 
@@ -177,7 +182,10 @@ namespace api.Data.Repositories.Deployment
                     } else {
                 
                         if(SequenceShdBe != item.Sequence) {
-                            returnDto.ErrorString += ", item with sequence " + item.Sequence + " - Sequence Expected is: " + SequenceShdBe;
+                            returnDto.ErrorString += ", item with sequence " + 
+                                _deployStatuses.Where(x => x.Sequence==item.Sequence).Select(x => x.StatusName).FirstOrDefault() 
+                                + " - Expected Sequence is " +   
+                                _deployStatuses.Where(x => x.Sequence == SequenceShdBe).Select(x => x.StatusName).FirstOrDefault();
                             itemsWithErr +=1;
                         } else if (lastDepItem.TransactionDate >= item.TransactionDate) {
                             returnDto.ErrorString += ", New Transaction item date " + item.TransactionDate 
@@ -199,12 +207,19 @@ namespace api.Data.Repositories.Deployment
 
                 //post save actions - created now, but saved after saveAsync();
                 //still inside the loop - item in Dto
-                var msgWithErr = await PostDeploymentTransaction(candDetail, item.Sequence, item.TransactionDate);
-                if(msgWithErr?.Messages?.Count > 0) {
-                    foreach(var msg in msgWithErr.Messages)
-                    _context.Messages.Add(msg);
+                if(item.Sequence == _vISA_DOCS_SUBMITTED) {     //no messages to candidates, but assign visas
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if(roles.ToList().Contains("VisaEdit")) {
+                        await PostVisaTransactionforVisaDocSubmitted(item.Id, item.TransactionDate);
+                    }
+                } else {
+                    var msgWithErr = await PostDeploymentTransaction(item.DepId, item.Id, candDetail, item.Sequence, item.TransactionDate);
+                    if(msgWithErr?.Messages?.Count > 0) {
+                        foreach(var msg in msgWithErr.Messages)
+                        _context.Messages.Add(msg);
+                    }
+                    candDetail = null;
                 }
-                candDetail = null;
 
             }       //end of oop item in dto
             
@@ -245,9 +260,34 @@ namespace api.Data.Repositories.Deployment
             return returnDto;
 
         }
-        private async Task<MessageWithError> PostDeploymentTransaction(CandidateAdviseDto candDetail, int Sequence, DateTime TransactionDate) 
+        private async Task<ApiReturnDto> PostVisaTransactionforVisaDocSubmitted(int DepItemId, DateTime TransactionDate)
         {
-            
+            var returnDto = new ApiReturnDto();
+
+            var visaTrans = await (from depitem in _context.DepItems where depitem.Id == DepItemId
+                join dep in _context.Deps on depitem.DepId equals dep.Id
+                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
+                join cand in _context.Candidates on cvref.CandidateId equals cand.Id
+                join assign in _context.VisaAssignments on cvref.OrderItemId equals assign.OrderItemId
+                join visaitem in _context.VisaItems on assign.VisaItemId equals visaitem.Id
+                join visa in _context.VisaHeaders on visaitem.VisaHeaderId equals visa.Id
+                select  new VisaTransaction {
+                    ApplicationNo = cand.ApplicationNo, CandidateName = cand.FullName,
+                    DepItemId = DepItemId, Id = dep.Id, VisaCategory = visaitem.VisaCategoryEnglish,
+                    VisaNo = visa.VisaNo, VisaAppSubmitted = TransactionDate, VisaItemId = visaitem.Id
+                }).FirstOrDefaultAsync();
+
+            if(visaTrans != null) {
+                _context.VisaTransactions.Add(visaTrans);
+                await _context.SaveChangesAsync();
+            }
+            returnDto.ReturnInt = visaTrans.Id; 
+            returnDto.ErrorMessage = "";
+
+            return returnDto;
+        }
+        private async Task<MessageWithError> PostDeploymentTransaction(int DepId, int DepItemId, CandidateAdviseDto candDetail, int Sequence, DateTime TransactionDate) 
+        {
             var msgWithErr = new MessageWithError();
             var msgs = new List<Message>();
             var msg = new Message();
@@ -259,9 +299,11 @@ namespace api.Data.Repositories.Deployment
                 case _mEDICALLY_UNFIT:
                     msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "MedicallyUnfit");
                     break;
+                
                 case _vISA_REJECTED:
                     msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "VisaRejected");
                     break;
+                
                 case _vISA_ISSUED:
                     msgWithErr = await _composeCandMsg.AdviseCandidate_DeploymentStatus(candDetail, TransactionDate, "VisaIssued");
                     break;
@@ -522,7 +564,8 @@ namespace api.Data.Repositories.Deployment
                 join cv in _context.Candidates on cvref.CandidateId equals cv.Id
                 join item in _context.OrderItems on cvref.OrderItemId equals item.Id
                 join order in _context.Orders on item.OrderId equals order.Id
-                
+                join vTrans in _context.VisaTransactions on cvref.Id equals vTrans.CvRefId into visaTrans
+                    from vTransaction in visaTrans.DefaultIfEmpty()
                 select new DeploymentPendingDto {
                     DepId = dep.Id,
                     ApplicationNo = cv.ApplicationNo,
@@ -534,14 +577,14 @@ namespace api.Data.Repositories.Deployment
                     CustomerId = order.CustomerId,
                     CvRefId = cvref.Id,
                     SelectedOn = cvref.SelectionStatusDate,
-                    ReferredOn = cvref.ReferredOn,
+                    ReferredOn = cvref.ReferredOn, 
                     OrderNo = order.OrderNo,
                     CityOfWorking = order.CityOfWorking,
                     OrderDate = order.OrderDate,
                     CurrentStatus =dep.CurrentStatus,
                     OrderItemId = item.Id,
-                    //NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
-                        //.Select(x => x.NextSequenceDate).FirstOrDefault()
+                    VisaTransactionId = vTransaction.VisaItemId,
+                    VisaNo = vTransaction.VisaNo
                 })
                 .OrderByDescending(x => x.ApplicationNo)
                 .AsQueryable();
@@ -578,73 +621,6 @@ namespace api.Data.Repositories.Deployment
 
             return paged;
         }
-
-        public async Task<PagedList<DeploymentPendingDto>> GetDployments(DeployParams depParams)
-        {
-            var query = (from dep in _context.Deps 
-                join depitem in _context.DepItems   on dep.Id equals depitem.DepId orderby depitem.Sequence descending
-                join cvref in _context.CVRefs on dep.CvRefId equals cvref.Id
-                join cv in _context.Candidates on cvref.CandidateId equals cv.Id
-                join item in _context.OrderItems on cvref.OrderItemId equals item.Id
-                join order in _context.Orders on item.OrderId equals order.Id
-                
-                select new DeploymentPendingDto {
-                    DepId = dep.Id,
-                    ApplicationNo = cv.ApplicationNo,
-                    TransactionDate = dep.CurrentStatusDate,
-                    CandidateName = cv.FirstName + " " + cv.FamilyName,
-                    CategoryName = item.Profession.ProfessionName,
-                    CustomerName = order.Customer.KnownAs,
-                    Ecnr = cv.Ecnr == "true",
-                    CustomerId = order.CustomerId,
-                    CvRefId = cvref.Id,
-                    SelectedOn = cvref.SelectionStatusDate,
-                    ReferredOn = cvref.ReferredOn,
-                    OrderNo = order.OrderNo,
-                    CityOfWorking = order.CityOfWorking,
-                    OrderDate = order.OrderDate,
-                    DeploySequence =dep.DepItems.OrderByDescending(x => x.Sequence)
-                        .Select(x => x.Sequence).FirstOrDefault(), 
-                    NextSequence =dep.DepItems.OrderByDescending(x => x.NextSequence)
-                        .Select(x => x.NextSequence).FirstOrDefault(), 
-                    OrderItemId = item.Id,
-                    CurrentStatus = dep.CurrentStatus,
-                    NextStageDate = dep.DepItems.OrderByDescending(x => x.TransactionDate)
-                        .Select(x => x.NextSequenceDate).FirstOrDefault()
-                })
-                .OrderByDescending(x => x.ApplicationNo)
-                .AsQueryable();
-            
-            if(depParams.OrderNo != 0) {
-                query = query.Where(x => x.OrderNo == depParams.OrderNo);
-            } else if(depParams.CvRefId != 0) {
-                query = query.Where(x => x.CvRefId == depParams.CvRefId);
-            } else if(depParams.OrderItemId !=0) {
-                query = query.Where(x => x.OrderItemId== depParams.OrderItemId);
-            } else if (!string.IsNullOrEmpty(depParams.CandidateName)) {
-                query = query.Where(x => x.CandidateName.ToLower().Contains(depParams.CandidateName.ToLower()));
-            } else if (depParams.ApplicationNo != 0) {
-                query = query.Where(x => x.ApplicationNo == depParams.ApplicationNo);
-            } else if (!string.IsNullOrEmpty(depParams.CustomerName)) {
-                query = query.Where(x => x.CustomerName.ToLower().Contains(depParams.CustomerName.ToLower()));
-            } else if(depParams.SelectedOn.Year > 2000) {
-                query = query.Where(x => DateOnly.FromDateTime(x.SelectedOn) == DateOnly.FromDateTime(depParams.SelectedOn));
-            }
-
-            var st = depParams.Status ?? "Concluded";
-
-            query = query.Where(x => x.CurrentStatus.ToLower() == st.ToLower());
-
-            var paged = await PagedList<DeploymentPendingDto>.CreateAsync(query.AsNoTracking()
-                .ProjectTo<DeploymentPendingDto>(_mapper.ConfigurationProvider)
-                , depParams.PageNumber, depParams.PageSize);
-
-            //var depids = paged.Select(x => x.DepId).ToList();
-            //var depitems = await _context.DepItems.Where(x => depids.Contains(x.DepId)).ToListAsync();
-
-            return paged;
-        }
-
         public async Task<ICollection<DeployStatus>> GetDeploymentStatusData()
         {
             return await _context.DeployStatuses.OrderBy(x => x.Sequence).ToListAsync();
@@ -673,39 +649,39 @@ namespace api.Data.Repositories.Deployment
         public async Task<ReturnStringsDto> DoHousekeepingOfDeployments()
         {
 
-            var deps = await _context.Deps.Include(x => x.DepItems).Select(x => new {
-                DepId = x.Id, CurrentStatus = x.CurrentStatus, currentStatusDate = x.CurrentStatusDate,
-                depItemLatestStatus = x.DepItems
-                    .OrderByDescending(x => x.Sequence).Take(1)
-                .Select(m => new {ItemLatestSeq = m.Sequence, ItemLatestDate = m.TransactionDate})
-                .FirstOrDefault()})
+            var deps = await _context.Deps.Include(x => x.DepItems)
+                .Select(x => new {
+                    DepId = x.Id, CurrentStatus = x.CurrentStatus, CurrentStatusDate = x.CurrentStatusDate,
+                    depItemLatestStatus = x.DepItems
+                        .OrderByDescending(x => x.Sequence).Take(1)
+                        .Select(m => new {ItemLatestSeq = m.Sequence, 
+                        ItemLatestDate = m.TransactionDate})
+                    .FirstOrDefault()})
                 .AsNoTracking()
                 .ToListAsync();
+
             var depStatuses = await _context.DeployStatuses.Select(x => new {Seq=x.Sequence, SeqName=x.StatusName}).ToListAsync();
 
-            int Updated=0;
             foreach(var dep in deps) {
+                var deployment = await _context.Deps.FindAsync(dep.DepId);
                 var stNameShdBe = depStatuses.Find(x => x.Seq == dep.depItemLatestStatus.ItemLatestSeq).SeqName;
                 if(dep.CurrentStatus != stNameShdBe) {
-                    Updated++;
-                    var deployment = await _context.Deps.FindAsync(dep.DepId);
                     deployment.CurrentStatus = stNameShdBe;
                     _context.Entry(deployment).State = EntityState.Modified;
                 }
+                
+                if(deployment.CurrentStatusDate != dep.depItemLatestStatus.ItemLatestDate) {
+                    deployment.CurrentStatusDate = dep.depItemLatestStatus.ItemLatestDate;
+                    _context.Entry(deployment).State = EntityState.Modified;
+                }   
             }
 
             int ct=0;
             if(_context.ChangeTracker.HasChanges()) {
                 ct = await _context.SaveChangesAsync();
             }
-            var dto = new ReturnStringsDto();
-
-            if(Updated > ct) {
-                dto.ErrorString = "Out of " + Updated + " Deps records found not matching latest status in DepItems, " 
-                    + (Updated - ct) + " records were NOT updated";
-            } else if(Updated == ct) {
-                dto.SuccessString = "A total of " + Updated + " Dep records were updated";
-            }
+            var dto = new ReturnStringsDto {
+                SuccessString = "A total of " + ct + " Dep records were updated" };
 
             return dto;
         }

@@ -55,6 +55,8 @@ const routes: Routes = [
      
       {path: 'interviews', //canActivate: [ProcessGuard],
         loadChildren:() => import('./interviews/interview.module').then(mod=>mod.InterviewModule)},
+      
+      {path: 'visas', loadChildren: () => import('./visas/visa.module').then(mod => mod.VisaModule)},
 
       {path: 'userroles', component: UserManagementComponent,
         resolve: {

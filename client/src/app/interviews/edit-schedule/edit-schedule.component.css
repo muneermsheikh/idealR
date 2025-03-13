@@ -46,15 +46,17 @@
 
 .red {color: red}
 .green {color: darkgreen}
+.yellow {color: yellow;}
 
-.btn {color:aliceblue}
+.btn {color:aliceblue; margin: 0 2px 0 2px; vertical-align: middle; width: 15px;}
 
 .cursor {
     cursor:pointer; 
     color:yellow; 
-    font-size: x-small;
+    font-size: smaller;
     display: inline-block;
     margin: 0 2px 0 2px;
+    padding: 0 0 0 0;
     vertical-align: top;
     font-weight: bold;
 }

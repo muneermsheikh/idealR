@@ -6,5 +6,5 @@ export interface IUserPassport {
      issuedOn?: Date;
      validity: Date;
      isValid: boolean;
-     ecnr: boolean;
+     ecnr: String;
 }

@@ -1,20 +1,42 @@
+using System.Threading.Tasks;
 using api.DTOs.Admin;
 using api.Entities.Admin.Order;
 using api.Entities.HR;
+using api.Extensions;
 using api.Interfaces.Admin;
 
 namespace api.Data.Repositories.Admin
 {
     public class ComposeMessagesForTypes: IComposeMessagesForTypes
     {
+        private readonly DataContext _context;
+        public ComposeMessagesForTypes(DataContext context)
+        {
+            _context = context;
+        }
+
+
         public Task<string> AssessmentGrade(int candidateId, int orderitemId)
         {
             throw new NotImplementedException();
         }
 
-        public string ComposeOrderItems(int orderNo, ICollection<OrderItem> orderItems, bool hasException)
+        //
+        public async Task<string> ComposeOrderItems(int orderNo, ICollection<OrderItem> orderItems, bool hasException)
         {
-            throw new NotImplementedException();
+            var personnel = "";
+            
+            personnel = "<Table><th width=50>Reference</th><th width=250>Category</th><th width=50>Quantity</th>";
+            foreach(var item in orderItems) {
+                personnel += "<td>" + orderNo + "-" + item.SrNo + "</td>" + 
+                    "<td>" +  item.Profession?.ProfessionName ?? 
+                        await _context.GetProfessionNameFromId(item.ProfessionId) + "</td>" +
+                    "<td>" + item.Quantity + "</td>";
+            }
+
+            personnel +="</Table>";
+
+            return personnel;
         }
 
         public Task<OrderItemReviewStatusDto> CumulativeCountForwardedSoFar(int orderitemId)

@@ -23,5 +23,7 @@ namespace api.DTOs.Process
         public DateTime CurrentSeqDate { get; set; }
         public DateTime NextStageDate { get; set; }
         public string CurrentStatus { get; set; }  
+        public int? VisaTransactionId { get; set; }
+        public string VisaNo { get; set; }
      }
 }

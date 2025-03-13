@@ -2022,6 +2022,164 @@ namespace api.Data.Migrations
                     b.ToTable("Remunerations");
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.VisaAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateAssigned")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisaItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisaQntyAssigned")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisaItemId");
+
+                    b.ToTable("VisaAssignments");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.VisaHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("VisaDateG")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VisaDateH")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("VisaExpiryG")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VisaExpiryH")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VisaNo")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("VisaSponsorName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisaNo")
+                        .IsUnique();
+
+                    b.ToTable("VisaHeaders");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.VisaItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("SrNo")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("VisaCanceled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("VisaCategoryArabic")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VisaCategoryEnglish")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("VisaConsulate")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("VisaHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VisaQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisaHeaderId");
+
+                    b.ToTable("VisaItems");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.VisaTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CandidateName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CvRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("VisaAppSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("VisaApproved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VisaCategory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("VisaDateG")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("VisaItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VisaNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VisaTransactions");
+                });
+
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
                 {
                     b.Property<int>("Id")
@@ -2484,7 +2642,8 @@ namespace api.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Ecnr")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -4189,6 +4348,15 @@ namespace api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Entities.Admin.VisaItem", b =>
+                {
+                    b.HasOne("api.Entities.Admin.VisaHeader", null)
+                        .WithMany("VisaItems")
+                        .HasForeignKey("VisaHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>
                 {
                     b.HasOne("api.Entities.HR.CVRef", "CVRef")
@@ -4508,6 +4676,11 @@ namespace api.Data.Migrations
                     b.Navigation("OrderItemAssessmentQs");
 
                     b.Navigation("Remuneration");
+                });
+
+            modelBuilder.Entity("api.Entities.Admin.VisaHeader", b =>
+                {
+                    b.Navigation("VisaItems");
                 });
 
             modelBuilder.Entity("api.Entities.Deployments.Dep", b =>

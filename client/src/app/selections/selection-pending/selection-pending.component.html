@@ -1,26 +1,27 @@
 
 <h4 style="display: inline-block; font-weight: bold;">Selections Pending as on date</h4>
-<div *ngIf="selectionsPending && pagination" 
-    class="d-flex justify-contents-between align-items-center"
-    style="display: inline-block; margin-left: 15px; vertical-align: top;" >
-    
-    <pagination
-        style="display: inline-block;"
-         [totalItems]="pagination!.totalItems"
-         [itemsPerPage]="pagination!.itemsPerPage"
-         (pageChanged)="onPageChanged($event)"
-         [maxSize]="10"
-         previousText="&lsaquo;"
-         nextText="&rsaquo;"
-         firstText="&laquo;"
-         lastText="&raquo;">
-    ></pagination> <span style="vertical-align: middle;">of {{pagination!.totalItems}} </span>
     <br>
-    <div class="form-inline" style="margin-left: 50px !important;" >
+   <pagination *ngIf="selectionsPending && pagination"
+        style = "display: inline-block;"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="20"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination> 
+    <label style="width: 50px;display: inline-block; padding-left: 5px; font-size: larger; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination!.totalItems}}</label>
+    
+    <div class="form-inline" style="margin-left: 50px !important; display: inline-block;" >
         <input (keyup.enter)="onSearch()" type="text" 
             class="stdd form-control w300" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn matContrast btn-outline-primary mx-1">Search</button>
-        <button (click)="onReset()" class="btn matContrast btn-outline-success mx-1">Reset</button>
+        <button (click)="onSearch()" class="btn matContrast btn-outline-primary mx-1">
+            <mat-icon>search</mat-icon>
+        </button>
+        <button (click)="onReset()" class="btn"><mat-icon>refresh</mat-icon></button>
 
         <div class="stdd w200 mx-2" title="Choose the rejection Status.  Press the UPDATE SELECTION button to save these changes">
             <ng-select 
@@ -36,13 +37,12 @@
         </div>
     </div>
     
-    <button class="btn matContrast btn-outline-success fa fa-check mx-5" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
-        title="update the selections/rejections" (click)="UpdateSelections()" >
+    <button class="btn mx-2" [disabled]="selectionStatus === '' || pendingSelectionsSelected.length===0"
+        title="update the selections/rejections" (click)="UpdateSelections()" > <mat-icon>check</mat-icon>
     </button>
-    <button class="btn matContrast btn-outline-close fa fa-window-close fa-2x mx-5" routerLink="/" title="return to Administration Menu" ></button>
+    <button class="btn mx-2" routerLink="/" title="Close" ><mat-icon>cancel</mat-icon></button>
 
-</div>
-
+<br>
 <label class="stdd w50 mL80">Check</label>
 <label class="stdd w50 ">App No</label>
 <label class="stdd w150">Candidate Name</label>

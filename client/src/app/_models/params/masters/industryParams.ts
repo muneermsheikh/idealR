@@ -8,5 +8,5 @@ export class IndustryParams
     search = '';
 
     pageNumber = 1;
-    pageSize = 10;
+    pageSize = 20;
 }

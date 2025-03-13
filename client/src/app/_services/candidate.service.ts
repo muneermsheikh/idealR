@@ -13,6 +13,7 @@ import { IUserAttachment } from '../_models/hr/userAttachment';
 import { candidateParams } from '../_models/params/hr/candidateParams';
 import { AccountService } from './account.service';
 import { ICvsAvailableDto } from '../_dtos/admin/cvsAvailableDto';
+import { ICandidateDto } from '../_dtos/candidateDto';
 
 @Injectable({
   providedIn: 'root'
@@ -130,7 +131,6 @@ export class CandidateService {
   }
 
    UpdateCandidateWithFiles(model: any) {
-      console.log('model in update service candidate', model);
       return this.http.put<IApiReturnDto>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }
     
@@ -188,5 +188,9 @@ export class CandidateService {
 
   setPhoto(model: IUserAttachment) {
     return this.http.put<boolean>(this.apiUrl + 'userattachment/setPhoto', model);
+  }
+
+  candidateHistory(candidateId: number) {
+    return this.http.get<ICandidateDto>(this.apiUrl + 'users/candidateDto/' + candidateId);
   }
 }

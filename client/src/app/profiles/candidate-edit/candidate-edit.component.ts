@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormGroup, V
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { ToastrService } from 'ngx-toastr';
-import { map, of, switchMap, timer } from 'rxjs';
+import { empty, map, of, switchMap, timer } from 'rxjs';
 import { IApiReturnDto } from 'src/app/_dtos/admin/apiReturnDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { ICandidate } from 'src/app/_models/hr/candidate';
@@ -155,17 +155,17 @@ export class CandidateEditComponent implements OnInit {
       secondName: [cv.secondName],
       familyName: [cv.familyName],
       knownAs: [cv.knownAs, Validators.required],
-      dOB: [cv.dOB],
+      dOB: [cv.dOB, this.matchValues('firstName')],
       placeOfBirth: [cv.placeOfBirth],
       aadharNo: [cv.aadharNo],
-      ppNo: [cv.ppNo],
-      ecnr: [cv.ecnr],
+      ppNo: [cv.ppNo, Validators.maxLength(12)],
+      ecnr: [cv.ecnr, [Validators.required, Validators.maxLength(1)]],
       customerId: [cv.customerId],
       referredByName: [cv.referredByName],
-
+      
       address: [cv.address],
       city: [cv.city, Validators.required],
-      country: [cv.country ?? 'India'],
+      country: [cv.country ?? 'India', Validators.required],
       pin: [cv.pin],
       district: [cv.district],
       email: [cv.email, Validators.required],
@@ -270,7 +270,6 @@ export class CandidateEditComponent implements OnInit {
   removeUserPhone(i:number) {
     this.userPhones.removeAt(i);
   }
-
   
   newQualification(): FormGroup {
     return this.fb.group({
@@ -302,12 +301,13 @@ export class CandidateEditComponent implements OnInit {
         professionId: [0, Validators.required],
         isMain: [false, Validators.required]
       })
-      //this.newUserProfession()
-    );
+    )
+    this.registerForm.markAsDirty;
   }
 
   removeUserProfession(i:number) {
     this.userProfessions.removeAt(i);
+    this.registerForm.markAsDirty;
   }
   
   newUserExp(): FormGroup {
@@ -323,10 +323,12 @@ export class CandidateEditComponent implements OnInit {
 
   addUserExp() {
     this.userExperiences.push(this.newUserExp());
+    this.registerForm.markAsDirty;
   }
 
   removeUserExp(i:number) {
     this.userExperiences.removeAt(i);
+    this.registerForm.markAsDirty;
   }
     
   //userAttachments
@@ -357,11 +359,12 @@ export class CandidateEditComponent implements OnInit {
 
   addUserAttachment() {
     this.userAttachments.push(this.newUserAttachment());
+    this.registerForm.markAsDirty;
   }
   removeUserAttachment(i:number) {
     this.userAttachments.removeAt(i);
+    this.registerForm.markAsDirty;
   }
-
 
   //get data from api
   getCVById(id: number) {
@@ -464,6 +467,7 @@ export class CandidateEditComponent implements OnInit {
     if(f.size > 0) {
       this.userFiles.push(f);
       this.userAttachments.push(this.newUserAttachmentWithFile(f));
+      this.registerForm.markAsDirty;
     }
     
   }
@@ -471,12 +475,11 @@ export class CandidateEditComponent implements OnInit {
   savewithattachments = () => {
     var microsecondsDiff: number= 28000;
     var nowDate: number =Date.now();
-    
+
     if(nowDate < this.lastTimeCalled+ microsecondsDiff) return;
     
     this.lastTimeCalled=Date.now();
     const formData = new FormData();
-    const formValue = this.registerForm.value;
     
     if(this.userFiles.length > 0) {
       this.userFiles.forEach(f => {
@@ -496,15 +499,14 @@ export class CandidateEditComponent implements OnInit {
 
         this.candidateService.registerNewWithFiles(formData).subscribe({
           next: (response: IApiReturnDto) => {
-            if(response.errorMessage!=='') {
-              this.toastrService.error('failed to save the candidate data', response.errorMessage);
+              if(response.errorMessage!==null) {
+              this.toastrService.error(response.errorMessage, 'failed to save the candidate data');
             } else {
               this.toastrService.success('candidate saved, with Application No. ' + response.returnInt.toString(), 'Profile successfully inserted');
-              
               this.registerForm.setValue({'applicationNo': response.returnInt});
             }},
-          error: error => {
-            this.toastrService.error('failed to insert the candidate', error.error.details);
+          error: (err: any) => {
+            this.toastrService.error(err.error?.details, 'failed to insert the candidate');
 
           }
     })} else {
@@ -513,24 +515,22 @@ export class CandidateEditComponent implements OnInit {
           next: (response: IApiReturnDto) => {
             //console.log('returned from api:', response);
             if(response?.errorMessage !== '') {
-              this.toastrService.error('failed to update the candidate', response.errorMessage);
+              this.toastrService.error('failed to update the candidate', response.errorMessage, {closeButton: true});
             } else {
               this.toastrService.success('updated the candidate successfully');
               this.router.navigateByUrl(this.returnUrl);
             }},
-            error: error => {
-              this.toastrService.error('failed to update the candidate', error)
-              console.log(error);
+            error: (err: any) => {
+              this.toastrService.error(err.error?.details, 'failed to update the candidate')
+              console.log(err);
             }
           })
     }
   }
 
-
   uploadFinished = (event: any) => { 
     this.response = event; 
   }
-
   
   downloadattachment(index: number) {
     var attachment = this.userAttachments.at(index).value;
@@ -554,7 +554,6 @@ export class CandidateEditComponent implements OnInit {
       error: (err: any) => this.toastr.error(err.error.details, 'Error while downloading')
     })
   }
-
 
   IsNewAttachment(index: number): boolean {
     var id = this.userAttachments.value.map((x:any) => x.id).findIndex((x:any) => x.id ===0);

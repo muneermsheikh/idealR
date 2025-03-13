@@ -13,7 +13,7 @@ export class candidateParams {
     sort = "name";
 
     pageNumber = 1;
-    pageSize = 15;
+    pageSize = 20;
     
     search= '';
 }

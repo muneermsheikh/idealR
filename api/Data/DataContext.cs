@@ -144,6 +144,13 @@ namespace api.Data
         public DbSet<Help> Helps {get; set;}
         public DbSet<HelpItem> HelpItems {get; set;}
 
+        //Visa
+        public DbSet<VisaHeader> VisaHeaders {get; set;}
+        public DbSet<VisaItem> VisaItems {get; set;}
+        public DbSet<VisaTransaction> VisaTransactions {get; set;}
+        public DbSet<VisaAssignment> VisaAssignments { get; set; }
+        //public DbSet<RADetail> RADetails {get; set;}
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -316,6 +323,10 @@ namespace api.Data
             builder.Entity<Help>().HasIndex(x => x.Topic).IsUnique();
             builder.Entity<HelpItem>().HasIndex(x => new {x.HelpId, x.Sequence}).IsUnique();
             
+            builder.Entity<VisaHeader>().HasMany(x => x.VisaItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<VisaHeader>().HasIndex(x => x.VisaNo).IsUnique();
+            //builder.Entity<VisaAssignment>().HasIndex(x => x.CVRefId).IsUnique().HasFilter("AssignmentCanceled IS NOT False");
+            builder.Entity<VisaAssignment>().HasIndex(x => x.VisaItemId);
             /*builder.Entity<Message>()
                 .HasOne(s => s.Recipient)
                 .WithMany(m => m.MessagesReceived)
@@ -326,8 +337,7 @@ namespace api.Data
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
             */
-            
-            
+            //builder.Entity<RADetail>().HasIndex(x => new {x.RAName, x.City}).IsUnique();
         }
     }
 }

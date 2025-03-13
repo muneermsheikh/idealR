@@ -12,11 +12,16 @@
     margin: 0 1px 0 1px;
     vertical-align: top;
     padding: 0px;
-    word-wrap: normal;
-    
+    word-wrap: normal;    
 }
 
-.btn {color:aliceblue;}
+.btn {
+    color:aliceblue;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    font-size: small;
+    display: inline-block;
+}
 .hist {
     display: inline-block;
     cursor: pointer;
@@ -77,23 +82,33 @@ md-content{
 }
 
 .prompt {
-    font-size:x-small;
-    margin-left:1px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    background-color: darkgrey;
+    font-size:smaller;
+    font-family: 'Arial Narrow', 'Franklin Gothic Medium', Arial, sans-serif;
+    margin: 0 10px 0 5px;
+    padding-bottom: 4px;
+    width: 50px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.matIcon {
+    display: inline-block; 
+    font-size:x-small; 
+    margin: 0 15px 0 2px; 
+    padding: 0; 
+    width: 15px; 
+    vertical-align: top;
 }
 
 .w25 {width: 25px;}
 .w35 {width: 35px;}
 .w50 {width: 50px;}
 .w75 {width: 75px;}
-.w80 {width: 80px;}
+.w90 {width: 90px;}
 .w100 {width: 100px;}
-.w120 {width: 120px;}
+.w125 {width: 125px;}
 .w150 {width: 150px;}
+.w175 {width: 175px;}
 .w200 {width: 200px;}
 .w250 {width: 250px;}
-.w450 {width: 450px;}
+.w500 {width: 500px;}

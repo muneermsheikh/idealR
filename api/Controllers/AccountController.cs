@@ -13,8 +13,10 @@ namespace api.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper)
+        private readonly IConfiguration _config;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper, IConfiguration config)
         {
+            _config = config;
             _userManager = userManager;
             _mapper = mapper;
             _tokenService = tokenService;
@@ -34,11 +36,14 @@ namespace api.Controllers
             
             var usr = new UserDto {
                 UserName = user.UserName,
-                Employer = user.Employer,
+                Employer = _config["RAName"],
                 Token = await _tokenService.CreateToken(user),
                 //photoUrl = user.photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
-                Gender = user.Gender
+                Gender = user.Gender,
+                Address = _config["RAName"],
+                City = _config["City"],
+                Country = _config["Country"]
             };
 
             return usr;

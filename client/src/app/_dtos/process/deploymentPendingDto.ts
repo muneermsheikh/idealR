@@ -20,6 +20,8 @@ export interface IDeploymentPendingDto {
     nextSequence: number;
     currentSeqDate: Date;
     nextStageDate: Date;
+    visaTransactionId: number;
+    visaNo: string;
 
 }
 
@@ -46,5 +48,6 @@ export class DeploymentPendingDto implements IDeploymentPendingDto {
     currentSeqDate = new Date('1900-01-01');
     nextSequence: number=0;
     nextStageDate: Date=new Date();
-
+    visaTransactionId: number = 0;
+    visaNo: string = '';
 }

@@ -18,9 +18,15 @@
     border-color: black;
     width: 20px;
     height: 1em;
+    font-size: medium;
 }
 .fMedium {font-size: medium;}
-.fSmall {font-size: small;}
+.fSmall {
+    font-size: small;
+    margin: 0 3px 0 1px;
+}
+
+.btn {color:aliceblue; margin: 0 2px 0 2px;}
 
 .b {font-weight: bold;}
 .w50 {width: 50px;}
@@ -29,3 +35,6 @@
 .w130 {width: 130px;}
 .w150 {width: 150px;}
 .w200 {width: 200px;}
+.w400 {width: 400px;}
+
+.btn {color: aliceblue; margin: 0 2px 0 2px; size: 20px; vertical-align: middle;}

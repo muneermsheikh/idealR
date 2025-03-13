@@ -1,10 +1,11 @@
 <h4 class="w200">Category Listing</h4>
 <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
-    <pagination class="stdd" *ngIf="pagination"
+    <pagination 
+        style="display: inline-block;" *ngIf="pagination"
          [totalItems]="pagination.totalItems"
          [itemsPerPage]="pagination.itemsPerPage"
          (pageChanged)="onPageChanged($event)"
-         [maxSize]="10"
+         [maxSize]="15"
          previousText="&lsaquo;"
          nextText="&rsaquo;"
          firstText="&laquo;"
@@ -13,15 +14,15 @@
     
     <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid w200" #search placeholder="Search">
     <button (click)="onSearch()" title="searches the database based upon criteria entered in the search box" 
-         class="btn btn fa fa-search fa-2x" style="color: aliceblue;"></button>
+         class="btn"><mat-icon>search</mat-icon></button>
     <button (click)="onReset()" title="Resets the search criteria" 
-         class="btn fa fa-refresh fa-2x" style="color: aliceblue;"></button>
-    <button class="btn fa fa-plus fa-2x" title="Add a new Category" (click)="addCategory()" ></button>
+         class="btn" ><mat-icon>refresh</mat-icon></button>
+    <button class="btn" title="Add a new Category" (click)="addCategory()" ><mat-icon>add_box</mat-icon></button>
 
-    <button class="btn fa fa-window-close fa-2x" style="color: aliceblue;" routerLink="/" ></button>
+    <button class="btn" routerLink="/" ><mat-icon>cancel</mat-icon></button>
 </div>
 <div class="container my-2">
-    <div class="stdd w50 b" >Category<br>Id</div>
+    <div class="stdd w50 b" >Id</div>
     <div class="stdd w250 b" >Category Name</div>
     <div class="stdd w250 b" >Category Domain</div>
 
@@ -33,8 +34,9 @@
         <div class="stdd w250">{{cat.professionName}}</div>
         <div class="stdd w250">{{cat.professionGroup}}</div>
         
-        <button class="stdd w15 btn fa fa-pencil" (click)="editCategory(cat)" ></button>
-        <button class="stdd w15 btn fa fa-list" (click)="customAssessmentQs(cat.id)" ></button>
-        <button class="stdd w15 btn fa fa-trash red" (click)="deleteCategory(cat.id)" ></button>
+        <button class="btn" (click)="editCategory(cat)" ><mat-icon>edit</mat-icon></button>
+        <button class="btn fa fa-balance-scale" title="display Assessment Questions for this category" 
+            (click)="customAssessmentQs(cat.id)" ></button>
+        <button class="btn red" title="delete this Category" (click)="deleteCategory(cat.id)" ><mat-icon>delete</mat-icon></button>
     </div>
 </div>         

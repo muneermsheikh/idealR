@@ -18,6 +18,7 @@ import { CandidateAssessedResolver } from '../_resolvers/hr/candidate-assessed.r
 import { CandidateListingPagedResolver } from '../_resolvers/hr/candidateListingPagedResolver';
 import { ProspectiveHeaderResolver } from '../_resolvers/admin/prospectiveHeaderResolver';
 import { OrderNosHeaderResolver } from '../_resolvers/hr/OrderNosHeaderResolver';
+import { SelectionsPendingPagedResolver } from '../_resolvers/admin/selectionsPendingPagedResolver';
 
 const routes = [
     {path: 'listing', component: ProfileListComponent,
@@ -51,6 +52,22 @@ const routes = [
         headers: OrderNosHeaderResolver
       }
     },
+
+    {path: 'cvsreferred', component: CvsreferredComponent,
+      resolve: {
+        cvrefPaged: CvReferredPagedResolver,
+        headers: OrderNosHeaderResolver
+      }
+    },
+
+    {path: 'selectionsPending', component: CvsreferredComponent,
+      resolve: {
+        cvrefPaged: SelectionsPendingPagedResolver,
+        headers: OrderNosHeaderResolver
+      }
+    },
+
+
     {path: 'cvassess/:id', component: CvAssessComponent, canActivate: [HrGuard],
       resolve: {
         openOrderItemsBrief: OpenOrderItemsResolver,

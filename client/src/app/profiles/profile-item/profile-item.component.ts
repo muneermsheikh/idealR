@@ -5,6 +5,7 @@ import { ICandidateBriefDto } from 'src/app/_dtos/admin/candidateBriefDto';
 import { ICandidateAssessment } from 'src/app/_models/hr/candidateAssessment';
 import { ICvAssessmentHeader } from 'src/app/_models/hr/cvAssessmentHeader';
 import { InterviewBriefPendingModalComponent } from 'src/app/interviews/interview-brief-pending-modal/interview-brief-pending-modal.component';
+import { CandidateHistoryModalComponent } from '../candidate-history-modal/candidate-history-modal.component';
 
 @Component({
   selector: 'app-profile-item',
@@ -20,6 +21,7 @@ export class ProfileItemComponent implements OnInit {
   @Output() cvCheckedEvent = new EventEmitter<ICandidateBriefDto>();
   @Output() cvEditEvent = new EventEmitter<number>();
   @Output() cvDeleteEvent = new EventEmitter<number>();
+  @Output() candidateHistoryEvent = new EventEmitter<number>();
 
 
   currentId=0;
@@ -107,8 +109,20 @@ export class ProfileItemComponent implements OnInit {
           if(response) this.toastr.success('selected candidate added to the interview item  selected', 'Success')
         }
       })
-
   }
 
+  candidateHistory(candidateid: number) {
+    const config = {
+      class: 'modal-dialog-centered modal-lg',
+      initialState: {
+        CandidateId: candidateid
+      }
+    }
+    this.bsModalRef = this.modalService.show(CandidateHistoryModalComponent, config);
 
+    this.bsModalRef.content.Displayed.subscribe({
+      next: (response: boolean) => this.toastr.success('candidate history displayed'),
+      error: (err: any) => this.toastr.error('Failed to display the candidaate history')})
+    }
+  
 }

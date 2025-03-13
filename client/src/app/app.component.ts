@@ -1,15 +1,16 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AccountService } from './_services/account.service';
 import { User } from './_models/user';
-
-import { BreakpointObserver } from '@angular/cdk/layout';   //side navi
-import { ViewChild} from '@angular/core';   //sidenav
-import { MatSidenav } from '@angular/material/sidenav';
 
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Member } from './_models/member';
 import { MemberService } from './_services/member.service';
+import { DeployService } from './_services/deploy.service';
+import { INextDepDataDto } from './_dtos/process/nextDepDataDto';
+import { IDepItemToAddDto } from './_dtos/process/depItemToAddDto';
+import { SuggestDeploymentModalComponent } from './deployments/suggest-deployment-modal/suggest-deployment-modal.component';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-root',
@@ -23,11 +24,14 @@ export class AppComponent implements OnInit {
   model: any = {};
   user?:User;
   userIsAdmin=false;
-  public qrDataPPNo: string = '';
+
+  bsModalRef: BsModalRef | undefined;
+
+  candidatePPNoForNextProcess: string = '';
+  candidateNextProcess: INextDepDataDto | undefined;
   
-  constructor(public accountService: AccountService, private toastr: ToastrService,
-    private router: Router
-  ){}
+  constructor(public accountService: AccountService, private toastr: ToastrService, private bsModalService: BsModalService,
+    private router: Router, private depService: DeployService, private memberService: MemberService){}
 
   ngOnInit(): void {
     this.setCurrentUser();
@@ -80,13 +84,13 @@ export class AppComponent implements OnInit {
      var username = this.user?.userName;
      if(username===null || username === undefined) return;
     
-     var member = inject(MemberService).getMember(username).subscribe({
+     var member = this.memberService.getMember(username).subscribe({
         next: (response: Member) => {
           this.navigateByRoute(username!, '/members/edit', response);
         }
      })
-
   }
+
 
     
   navigateByRoute(id: string, routeString: string, object: Member) {
@@ -101,6 +105,29 @@ export class AppComponent implements OnInit {
             returnUrl: '/' 
           } }
       );
+  }
+
+  nextProcess() {
+    
+        const config = {
+          class: 'modal-dialog-centered modal-lg',
+          initialState: {
+            passportNo: this.candidatePPNoForNextProcess
+          }
+        }
+        this.bsModalRef = this.bsModalService.show(SuggestDeploymentModalComponent, config);
+        this.bsModalRef.content.emittedDep.subscribe((response: boolean) => {
+          if(response) {
+            this.toastr.success('new deployment process added', 'Success')
+          } else {
+            this.toastr.warning('Failed to insert the deployment process', 'Failure')
+          }
+        })
+  }
+
+  showCustomAssessmentQuestions() {
+    this.toastr.info('Custom Assessment Questions are avaiable in Category Listing.  Press the Assessment Question button to display assessment questions for that category', 
+        'Open Categories', {extendedTimeOut: 0, closeButton: true })
   }
 
 }

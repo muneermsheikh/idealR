@@ -89,6 +89,7 @@ namespace api.Extensions
             services.AddScoped<IComposeMsgForIntrviews, ComposeMsgsForInterviews>();
 
             services.AddScoped<IQualityRepository, QualityRepository>();
+            services.AddScoped<IVisaRepository, VisaRepository>();
             
             return services;
         }

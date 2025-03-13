@@ -7,6 +7,8 @@ import { DeployStatusListComponent } from './deploy-status-list/deploy-status-li
 import { DeploymentStatusResolver } from '../_resolvers/deploys/deploymentStatusResolver';
 import { CandidateFlightHeaderComponent } from './candidate-flight-header/candidate-flight-header.component';
 import { DeploymentsPagedResolver } from '../_resolvers/deploys/deploymentsPagedResolver';
+import { CandidateFlightResolver } from '../_resolvers/deploys/candidateFlightResolver';
+import { CandidateFlightsPagedResolver } from '../_resolvers/deploys/candidateFlightsPagedResolver';
 
 
 const routes = [
@@ -26,7 +28,11 @@ const routes = [
   },
 */
   
-  {path: 'candidateflights', component: CandidateFlightHeaderComponent},
+  {path: 'candidateflights', component: CandidateFlightHeaderComponent,
+    resolve: {
+      cFlights: CandidateFlightsPagedResolver
+    }
+  },
 
   {path: 'deployStatus', component: DeployStatusListComponent,
       resolve: {

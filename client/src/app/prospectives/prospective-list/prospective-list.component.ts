@@ -86,18 +86,9 @@ export class ProspectiveListComponent implements OnInit {
           this.pagination = data['prospectives'].pagination;
           this.totalCount = data['prospectives'].totalCount;
           this.headers = data['headers'];
-
       })
   }
   
-      /*getHeadersDto(status:string) {
-        return this.service.getProspectiveHeadersDto(status).subscribe({
-          next: (response: IProspectiveHeaderDto[]) => {
-            this.headers = response;
-          }
-        })
-      }
-    */
   
   onPageChanged(event: any){
     const params = this.service.getParams();

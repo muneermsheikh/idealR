@@ -12,11 +12,14 @@
         <label class="lbl w75 mx-2">Address: </label>
         <app-text-input [label]="'Venue Address'" formControlName="venueAddress" 
             class="stdd w300" ></app-text-input>
-        <button class="btn fa fa-save green" style="margin-left:250px !important" (click)="savewithattachments()" 
+        <button class="btn green" style="margin-left:250px" (click)="savewithattachments()" 
             title="saves the interview item with assignments, along with attachments" 
-            style="color: aliceblue; vertical-align: top;" [disabled]="!form.dirty" ></button>
-        <button class="btn fa fa-users w15" style="color: aliceblue;"  (click)="getMatchingCVs(interviewItem)"
-            title="gets candidates available and matching this profession.  Sources from candidates as well as prospetive candidates"></button>
+            [disabled]="!form.dirty" > <mat-icon>save</mat-icon> </button>
+            
+        <button class="btn" style="color: aliceblue;"  (click)="getMatchingCVs(interviewItem)"
+            title="gets candidates available and matching this profession. Sources from candidates as well as prospective candidates">
+            <mat-icon>settings_input_component</mat-icon>
+        </button>
       
         <br><label class="lbl w75 mx-2">Address2: </label>
         <app-text-input [label]="'Address2'" formControlName="venueAddress2" 

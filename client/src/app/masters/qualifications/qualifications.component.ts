@@ -54,12 +54,12 @@ export class QualificationsComponent implements OnInit{
   }
 
   editQualification(id: number, st: string) {
-    var qual = {id: id, professionName: st};
+    var qual = {id: id, professionName: st, professionGroup: ''};
 
     const config = {
       class: 'modal-dialog-centered modal-md',
       initialState: {
-        category: qual,
+        Category: qual,
         title: 'Qualification'
       }
     }
@@ -68,14 +68,23 @@ export class QualificationsComponent implements OnInit{
 
     this.bsModalRef.content.updateEvent.subscribe({
       next: (response: IProfession) => {
-        if(response) {
-          this.service.updateQualification(response.id, response.professionName).subscribe({
-            next: succeeded => {
-              if(succeeded) {
-                this.toastr.success('Qualification updated', 'success')
-              }
-            }, error: err => this.toastr.error(err, 'Error')
-          })
+          if(response) {
+          if(response.id === 0) {
+            this.service.insertQualification(response.professionName).subscribe({
+              next: (response: IQualification) => {
+                this.toastr.success('qualification added', 'success');
+                this.qualifications.push(response);
+              }, error: (err: any) => this.toastr.error(err.error?.details, 'Error')
+            })
+          } else {
+            this.service.updateQualification(response.id, response.professionName).subscribe({
+              next: succeeded => {
+                if(succeeded) {
+                  this.toastr.success('Qualification updated', 'success')
+                }
+              }, error: (err: any) => this.toastr.error(err.error?.details, 'Error')
+            })
+          }
         }
       }
     })

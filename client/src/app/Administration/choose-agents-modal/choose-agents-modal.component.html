@@ -37,12 +37,12 @@
             
             <span class="form-check stdd w35" >
                 <input type="checkbox" 
-                  class="form-check-input"
-                  [checked]="agent.checkedMobile"
-                  (change)="agent.checkedMobile = !agent.checkedMobile" 
-                  [disabled]="agent.customerIsBlacklisted && agent.mobileNo === undefined"
+                    class="form-check-input"
+                    [(ngModel)]="agent.checked"
+                    (change)="agent.checkedMobile = !agent.checkedMobile" 
                 >    
             </span>
+            <!-- [disabled]="agent.customerIsBlacklisted && agent.mobileNo === undefined" -->
             <span class="stdd w100 mx-1 ">{{agent.mobileNo}}</span>
         </div> 
     </form>

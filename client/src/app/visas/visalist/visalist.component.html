@@ -1,0 +1,102 @@
+<div *ngIf="!isPrintPDF">
+    <h4 style="display: inline-block; font-weight: bold;">Visa Listing</h4>
+
+    <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
+        <pagination class="mx-2" 
+            style = "display: inline-block;"
+            *ngIf="pagination !== undefined"
+            [totalItems]="pagination!.totalItems"
+            [itemsPerPage]="pagination!.itemsPerPage"
+            (pageChanged)="onPageChanged($event)"
+            [maxSize]="15"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
+        ></pagination>
+
+        <label class="lbl w200 mx-2" style="display: inline-block;" 
+            title="The paged list that will retreive records based upon the customer you select" >Choose Customer to generate report</label>
+        <ng-select class="stdd"
+            style="border-style: double; width: 200px; font-size: small; display: inline-block;"
+            [items]="visaCustomers"
+            bindLabel="customer"
+            bindValue="customer"
+            labelForId="customer"
+            clearAllText="Clear"
+            [(ngModel)]="visaCustomerSelected"
+        ></ng-select>
+
+        <button printSectionId="print-section" 
+            printTitle="printTitle"
+            [previewOnly]="false"
+            [useExistingCss]="true"
+            ngxPrint
+            title="shows the report in pdf format and enables printing" 
+            style="display:inline-block; margin-left: 50px;"
+            [disabled]="visaCustomerSelected===''"
+            title="print pdf for current category Ref"
+            (click)="generatePDF()"
+            >
+            <mat-icon>print</mat-icon>
+        </button>
+
+        <button class="btn mx-5" title="Add new Visa" routerLink="/visas/visaEdit/0" >
+            <mat-icon>library_add</mat-icon>
+        </button>
+        <button class="btn mx-5" title="Save the assignments" (click)="saveAssignments()" 
+            [disabled]="assignments.length === 0">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button class="btn" title="Exit this page" routerLink="/" ><mat-icon>cancel</mat-icon></button>
+        
+    </div>
+    <br>
+    <div class="form-inline">
+        <label class="lbl w125" style="margin-left: 15px;">Customer</label>
+        <label class="lbl w80">Consulate</label>
+        <label class="lbl w100">Sponsor Name</label>
+        <label class="lbl w100">Visa No.</label>
+        <label class="lbl w80">Visa Date</label>
+        <label class="lbl w125">Visa Category</label>
+        <label class="lbl w50">Quantity</label>
+        <label class="lbl w50">Con-<br>sumed</label>
+        <label class="lbl w50">Visa<br>Balance</label>
+        <label class="lbl w50">Visa Canceled</label>
+    </div>
+    <hr class="my-0">
+    
+    <div *ngIf="!visas" class="my-2">
+        No Visas on record matching your criteria
+    </div>     
+
+    <div *ngIf="visas.length">
+        <div class="row" *ngFor="let visa of visas">
+            <app-visa-line
+                [isReport]="false"
+                [visa]="visa"
+                (deleteEvent)="deleteVisa(visa.id)"
+                (editEvent)="editVisa(visa.id)"
+                (assignEvent)="DisplayOrderItemsOfCustomer($event)"
+                (consumedEvent)="displayVisaConsumed($event)"
+            ></app-visa-line>
+        </div>
+    </div>
+    <div *ngFor="let assign of assignments">
+        <div>{{assign.visaItemId}}</div>
+        <div>{{assign.orderItemId}}</div>
+        <div>{{assign.visaQntyAssigned}}</div>
+        <button class="btn" (click)="deleteAssignment(assign)"></button>
+    </div>
+</div>
+
+<div style="margin-left: 750px; font-weight: bold; display: inline-block;">Total Balance:</div> 
+<span class="b alignR w35 mx-2" style="display: inline-block;">{{totalBal}}</span>
+<div *ngIf="isPrintPDF">
+    <div *ngFor="let visa of visas">
+        <app-visa-line
+            [isReport]="true"
+            [visa]="visa"
+        ></app-visa-line>
+    </div>
+</div>

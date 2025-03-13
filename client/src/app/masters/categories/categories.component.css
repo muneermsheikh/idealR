@@ -6,9 +6,11 @@
 
 .b {font-weight: bold;}
 .red {color: red;}
-.btn {color:aliceblue}
+.btn {
+    color:aliceblue;
+    width: 15px;
+}
 
-.w15 {width: 15px;}
 .w50 {width: 50px;}
 .w250 {width: 250px;}
 .w150 {width: 150px;}

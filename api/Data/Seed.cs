@@ -64,7 +64,9 @@ namespace api.Data
                     new() {Name = "Process Executive"},
                     new() {Name = "Process Supervisor"},
                     new() {Name = "Selection"},
-                    new() {Name = "CVRefer"}
+                    new() {Name = "CVRefer"},
+                    new() {Name = "VisaEdit"},
+                    new() {Name = "VisaView"}
                 };
 
                 foreach(var role in roles) {
@@ -333,6 +335,14 @@ namespace api.Data
                 {
                     context.FlightDetails.Add(item);
                 }
+            }
+
+            if(!await context.VisaTransactions.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/VisaTransactionSeedData.json");
+
+                _ = new JsonSerializerOptions {PropertyNameCaseInsensitive = true };
+                var dbdata = JsonSerializer.Deserialize<List<VisaTransaction>>(data);
+                foreach(var item in dbdata) { context.VisaTransactions.Add(item);}
             }
             
             if(context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
@@ -890,7 +900,7 @@ namespace api.Data
                     context.Entry(depitem).State=EntityState.Added;
                 }
                 await context.SaveChangesAsync();
-             }
+             }          
 
             if(context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
             

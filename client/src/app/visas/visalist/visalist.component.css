@@ -1,0 +1,25 @@
+.lbl {
+    font-size: smaller;
+    font-weight: bold;
+    margin: 0 2px 0 8px;
+    vertical-align: middle;
+}
+
+.stdd {
+    font-size: smaller;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+}
+
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w80 {width: 80px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+
+.b {font-weight: bold;}
+.alignR {text-align: right;}
+
+.btn {color: aliceblue; margin: 0 2px 0 2px; size: 20px; vertical-align: middle;}

@@ -1,6 +1,7 @@
 .stdd {
     display: inline-block;
     vertical-align: top;
+    word-wrap: break-word;
 }
 
 .lbl {
@@ -13,12 +14,14 @@
 .fMedium {font-size: medium;}
 .fSmall {font-size: small;}
 
+.btn {color:aliceblue; width: 15px; margin: 0 2px 0 2px;}
+
 .b {font-weight: bold;}
 .w15 {width: 15px;}
 .w30 {width: 30px;}
 .w45{width: 45px;}
 
-.w30 {width: 30px;}
+.w40 {width: 40px;}
 .w50 {width: 50px;}
 .w70 {width: 70px;}
 .w100 {width: 100px;}

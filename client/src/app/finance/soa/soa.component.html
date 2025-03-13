@@ -5,7 +5,7 @@
 	Extract of transactions of: <strong> {{soa.accountName}} </strong> 
 		for the period between {{soa.fromDate | date: 'dd-MMM-yy'}} and {{soa.uptoDate | date: 'dd-MMM-yy'}}
 	
-	<button class="btn ml-15 fa fa-2x fa-window-close" style="color: aliceblue;" (click)="returnToCaller()" ></button>
+	<button type="button" class="btn" (click)="returnToCaller()" ><mat-icon>cancel</mat-icon></button>
 </div>
 
 <br>

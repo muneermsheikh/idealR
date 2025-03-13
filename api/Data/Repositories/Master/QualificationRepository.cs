@@ -1,3 +1,4 @@
+using api.DTOs.Admin;
 using api.Entities.Master;
 using api.Helpers;
 using api.Interfaces.Masters;
@@ -19,20 +20,30 @@ namespace api.Data.Repositories.Master
         }
 
 
-        public async Task<string> AddQualification(string qualificationName)
+        public async Task<ReturnQualificationDto> AddQualification(string qualificationName)
         {
+             var dto = new ReturnQualificationDto();
+
              var q = await _context.Qualifications
                 .Where(x => x.QualificationName.ToLower() == qualificationName.ToLower())
                 .FirstOrDefaultAsync();
 
-            if(q != null) return "That qualification already exists";
-
+            if(q != null) {
+                dto.ErrorString = "Qualification " + qualificationName + " already exists";
+                return dto;
+            }
 
             var obj = new Qualification{QualificationName = qualificationName};
 
             _context.Entry(obj).State = EntityState.Added;
 
-            return await _context.SaveChangesAsync() > 0 ? "" : "Failed to add the qualification";
+            if(await _context.SaveChangesAsync() > 0) {
+                dto.qualification = obj;
+            } else {
+                dto.ErrorString = "Failed to add the qualification";
+            }
+            return dto;
+
         }
 
         public async Task<string> DeleteQualificationById(int id)

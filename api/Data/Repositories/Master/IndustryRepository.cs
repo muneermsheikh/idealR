@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using api.DTOs.Admin;
 using api.Entities.Master;
 using api.Helpers;
 using api.Interfaces.Masters;
@@ -20,20 +21,31 @@ namespace api.Data.Repositories.Master
             _context = context;
         }
 
-        public async Task<Industry> AddIndustry(string IndustryName)
+        public async Task<ReturnIndustryDto> AddIndustry(Industry industry)
         {
+            var dto = new ReturnIndustryDto();
+
             var q = await _context.Industries
-                .Where(x => x.IndustryName.ToLower() == IndustryName.ToLower())
+                .Where(x => x.IndustryName.ToLower() == industry.IndustryName.ToLower()
+                    && x.IndustryGroup.ToLower() == industry.IndustryGroup.ToLower() )
                 .FirstOrDefaultAsync();
 
-            if(q != null) return q;
+            if(q != null) {
+                dto.ErrorString = "The Industry Name " + industry.IndustryName + " already exists under the Group" + industry.IndustryGroup;
+                return dto;
+            }
 
-
-            var obj = new Industry{IndustryName = IndustryName};
+            var obj = new Industry{IndustryName = industry.IndustryName, IndustryGroup=industry.IndustryGroup, IndustryClass=industry.IndustryClass};
 
             _context.Entry(obj).State = EntityState.Added;
 
-            return await _context.SaveChangesAsync() > 0 ? obj : null;
+            if (await _context.SaveChangesAsync() > 0) {
+                dto.industry = obj;
+            } else {
+                dto.ErrorString = "Failed to insert the industry";
+            }
+
+            return dto;
         }
 
         public async Task<string> DeleteIndustry(string IndustryName)

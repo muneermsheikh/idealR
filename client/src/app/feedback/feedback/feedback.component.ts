@@ -3,11 +3,15 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
 import { IFeedbackHistoryDto } from 'src/app/_dtos/admin/feedbackAndHistoryDto';
+import { IUser } from 'src/app/_models/admin/user';
 import { IFeedback } from 'src/app/_models/hr/feedback';
 import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { FeedbackService } from 'src/app/_services/feedback.service';
+import { convertDateToDateOnly } from 'src/app/_services/quality.service';
 
 @Component({
   selector: 'app-feedback',
@@ -24,18 +28,30 @@ export class FeedbackComponent implements OnInit {
   feedbackHistory?: IFeedbackHistoryDto[]=[];
   feedbackIdSelected: number=-1;
   lastFeedbackIdSelected: number=-1;
+  RAName = "";
+  isPrintPDF = false;
+  printTitle = "";
+  feedbackForPrint: IFeedback | undefined;
 
   form: FormGroup = new FormGroup({});
   returnUrl='';
 
-  constructor(private fb: FormBuilder, private confirm: ConfirmService, private activatedRoute: ActivatedRoute,
-    private service: FeedbackService, private toastr: ToastrService, private router: Router){
+  constructor(private fb: FormBuilder, private confirm: ConfirmService, 
+    private activatedRoute: ActivatedRoute, private accountService: AccountService,
+    private service: FeedbackService, private toastr: ToastrService, private router: Router ){
       let nav: Navigation|null = this.router.getCurrentNavigation() ;
 
           if (nav?.extras && nav.extras.state) {
             if(nav.extras.state['returnUrl']) this.returnUrl=nav.extras.state['returnUrl'] as string;
 
             if( nav.extras.state['user']) this.user = nav.extras.state['user'] as User;
+          }
+          if(this.user === undefined) {
+            this.accountService.currentUser$.pipe(take(1)).subscribe({
+              next: (user: any) => {
+                if(user !== null) this.user = user;
+              }
+            })
           }
     }
 
@@ -46,11 +62,10 @@ export class FeedbackComponent implements OnInit {
         this.feedback = data['feedback']
         , this.feedbackHistory = data['history'];
         if(this.feedback) this.InitializeForm(this.feedback);
-        console.log('history:', this.feedbackHistory);
       }, 
       error: (err:any) => {
         console.log('error:', err);
-        this.toastr.error(err.error.error.details, 'Error encountered')
+        this.toastr.error(err.error?.details, 'Error encountered')
       }
     })
     
@@ -226,5 +241,25 @@ export class FeedbackComponent implements OnInit {
       }
     })
   }
+
+  generatePDF() {
+      this.isPrintPDF = !this.isPrintPDF;
+
+      this.printTitle = this.feedback?.customerName + ", " + this.feedback?.city + ", " + this.feedback?.country
+        + " dated " + convertDateToDateOnly(this.feedback?.dateSent!);
+      
+      this.feedbackForPrint = this.form.value;
+    }
   
+    feedbackIdChanged(feedbackid:number) {
+        this.service.getFeedbackWithItems(feedbackid).subscribe({
+          next: (response: IFeedback) => this.feedback = response
+        })
+    }
+
+    calculatePercentage() {
+      var totalMarks = 0;
+      totalMarks =  this.feedbackItems.value.map((x:any) => +x.response).reduce((a:number, b: number) => a + b,0);
+      return totalMarks / (this.feedbackItems.length * 20);
+    }
 }

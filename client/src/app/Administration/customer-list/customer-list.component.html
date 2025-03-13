@@ -1,6 +1,6 @@
-<h4>Customer Listing</h4>
+<h4>Listing of Customers/Vendors/Associates</h4>
 
-<pagination class="stdd" *ngIf="pagination !== undefined"
+<pagination *ngIf="pagination !== undefined" style="display: inline-block;"
         [totalItems]="pagination!.totalItems"
         [itemsPerPage]="pagination!.itemsPerPage"
         (pageChanged)="onPageChanged($event)"
@@ -12,28 +12,28 @@
     ></pagination>
 
     <input (keyup.enter)="onSearch()" type="text" class="stdd fa-solid fa-magnifying-glass w200" #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" style="color: aliceblue;"
-        class="btn fa fa-find fa-2x"></button>
+    <button (click)="onSearch()" title="search the text entered" class="btn"><mat-icon>find</mat-icon></button>
 
     <label class="lbl w100" style="text-align: right; margin-right:5px;">Type</label>
-    <span style="font-size: small;">Customer</span><input type="radio" id="customerType" 
-        name="customerType" [(ngModel)]="cParams.customerType" value="customer" class="inputcheck form-check-input">
+    <span >Customer</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="customer" class="btn inputcheck form-check-input">
+    <span>Associate</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="associate" class="btn inputcheck form-check-input">
+    <span>Vendor</span><input type="radio" id="customerType" 
+        name="customerType" [(ngModel)]="cParams.customerType" value="vendor" class="btn inputcheck form-check-input">
 
-    <span style="font-size: small;">Associate</span><input type="radio" id="customerType" 
-        name="customerType" [(ngModel)]="cParams.customerType" value="associate" class="inputcheck form-check-input">
-    <span style="font-size: small;">Vendor</span><input type="radio" id="customerType" 
-        name="customerType" [(ngModel)]="cParams.customerType" value="vendor" class="inputcheck form-check-input">
-
-    <button class="btn fa fa-check" (click)="applyCustomerType()"
-        title="retrieves records from database based upon customerType selected"></button>
+    <button class="btn" (click)="applyCustomerType()" 
+        title="retrieves records from database based upon customerType selected">
+        <mat-icon>check</mat-icon>
+    </button>
 
     <button (click)="onReset()" title="resets search parameters" 
-        class="btn btn-outline-success fa fa-refresh mx-1"></button>
+        class="btn"><mat-icon>refresh</mat-icon></button>
 
     <button (click)="addClicked()" title="Add new "  
-        class="btn btn-outline-success fa fa-plus mx-1"></button>
+        class="btn"><mat-icon>add_box</mat-icon></button>
 
-        <button printSectionId="print-section" 
+    <button printSectionId="print-section" class="btn"
         printTitle="printTitle"
         [previewOnly]="false"
         [useExistingCss]="true"
@@ -41,12 +41,12 @@
         title="shows the report in pdf format and enables printing" 
         style="display:inline-block; margin-left: 50px;"
         (click)="generatePDF()"
-        >
+    >
         <mat-icon>print</mat-icon>
     </button>
 
     <button (click)="close()" title="close this page" 
-        class="btn btn-outline-success fa fa-window-close mx-1"></button>
+        class="btn"><mat-icon>cancel</mat-icon></button>
 
     <hr class="my-0">
     <label class="lbl w35" style="margin-left: 25px !important;">Sel</label>
@@ -60,14 +60,14 @@
     <div *ngIf="!customerDtos">
         No matching customers on record
     </div>
-    <div class="col-3" *ngIf="display">
+    <!-- <div class="col-3" *ngIf="display">
         <div layout="column" flex style="overflow: scroll;">
             <div id="content" ng-view flex *ngFor="let hist of history">
                 <div class="stdd w100 cursorPointer" (click)="displayFeedback(hist.feedbackId)">{{hist.feedbackIssueDate | date: 'ddMMMyy'}}</div>
-                <!-- <div class="stdd w100 cursorPointer" (click)="displayFeedback(hist.feedbackId)">{{hist.feedbackRecdDate | date: 'ddMMMyy'}}</div> -->
+                <div class="stdd w100 cursorPointer" (click)="displayFeedback(hist.feedbackId)">{{hist.feedbackRecdDate | date: 'ddMMMyy'}}</div>
             </div>
         </div>
-    </div>
+    </div> -->
     
     <div *ngIf="customerDtos" class="col-9">
         <div *ngIf="!isPrintPDF">
@@ -83,7 +83,7 @@
                 ></app-customer-line>
             </div>
         </div>
-        <div id="print-section">
+        <div id="print-section" *ngIf="isPrintPDF">
             <label style="font-weight: bold; font-size: large;">{{printtitle}}</label>
             <br><label class="lbl w50" style="margin-left: 10px;">Type</label>
             <label class="lbl w200">Customer Name</label>
@@ -100,9 +100,4 @@
         </div>
     </div>
 
-    <!--evaluationEvent emits ICustomerReview-->
-    <div *ngIf="history && display">
-        <app-feedback
-            
-        ></app-feedback>
-    </div>
+   

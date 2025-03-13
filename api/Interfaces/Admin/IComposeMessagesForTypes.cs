@@ -8,7 +8,7 @@ namespace api.Interfaces.Admin
     {
         public string GetSelectionDetails(string CandidateName, int ApplicationNo, string CustomerName, 
             string CategoryName, Employment employmt);
-        string ComposeOrderItems(int orderNo, ICollection<OrderItem> orderItems, bool hasException);
+        Task<string> ComposeOrderItems(int orderNo, ICollection<OrderItem> orderItems, bool hasException);
         string GetSelectionDetailsBySMS(SelectionDecision selection);
         Task<string> TableOfOrderItemsContractReviewedAndApproved(ICollection<int> itemIds);
         Task<OrderItemReviewStatusDto> CumulativeCountForwardedSoFar(int orderitemId);

@@ -60,6 +60,9 @@ export class EmployeesComponent implements OnInit{
     this.router.navigateByUrl('/masters/testEmpEdit/' + employeeId);
   }
 
+  employeeAdd() {
+    this.router.navigateByUrl('/masters/testEmpEdit/0');
+  }
   employeeDelete(event: any) {
     var id=event!.id;
     var confirmMsg = 'confirm delete this Employee. ' +

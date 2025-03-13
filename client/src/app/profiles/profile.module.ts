@@ -15,8 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CvAssessComponent } from './cv-assess/cv-assess.component';
 import { NgxPrintModule } from 'ngx-print';
-import { QrCodeModule } from 'ng-qrcode';
-
+import { CandidateHistoryModalComponent } from './candidate-history-modal/candidate-history-modal.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -33,16 +33,17 @@ import { QrCodeModule } from 'ng-qrcode';
     CvsreferredComponent,
     CvreferredLineComponent,
     CvAssessComponent,
+    CandidateHistoryModalComponent,
     
   ],
 
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     ProfileRoutingModule,
     SharedModule,
     MatIconModule,
     NgxPrintModule,
-    QrCodeModule
   ]
 })
 export class ProfileModule { }

@@ -12,17 +12,17 @@ export interface ICandidateFlightGrp
     flightNo: string;
     airportOfBoarding: string;
     airportOfDestination: string;
-    eTD_Boarding: Date;
-    eTA_Destination: Date;
-    eTD_BoardingString: string;
-    eTA_DestinationString: string;
+    etD_Boarding: Date;
+    etA_Destination: Date;
+    etD_BoardingString: string;
+    etA_DestinationString: string;
     
     airportVia: string;
     flightNoVia: string;
-    eTA_Via?: Date | null;
-    eTD_Via?: Date | null;
-    eTA_ViaString: string;
-    eTD_ViaString: string;
+    etA_Via?: Date | null;
+    etD_Via?: Date | null;
+    etA_ViaString: string;
+    etD_ViaString: string;
     
     fullPath: string;
 
@@ -43,15 +43,15 @@ export class CandidateFlightGrp implements ICandidateFlightGrp
     airportOfBoarding = '';
     flightNoVia = ''; 
     airportOfDestination = '';
-    eTD_Boarding= new Date;
-    eTA_Destination= new Date;
-    eTA_DestinationString='';
-    eTD_BoardingString='';
+    etD_Boarding= new Date;
+    etA_Destination= new Date;
+    etA_DestinationString='';
+    etD_BoardingString='';
     airportVia = '';
-    eTD_Via= null;    //new Date;
-    eTA_Via= null;  // new Date;
-    eTD_ViaString='';
-    eTA_ViaString= '';
+    etD_Via= null;    //new Date;
+    etA_Via= null;  // new Date;
+    etD_ViaString='';
+    etA_ViaString= '';
     
     fullPath='';
     fileToUpload= null;

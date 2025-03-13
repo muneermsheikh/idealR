@@ -2,19 +2,21 @@
     No selection records found matching your criteria
 </div>
 
-<h4 class="mx-5" style="display: inline-block; font-weight: bold;">Selections</h4>
+<h4 class="mx-5" style="display: inline-block; font-weight: bold;">Selections and Rejections</h4>
 
    <pagination *ngIf="selections && pagination"
-        class="stdd"
-         [totalItems]="pagination!.totalItems"
-         [itemsPerPage]="pagination!.itemsPerPage"
-         (pageChanged)="onPageChanged($event)"
-         [maxSize]="10"
-         previousText="&lsaquo;"
-         nextText="&rsaquo;"
-         firstText="&laquo;"
-         lastText="&raquo;">
-    ></pagination>
+        style = "display: inline-block;"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="20"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination> 
+    <label style="width: 50px;display: inline-block; padding-left: 5px; font-size: larger; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination?.totalItems}}</label>
       
     <input (keyup.enter)="onSearch()" type="text" 
         class="stdd mx-5 w150" #search placeholder="Search">
@@ -26,19 +28,20 @@
         labelForId="name"
         clearAllText="Clear"
         [(ngModel)]="sParams.selectionStatus"
-    ></ng-select>
+    ></ng-select> 
     
-    <button (click)="onSearch()" class="btn btn-outline-primary matContrast fa fa-search mx-1"></button>
-    <button (click)="onReset()" class="btn btn-outline-success matContrast fa fa-refresh mx-1"></button>
+    <button (click)="onSearch()" class="btn"><mat-icon>search</mat-icon></button>
+    <button (click)="onReset()" class="btn"><mat-icon>refresh</mat-icon></button>
   
-    <button class="btn matContrast fa fa-house mx-2" title="align values in CVRef with Selections" (click)="DoHousekeeping()">HK</button>
-    <button class="btn matContrast fa fa-window-close fa-2x mx-2" routerLink="/" ></button>
+    <button class="btn" title="align values in CVRef with Selections" (click)="DoHousekeeping()"><mat-icon>settings_applications</mat-icon></button>
+    <button class="btn" routerLink="/" ><mat-icon>home</mat-icon></button>
    
 <div style="margin-left: 25px;">
     <label class="stdd w50">App No</label>
     <label class="stdd w150">Candidate Name</label>
     <label class="stdd w200">Customer Name</label>
     <label class="stdd w200">Category Ref</label>
+    <label class="stdd w150">Selection Decision</label>
     <label class="stdd w100">Sel/Rej<br>Date</label>
     <label class="stdd w100">Referred On</label>
     <label class="stdd w50">Employmt<br>available</label>
@@ -49,7 +52,6 @@
             (editEmploymentEvent)="displayEmploymentModal($event, item)"
             (deleteSelectionEvent)="deleteSelection($event)"
             (editSelectionEvent)="displaySelectionModal($event, item)"
-            (remindCandidateForDecisionEvent)="sendReminders($event)"
         ></app-selection-line>
     </div>
     

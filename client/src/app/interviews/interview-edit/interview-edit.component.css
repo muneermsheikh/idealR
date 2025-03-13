@@ -25,5 +25,5 @@
 .w150 {width:150px;}
 .w250 {width: 250px;}
 
-.btn {color:aliceblue}
+.btn {color:aliceblue; vertical-align: middle; font-size: small; margin: 0 2px 0 2px;}
 .red {color: red}

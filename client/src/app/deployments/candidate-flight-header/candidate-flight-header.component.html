@@ -1,10 +1,10 @@
 <h4 style="display: inline-block;" class="mx-4">Candidate Flight details</h4>
 
-<pagination class="stdd mx-3" *ngIf="pagination !== undefined"
+<pagination style="display: inline-block;" class="mx-3" *ngIf="pagination !== undefined"
     [totalItems]="pagination!.totalItems"
     [itemsPerPage]="pagination!.itemsPerPage"
     (pageChanged)="onPageChanged($event)"
-    [maxSize]="10"
+    [maxSize]="15"
     previousText="&lsaquo;"
     nextText="&rsaquo;"
     firstText="&laquo;"
@@ -17,23 +17,24 @@
 <span class="lbl w100 mL25">Category Ref</span>
     <input id="orderNo" name="orderNo" class="stdd w75" [(ngModel)]="fParams.orderItemId" >
 
-<button class="btn fa fa-check mL25" (click)="applyParams()"
-    title="retrieves records from database based upon value selected"></button>
+<button class="btn mL25" (click)="applyParams()"
+    title="retrieves records from database based upon value selected"><mat-icon>search</mat-icon></button>
 
 <button (click)="onReset()" title="resets search parameters" 
-    class="btn btn-outline-success fa fa-refresh mx-1"></button>
+    class="btn"><mat-icon>refresh</mat-icon></button>
 
 <button (click)="close()" title="close this page" 
-class="btn btn-outline-success mx-2 fa fa-window-close fa-2x"></button>
+class="btn"><mat-icon>cancel</mat-icon></button>
 
 <hr class="my-0">
-<label class="lbl w120" style="margin-left: 25px !important;">Flight Date</label>
-<label class="lbl w150">Airport of Boarding</label>
-<label class="lbl w150">Airport of Destination</label>
-<label class="lbl w120">Airline</label>
-<label class="lbl w120">ETD</label>
-<label class="lbl w120">ETA</label>
+<label style="display: inline-block; width: 120px; margin-left: 45px; font-size: small; font-weight: bold;">Airline</label>
+<label class="lbl w100">Airport of<br>Boarding</label>
+<label class="lbl w100" style="margin-left: 10px !important;">Flight Date</label>
+<label class="lbl w50">ETD</label>
+<label class="lbl w100">Airport of Destination</label>
+<label class="lbl w50">ETA</label>
 <label class="lbl w75">Ct of Pax</label>
+<label class="lbl w100">Actions</label>
 <hr>
 
 <div *ngIf="!cFlights">

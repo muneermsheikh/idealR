@@ -1,6 +1,7 @@
 using api.DTOs;
 using api.DTOs.Admin;
 using api.DTOs.HR;
+using api.DTOs.Process;
 using api.Entities;
 using api.Entities.Identity;
 using api.Helpers;
@@ -18,5 +19,7 @@ namespace api.Interfaces
         Task<AppUser> GetUserByUserNameAsync (string username);
         Task<bool> DeleteMember(int id);
         Task<ICollection<CVsMatchingProfAvailableDto>> GetMatchingCandidatesAvailable(int professionid);
+        Task<NextDepDataDto> GetNextRecruitmentProcess(string PPNo);
+        Task<CandidateDto> GetUserHistory(int CandidateId);
     }
 }

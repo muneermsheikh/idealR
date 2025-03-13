@@ -250,6 +250,8 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
     params = params.append('pageNumber', cvParams.pageNumber.toString());
     params = params.append('pageSize', cvParams.pageSize.toString());
 
+    if(cvParams.applicationNoFrom > 0) params = params.append('applicationNoFrom', cvParams.applicationNoFrom.toString());
+    if(cvParams.applicationNoUpto > 0) params = params.append('applicationNoUpto', cvParams.applicationNoUpto.toString());
     if(cvParams.agentId !== 0) params = params.append('agendId', cvParams.agentId.toString());
     if(cvParams.professionId !== 0) params = params.append('professionId', cvParams.professionId.toString());
     if(cvParams.search !== '') params = params.append('search', cvParams.search);

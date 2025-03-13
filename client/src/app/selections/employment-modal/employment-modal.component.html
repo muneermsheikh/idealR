@@ -1,9 +1,9 @@
 <div class="modal-header my-0" *ngIf="emp" >
     <h4>Employment details</h4>
     
-    <button class="w35 btn btn-success fa fa-save " style="margin-left: 200px;"
-        title="edit emp data" (click)="updateEmployment()" ></button>
-    <button class="btn fa fa-close fa-2x pull-right" title="Close" (click)="close()" ></button>
+    <button class="btn" style="margin-left: 200px;" title="edit emp data" 
+        (click)="updateEmployment()" ><mat-icon>save</mat-icon></button>
+    <button class="btn pull-right" title="Close" (click)="close()" ><mat-icon>cancel</mat-icon></button>
 </div>
 
 <div class="modal-body my-0" *ngIf="emp">

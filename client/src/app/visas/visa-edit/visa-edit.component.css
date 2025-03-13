@@ -1,0 +1,39 @@
+.lbl {
+    width: 100px;
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 0 2px 0 2px;
+}
+
+.lbl2 {
+    width: 200px;
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 0 2px 0 10px;
+    width: 100px;
+}
+
+.stddw200 {
+    width: 200px;
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 0 2px 0 2px;
+}
+
+.stdd {
+    width: 150px;
+    display: inline-block;
+    font-size: small;
+    font-weight: bold;
+    margin: 0 2px 0 2px;
+}
+
+
+.w50 {width: 50px;}
+.w70 {width: 70px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}

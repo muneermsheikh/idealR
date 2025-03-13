@@ -1,8 +1,7 @@
 <h4 style="display: inline-block;">Edit Customer Review</h4>
-<button class="btn btn-success fa fa-save" [disabled]="!form.dirty" style="margin-left: 200px;" 
-    style="color:aliceblue;margin-left: 50px;" (click)="updateReview()" ></button>
-<button class="btn fa fa-window-close fa-2x" 
-    style="margin-left: 200px; color: aliceblue;" (click)="goback()" ></button>
+<button class="btn green" [disabled]="!form.dirty" style="margin-left: 200px;" 
+    style="margin-left: 50px;" (click)="updateReview()" ><mat-icon>save</mat-icon></button>
+<button class="btn" style="margin-left: 200px;" (click)="goback()" ><mat-icon>cancel</mat-icon></button>
 
 <div class="my-2 container">
     <div *ngIf="!review">The customer review does not exist.  Press Create New Review to create a new Review</div>
@@ -17,44 +16,44 @@
             <label class="stdd w80">Date</label>
             <label class="stdd w150">Status</label>
             <label class="stdd w250">Description</label>
-            <label class="stdd w80">ApprovedBy</label>
-            <label class="stdd w80">On</label>
+            <label class="stdd w100">ApprovedBy</label>
+            <label class="stdd w100">On</label>
             
             <button class="btn fa fa-plus" style="color: aliceblue;" (click)="addReviewItem()" ></button>
             
             <div formArrayName="customerReviewItems">
                 <div *ngFor="let rvw of customerReviewItems.controls; let i=index">
                     <div [formGroupName]="i">
-                        <input class="stdd w80" type="text" placeholder="date" 
+                        <input class="stdd w100" type="text" placeholder="date" 
                             formControlName="transactionDate" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
 
                         <div class="stdd w150">
                             <ng-select 
-                                    style="border: color(from color srgb r g b);"
-                                    [items]="reviewStatus"
-                                    bindLabel="status"
-                                    bindValue="status"
-                                    labelForId="status"
-                                    clearAllText="Clear"
-                                    formControlName="customerReviewStatus"
+                                style="border: color(from color srgb r g b);"
+                                [items]="reviewStatus"
+                                bindLabel="status"
+                                bindValue="status"
+                                labelForId="status"
+                                clearAllText="Clear"
+                                formControlName="customerReviewStatus"
                             ></ng-select>
                         </div>
 
                         <div class="stdd w250">
                             <app-text-input [label]="'Remarks'" formControlName="remarks"></app-text-input>
                         </div>
-                        <div class="stdd w80">
+                        <div class="stdd w100">
                             <app-text-input [label]="'Approved By'" formControlName="approvedByUsername"></app-text-input>
                         </div>
-                        <input class="stdd w80" type="text" placeholder="approved on" 
+                        <input class="stdd w100" type="text" placeholder="approved on" 
                             formControlName="approvedOn" bsDatepicker 
                             [bsValue]="bsValueDate" 
                             [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
                         
-                        <button class="btn fa fa-trash red" (click)="removeItem(i)" ></button>
-                        <button class="btn fa fa-check green" (click)="approveItem(i)" ></button>
+                        <button class="btn red" (click)="removeItem(i)" ><mat-icon>delete</mat-icon></button>
+                        <button class="btn green" (click)="approveItem(i)" ><mat-icon>check</mat-icon></button>
                     </div>
                 </div>
             </div>

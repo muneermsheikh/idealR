@@ -4,7 +4,7 @@
     <div class="stdd w200 blue mx-1">{{chklst.applicationNo}} - {{chklst.candidateName}}</div>
 
     <button type="button" class="stdd btn btn-success fa fa-save" (click)="Update()"></button>
-    <button type="button" class="stdd btn btn-close close mx-10" aria-label="Close" (click)="closeModal()"></button>
+    <button type="button" class="stdd btn btn-close close mx-10" aria-label="Close" (click)="bsmodalRef.hide()"></button>
     <button class="btn btn-danger pull-right fa fa-trash fa-sm" (click)="deleteChecklist()" title="Delete this checklist"></button>
 </div>    
 

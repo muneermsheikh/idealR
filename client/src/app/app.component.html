@@ -37,10 +37,23 @@
             <button class="btn btn-success" type="submit">Login</button>
         </form>
         
+        <label class="fontS">PP No:</label>
+        <input type="text"
+            name = "nextProcess"
+            [(ngModel)]="candidatePPNoForNextProcess"
+            class = "form-control me-2 fontS w80"
+            placeholder="PP No"
+            type="text"
+        >
+        <button class="btn fa fa-search fontS" [disabled]="candidatePPNoForNextProcess===''" 
+            title="Enter Passport No for next recruitment Process"
+            (click)="nextProcess()" type="button">Nxt</button>
+
         <button mat-icon-button matTooltip="Notifications">
             <mat-icon>notifications</mat-icon>
         </button>
-        <mat-menu #userAccountMenu [overlapTrigger]="false" yPosition="below">
+
+        <!-- <mat-menu #userAccountMenu [overlapTrigger]="false" yPosition="below"> -->
             <button mat-menu-item routerLink="#" matTooltip="Settings">
                 <mat-icon>settings</mat-icon><span></span>
             </button>
@@ -49,7 +62,7 @@
             </button>
             <div *ngIf="(accountService.currentUser$|async)" style="display: inline-block;">
                 <button mat-menu-item (click)="editLoggedinMember()" matTooltip="My Account">
-                    <mat-icon>person</mat-icon><span></span>
+                    <mat-icon>person</mat-icon>
                 </button>
                  
                 <button mat-menu-item (click)="logout()" matTooltip="Logout">
@@ -57,7 +70,7 @@
                 </button>
             </div>
             
-        </mat-menu>
+        <!-- </mat-menu> -->
     </mat-toolbar>
 
 <!--the side navigation bar menu-->
@@ -73,7 +86,9 @@
                 <div *ngIf="accountService.currentUser$|async" >
                     <div class="sidenav">
                         <mat-expansion-panel [class.mat-elevation-z0]="true">
-                            <mat-expansion-panel-header>H.R.<mat-icon>people</mat-icon></mat-expansion-panel-header>
+                            <mat-expansion-panel-header>H.R.
+                                <!-- <mat-icon>people</mat-icon> -->
+                            </mat-expansion-panel-header>
                             <mat-nav-list>
                                 <a mat-list-item routerLink="/candidates/register/edit/0">
                                     <span class="sidenav">New Candidate</span>
@@ -90,7 +105,7 @@
                                     matTooltip="CVs referred" >
                                     <span class="sidenav">CVs Referred</span>
                                 </a>
-                                <a mat-list-item routerLink="/candidates/cvsreferred" 
+                                <a mat-list-item routerLink="/candidates/selectionsPending" 
                                     matTooltip="CVs referred and awaiting client decision" >
                                     <span class="sidenav">CVs awaiting selections</span>
                                 </a>
@@ -102,7 +117,7 @@
                                     matTooltip="interview list, create new interview schedule" >
                                     <span class="sidenav">Interviews</span>
                                 </a>
-                                <a mat-list-item routerLink="/masters/customAssessments"
+                                <a mat-list-item (click)="showCustomAssessmentQuestions()"
                                     matTooltip="Custom Assessment Questions" >
                                     <span class="sidenav">Custom Assessment Qs</span>
                                 </a>
@@ -112,7 +127,9 @@
                     </div>
                   
                     <mat-expansion-panel [class.mat-elevation-z0]="true" >
-                        <mat-expansion-panel-header>Orders <mat-icon>view_list</mat-icon></mat-expansion-panel-header>
+                        <mat-expansion-panel-header>Orders 
+                            <!-- <mat-icon>view_list</mat-icon> -->
+                        </mat-expansion-panel-header>
                         
                         <mat-nav-list>
                             <a mat-list-item routerLink="/orders/edit/0" matTooltip="create a new Demand Letter">
@@ -135,8 +152,10 @@
 
         
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Administration <mat-icon>dehaze</mat-icon></mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-expansion-panel-header>Administration 
+                            <!-- <mat-icon>dehaze</mat-icon> -->
+                        </mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;">
                      
                             <a mat-list-item routerLink="/administration/customers" matTooltip="Customers, Vendors, Associates" >
                                 <span class="sidenav">Customers</span>
@@ -170,8 +189,10 @@
                     </mat-expansion-panel>
 
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Selections <mat-icon>playlist_add_check</mat-icon></mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-expansion-panel-header>Selections 
+                            <!-- <mat-icon>playlist_add_check</mat-icon> -->
+                        </mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/selections/pendingSelections"
                                 matTooltip="presents all pending selections to conclude"
                             >
@@ -185,8 +206,10 @@
                     </mat-expansion-panel>
 
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Deployments <mat-icon>airplanemode_active</mat-icon></mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-expansion-panel-header>Deployments 
+                            <!-- <mat-icon>airplanemode_active</mat-icon> -->
+                        </mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/deployment"
                                 matTooltip="presents all pending deployment transactions for updates"
                             >
@@ -208,14 +231,16 @@
                     </mat-expansion-panel>
                     
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
-                        <mat-expansion-panel-header>Interviews <mat-icon>swap_horizontal_circle</mat-icon></mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-expansion-panel-header>Interviews 
+                            <!-- <mat-icon>swap_horizontal_circle</mat-icon> -->
+                        </mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/interviews"
                                 matTooltip="Presents list of interviews, latest at the top">
                                 <span>Interviews List</span>
                             </a>
                         </mat-nav-list>
-                        <mat-nav-list>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/interviews/editSchedule"
                                 matTooltip="Edit an interview schedule">
                                 <span>Edit Interview</span>
@@ -224,7 +249,7 @@
                     </mat-expansion-panel>
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header class="fa fa-inr">Finance</mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/finance/coalist" 
                                 matTooltip="Chart of accounts" >
                                 <span>Chart Of Accounts</span>
@@ -246,7 +271,7 @@
                     
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Identity</mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/members" matTooltip="List of members" >
                                 <span class="sidenav">Identity List Members</span>
                             </a>
@@ -260,23 +285,15 @@
                     
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Tasks</mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/tasks/loggedInUserTasks" 
                                 matTooltip="Tasks pending for logged-in user" >
                                 <span class="sidenav">Pending Tasks - {{user?.knownAs}}</span>
                             </a>
                      
-                            <!-- <a mat-list-item routerLink="/tasks/tasksforadmin" 
-                                matTooltip="all tasks pending - only for administrators" >
-                                <span class="sidenav">Pending Tasks of all users</span>
-                            </a> 
-                            <a mat-list-item routerLink="/tasks/tasksforadmin" 
-                                matTooltip="result of Call Lists" >
-                                <span class="sidenav">Call List Status</span>
-                            </a> -->
-                            <a mat-list-item routerLink="/callRecords/callRecordList" 
-                                matTooltip="callling list" >
-                                <span class="sidenav">Call Record History</span>
+                            <a mat-list-item routerLink="/prospectives/prospective"
+                                matTooltip="prospective candidates - downloaded from portals.  These are contacted to ascertain their interest in the recruitment" >
+                                <span class="sidenav">Call records</span>
                             </a>
                    
                         </mat-nav-list>
@@ -284,7 +301,7 @@
 
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Quality Obectives</mat-expansion-panel-header>
-                        <mat-nav-list>
+                        <mat-nav-list style="font-size: smaller;">
                             <a mat-list-item routerLink="/quality/medobjective" 
                                 matTooltip="Medical Tests Objectives analyses" >
                                 <span class="sidenav">Medical Objective Analyses</span>
@@ -302,6 +319,25 @@
 
                         </mat-nav-list>
                     </mat-expansion-panel>
+
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Visas</mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;">
+                            <a mat-list-item routerLink="/visas" 
+                                matTooltip="listing of all visas" >
+                                <span class="sidenav">Visa Listing</span>
+                            </a>
+                            <a mat-list-item routerLink="/visas/visaTransactions"
+                                matTooltip="Listing of all visa utilisations" >
+                                <span class="sidenav">Visa Utilization</span>
+                            </a>
+                            <a mat-list-item routerLink="/visas/visaEdit/0"
+                                matTooltip="Add a new visa" >
+                                <span class="sidenav">Add new Visa</span>
+                            </a>
+                        </mat-nav-list>
+                    </mat-expansion-panel>
+
                   </div>
             </mat-nav-list>
         </div>

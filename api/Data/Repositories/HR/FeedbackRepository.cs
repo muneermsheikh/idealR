@@ -128,7 +128,7 @@ namespace api.Data.Repositories.HR
                 
                 if(fdbk != null) return fdbk;
 
-                //return blank new object of customerFeedback
+                //generate and return blank new object of customerFeedback
 
                 var inputQs = await _context.FeedbackQs.OrderBy(x => x.QuestionNo)
                     .Select(x => new FeedbackItem {

@@ -1,94 +1,175 @@
 <h4 class="stdd">Customer Feedback</h4>
-<button class="stdd btn fa fa-save fa-2x mL600" [disabled]="!form.dirty" style="color: aliceblue;" (click)="updateFeedback()" ></button>
-<button class="stdd btn fa fa-window-close fa-2x mx-15" style="color: aliceblue; margin-left: 50px;" (click)="close()" ></button>
+<button class="btn mL600" [disabled]="!form.dirty" style="color: aliceblue;" (click)="updateFeedback()" >
+    <mat-icon>save</mat-icon>
+</button>
+<button class="btn mx-15" style="color: aliceblue; margin-left: 50px;" (click)="close()" >
+    <mat-icon>close</mat-icon>
+</button>
 <!-- <button class="stdd btn fa fa-plus fa-2x mx-2" style="color: aliceblue; margin-left: 50px;" (click)="generatenew()" ></button> -->
 
 <div *ngIf="!feedback" class="my-5">
     No feedback on record
 </div>
-<div *ngIf="feedback" class="container">
-        <div style="vertical-align: top; display: inline-block;">
-            <label class="lbl w150 fSmall b">Customer Name</label>
+<div *ngIf="feedback" style="margin-left: 15px; display: inline-block;">
+    <form [formGroup]="form">    
+        <div class="col-6" style="vertical-align: top; display: inline-block; vertical-align: top; border-style: inset; border-color: blue;">
+            <label class="lbl w125 fSmall b">Customer Name</label>
             <div class="stdd w250 fSmall"> {{feedback.customerName}}, {{feedback.city}}</div>   
-            <label class="lbl w150 fSmall b">Feedback No</label>
-            <div class="stdd w75 fSmall">{{feedback.feedbackNo}}</div>
-            <br><label class="lbl w150 fSmall b">Official Name</label> 
-            <div class="stdd w250 fSmall"> {{feedback.officialName}}</div>   
-            <label class="lbl w120 fSmall b">Designation</label>
-            <div class="stdd w200 fSmall"> {{feedback.designation}}</div>   
-            <br><label class="lbl w150 fSmall b">Email</label>
-            <div class="stdd w250 fSmall"> {{feedback.email}}</div>   
-            <label class="lbl w120 fSmall b">Phone No</label>
-            <div class="stdd w150 fSmall"> {{feedback.phoneNo}}</div>   
-            <label class="lbl w50 fSmall b" style="margin-left: 5px;">Grade</label>
-            <div class="stdd w100 fSmall"> {{feedback.gradeAssessedByClient}}</div>   
-            
-        </div>
-        <div style="vertical-align: top; display: inline-block; margin-left: 15px;">
-               <ng-select 
-                    style="width: 200px; display: inline-block;"
-                    [items]="feedbackHistory!"
-                    bindLabel="feedbackIssueDate"
-                    bindValue="feedbackId"
-                    labelForId="feedbackId"
-                    clearAllText="Clear"
-                    [(ngModel)]="feedbackIdSelected"
-               ></ng-select>
-               <button title="click to display the selected Feedback" class="btn fa fa-search fa-2x"
-                    style="display: inline-block; color:aliceblue;"  
-                    (click)="showFeedback()" [disabled]="feedbackHistory?.length===0" ></button>
-                <button title="click to add a new feedback for the customer" class="btn fa fa-plus fa-2x mx-1"
-                    style="display: inline-block; color:aliceblue;"  
-                    (click)="newFeedback()" [disabled]="feedback.id===0" ></button>
-                <button title="click to add a new feedback for the customer" class="btn fa fa-envelope fa-2x"
-                    style="display: inline-block; color:aliceblue;"  
-                    (click)="sendEmail()"  ></button>
-        </div>
-        <form [formGroup]="form">    
-            <hr class="my-2" style="border-width: 2px; border-color: black;">
-            <label class="lbl w150 fSmall b">Issued On</label>
-            <input class="stdd  fSmall w100" type="text" placeholder="Issued On" 
-                formControlName="dateIssued" bsDatepicker 
-                [bsValue]="bsValueDate" 
-                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-            <label class="lbl w150 fSmall b" style="margin-left: 150px !important;">Received On</label>
-            <input class="stdd fSmall w100" type="text" placeholder="Received On" 
-                formControlName="dateReceived" bsDatepicker 
-                [bsValue]="bsValueDate" 
-                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
-            
-            <br><label class="lbl fSmaller b w35">Sr#</label>
-            <label class="lbl fSmaller b w450">Parameter</label>
-            <label class="lbl fSmaller b w150">Response</label>
-            <label class="lbl fSmaller b w250" style="margin-left: 200px !important;">Remarks</label>
-            <hr class="my-0" style="border-width: 2px; border-color: black;">
-            <div formArrayName="feedbackItems" class="my-2">
-                <div *ngFor="let item of feedbackItems.controls; let i=index" [formGroupName]="i">
-                        <input type="text" formControlName="questionNo" class="stdd w25 fSmaller" style="background-color: darkgrey;">
-                        <app-text-input class="stdd w450" [label]="'Question'" style="word-wrap: break-word; vertical-align: top;" formControlName="question" ></app-text-input>
+            <label class="lbl w125 fSmall b">Feedback No</label>
+            <div class="stdd w100 fSmall">{{feedback.feedbackNo}}</div>
 
-                        <input type="text" formControlName="prompt1" class="prompt w75">
-                        <input type="radio" class="inputcheck form-check-input" id="i" value="20" (change)="gradeChanged(i)" 
-                            checked="response==='20'" formControlName="response">
-                        
-                        <input type="text" formControlName="prompt2" class="prompt w50">
-                        <input type="radio" class="inputcheck form-check-input" id="i" value="15" (change)="gradeChanged(i)" 
-                            checked="response==='15'" formControlName="response">
-                        
-                        <div *ngIf="i < 8" class="stdd">
-                            <input type="text" formControlName="prompt3" class="prompt w75">
-                            <input type="radio" class="inputcheck form-check-input" id="i" value="10" (change)="gradeChanged(i)" 
-                                checked="response==='10'" formControlName="response">
-                            
-                            <input type="text" formControlName="prompt4" class="prompt w75">
-                            <input type="radio" class="inputcheck form-check-input" id="i" value="5" (change)="gradeChanged(i)" 
-                                checked="response==='5'" formControlName="response">
-                        </div>
-                        <div class="stdd w200" [ngClass]="i<8 ? '' : 'mL215'">
-                            <app-text-input [label]="'Remarks'" formControlName="remarks"></app-text-input>
-                        </div>
-                        <button class="btn fa fa-trash red" (click)="removeFeedbackItem(i)" ></button>
-                    </div>
+            <br><label class="lbl w125 fSmall b">Official Name</label> 
+            <div class="stdd w250 fSmall"> {{feedback.officialName}}</div>   
+            <label class="lbl w125 fSmall b">Designation</label>
+            <div class="stdd w150 fSmall"> {{feedback.designation}}</div>   
+            <br><label class="lbl w125 fSmall b">Email</label>
+            <div class="stdd w150 fSmall"> {{feedback.email}}</div>   
+            <label class="lbl w100 fSmall b">Phone No</label>
+            <div class="stdd w125 fSmall"> {{feedback.phoneNo}}</div>   
+            <label class="lbl w50 fSmall b" style="margin-left: 5px;">Grade</label>
+            <div class="stdd w150 fSmall"> {{feedback.gradeAssessedByClient}}</div>   
+        </div>
+        <div class="col-6" style="vertical-align: top; border-style: groove; border-color: yellow; display: inline-block;">
+            <div style="vertical-align: top; display: inline-block; margin-left: 15px;">
+                <label style="display: inline-block; width: 150px; font-weight: bold; margin: 0 2px 0 2px;;">Feedback History</label>   
+                <ng-select 
+                        style="width: 200px; display: inline-block;"
+                        [items]="feedbackHistory!"
+                        bindLabel="feedbackIssueDate"
+                        bindValue="feedbackId"
+                        labelForId="feedbackId"
+                        clearAllText="Clear"
+                        (change)="feedbackIdChanged(feedback.id)"
+                   ></ng-select>
+                    <button title="click to display the selected Feedback" class="btn"
+                        (click)="showFeedback()" [disabled]="feedbackHistory?.length===0" >
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <button title="click to add a new feedback for the customer" class="btn"
+                        (click)="newFeedback()" [disabled]="feedback.id===0" >
+                        <mat-icon>add_circle_outline</mat-icon>
+                    </button>
+                    <button title="click send the current Feedback link to the customer" class="btn"
+                        (click)="sendEmail()">
+                        <mat-icon>mail</mat-icon>
+                    </button>
+
+                    <button printSectionId="print-section" 
+                        printTitle="printTitle"
+                        [previewOnly]="false"
+                        [useExistingCss]="true"
+                        ngxPrint
+                        title="shows the report in pdf format and enables printing" 
+                        style="display:inline-block;"
+                        title="print pdf for current category Ref"
+                        (click)="generatePDF()"
+                        >
+                        <mat-icon >print</mat-icon>
+                    </button>
+                    <hr>
+                    <label class="lbl w150 fSmall b">Issued On</label>
+                    <input class="stdd  fSmall w100" type="text" placeholder="Issued On" 
+                         formControlName="dateIssued" bsDatepicker 
+                        [bsValue]="bsValueDate" 
+                        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+                    <label class="lbl w100 fSmall b" style="margin-left: 50px !important;">Received On</label>
+                    <input class="stdd fSmall w100" type="text" placeholder="Received On" 
+                        formControlName="dateReceived" bsDatepicker 
+                        [bsValue]="bsValueDate" 
+                        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+                    
+                    
             </div>
-        </form>
+        </div>
+
+        <hr class="my-0" style="border-width: 2px; border-color: black;">
+    
+        <label class="lbl fSmaller b w35">Sr#</label>
+        <label class="lbl fSmaller b w500">Parameter</label>
+        <label class="lbl fSmaller b w175">Response</label>
+        <label class="lbl fSmaller b w250" style="margin-left: 200px !important;">Remarks</label>
+        <hr class="my-0" style="border-width: 2px; border-color: black;">
+
+        <div formArrayName="feedbackItems" class="my-1">
+            <div *ngFor="let item of feedbackItems.controls; let i=index" [formGroupName]="i">
+                    <input type="text" formControlName="questionNo" class="stdd w25 fSmaller" 
+                        style="background-color: darkgrey; text-align: right; padding-right: 1px;">
+                    <app-text-input class="stdd w500" [label]="'Question'" style="word-wrap: break-word; vertical-align: top;" formControlName="question" ></app-text-input>
+
+                    <input type="text" formControlName="prompt1" class="prompt w75">
+                    <input type="radio" class="inputcheck form-check-input" id="i" value="20" (change)="gradeChanged(i)" 
+                        checked="response==='20'" formControlName="response">
+                    
+                    <input type="text" formControlName="prompt2" class="prompt w50">
+                    <input type="radio" class="inputcheck form-check-input" id="i" value="15" (change)="gradeChanged(i)" 
+                        checked="response==='15'" formControlName="response">
+                    
+                    <div *ngIf="i < 8" class="stdd">
+                        <input type="text" formControlName="prompt3" class="prompt w75">
+                        <input type="radio" class="inputcheck form-check-input" id="i" value="10" (change)="gradeChanged(i)" 
+                            checked="response==='10'" formControlName="response">
+                        
+                        <input type="text" formControlName="prompt4" class="prompt w75">
+                        <input type="radio" class="inputcheck form-check-input" id="i" value="5" (change)="gradeChanged(i)" 
+                            checked="response==='5'" formControlName="response">
+                    </div>
+                    <div class="stdd w200" [ngClass]="i<8 ? '' : 'mL215'">
+                        <app-text-input [label]="'Remarks'" formControlName="remarks"></app-text-input>
+                    </div>
+                    <button class="btn fa fa-trash red" (click)="removeFeedbackItem(i)" ></button>
+                </div>
+        </div>
+    </form>
+</div>
+<hr class="my-0">
+<div *ngIf="feedbackForPrint && isPrintPDF" style="margin-left: 15px; display: inline-block;" id="print-section">
+    <div style="font-size: medium; font-weight: bold;">{{user?.employer}}</div>
+    <div style="font-size: medium">{{user?.address}}</div>
+    <div style="font-size: medium">{{user?.city}}, {{user?.country}}</div>
+    <div style="font-size:larger; font-weight: bold;">Feedback Form</div>
+    <div style="border-style: inset; border-color: blue;">
+        <label class="lbl w125 fSmall b">Customer Name</label>
+        <div class="stdd w250 fSmall"> {{feedbackForPrint.customerName}}, {{feedbackForPrint.city}}</div>   
+        <label class="lbl w125 fSmall b">Feedback No</label>
+        <div class="stdd w100 fSmall">{{feedbackForPrint.feedbackNo}}</div>
+
+        <br><label class="lbl w125 fSmall b">Official Name</label> 
+        <div class="stdd w250 fSmall"> {{feedbackForPrint.officialName}}</div>   
+        <label class="lbl w150 fSmall b">Designation</label>
+        <div class="stdd w250 fSmall"> {{feedbackForPrint.designation}}</div>   
+        <br><label class="lbl w125 fSmall b">Email</label>
+        <div class="stdd w250 fSmall"> {{feedbackForPrint.email}}</div>   
+        <label class="lbl w125 fSmall b">Phone No</label>
+        <div class="stdd w150 fSmall"> {{feedbackForPrint.phoneNo}}</div>   
+        <label class="lbl w50 fSmall b" style="margin-left: 5px;">Grade</label>
+        <div class="stdd w150 fSmall"> {{feedbackForPrint.gradeAssessedByClient}}</div>   
+        <br><label class="lbl w125 fSmall b">Issued On</label>
+        <div class="stdd fSmall w100">{{feedbackForPrint.dateIssued | date: 'dd-MMM-yyyy'}}</div>
+        <label class="lbl w100 fSmall b" style="margin-left: 50px !important;">Received On</label>
+        <div class="stdd fSmall w100">{{feedbackForPrint.dateReceived | date: 'dd-MMM-yyyy'}}</div>
     </div>
+    <hr class="my-0" style="border-width: 2px; border-color: black;">
+
+    <label class="lbl fSmaller b w35">Sr#</label>
+    <label class="lbl fSmaller b w250">Parameter</label>
+    <label class="lbl fSmaller b w175">Response</label>
+    <label class="lbl fSmaller b w150" style="margin-left: 100px !important;">Remarks</label>
+    <hr class="my-0" style="border-width: 2px; border-color: black;">
+
+    <div *ngFor="let item of feedbackForPrint.feedbackItems">
+        <div class="stdd w35 fSmaller">{{item.questionNo}}</div>
+        <div class="stdd w250 fSmaller">{{item.question}}</div>
+
+        <div class="prompt">{{item.prompt1}}</div>
+        <div class="matIcon"><mat-icon *ngIf="item.response === '20'">check</mat-icon></div> 
+        <div class="prompt">{{item.prompt2}}</div>
+        <div class="matIcon"><mat-icon *ngIf="item.response === '15'">check</mat-icon></div>
+        <div class="prompt">{{item.prompt3}}</div>
+        <div class="matIcon"><mat-icon *ngIf="item.response === '10'">check</mat-icon></div>
+        <div class="prompt">{{item.prompt4}}</div>
+        <div class="matIcon"><mat-icon *ngIf="item.response === '5'">check</mat-icon></div>
+
+        <div class="stdd w150 fSmaller">{{item.remarks}}</div>
+    </div>
+        <div style="margin-left: 550px;">{{calculatePercentage()}} %</div>
+</div>

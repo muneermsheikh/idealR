@@ -82,7 +82,8 @@ namespace api.Data.Repositories.Deployment
             return await _context.SaveChangesAsync() > 0 ? flight : null;
         }
 
-        public async Task<DepPendingDtoWithErr> InsertDepItemsWithCandFlightItems(DepItemsWithCandFightGrpDto deps, string Username)
+        public async Task<DepPendingDtoWithErr> InsertDepItemsWithCandFlightItems(
+            DepItemsWithCandFightGrpDto deps, AppUser user)
         {
             var dtowithErr = new DepPendingDtoWithErr();
 
@@ -107,7 +108,7 @@ namespace api.Data.Repositories.Deployment
                 depitems.Add(depitem);
             }
 
-            dtowithErr = await _depRep.AddDeploymentItems(depitems, Username);  //return value is DepPendingBriefDto for use by client
+            dtowithErr = await _depRep.AddDeploymentItems(depitems, user);  //return value is DepPendingBriefDto for use by client
 
             if(!string.IsNullOrEmpty(dtowithErr.ErrorString)) return dtowithErr;
 
@@ -129,6 +130,7 @@ namespace api.Data.Repositories.Deployment
         {
             var qry = _context.CandidateFlightGrps.OrderBy(x => x.DateOfFlight)
                 .Include(x => x.CandidateFlightItems.OrderBy(m => m.ApplicationNo))
+                .OrderByDescending(x => x.DateOfFlight)
                 .AsQueryable();
 
             if(!string.IsNullOrEmpty(cParams.AirlineName)) qry = 

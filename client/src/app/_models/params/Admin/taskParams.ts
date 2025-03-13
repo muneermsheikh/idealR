@@ -12,6 +12,6 @@ export class TaskParams {
      
      sort = "taskDate";
      pageNumber = 1;
-     pageSize = 15;
+     pageSize = 20;
      search: string='';
 }

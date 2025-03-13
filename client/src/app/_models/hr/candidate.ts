@@ -61,7 +61,7 @@ export class Candidate implements ICandidate {
      placeOfBirth= '';
      aadharNo= '';
      ppNo= '';
-     ecnr='';
+     ecnr='F';
      address= '';
      city= '';
      pin= '';

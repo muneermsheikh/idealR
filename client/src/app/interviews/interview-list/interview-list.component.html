@@ -1,10 +1,10 @@
 
 <pagination *ngIf="pagination !== undefined"
-    class="stdd"
+    style="display: inline-block;"
     [totalItems]="pagination!.totalItems"
     [itemsPerPage]="pagination!.itemsPerPage"
     (pageChanged)="onPageChanged($event)"
-    [maxSize]="10"
+    [maxSize]="15"
     previousText="&lsaquo;"
     nextText="&rsaquo;"
     firstText="&laquo;"
@@ -15,9 +15,10 @@
 <input type="text" title="enter order number to get the interview data" 
     class="stdd form-control w100" style="margin-left: 20px;" [(ngModel)]="orderNoToGet">
 
-<button type="button" (click)="getInterviewR()" class="mx-5 fa fa-search fa-2x"></button>
-<button type="button" (click)="onReset()" class="fa fa-refresh fa-2x mx-2" ></button>
-<button type="button" routerLink="/" class="fa fa-window-close fa-2x" ></button>
+<button type="button" (click)="getInterviewR()" title="searches for the interview" 
+    class="btn"><mat-icon>search</mat-icon></button>
+<button type="button" (click)="onReset()" class="btn" ><mat-icon>refresh</mat-icon></button>
+<button type="button" routerLink="/" class="btn" ><mat-icon>cancel</mat-icon></button>
 
 <br>
 <label class="lbl w100">Order No</label>

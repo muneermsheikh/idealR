@@ -253,6 +253,7 @@ namespace api.Controllers
                 }
             }
 
+            if(registerDto.UserType == "" | registerDto.UserType == null) registerDto.UserType="Candidate";
             if(registerDto.UserType != "Candidate" && string.IsNullOrEmpty(registerDto.Employer) ) {
                 dtoToReturn.ErrorMessage = "For non candidate type Users, Employer Name is mandatory";
                 return dtoToReturn;
@@ -315,19 +316,14 @@ namespace api.Controllers
 
                string applicationno="";
 
-               var userattachmentlist = new List<UserAttachment>();
+               //var userattachmentlist = new List<UserAttachment>();
 
                try
                {
                     var modelData = JsonSerializer.Deserialize<Candidate>(Request.Form["data"],  
                          new JsonSerializerOptions {
-                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-                    
-                    if(!await _candidateRepo.UpdateCandidate(modelData)) {
-                        dtoToReturn.ErrorMessage = "Failed to update candidate obkect";
-                        return BadRequest(new ApiException(404, "Bad Request", "Failed to update candidate object"));
-                    }
-
+                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase});                    
+                 
                     applicationno = modelData.ApplicationNo.ToString();
                     var folderName = Path.Combine("Assets", "Images");
                     var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -353,15 +349,15 @@ namespace api.Controllers
                         using var stream = new FileStream(fullPath, FileMode.Create);
                         file.CopyTo(stream);
 
-                        var attach = new UserAttachment {
+                        /*var attach = new UserAttachment {
                             CandidateId = modelData.Id, AppUserId = modelData.AppUserId,
                             Length=filenameWOPath.Length/1024,
                             Name=fileName, UploadedbyUserName=User.GetUsername(), 
-                            UploadedLocation=pathToSave, UploadedOn=_today,
-                            
+                            UploadedLocation=pathToSave, UploadedOn=_today                            
                         };
                         
-                        userattachmentlist.Add(attach);
+                        modelData.UserAttachments.Add(attach); */
+                        //userattachmentlist.Add(attach);
                     }
 
                     /*
@@ -374,8 +370,14 @@ namespace api.Controllers
                     var attachmentsUpdated = await _candidateRepo.AddAndSaveUserAttachments(userattachmentlist, User.GetUsername());                   
                     //candidateObject.UserAttachments=attachmentsUpdated;
                     */
+                    if(!await _candidateRepo.UpdateCandidate(modelData)) {
+                        dtoToReturn.ErrorMessage = "Failed to update candidate obkect";
+                        return BadRequest(new ApiException(404, "Bad Request", "Failed to update candidate object"));
+                    }
+
                     dtoToReturn.ReturnInt=Convert.ToInt32(applicationno);
                     if(string.IsNullOrEmpty(dtoToReturn.ErrorMessage)) dtoToReturn.ErrorMessage="";
+
                     return Ok(dtoToReturn);
                }
                catch (Exception ex)

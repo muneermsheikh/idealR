@@ -24,39 +24,48 @@ export class ErrorInterceptor implements HttpInterceptor {
           window.location.reload();
         }
         if(error) {
-          switch (error.status) {
-            case 400:
-              if(error.error.errors) {
-                const modalStateErrors=[];
-                for (const key in error.error.errors) {
-                  if(error.error.errors[key]) {
-                    modalStateErrors.push(error.error.errors[key])
+          
+          /*const chunkFailedMessage = /Loading chunk [\d]+ failed/;
+          if (chunkFailedMessage.test(error.message)) {
+            if (confirm("New version available. Load New Version?")) {
+                window.location.reload();
+            }
+          } else {
+           */
+            switch (error.status) {
+              case 400:
+                if(error.error.errors) {
+                  const modalStateErrors=[];
+                  for (const key in error.error.errors) {
+                    if(error.error.errors[key]) {
+                      modalStateErrors.push(error.error.errors[key])
+                    }
                   }
+                  throw modalStateErrors.flat();
+                } else {
+                  this.toastr.error(error.error, error.status.toString());
                 }
-                throw modalStateErrors.flat();
-              } else {
-                this.toastr.error(error.error, error.status.toString());
-              }
-              break;
-            case 401:
-              this.toastr.error('Unauthorized', error.status.toString());
-              break;
-            case 403:
-              this.toastr.error('Access Not Authorized', error.status.toString());
-              break;
-            case 404:
-              this.router.navigateByUrl('/not-found');
-              break;
-            case 500:
-              const navigationExtras: NavigationExtras = {state: {error: error.error}};
-              this.router.navigateByUrl('/server-error', navigationExtras);
-              break;
-            default:
-              this.toastr.error('something unexpected went wrong');
-              console.log(error.error);
-              break;
+                break;
+              case 401:
+                this.toastr.error('Unauthorized', error.status.toString());
+                break;
+              case 403:
+                this.toastr.error('Access Not Authorized', error.status.toString());
+                break;
+              case 404:
+                this.router.navigateByUrl('/not-found');
+                break;
+              case 500:
+                const navigationExtras: NavigationExtras = {state: {error: error.error}};
+                this.router.navigateByUrl('/server-error', navigationExtras);
+                break;
+              default:
+                this.toastr.error('something unexpected went wrong');
+                console.log(error.error);
+                break;
+            }
           }
-        }
+        //}
 
         throw error;
       })

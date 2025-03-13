@@ -25,6 +25,7 @@ import { CandidateFlightParams } from '../_models/params/process/CandidateFlight
 import { ICandidateFlightGrpDto } from '../_dtos/process/candidateFlightGrpDto';
 import { ICandiateFlightItem } from '../_models/process/candidateFlightItem';
 import { IReturnStringsDto } from '../_dtos/admin/returnStringsDto';
+import { INextDepDataDto } from '../_dtos/process/nextDepDataDto';
 
 
 @Injectable({
@@ -295,6 +296,10 @@ export class DeployService {
     params = params.append('fullpath', fullpath);
 
     return this.http.get<string>(this.apiUrl + 'FileUpload/deleteattachmentbyfullpath', {params});
+  }
+
+  getCandidateNextProcess(passportno: string) {
+    return this.http.get<INextDepDataDto>(this.apiUrl + 'users/getNextProcess/' + passportno);
   }
 
   housekeeping() {

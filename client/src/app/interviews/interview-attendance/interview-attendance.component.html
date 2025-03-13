@@ -1,6 +1,6 @@
 
 <pagination *ngIf="pagination !== undefined"
-    class="stdd"
+    style="display: inline-block;"
     [totalItems]="pagination!.totalItems"
     [itemsPerPage]="pagination!.itemsPerPage"
     (pageChanged)="onPageChanged($event)"

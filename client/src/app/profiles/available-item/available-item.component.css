@@ -1,6 +1,8 @@
 .stdd {
     display: inline-block;
     vertical-align: top;
+    font-size: small;
+    margin: 0 2px 0 2px;
 }
 .fSmall {font-size: small;}
 .fSmaller {font-size: smaller;}
@@ -31,4 +33,11 @@
     margin: 0 2px 0 2px;
     border: aqua;
     width: 200px
+}
+
+.checkbox {
+    vertical-align: top;
+    border-color: black;
+    text-align: center;
+    width: 15px;
 }

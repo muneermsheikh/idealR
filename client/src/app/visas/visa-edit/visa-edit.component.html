@@ -1,0 +1,78 @@
+<h6 class="stdd b"> {{'Add a new Visa' }}</h6>
+<button class="btn btn-success fa fa-save" style="display:inline-block; margin-left: 200px;" (click)="updateVisa()" ></button>
+<button class="btn fa fa-window-close fa-2x" style="color: aliceblue; display: inline-block;" (click)="close()" ></button>
+
+
+    <form [formGroup]="form">
+        <label class="lbl">Customer:</label> 
+        <ng-select 
+            class="stdd" style="width: 350px !important"
+            [items]="customers"
+            bindLabel="customerName"
+            bindValue="id"
+            labelForId="id"
+            clearAllText="Clear"
+            formControlName="customerId"
+        ></ng-select>
+
+        <label class="lbl2">Sponsor Name</label> 
+        <app-text-input [label]="'Sponsor Name'" formControlName="visaSponsorName" class="stdd" style="width: 350px !important" ></app-text-input>
+        
+        <br><label class="lbl">Visa No:</label> 
+        <app-text-input [label]="'Visa No'" formControlName="visaNo" class="stddw200"></app-text-input>
+        <br>
+        <label class="lbl">Visa Date G:</label> 
+        <input class="stdd" type="text" placeholder="Visa Date G" formControlName="visaDateG" bsDatepicker 
+            [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <div class="stdd" *ngIf="form.controls['visaDateG']!.invalid && (form.controls['visaDateG']!.dirty || form.controls['visaDateG']!.touched)" class="alert">
+            <div class="stdd" *ngIf="form.controls['visaDateG']!.errors?.['required']">Visa Date is required</div>
+        </div>
+
+        <label class="lbl2">Visa Date H:</label> 
+        <app-text-input [label]="'Visa Date H'" formControlName="visaDateH" class="stdd"></app-text-input>
+        <br>
+        <label class="lbl">Expiry G:</label> 
+        <input class="stdd" type="text" placeholder="Visa Expiry G" formControlName="visaExpiryG" bsDatepicker 
+            [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        <div class="stdd" class="stdd" 
+            *ngIf="form.controls['visaExpiryG']!.invalid && (form.controls['visaExpiryG']!.dirty || form.controls['visaExpiryG']!.touched)" class="alert">
+            <div *ngIf="form.controls['visaExpiryG']!.errors?.['required']">Visa Expiry Date is required</div>
+        </div>
+
+        <label class="lbl2">Visa Date H:</label> 
+        <app-text-input [label]="'Visa Date H'" formControlName="visaDateH" class="stdd"></app-text-input>
+        <button class="btn fa fa-trash fa-2x pull-right" (click)="deleteVisa()" ></button>
+
+        <hr class="my-1">
+        <label class="lbl w50">Sr. No.</label>
+        <label class="lbl" style="width: 200px !important">Visa Category English</label>
+        <label class="lbl" style="width: 200px !important">Visa Category Arabic</label>
+        <label class="lbl" style="width: 150px !important">Visa Consulate</label>
+        <label class="lbl" style="width: 70px !important">Quantity</label>
+        <label class="lbl" style="width: 70px !important">Canceled</label>
+        <button class="btn w25 fa fa-plus" style="color: aliceblue;" title="add a new Visa Category" (click)="addVisaItem()" ></button>
+        
+        <hr class="my-0" style="border-style: double;">
+        
+        <div formArrayName="visaItems">
+            <div *ngFor="let vItem of visaItems.controls; let i=index">
+                <div [formGroupName]="i">
+                    <div class="stdd w50 hAlignRight">{{i+1}}</div>
+                    <app-text-input [label]="'Visa Category-English'" [formControlName]="'visaCategoryEnglish'" class="stddw200"></app-text-input>  
+                    <app-text-input [label]="'Visa Category Arabic'" [formControlName]="'visaCategoryArabic'" class="stddw200"></app-text-input>
+                    <app-text-input [label]="'Visa Consulate'" [formControlName]="'visaConsulate'" 
+                        class="stdd" style="width: 150px !important;"></app-text-input>
+                    <app-text-input [label]="'Quantity'" [formControlName]="'visaQuantity'" 
+                        class="stdd" style="width: 70px !important; text-align: right; padding-right: 2px;"></app-text-input>
+                    <app-text-input [label]="'Canceled'" [formControlName]="'visaCanceled'" 
+                        class="stdd " style="width: 70px !important; text-align: center;" ></app-text-input>
+                    <button class="btn fa fa-trash red" (click)="removeVisaItem(i)" ></button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+<div style="font-size: small;">
+    {{form.value|json}}
+</div>

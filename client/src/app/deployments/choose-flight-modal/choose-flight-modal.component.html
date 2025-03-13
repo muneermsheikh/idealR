@@ -15,7 +15,7 @@
     <input class="stdd w125" type="text" placeholder="Boarding Airport" [(ngModel)]="flightData.airportOfBoarding">
     <label class="lbl w100 mx-2">ETD Boarding</label>
     <input class="stdd w150" type="datetime" placeholder="ETD Boarding" 
-        [(ngModel)]="flightData.eTD_BoardingString"  >
+        [(ngModel)]="flightData.etD_BoardingString"  >
         <!-- (ngModelChange)="flightData.eTD_Boarding!=dateChanged($event)" > -->
     
     <br><label class="lbl w125">Destination Airport</label>
@@ -24,7 +24,7 @@
     
     <label class="lbl w100 mx-2">ETA Destination</label>
     <input class="stdd w150" type="datetime" placeholder="ETA Destination" 
-        [(ngModel)]="flightData.eTA_DestinationString" >
+        [(ngModel)]="flightData.etA_DestinationString" >
         <!-- (ngModelChange)="flightData.eTA_DestinationString!=dateChanged($event)" > -->
     <br>
     <label class="lbl w125">Via Airport</label>
@@ -32,9 +32,9 @@
     <label class="lbl w100 mx-2">Flight No Via</label>
     <input class="stdd w125" type="text" placeholder="FlightNo Via" [(ngModel)]="flightData.flightNoVia">
     <br><label class="lbl w125">ETA at Via Airport</label>
-    <input class="stdd w150" type="datetime" placeholder="ETA Via Airport" [(ngModel)]="flightData.eTA_ViaString">
+    <input class="stdd w150" type="datetime" placeholder="ETA Via Airport" [(ngModel)]="flightData.etA_ViaString">
     <label class="lbl w125">ETD from Via Airport</label>
-    <input class="stdd w125" type="datetime" placeholder="ETD Via Airport" [(ngModel)]="flightData.eTD_ViaString">
+    <input class="stdd w125" type="datetime" placeholder="ETD Via Airport" [(ngModel)]="flightData.etD_ViaString">
 </div>
 
 <div class="modal-footer my-0">

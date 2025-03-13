@@ -1,0 +1,58 @@
+<div id="print-section">
+    <h4 style="display: inline-block; font-weight: bold;">Visa Transaction Listing</h4>
+
+    <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
+        <pagination class="mx-1" 
+            style = "display: inline-block;"
+            *ngIf="pagination !== undefined"
+            [totalItems]="pagination!.totalItems"
+            [itemsPerPage]="pagination!.itemsPerPage"
+            (pageChanged)="onPageChanged($event)"
+            [maxSize]="15"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
+        ></pagination>
+
+        <button printSectionId="print-section" 
+            printTitle="printTitle"
+            [previewOnly]="false"
+            [useExistingCss]="true"
+            ngxPrint
+            title="shows the report in pdf format and enables printing" 
+            style="display:inline-block; margin-left: 50px;"
+            title="print pdf for current category Ref"
+            (click)="generatePDF()"
+            >
+            <mat-icon>print</mat-icon>
+        </button>
+        <button class="btn" title="Exit this page" routerLink="/visas" ><mat-icon>cancel</mat-icon></button>
+        
+    </div>
+    <br>
+    <div class="form-inline">
+        <label class="lbl w40" style="margin-left: 15px;">App No</label>
+        <label class="lbl w125">Candidate Name</label>
+        <label class="lbl w125">Customer</label>
+        <label class="lbl w80">Visa No</label>
+        <label class="lbl w80">Visa Date</label>
+        <label class="lbl w125">Visa Category</label>
+        <label class="lbl w80">Visa Docs<br>submitted On</label>
+    </div>
+    <hr class="my-0">
+    <div *ngIf="!visas" class="my-2 red ml25">
+        No Visas on record matching your criteria
+    </div>        
+
+    <div *ngIf="visas" class="my-0">
+        <div *ngFor="let visa of visas">
+            <app-visa-transaction-line
+                [visa]="visa"
+            ></app-visa-transaction-line>
+    
+        </div>
+    </div>
+</div>
+
+

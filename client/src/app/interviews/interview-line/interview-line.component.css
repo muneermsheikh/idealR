@@ -12,4 +12,4 @@
 
 .red {color: red}
 
-.btn {color:aliceblue}
+.btn {color:aliceblue; vertical-align: middle; margin: 0 2px 0 2px;}

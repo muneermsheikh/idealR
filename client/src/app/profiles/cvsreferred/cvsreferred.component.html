@@ -1,11 +1,12 @@
 
 <h4 class="my-0 mx-4" style="display: inline-block; font-weight: bold;">CVs refferred to clients</h4>
+
 <pagination *ngIf="pagination !== undefined && !isPrintPDF"
-    class="stdd"
+    style="display: inline-block;"
     [totalItems]="pagination!.totalItems"
     [itemsPerPage]="pagination!.itemsPerPage"
     (pageChanged)="onPageChanged($event)"
-    [maxSize]="10"
+    [maxSize]="15"
     previousText="&lsaquo;"
     nextText="&rsaquo;"
     firstText="&laquo;"
@@ -16,13 +17,17 @@
     <label class="stdd w75 fSmall b" style="text-align: right; vertical-align: middle !important;">Order#</label>
     <input type="text" title="enter Order No to search"  [(ngModel)]="cvParams.orderNo"
         class="stdd form-control fSmall w75" style="margin-left: 20px;" #search placeholder="Order No">
-    <button type="button" (click)="onSearch()" class="stdd btn fa fa-search mx-1"></button>
+    <button type="button" (click)="onSearch()" class="btn"><mat-icon>search</mat-icon></button>
     
-    <input type="radio" value="Pending" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Selections Pending
-    <input type="radio" value="" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">all Status
-    <input type="radio" value="Selected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Selected
-    <input type="radio" value="Rejected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">Rejected
-    <button type="button" (click)="onReset()" class="stdd mx-1 fa fa-refresh fa-2x" ></button>
+    <input type="radio" value="Pending" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">
+        <label class="fSmall">Selections Pending</label>
+    <input type="radio" value="" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">
+        <label class="fSmall">All Status</label>
+    <input type="radio" value="Selected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">
+    <label class="fSmall">Selected</label>
+    <input type="radio" value="Rejected" [(ngModel)]="cvParams.selectionStatus" class="radio form-check-input">
+        <label class="fSmall">Rejected</label>
+    <button type="button" (click)="onReset()" class="btn" ><mat-icon>refresh</mat-icon></button>
     
     <label class="lbl w75 tAlignRight">Choose Order No</label>
         <div class="stdd w100 mx-2">
@@ -51,11 +56,10 @@
             <mat-icon>print</mat-icon>
         </button>
 
-        <button class="stdd w40 mx-1 fa fa-window-close fa-2x" title="close this page"
-        (click)="close()" ></button>
+        <button class="btn" title="close this page" type="button" (click)="close()" ><mat-icon>cancel</mat-icon></button>
     </div>
 
-<button *ngIf="isPrintPDF" class="btn fa fa-window-close fa-2x" (click)="isPrintPDF=false" ></button>
+<button *ngIf="isPrintPDF" class="btn" type="button" (click)="isPrintPDF=false" ><mat-icon>cancel</mat-icon></button>
 <div id="print-section">
     <div style="margin-left: 70px;">
         <div *ngIf="isPrintPDF" class="b" >
@@ -64,7 +68,7 @@
         <div *ngIf="isPrintPDF" class="lbl w30 mx-1">Select</div>
         <!-- <div class="stdd fSmall w10 mx-1"></div> -->
         <div class="lbl w50 mx-1">App No</div>
-        <div class="lbl w130 mx-1">Candidate Name</div>
+        <div class="lbl w130">Candidate Name</div>
         <div class="lbl w200 mx-1">Category Ref</div>
         <div class="lbl w150 mx-1">Customer Name</div>
         <div class="lbl w100 mx-1">Referred On</div>
@@ -80,7 +84,7 @@
     <div *ngIf="cvs.length">
         <div class="row" *ngFor="let cv of cvs" >
             <div *ngIf="isPrintPDF" >
-                <button class="btn fa fa-window-close" (click)="isPrintPDF=false"></button>
+                <button class="btn" type="button" (click)="isPrintPDF=false"><mat-icon>cancel</mat-icon></button>
                 <app-cvreferred-line
                     [cv]="cv" 
                     [isPrintPdf]=true

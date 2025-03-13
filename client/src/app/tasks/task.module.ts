@@ -6,6 +6,7 @@ import { SharedModule } from '../_modules/shared.module';
 import { TaskMenuComponent } from './task-menu/task-menu.component';
 import { TaskLineComponent } from './task-line/task-line.component';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
   imports: [
     CommonModule,
     UserTaskRoutingModule,
-    SharedModule
+    SharedModule,
+    MatIconModule
   ]
 })
 export class TaskModule { }

@@ -8,18 +8,17 @@
           value="cv.id"
           (change)="CVChecked()"
      >
-     <div class="stdd fSmall w70" title="click to edit" mouseover="style.cursor = 'pointer'" 
-          style="margin-left: 10px;" >{{cv.applicationNo}}</div>
+     <div class="stdd fSmall w60" title="click to edit">{{cv.applicationNo}}</div>
      
      <div class="stdd fSmall w130" routerLink = "/candidate/historyfromcvid/{{cv.candidateId}}" 
           title="contact history of the candidate" >{{cv.candidateName}}</div> 
 
-     <div class="stdd fSmaller w200" >{{cv.categoryRefAndName}}</div>
-     <div class="stdd fSmaller w150" >{{cv.customerName}}</div>
+     <div class="stdd fSmall w200" >{{cv.categoryRefAndName}}</div>
+     <div class="stdd fSmall w150" >{{cv.customerName}}</div>
      <div class="stdd fSmall w100" >{{cv.referredOn | date: 'dd-MMM-yy'}}</div>
-     <div class="stdd fSmaller w100" >{{cv.selectionStatus}}</div>
-     <div class="stdd fSmall w100" >{{cv.selectionStatusDate | date: 'dd-MMM-yy'}}</div>
-          
+     <div class="stdd fSmall w100" >{{cv.selectionStatus}}</div>
+     <div class="stdd fSmall w100" *ngIf="shouldDisplayDate(cv.selectionStatusDate)">{{cv.selectionStatusDate|date:'dd-MMM-yy'}}</div>
+     <div class="stdd fSmall w100" style="text-align: center;" *ngIf="!shouldDisplayDate(cv.selectionStatusDate)">--</div>
      <button (click)="deleteClicked(cv.id)" type="button" *ngIf="!isPrintPdf"
           class="btn fa fa-trash w20" type="button" 
           title="download the CV">

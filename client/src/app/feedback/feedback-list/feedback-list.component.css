@@ -6,7 +6,7 @@
     word-wrap: normal;
 }
 
-.btn {color:aliceblue;}
+.btn {color:aliceblue; margin: 0 2px 0 2px; width: 20px; vertical-align: middle;}
 
 .w50 {width: 50px;}
 .w75 {width: 75px;}

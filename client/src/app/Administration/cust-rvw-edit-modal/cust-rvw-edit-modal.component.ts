@@ -57,7 +57,7 @@ export class CustRvwEditModalComponent implements OnInit {
     
   }
 
-  InitializeForm(rvw: ICustomerReview) {
+    InitializeForm(rvw: ICustomerReview) {
 
       this.form = this.fb.group({
         id: rvw.id,  
@@ -88,29 +88,29 @@ export class CustRvwEditModalComponent implements OnInit {
         return this.form.get("customerReviewItems") as FormArray
     }
 
-      newReviewItem(): FormGroup {
-        return this.fb.group({
-            id: 0, 
-            transactionDate: new Date(),
-            customerReviewId: this.review?.id,
-            customerReviewStatus: "",
-            remarks: "",
-            approvedOn: new Date(),
-            approvedByUsername: this.user?.userName
-        })
-      }
+    newReviewItem(): FormGroup {
+      return this.fb.group({
+          id: 0, 
+          transactionDate: new Date(),
+          customerReviewId: this.review?.id,
+          customerReviewStatus: "",
+          remarks: "",
+          approvedOn: new Date(),
+          approvedByUsername: this.user?.userName
+      })
+    }
 
-      addReviewItem() {
-        this.customerReviewItems.push(this.newReviewItem());
-      }
+    addReviewItem() {
+      this.customerReviewItems.push(this.newReviewItem());
+    }
 
-      removeItem(index: number) {
-        
-          this.confirm.confirm("Confirm Delete", "This will delete review item.  To delete from the database as well, remember to SAVE this form before you close it")
-            .subscribe({next: confirmed => {
-              if(confirmed) this.customerReviewItems.removeAt(index);
-          }})
-      }
+    removeItem(index: number) {
+      
+        this.confirm.confirm("Confirm Delete", "This will delete review item.  To delete from the database as well, remember to SAVE this form before you close it")
+          .subscribe({next: confirmed => {
+            if(confirmed) this.customerReviewItems.removeAt(index);
+        }})
+    }
     //event emitters
 
     updateReview() {
@@ -158,9 +158,8 @@ export class CustRvwEditModalComponent implements OnInit {
       
     });
   }
-
   
-  goback() {
-    this.router.navigateByUrl(this.returnUrl);
-  }
+    goback() {
+      this.router.navigateByUrl(this.returnUrl);
+    }
 }

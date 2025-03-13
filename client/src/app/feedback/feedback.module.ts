@@ -6,6 +6,8 @@ import { SharedModule } from '../_modules/shared.module';
 import { FeedbackRoutingModule } from './feedback-routing.module';
 import { FeedbackMenuComponent } from './feedback-menu/feedback-menu.component';
 import { FeedbackLineComponent } from './feedback-line/feedback-line.component';
+import { NgxPrintModule } from 'ngx-print';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -19,7 +21,9 @@ import { FeedbackLineComponent } from './feedback-line/feedback-line.component';
   imports: [
     CommonModule,
     SharedModule,
-    FeedbackRoutingModule
+    FeedbackRoutingModule,
+    NgxPrintModule,
+    MatIconModule
   ]
 })
 export class FeedbackModule { }

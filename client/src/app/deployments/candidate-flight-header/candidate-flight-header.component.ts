@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, switchMap } from 'rxjs';
 import { Pagination } from 'src/app/_models/pagination';
@@ -22,10 +22,18 @@ export class CandidateFlightHeaderComponent implements OnInit {
   fParams = new CandidateFlightParams();
 
   constructor(private service: DeployService, private router: Router,
-    private confirm: ConfirmService,  private toastr: ToastrService) {}
+    private confirm: ConfirmService,  private toastr: ToastrService,
+    private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.loadFlights();
+    
+    this.activatedRoute.data.subscribe(data => {
+      this.cFlights = data['cFlights'].result,
+      this.pagination = data['cFlights'].pagination,
+      this.totalCount = data['cFlights'].totalCount
+    })
+
+    console.log('cFlights', this.cFlights);
   }
 
   
@@ -40,8 +48,9 @@ export class CandidateFlightHeaderComponent implements OnInit {
           this.pagination = response.pagination;
         } 
       },
-      error: error => console.log(error)
+      error: (err: any) => console.log(err.error?.details, 'Error')
     })
+    console.log('loadFlights cFlights', this.cFlights);
   }
 
   travelAdviseClicked(event: any) {

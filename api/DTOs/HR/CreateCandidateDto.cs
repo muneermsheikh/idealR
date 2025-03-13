@@ -17,7 +17,7 @@ namespace api.DTOs.HR
         public string Source {get; set;}
         public DateTime? DOB { get; set; }
         public string PpNo { get; set; } 
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}
         public string Pin {get; set;}

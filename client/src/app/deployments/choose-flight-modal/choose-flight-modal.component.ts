@@ -52,12 +52,12 @@ export class ChooseFlightModalComponent implements OnInit {
   DataVerified() {
     var err='';
 
-      if(!isValidDate(this.flightData!.eTA_DestinationString) 
-        || !isValidDate(this.flightData!.eTD_BoardingString)) err = 'Invalid Date - ETA / ETD';
+      if(!isValidDate(this.flightData!.etA_DestinationString) 
+        || !isValidDate(this.flightData!.etD_BoardingString)) err = 'Invalid Date - ETA / ETD';
       
       if(this.flightData?.airlineVia !== '') {
-        if(!isValidDate(this.flightData!.eTD_ViaString) 
-          || !isValidDate(this.flightData!.eTA_ViaString)) err += 'Invalid Date - ETD';
+        if(!isValidDate(this.flightData!.etD_ViaString) 
+          || !isValidDate(this.flightData!.etA_ViaString)) err += 'Invalid Date - ETD';
       }
       if(this.flightData?.airlineName=='') err += ' Airline name not mentioned';
       if(this.flightData?.airportOfBoarding=='') err += ' Airport of Boarding not mentioned';

@@ -406,7 +406,7 @@ namespace api.Data.Repositories.Orders
 
             var order = await _context.Orders.FindAsync(orderid);
             var msgs = await _msgAdminRepo.AckEnquiryToCustomerWithoutSave(order);
-            if(!string.IsNullOrEmpty(msgs.ErrorString) && msgs.Messages != null) {
+            if(string.IsNullOrEmpty(msgs.ErrorString) && msgs.Messages.Count > 0) {
                 foreach(var msg in msgs.Messages) {
                     _context.Entry(msg).State = EntityState.Added;
                 }

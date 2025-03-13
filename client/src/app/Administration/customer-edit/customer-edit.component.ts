@@ -36,16 +36,12 @@ export class CustomerEditComponent implements OnInit {
       }
     }
 
-  ngOnInit(): void {
-
-    
+  ngOnInit(): void {    
     this.activatedRoute.data.subscribe(data => {
       this.customer = data['customer'];
       if(this.customer !== undefined) this.InitializeForm(this.customer);
       }
     )
-   
-    
   }
 
   InitializeForm(cust: ICustomer) {

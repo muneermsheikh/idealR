@@ -16,7 +16,7 @@ export class SelectionLineComponent {
   @Output() editEmploymentEvent = new EventEmitter<IEmployment | null>();
   @Output() deleteSelectionEvent = new EventEmitter<number>();
   @Output() editSelectionEvent = new EventEmitter<ISelectionDecision>();
-  @Output() remindCandidateForDecisionEvent = new EventEmitter<number>();
+  //@Output() remindCandidateForDecisionEvent = new EventEmitter<number>();
   //@Output() selectedEvent = new EventEmitter<ISelDecisionDto>();
 
   constructor(private service: SelectionService, private toastr: ToastrService){}
@@ -48,7 +48,7 @@ export class SelectionLineComponent {
     if(this.selection) this.deleteSelectionEvent.emit(this.selection.id);
   }
 
-  remindCandidateForDecision() {
+ /* remindCandidateForDecision() {
     if(this.selection?.selectionStatus !== 'Selected') {
       this.toastr.warning('This candidate has conveyed his decision on his selection - (' + 
         this.selection?.selectionStatus + '). No reminder to the candidate need be given', 'No reminder feasible');
@@ -58,5 +58,6 @@ export class SelectionLineComponent {
       this.remindCandidateForDecisionEvent.emit(this.selection.id);
     }
   }
+  */
 
 }

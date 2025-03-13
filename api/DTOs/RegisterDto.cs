@@ -18,7 +18,7 @@ namespace api.DTOs
         [Required] public string Gender { get; set; }
         public string AadharNo { get; set; }
         public string PpNo { get; set; }
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public DateTime? DateOfBirth { get; set; } // Note this must be optional or the required validator will not work
         public string Address { get; set; }
         [Required] public string City { get; set; }

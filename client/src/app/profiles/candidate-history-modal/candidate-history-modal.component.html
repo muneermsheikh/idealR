@@ -1,0 +1,36 @@
+<div class="modal-header my-0" *ngIf="candidateDto" >
+    <h4 class="b">Candidate History</h4>
+   
+    <button type="button" class="stdd btn fa fa-check fa-2x" (click)="closeOk()"></button>
+    <button type="button" class="stdd btn fa fa-window-close fa-2x" (click)="close()"></button>
+</div>    
+
+<div class="modal-body my-0" *ngIf="candidateDto">
+    
+    <div class="stdd w300 blue mx-1"><strong>Candidate: </strong>{{candidateDto.applicationNo}} - {{candidateDto.candidateName}}</div>
+    <br><div class="stdd w300 b"><strong>Profession:</strong>{{candidateDto.coreProfession}}</div>
+    <div class="stdd w100 mx-1"><strong>Amount due:</strong>{{candidateDto.amountDue}} 
+        {{candidateDto.amountDue > 0 ? 'CR' : candidateDto.amountDue == 0 ? '': 'DR'}}</div>
+    <br>
+    <label class="lbl w100">Customer</label>
+    <label class="lbl w150">Category Ref</label>
+    <label class="lbl w90">Referred On</label>
+    <label class="lbl w90">Selection<br>Status</label>
+    <label class="lbl w90">Selection<br>Status Date</label>
+    <label class="lbl w100">Current<br>Deployment Status</label>
+    <label class="lbl w90">Deployment<br>Status Date</label>
+    
+    <div *ngIf="candidateDto.candidateHistoriesDto.length ===0">
+        No deployment data available for the candidate
+    </div>
+    <div *ngFor="let hist of candidateDto.candidateHistoriesDto">
+        <div class="stdd w100">{{hist.customerName}}</div>
+        <div class="stdd w150">{{hist.categoryRef}}</div>
+        <div class="stdd w90">{{hist.referredOn | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w90">{{hist.selectionStatus}}</div>
+        <div class="stdd w90">{{hist.selectionStatusDate | date: 'dd-MMM-yy'}}</div>
+        <div class="stdd w100">{{hist.deploymentStatus}}</div>
+        <div class="stdd w90">{{hist.deploymentStatusDate | date: 'dd-MMM-yy'}}</div>
+    </div>
+</div>
+<div class="modal-footer"></div>

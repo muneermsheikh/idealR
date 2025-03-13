@@ -1,17 +1,21 @@
 <div *ngIf="pagination !== undefined" class="stdd">
-     <h4 class="stdd b">Listing of Candidates</h4>
+     <h4 class="b" style="display: inline-block;">Listing of Candidates</h4>
+     
      <pagination
-          class="stdd mx-4"
+          class="mx-1" style="display: inline-block;"
           [totalItems]="pagination!.totalItems"
           [itemsPerPage]="pagination!.itemsPerPage"
           (pageChanged)="onPageChanged($event)"
-          [maxSize]="10"
+          [maxSize]="15"
           previousText="&lsaquo;"
           nextText="&rsaquo;"
           firstText="&laquo;"
           lastText="&raquo;">
      ></pagination>
- 
+     <label style="width: 50px;display: inline-block; font-size: medium; word-wrap: break-word; vertical-align: middle;">
+          of {{pagination!.totalItems}}</label>
+</div>
+
      <br>
      <div *ngIf="cvs">
           <label class="lbl w160">Name or App Nos to search, separated by commas</label>
@@ -20,15 +24,16 @@
           <label class="lbl w100 mx-2">Category Name to search</label>
           <input type="text" title="enter category name to search" 
                class="stdd form-control mx-2 w150" #searchCat placeholder="Search on category">
-          <button type="button" (click)="onSearch()" style="color: aliceblue;"
+          <button type="button" (click)="onSearch()" 
                title="Press this button after you enter the search criteria" 
-               class="btn fa fa-search fa-2x mx-2"></button>
-          <button type="button" (click)="onReset()"  style="color: aliceblue;" title="reset the search criteria" 
-               class="btn fa fa-refresh fa-2x mx-2"></button>
-          <button type="button" class="btn fa fa-plus fa-2x mx-2"  style="color: aliceblue;" title="Add a new candidate" 
-               routerLink="/candidates/register/edit/0"></button>
-          <button type="button" class="stdd btn fa fa-window-close fa-2x" style="color: aliceblue;"
-               title="return to calling program" routerLink="/"></button>
+               class="btn"><mat-icon>search</mat-icon></button>
+          <button type="button" (click)="onReset()" title="reset the search criteria" 
+               class="btn"><mat-icon>refresh</mat-icon></button>
+          <button type="button" class="btn" title="Add a new candidate" 
+               routerLink="/candidates/register/edit/0"><mat-icon>library_add</mat-icon></button>
+          <button type="button" class="btn" title="close this page" routerLink="/">
+               <mat-icon>cancel</mat-icon>
+          </button>
      </div>
  
       <div style="margin-left: 60px; margin-top: 5px;">
@@ -56,7 +61,3 @@
                 ></app-profile-item>
            </div>
       </div>
-</div>
-
-
-    

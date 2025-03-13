@@ -1,8 +1,12 @@
 <div *ngIf="interview">
     <h4 style="display: inline-block;">Interview Schedule</h4>
-    <button class="btn fa fa-save fa-2x" style="margin-left: 150px;" (click)="updateInterview()" ></button>
-    <button type="button" class="btn fa fa-window-close fa-2x mx-5" routerLink="/interviews" style="color: darkturquoise;" ></button>
-    <button type="button" class="btn fa fa-trash fa-2x" (click)="deleteInterview()" routerLink="/interviews"></button>
+    <button class="btn" style="margin-left: 150px;" (click)="updateInterview()" title="edit the interview data">
+        <mat-icon>save</mat-icon>
+    </button>
+    <button type="button" class="btn" routerLink="/interviews" ><mat-icon>cancel</mat-icon></button>
+    <button type="button" class="btn" (click)="deleteInterview()" routerLink="/interviews">
+        <mat-icon>delete</mat-icon>
+    </button>
     <hr style="margin: 0; padding: 0; border-width: thick; border-color: beige;">
     <label class="lbl w100 mx-2">Customer Name</label> 
         <input type="text" name="customerName" [(ngModel)]="interview.customerName" class="stdd w250 mx-3">

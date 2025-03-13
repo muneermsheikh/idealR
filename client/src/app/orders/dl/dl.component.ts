@@ -214,9 +214,22 @@ ngOnInit(): void {
 
   
   removeItem(i:number) {
-    this.orderItems.removeAt(i);
-    this.orderItems.markAsDirty();
-    this.orderItems.markAsTouched();
+
+    var prompt = 'Press DELETE to confirm delete, cancel to cancel deletion';
+
+    this.confirm.confirm("Confirm Delete", prompt, "Delete", "Cancel").subscribe({
+      next: (succeeded: boolean) => {
+        if(succeeded) {
+          this.orderItems.removeAt(i);
+          this.orderItems.markAsDirty();
+          this.orderItems.markAsTouched();
+          this.toastr.success('Demand Letter item deleted', 'Deletion successful');
+        } else {
+          this.toastr.warning('Deletion aborted by user', 'Aborted');
+        }
+      }
+    })
+
   }
 
   close() {

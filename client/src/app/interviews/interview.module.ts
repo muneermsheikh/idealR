@@ -15,6 +15,7 @@ import { EditAttendanceModalComponent } from './edit-attendance-modal/edit-atten
 import { InterviewBriefPendingModalComponent } from './interview-brief-pending-modal/interview-brief-pending-modal.component';
 import { SelectionHistoryComponent } from './selection-history/selection-history.component';
 import { CallRecordModule } from '../callRecords/call-record.module';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -38,7 +39,7 @@ import { CallRecordModule } from '../callRecords/call-record.module';
     InterviewRoutingModule,
 
     //material
-    
+    MatIconModule
   ]
 })
 export class InterviewModule { }

@@ -1,0 +1,28 @@
+<div *ngIf="visa">
+
+    <div class="stdd w125" style="margin-left: 15px;">{{visa.customerKnownAs}}</div>
+    <div class="stdd w80">{{visa.visaConsulate}}</div>
+    <div class="stdd w100">{{visa.visaSponsorName}}</div>
+    <div class="stdd w100">{{visa.visaNo}}</div>
+    <div class="stdd w80">{{visa.visaDateG | date: 'dd-MMM-yy'}}</div>
+    <div class="stdd w125">{{visa.visaCategoryEnglish}}</div>
+    <div class="stdd w50 hAlignRight">{{visa.visaQuantity}}</div>
+    <div class="stdd w50 hAlignRight cursorPointer" (click)="visaConsumedClicked()">{{visa.visaConsumed}}</div>
+    <div class="stdd w50 hAlignRight">{{visa.visaQuantity - visa.visaConsumed}}</div>
+
+    <div class="stdd w50 hAlignCenter">{{visa.visaCanceled ? 'Y' : 'N'}}</div>
+    
+    <div class="stdd" *ngIf="!isReport">
+        <button class="btn icon" title="edit visa item" (click)="editEventClicked()" >
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button class="btn icon" (click)="assignEventClicked()"  
+            title="assign visas to Demand Letter categories">
+            <mat-icon>list</mat-icon>
+        </button>
+        <button class="btn icon red" (click)="deleteEventClicked()" ><mat-icon>delete</mat-icon></button>
+     <!-- [disabled]="visa.visaBalance === 0 || !loggedInUserHasVisaEditCredential"-->
+    </div>
+
+
+</div>

@@ -235,7 +235,7 @@ export class CustomerListComponent implements OnInit{
 
   loadCustomerList() {
       
-      this.service.getCustomerList(this.cParams)?.subscribe({
+      this.service.getCustomerList(this.cParams.customerType)?.subscribe({
       next: response => {
         if(response !== undefined && response !== null) {
           this.customersForPrint = response;

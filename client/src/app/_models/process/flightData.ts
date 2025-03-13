@@ -11,14 +11,14 @@ export interface IFlightdata
     airportVia: string;
     flightNoVia: string;
     airlineVia: string;
-    eTD_Boarding: Date;
-    eTD_BoardingString: string;
-    eTA_Destination: Date;
-    eTA_DestinationString: string;
-    eTA_Via: Date|null;
-    eTD_Via: Date | null;
-    eTA_ViaString: string;
-    eTD_ViaString: string;
+    etD_Boarding: Date;
+    etD_BoardingString: string;
+    etA_Destination: Date;
+    etA_DestinationString: string;
+    etA_Via: Date|null;
+    etD_Via: Date | null;
+    etA_ViaString: string;
+    etD_ViaString: string;
 }
 
 export class Flightdata implements IFlightdata
@@ -31,12 +31,12 @@ export class Flightdata implements IFlightdata
     airportVia='';
     flightNoVia='';
     airlineVia='';
-    eTD_Boarding= new Date;
-    eTA_Destination= new Date;
-    eTD_BoardingString = '';
-    eTA_DestinationString = '';
-    eTA_Via= new Date;
-    eTD_Via= new Date;
-    eTA_ViaString='';
-    eTD_ViaString= '';
+    etD_Boarding= new Date;
+    etA_Destination= new Date;
+    etD_BoardingString = '';
+    etA_DestinationString = '';
+    etA_Via= new Date;
+    etD_Via= new Date;
+    etA_ViaString='';
+    etD_ViaString= '';
 }

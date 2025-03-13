@@ -36,7 +36,7 @@ import { DateInputRangeModalComponent } from './modals/date-input-range-modal/da
 import { CandidatesAvailableModalComponent } from './modals/candidates-available-modal/candidates-available-modal.component';
 import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-
+import { MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -76,6 +76,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     MatExpansionModule,
     MatTooltipModule,
     MatSidenavModule,
+    MatMenuModule,
     //FormsModule,
     //ReactiveFormsModule,
     SharedModule,

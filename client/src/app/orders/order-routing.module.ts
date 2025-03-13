@@ -19,6 +19,9 @@ import { RouterModule } from '@angular/router';
 import { OrderMenuComponent } from './order-menu/order-menu.component';
 import { DLForwardedComponent } from './DLForwarded/DLForwarded.component';
 import { DLForwardedResolver } from '../_resolvers/orders/DLForwardedResolver';
+import { CvsreferredComponent } from '../profiles/cvsreferred/cvsreferred.component';
+import { CvReferredPagedResolver } from '../_resolvers/admin/cvReferredPagedResolver';
+
 
 const routes = [
   {path: '', component: OrderMenuComponent},
@@ -72,7 +75,9 @@ const routes = [
     resolve: {
       orderAssessment: OrderAssessmentResolver
     }
-  }
+  }, 
+  {path: 'cvsreferred/:orderid', component: CvsreferredComponent,
+    resolve: {cvs: CvReferredPagedResolver}}  
 ]
 
 @NgModule({

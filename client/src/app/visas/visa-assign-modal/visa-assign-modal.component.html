@@ -1,0 +1,39 @@
+<div class="my-0 modal-header">
+    <h4 class="b">{{title}}</h4>    
+</div>
+<div class="modal-body">
+    <h2 class="my-0 b" style="display: inline-block;">{{visaItem!.customerKnownAs}}</h2>
+    <br class="my-0"><h3 class="my-0" style="display: inline-block;">Visa No.: {{visaItem!.visaNo}} dt {{visaItem!.visaDateG | date: 'dd-MMM-yy'}}. Category <strong>{{visaItem!.visaCategoryEnglish}}</strong></h3>
+    <button class="icon" style="vertical-align: top; display: inline-block;" (click)="close()"><mat-icon>cancel</mat-icon></button>
+    <button class="icon" style="vertical-align: top; display: inline-block;" (click)="update()"><mat-icon>save</mat-icon></button>
+    
+    <br><label class="stdd w125 b fontStretched" style="margin-left: 15px;">Customer</label>
+    <label class="stdd w175 b fontStretched">Category</label>
+    <label class="stdd w50 b">Visa Qnty</label>
+    <label class="stdd w50 b">Visa Bal</label>
+    <label class="stdd w50 b" title="enter number of visas to assign now" >new assign</label>
+  
+    <div *ngFor="let item of orderItemsForTheCustomer">
+        <!-- <input type="checkbox"
+            [(ngModel)]="item.checked"
+            class="lbl w15 form-check-input"
+            style="border-color: black;"
+            [checked]="item.checked"
+            (change)="updateChecked(item, item.checked)"
+        > -->
+        <input type="checkbox" style="margin-left: 25px; margin-right: 25px;"
+            class="form-check-input w20 hAlignCenter"
+            style="border-color: black;"
+            [(ngModel)]="item.checked"
+        >
+        <div class="stdd w125 fSizeSmaller">{{item.customerInBrief}}</div>
+        <div class="stdd w150 fSizeSmaller">{{item.category}}</div>
+        <div class="stdd w50 hAlignRight">{{item.quantity}}</div>
+        <div class="stdd w50 hAlignRight">{{item.unassigned}}</div>
+        <input type="text" [(ngModel)]="item.quantityAssigned" style="margin-left: 25px !important;" class="stdd w40 hAlignRight" (change)="qntyChanged(item)" >
+    </div>
+</div>
+
+<div class="modal-footer">
+
+</div>

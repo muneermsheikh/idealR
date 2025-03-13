@@ -1,5 +1,6 @@
 using System.Reflection.Metadata.Ecma335;
 using api.Data;
+using api.DTOs.Process;
 using api.Entities.Deployments;
 using api.Entities.Master;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,16 @@ namespace api.Extensions
         public async static Task<string> GetNextDepStatusName(this DataContext context, int sequence)
         {
             return await context.DeployStatuses.Where(x => x.Sequence == sequence).Select(x => x.StatusName).FirstOrDefaultAsync();
+        }
+
+         public async static Task<Referral> GetNextDepStatusNameAndPeriod(this DataContext context, int NextSequence)
+        {
+            return await context.DeployStatuses.Where(x => x.Sequence == NextSequence)
+                .Select(x => new Referral {
+                    Sequence = x.Sequence,
+                    SequenceName = x.StatusName,
+                    Period = x.WorkingDaysReqdForNextStage
+                }).FirstOrDefaultAsync();
         }
         
     }

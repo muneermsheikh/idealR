@@ -58,10 +58,10 @@ namespace api.Controllers
             return Ok(obj);
         }
 
-        [HttpPost("add/{industryName}")]
-        public async Task<ActionResult<Industry>> AddNewIndustry(string industryName)
+        [HttpPost("add")]
+        public async Task<ActionResult<Industry>> AddNewIndustry(Industry industry)
         {
-            var obj = await _indRepo.AddIndustry(industryName);
+            var obj = await _indRepo.AddIndustry(industry);
             
             if(obj == null) return BadRequest(new ApiException(400, "Failed to add", "Failed to insert the Industry"));
             

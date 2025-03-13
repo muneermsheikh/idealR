@@ -69,6 +69,8 @@ namespace api.Extensions
                 opt.AddPolicy("OrderForwardPolicy", policy => policy.RequireRole("OrderForward", "HR Supervisor", "HR Manager", "Admin"));
                 //opt.AddPolicy("CustomerReviewPolicy", policy => policy.RequireRole("Customer Review"));
                 opt.AddPolicy("FeedbackPolicy", policy => policy.RequireRole("Candidate", "Customer Official", "Document Controller-Processing", "Admin", "Document Controller-Admin"));
+                opt.AddPolicy("VisaEditPolicy", policy => policy.RequireRole("VisaEdit"));
+                opt.AddPolicy("VisaViewPolicy", policy => policy.RequireRole("VisaView"));
             }); 
 
             return services;

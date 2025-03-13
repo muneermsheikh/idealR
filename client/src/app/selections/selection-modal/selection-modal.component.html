@@ -1,8 +1,6 @@
 <div class="modal-header my-0" *ngIf="sel" >
     <div class="stdd w100 b">Candidate:</div> 
-    <div class="stdd w400 blue mx-1">{{candidateName}}</div>
-    
-    
+    <div class="stdd w400 blue mx-1">{{candidateName}}</div>  
 </div>    
 
 <div class="modal-body my-0">
@@ -12,9 +10,9 @@
             <div class="stdd w150 b">Customer</div>
             <div class="stdd w175">{{customerName}}</div>
             <div class="stdd pull-right">
-                <button type="button" class="btn fa fa-save green " (click)="update()"></button>
-                <button type="button" class="btn btn-close" aria-label="Close" (click)="bsModalRef.hide()"></button>
-                <button class="btn red fa fa-trash fa-sm" (click)="deleteSel()" title="Delete this Selection"></button>
+                <button type="button" class="btn green" (click)="update()"><mat-icon>save</mat-icon></button>
+                <button type="button" class="btn" aria-label="Close" (click)="bsModalRef.hide()"><mat-icon>cancel</mat-icon></button>
+                <button type="button" class="btn" (click)="deleteSel()" title="Delete this Selection"><mat-icon>delete</mat-icon></button>
             </div>
 
             <br>

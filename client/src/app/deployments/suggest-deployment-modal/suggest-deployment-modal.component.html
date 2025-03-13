@@ -1,0 +1,31 @@
+<div class="modal-header my-0 py-0">
+    <h4 class="fSmaller b">Next Deployment Process suggested</h4>
+    <button class="btn fa fa-window-close fa-2x pull-right" (click)="bsModalRef.hide()"></button>
+</div>
+<div class="modal-body my-0 py-0">
+
+    <div class="stdd" *ngIf="candidateNextProcess?.errorString!==''">
+        <div class="stdd w150 b">Candidate: {{candidateNextProcess?.applicationNo}} - {{candidateNextProcess?.candidateName}}</div>
+        <br><br>  
+        <div class="stdd w150 b">Referred To</div>
+        <div class="stdd w150 b">Category Ref</div>
+        <div class="stdd w100 b">Referred On</div>
+        <div class="stdd w150 b">Next Process Suggested</div>
+        <div class="stdd w150 b">Action</div>
+        <br>
+        <div *ngIf="candidateNextProcess !== undefined">
+            <div *ngFor="let prcs of candidateNextProcess!.referrals">
+                <div class="stdd w150">{{prcs.customerName}}</div>
+                <div class="stdd w150">{{prcs.categoryRef}}</div>
+                <div class="stdd w100">{{prcs.referredOn | date: 'dd-MMM-yy'}}</div>
+                <div class="stdd w150">{{prcs.sequenceName}}</div>
+                <button class="btn brn-primary fa fa-check" title="click to apply the sequence on the candidate" (click)="applyNextSuggestion(prcs.depId, prcs.sequence)"></button>   
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal-footer">
+
+</div>

@@ -2,13 +2,15 @@
     
     <button class="btn fa fa-minus" *ngIf="bExpand" style="color:aqua;" (click)="bExpand=false"></button>
     <button class="btn fa fa-plus" *ngIf="!bExpand" style="color:aqua;" (click)="bExpand=true"></button>
-    <div class="stdd w120">{{dto.dateOfFlight|date:'dd-MMM-yy'}}</div>
-    <div class="stdd w150 cursorPointer" >{{dto.airportOfBoarding}}</div>
-    <div class="stdd w150">{{dto.airportOfDestination}}</div>
     <div class="stdd w120">{{dto.airlineName}}</div>
-    <div class="stdd w120">{{dto.eTD_Boarding | date:'dd-MMM-yy'}}</div>
-    <div class="stdd w120">{{dto.eTA_Destination}}</div>
-    <div class="stdd w50">{{dto.candidateFlightItems.length}}</div>
+    <div class="stdd w100 cursorPointer" >{{dto.airportOfBoarding}}</div>
+    <div class="stdd w100">{{dto.dateOfFlight|date:'dd-MMM-yy'}}</div>
+
+    <div class="stdd w50">{{dto.etD_Boarding | date:'hh:mm'}}</div>
+    
+    <div class="stdd w100">{{dto.airportOfDestination}}</div>
+    <div class="stdd w50">{{dto.etA_Destination| date: 'hh:mm'}}</div>
+    <div class="stdd w50" style="text-align: right; padding-right: 3px;">{{dto.candidateFlightItems.length}}</div>
     
     <button class="btn w25 fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" title="edit this Flight" ></button>
     <button class="btn w25 fa fa-envelope" style="color: aliceblue;" (click)="travelAdviseClicked()" title="edit this Flight" ></button>

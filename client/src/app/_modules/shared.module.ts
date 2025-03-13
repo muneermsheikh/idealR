@@ -17,13 +17,13 @@ import { HasRoleDirective } from '../_directives/has-role.directive';
 import { RegisterCallRecordsComponent } from '../callRecords/register-call-records/register-call-records.component';
 
 
-
 @NgModule({
   declarations: [
     TextInputComponent,
     DatePickerComponent,
     HasRoleDirective,
-    RegisterCallRecordsComponent
+    RegisterCallRecordsComponent,
+
   ],
   imports: [
     CommonModule,
@@ -66,8 +66,7 @@ import { RegisterCallRecordsComponent } from '../callRecords/register-call-recor
     TextInputComponent,
     DatePickerComponent,
     HasRoleDirective,
-    RegisterCallRecordsComponent,
-
+    RegisterCallRecordsComponent
   ]
 })
 export class SharedModule { }

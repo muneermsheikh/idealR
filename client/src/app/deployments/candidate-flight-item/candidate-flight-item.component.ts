@@ -24,7 +24,7 @@ export class CandidateFlightItemComponent implements OnInit{
   constructor(private service: DeployService){}
 
   ngOnInit(): void {
-    console.log(this.dto);
+    console.log('dto',this.dto);
   }
 
   editClicked() {

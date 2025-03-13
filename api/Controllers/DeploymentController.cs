@@ -4,6 +4,7 @@ using api.DTOs.Admin;
 using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
+using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Errors;
 using api.Extensions;
@@ -11,7 +12,9 @@ using api.Helpers;
 using api.Interfaces.Deployments;
 using api.Params.Deployments;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -20,8 +23,11 @@ namespace api.Controllers
     {
         private readonly IDeploymentRepository _depRepo;
         private readonly ICandidateFlightRepository _flightRepo;
-        public DeploymentController(IDeploymentRepository depRepo, ICandidateFlightRepository flightRepo)
+        private readonly UserManager<AppUser> _userManager;
+
+        public DeploymentController(IDeploymentRepository depRepo, ICandidateFlightRepository flightRepo, UserManager<AppUser> userManager)
         {
+            _userManager = userManager;
             _flightRepo = flightRepo;
             _depRepo = depRepo;
         }
@@ -88,7 +94,8 @@ namespace api.Controllers
                 var depitem = new DepItem{DepId=item.DepId, TransactionDate=item.TransactionDate, Sequence=item.Sequence};
                 depitems.Add(depitem);
             }
-            var dtos = await _depRepo.AddDeploymentItems(depitems, User.GetUsername());
+            var dtos = await _depRepo.AddDeploymentItems(depitems, await _userManager.FindByNameAsync(User.GetUsername()));
+
             if(!string.IsNullOrEmpty(dtos.ErrorString)) return BadRequest(new ApiException(400, "Failed to add the deployment item", dtos.ErrorString));
 
             return Ok(dtos.DeploymentPendingBriefDtos);
@@ -223,7 +230,7 @@ namespace api.Controllers
 
             //dto.CandFlightToAdd.ETD_Boarding = DateTime.Parse(dto.CandFlightToAdd.ETD_BoardingString);
             
-            var dtoToReturn = await _flightRepo.InsertDepItemsWithCandFlightItems(dto, User.GetUsername());
+            var dtoToReturn = await _flightRepo.InsertDepItemsWithCandFlightItems(dto, await _userManager.FindByNameAsync( User.GetUsername()));
 
             if(!string.IsNullOrEmpty(dtoToReturn.ErrorString)) return BadRequest(new ApiException(400, "Failed to insert dep items and candidate flights", dtoToReturn.ErrorString));
 
@@ -288,7 +295,7 @@ namespace api.Controllers
                     //modelData.OfferAttachmentFullPath=fullPath;
                 }
                 
-                var errDto = await _depRepo.AddDeploymentItems(depItemsData,User.GetUsername());
+                var errDto = await _depRepo.AddDeploymentItems(depItemsData, await _userManager.FindByNameAsync(User.GetUsername()));
 
                 depCandidateFlightsData.FullPath=fullPath;
                 
@@ -306,11 +313,13 @@ namespace api.Controllers
         }
 
         [HttpGet("Housekeeping")]
-        public async Task<ReturnStringsDto> Housekeeping()
+        public async Task<ActionResult<string>> Housekeeping()
         {
             var dto = await _depRepo.DoHousekeepingOfDeployments();
-
-            return dto;
+            if(!string.IsNullOrEmpty(dto.ErrorString)) {
+                return BadRequest(new ApiException(400, "Error", dto.ErrorString));
+            }
+            return Ok(dto.SuccessString);
         }
        
     }

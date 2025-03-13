@@ -356,6 +356,11 @@ namespace api.Data.Repositories.Admin
             var OrderItems = obj.OrderItems;
 
             var officials = await _context.CustomerOfficials.Where(x => x.CustomerId == obj.CustomerId).ToListAsync();
+            if(officials == null || officials.Count == 0) {
+                msgWithErr.ErrorString = "Customer Officials not defined";
+                return msgWithErr;
+            }
+
             string[] officialDepts = { "main contact", "hr", "accounts", "logistics" };
             CustomerOfficial official=null;
             
@@ -373,32 +378,35 @@ namespace api.Data.Repositories.Admin
             var recipientObj = await _userManager.GetAppUserObjFromCustomerOfficial(_context, official.Id);
 
             if(senderObj==null) {
-                msgWithErr.ErrorString = "cannot retrieve sender object data - Project Manager Id defined has no equivalent AppUser";
+                msgWithErr.ErrorString = "The acknowledgement for the Demand Letter will be authored by its Project Manager, " 
+                    + "but the Project Manager is not defined, or if the Project Manager is defined, its Identity User is not defied";
                 return msgWithErr;
             }
             if(recipientObj==null) {
-                msgWithErr.ErrorString = "cannot retrieve Recipient object data - Customer Official defined has no equivalent AppUser";
+                msgWithErr.ErrorString = "The acknowledgement for the Demand Letter will be addressed to the Customer Official, " +
+                    "who is either not defined, or its Identity User not defined";
                 return msgWithErr;
             }
             
             var messageType = "OrderAcknowledgement";
-            
-            var ackn = new AcknowledgeToClient{OrderId = obj.Id, CustomerId = obj.CustomerId, CustomerName = obj.Customer.CustomerName,
+            var custName = obj.Customer?.CustomerName ?? await _context.CustomerNameFromId(obj.CustomerId);
+            var ackn = new AcknowledgeToClient{OrderId = obj.Id, CustomerId = obj.CustomerId, 
+                CustomerName = custName,
                 DateAcknowledged=DateTime.Now, MessageType = messageType, RecipientEmailId=recipientObj.AppUserEmail,
                 RecipientUsername=recipientObj.Username, SenderEmailId=senderObj.AppUserEmail,  SenderUsername=senderObj.Username};
 
             _context.AckanowledgeToClients.Add(ackn);
 
             bool HasException = false;
-            var msg = _today + "<br><br>M/S" + obj.Customer.CustomerName;
-            if (!string.IsNullOrEmpty(obj.Customer.Add)) msg += "<br>" + obj.Customer.Add;
-            if (!string.IsNullOrEmpty(obj.Customer.Add2)) msg += "<br>" + obj.Customer.Add2;
-            msg += "<br>" + obj.Customer.City + ", " + obj.Customer.Country + "<br><br>";
+            var msg = _today + "<br><br>M/S" + custName;
+            if (!string.IsNullOrEmpty(obj.Customer?.Add)) msg += "<br>" + obj.Customer?.Add ?? "";
+            if (!string.IsNullOrEmpty(obj.Customer?.Add2)) msg += "<br>" + obj.Customer?.Add2 ?? "";
+            msg += "<br>" + obj.Customer?.City ?? "" + ", " + obj.Customer?.Country ?? "" + "<br><br>";
             msg += official == null ? "" : "Kind Attn : " + official.Title + official.OfficialName + ", " + official.Designation + "<br><br>";
             msg += "Dear " + official?.Gender == "F" ? "Madam:" : "Sir:" + "<br><br>";
             msg += "Thank you very much for your manpower enquiry dated " + DateOnly.FromDateTime(obj.OrderDate) + 
                 " for following personnel: ";
-            msg += "<br><br>" + _commonMsg.ComposeOrderItems(obj.OrderNo, OrderItems, HasException) + "<br><br>";
+            msg += "<br><br>" + await _commonMsg.ComposeOrderItems(obj.OrderNo, OrderItems, HasException) + "<br><br>";
             msg += HasException == true
                 ? "Please note the exceptions mentioned under the column <i>Exceptions</i> and respond ASAP.  " +
                         "We will initiate execution of the wroks at this end on receipt of your clarificatins.<br><br>"
@@ -408,8 +416,7 @@ namespace api.Data.Repositories.Admin
                 senderObj.KnownAs + "<br>" + senderObj.Position + "<br>" + senderObj.Username;
         
             var subject = "Your enquiry dated " + order.OrderDate + " is registered by us under Serial No. " + order.OrderNo;
-            
-            
+                        
             var emailMessage = new Message
             {
                 //Sender = senderObj,

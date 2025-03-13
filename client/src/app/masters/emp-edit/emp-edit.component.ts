@@ -129,7 +129,7 @@ export class EmpEditComponent {
       }
 
     removeHRSkill(index: number) {
-        this.confirm.confirm("Confirm Delete", "This will delete customer official.  To delete from the database as well, remember to SAVE this form before you close it")
+        this.confirm.confirm("Confirm Delete", "This will delete the selected HR Skill for the employee.  To delete from the database as well, remember to SAVE this form before you close it")
           .subscribe({next: confirmed => {
             if(confirmed) {
               this.hrSkills.removeAt(index);
@@ -157,8 +157,13 @@ export class EmpEditComponent {
     }
 
     removeEmployeeOtherSkill(index: number) {
-      this.employeeOtherSkills.removeAt(index);
-      this.employeeOtherSkills.markAsDirty();
+      this.confirm.confirm("Confirm Delete", "This will delete the selected Other Skill for the employee.  To delete from the database as well, remember to SAVE this form before you close it")
+          .subscribe({next: confirmed => {
+            if(confirmed) {
+              this.employeeOtherSkills.removeAt(index);
+              this.employeeOtherSkills.markAsDirty();
+            }
+        }})
     }
 
     //attachments

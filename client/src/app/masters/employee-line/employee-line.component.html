@@ -6,9 +6,9 @@
     <div class="stdd w100">{{emp.department}}</div>
     <div class="stdd w150">{{emp.position}}</div>
     <div class="stdd w100">{{emp.status}}</div>
-    <button class="btn fa fa-pencil" (click)="editClicked()" 
-        title="edit this employee" style="color:aliceblue;"></button>
+    <button class="btn" (click)="editClicked()" 
+        title="edit this employee"><mat-icon>edit</mat-icon></button>
     <!--<button class="btn fa fa-upload" (click)="uploadClicked()" ></button> -->
-    <button class="btn fa fa-trash red" title="delete this employee" (click)="deleteClicked()" ></button>
+    <button class="btn red" title="delete this employee" (click)="deleteClicked()" ><mat-icon>delete</mat-icon></button>
 
 </div>

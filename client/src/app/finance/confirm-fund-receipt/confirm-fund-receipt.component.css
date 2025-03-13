@@ -31,3 +31,5 @@
     font-weight: bold;
     vertical-align: top;
 }
+.btn {color:aliceblue; margin: 0 2px 0 2px; vertical-align: middle; width: 20px;}
+.caption {display: inline-block; font-size: large; font-weight: bold; margin-left: 15px;}

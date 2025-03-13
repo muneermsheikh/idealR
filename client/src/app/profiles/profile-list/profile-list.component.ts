@@ -117,8 +117,10 @@ export class ProfileListComponent implements OnInit{
             if(response.result && response.pagination) {
               this.cvs = response.result;
               this.totalCount = response.count;
+            } else if(response.result && response.length == 0) {
+              this.toastr.warning('Your instructions did not produce any data', 'input error')
             }
-          }
+          }, error: (err: any) => this.toastr.error(err.error?.details, 'Error')
         })
     }
   }
@@ -127,10 +129,16 @@ export class ProfileListComponent implements OnInit{
     const params = this.service.getCVParams() ?? new candidateParams();
     
     var searchByNm = this.searchTerm!.nativeElement.value;
-    if(searchByNm !== '') params.search = searchByNm;
-
+    if(searchByNm !== '') {
+      if(+searchByNm > 0) {
+        params.applicationNoFrom=+searchByNm;
+      } else {
+        params.candidateName = searchByNm;
+      }
+      
+    }
     var searchByCat = this.searchTermCat!.nativeElement.value;
-    if(searchByNm !== '') params.categoryName = searchByNm;
+    if(searchByCat !== '') params.categoryName = searchByCat;
     
     params.pageNumber = 1;
     this.service.setCVParams(params);
@@ -144,18 +152,17 @@ export class ProfileListComponent implements OnInit{
     this.getCVs();
   }
   
-   onPageChanged(event: any){
+  onPageChanged(event: any){
 
-      if(!this.cvParams) return;
+    if(!this.cvParams) return;
 
-      if(this.cvParams.pageNumber !== event.page) {
-        this.cvParams.pageNumber = event.page;
-        this.service.setCVParams(this.cvParams);
-        this.getCVs();
-      }
+    if(this.cvParams.pageNumber !== event.page) {
+      this.cvParams.pageNumber = event.page;
+      this.service.setCVParams(this.cvParams);
+      this.getCVs();
     }
+  }
   
-
   //Having selected candidates, refer them to internal reviews or directly to client
   openChecklistModal(user: User) {
     const title = 'Choose Order Item to refer selected CVs to';

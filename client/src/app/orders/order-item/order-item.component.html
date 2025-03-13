@@ -36,25 +36,35 @@
                     {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
                </div>
                
-               <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button" (click)="editClicked()"></button>
+               <button class="btn" title="edit this DL" type="button" (click)="editClicked()"><mat-icon>edit</mat-icon></button>
                
-               <button class="stdd w15 fa fa-users" (click)="dlForwardToAssociatesClicked()" 
-                    title="Forward this order to Associates (to be selected)" ></button>
-               <button class="stdd w15 fa fa-users" (click)="DLForwardedClicked()" 
-                    title="Associates to whom this DL is already forwardED" ></button>
-               <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
-                    title="compose email message of acknowldgement to client" ></button>
+               <button class="btn" (click)="dlForwardToAssociatesClicked()" 
+                    title="Forward this order to Associates (to be selected)" >
+                    <mat-icon>forward</mat-icon>
+               </button>
+               <button class="btn" (click)="DLForwardedClicked()" 
+                    title="Associates to whom this DL is already forwardED" >
+                    <mat-icon>fast_forward</mat-icon>
+               </button>
+               <button class="btn" (click)="AcknowledgeClicked()" 
+                    title="compose email message of acknowldgement to client" >
+                    <mat-icon> email</mat-icon>
+               </button>
                     
-               <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
+               <button class="btn" title="cvs forwarded" type="button"
                     title="CVs already referrED to clients for this Order"
-                    (click)="cvReferredClicked()"
-               ></button>
+                    (click)="cvReferredClicked()">
+                    <mat-icon>send</mat-icon>
+               </button>
 
-               <button class="stdd w30" title="selections and rejections against this order" type="button"
-                    (click)="selectionClicked()"
-               ><i class="material-icons" style="font-size: medium;">assignment_ind</i></button>
-
-               <button class="stdd w15 fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
+               <button class="btn" title="selections and rejections against this order" type="button"
+                    (click)="selectionClicked()">
+                    <mat-icon>assignment_ind</mat-icon>
+               </button>
+<!--                    <i class="material-icons" style="font-size: medium;">assignment_ind</i>-->
+               <button class="btn" title="delete the DL" type="button" (click)="deleteClicked()">
+                    <mat-icon>delete</mat-icon>
+               </button>
           </div>
 
           <div *ngIf="isReportActive">

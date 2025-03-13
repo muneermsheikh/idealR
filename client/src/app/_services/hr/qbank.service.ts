@@ -113,7 +113,6 @@ export class QbankService {
 
 
   update(model: IAssessmentBank) {
-    console.log('QBank service:', model);
     return this.http.put<boolean>(this.apiUrl + 'assessmentqbank/assessmentBank', model);
   }
 

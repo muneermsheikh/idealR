@@ -151,6 +151,7 @@ namespace api.Helpers
             //CreateMap<COA, COA>();
             //CreateMap<Voucher, Voucher>();
             CreateMap<PendingDebitApprovalDto, VoucherEntry>();
+            CreateMap<VisaHeader, VisaBriefDto>();
 
             //DateTime difference between dates retrieved from DB and generated from code
             CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));

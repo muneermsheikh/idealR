@@ -6,7 +6,7 @@
     vertical-align: middle;
 }
 
-.btn {color:aliceblue; width: 15px;}
+.btn {color:aliceblue; font-size: small; margin: 0 0 0 0; padding: 0 0 0 0;}
 .stdd {
     display: inline-block;
     font-size: small;

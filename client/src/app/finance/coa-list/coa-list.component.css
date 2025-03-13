@@ -1,5 +1,6 @@
 .stdd {
 	display: inline-block;
+	font-size: small;
 }
 
 .w20 {width: 20px;}
@@ -18,3 +19,7 @@
 .rAlign {text-align: right;}
 
 .fontSmall {font-size: small;}
+
+.btn {color:aliceblue; margin: 0 2px 0 2px; vertical-align: middle; width: 20px;}
+
+.option {font-size: smaller; vertical-align:middle;}

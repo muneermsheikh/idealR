@@ -236,7 +236,9 @@ namespace api.Data.Repositories.Admin
                 query.AsNoTracking()
                 .ProjectTo<CVRefDto>(_mapper.ConfigurationProvider)
                 , refParams.PageNumber, refParams.PageSize);
-
+            foreach(var pg in paged) {
+                if(string.IsNullOrEmpty(pg.SelectionStatus)) pg.SelectionStatus = "awaiting Selection";
+            }
             return paged;
         }
 

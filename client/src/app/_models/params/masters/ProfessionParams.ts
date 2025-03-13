@@ -6,5 +6,5 @@ export class professionParams
     search = '';
     
     pageNumber = 1;
-    pageSize = 15;
+    pageSize = 20;
 }

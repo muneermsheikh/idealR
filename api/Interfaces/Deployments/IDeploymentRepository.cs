@@ -2,6 +2,7 @@ using api.DTOs.Admin;
 using api.DTOs.Process;
 using api.Entities.Admin;
 using api.Entities.Deployments;
+using api.Entities.Identity;
 using api.Entities.Messages;
 using api.Helpers;
 using api.Params.Deployments;
@@ -13,7 +14,7 @@ namespace api.Interfaces.Deployments
         Task<PagedList<DeploymentPendingDto>> GetDeployments(DeployParams depParams);
         Task<Dep> GetDeploymentByCVRefId(int cvrefid);
         Task<Dep> GetDeploymentByDepId(int depid);
-        Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItem> deptems, string Username);
+        Task<DepPendingDtoWithErr> AddDeploymentItems(ICollection<DepItem> deptems, AppUser appUser);
         //Task<DepPendingDtoWithErr> InsertDepItemsWithFlights(ICollection<DepItemWithFlightDto> depItemsWithFlight, string username);
        
         Task<DepPendingDtoWithErr> EditDeployment (Dep dep);

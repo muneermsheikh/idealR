@@ -268,9 +268,4 @@ export class ChecklistModalComponent implements OnInit {
         })//, error: (err: any) => this.toastr.error(err.error?.details, 'Error encountered')
     
   }
-
-  closeModal() {
-    this.bsmodalRef.hide()
-  }
-  
 }

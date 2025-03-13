@@ -6,7 +6,6 @@ import { filter, switchMap } from 'rxjs';
 import { ICvsAvailableDto } from 'src/app/_dtos/admin/cvsAvailableDto';
 import { IOrderItemBriefDto } from 'src/app/_dtos/admin/orderItemBriefDto';
 import { IReturnStringsDto } from 'src/app/_dtos/admin/returnStringsDto';
-import { IProspectiveBriefDto } from 'src/app/_dtos/hr/prospectiveBriefDto';
 import { IProspectiveHeaderDto } from 'src/app/_dtos/hr/prospectiveHeaderDto';
 import { ICustomerNameAndCity } from 'src/app/_models/admin/customernameandcity';
 import { IProfession } from 'src/app/_models/masters/profession';

@@ -6,6 +6,8 @@
 	display: inline-block ;
 }
 
+.ml15 {margin-left: 15px;}
+
 .stdd {
 	display:inline-block;
 	margin: 0 2px 0px 2px;
@@ -112,3 +114,7 @@ input[type="radio"]:checked::before {
 	transform: translate(-50%, -50%);
 	animation: appear 0.8s;
 }
+
+.btn {color:aliceblue; margin: 0 2px 0 2px; vertical-align: middle; width: 20px;}
+.mL10 {margin-left: 10px;}
+

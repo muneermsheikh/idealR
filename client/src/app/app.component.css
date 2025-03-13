@@ -17,6 +17,8 @@
     justify-content: center;
 } 
 
+.fontS {font-size: x-small; font-weight: normal;}
+
 mat-list-item {
     margin: 0;
     padding: 0;
@@ -51,3 +53,6 @@ md-sidenav.md-closed.md-locked-open-add-active {
 .mat-sidenav-backdrop.mat-sidenav-shown{
     background-color: transparent !important;
 }
+
+.w80 {width: 80px;}
+.stdd {display: inline-block; font-size: x-small;}

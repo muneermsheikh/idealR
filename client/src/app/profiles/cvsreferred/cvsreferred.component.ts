@@ -77,9 +77,7 @@ export class CvsreferredComponent implements OnInit{
         this.pagination = data['cvrefPaged'].pagination;
         this.totalCount = data['cvrefPaged'].count;
         this.headers = data['headers'];
-
-        console.log('headers', this.headers);
-      })
+      })      
   }
 
   loadCVsReferred() {
@@ -127,10 +125,12 @@ export class CvsreferredComponent implements OnInit{
   
   
   downloadFileEvent(candidateid: any) {
-    return this.downloadService.downloadFile(candidateid).subscribe(() => {
+    
+    return this.service.downloadCV(candidateid).subscribe(() => {
       this.toastr.success('document downloaded');
     }, (error: any) => {
-      this.toastr.error('failed to download document', error);
+      console.log('error:', error);
+      this.toastr.error(error.error?.details, 'failed to download document');
     })
   }
 

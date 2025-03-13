@@ -36,13 +36,13 @@ namespace api.Controllers
             return Ok(obj);
         }
 
-        [HttpPost("add/{qualificationName}")]
-        public async Task<ActionResult<bool>> AddANewQualification(string qName)
+        [HttpPost("add/{qName}")]
+        public async Task<ActionResult<Qualification>> AddANewQualification(string qName)
         {
-            var errString = await _qRepo.AddQualification(qName);
-            if(string.IsNullOrEmpty(errString)) return BadRequest(new ApiException(400, "Failed to add the Qualification", errString));
+            var dto = await _qRepo.AddQualification(qName);
+            if(!string.IsNullOrEmpty(dto.ErrorString)) return BadRequest(new ApiException(400, "Failed to add the Qualification", dto.ErrorString));
 
-            return Ok("Qualification is added");
+            return Ok(dto.qualification);
 
         }
 
@@ -59,12 +59,14 @@ namespace api.Controllers
         [HttpPut("edit")]
         public async Task<ActionResult<bool>> EditQuaification(Qualification qualification)
         {
-            var errString = await _qRepo.EditQualification(qualification);
+                if(string.IsNullOrEmpty(qualification.QualificationName)) return BadRequest(new ApiException(404, "Bad Request", "Qualification Name not provided"));
 
-            if(string.IsNullOrEmpty(errString)) 
-                return Ok("Qualification updated successfully");
-            
-            return BadRequest(new ApiException(400, "Bad Request", errString));
+                var errString = await _qRepo.EditQualification(qualification);
+
+                if(string.IsNullOrEmpty(errString)) 
+                    return Ok("Qualification updated successfully");
+                
+                return BadRequest(new ApiException(400, "Bad Request", errString));
         }
     }
 }

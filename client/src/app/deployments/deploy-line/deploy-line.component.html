@@ -1,6 +1,6 @@
 <div *ngIf="dep !== undefined" >
        
-    <input type="checkbox" style="margin-left: 25px; margin-right: 25px;"
+    <input type="checkbox" style="margin-left: 10px; margin-right: 10px;"
             class="form-check-input w20 hAlignCenter"
             [(ngModel)]="dep.checked"
             (click)="selectedClicked()"
@@ -14,17 +14,22 @@
     <!-- <div class="stdd w75">{{dep.referredOn | date: 'ddMMMyy'}}</div> -->
     <div class="stdd w75" >{{dep.referredOn | date: 'dd-MMM'}}</div> 
     <div class="stdd w75" >{{dep.selectedOn | date: 'dd-MMM'}}</div> 
-    <div class="stdd w150 mx-2" >{{dep.currentStatus}}</div>
-    <!-- <div *ngIf="dep.deploySequence!==1300" class="stdd w150 mx-2" >{{dep.deploySequence | depStatus}}</div> -->
-    <!-- <div *ngIf="dep.deploySequence===1300" class="stdd w150 mx-2 cursorPointer" (click)="showFlight()" 
-        title="Press this to display flight details">{{dep.deploySequence | depStatus}}</div> -->
+    <div class="stdd w150" >{{dep.currentStatus}}</div>
+    <div *ngIf="dep.deploySequence!==1300" class="stdd w125" >{{dep.deploySequence | depStatus}}</div>
+    <div *ngIf="dep.deploySequence===1300" class="stdd w150 stretched cursorPointer" (click)="showFlight()" 
+        title="Press this to display flight details">{{dep.deploySequence | depStatus}}</div>
     
-    <!--<div class="stdd w150">{{dep.nextSequence | depStatus}}</div>
-    <div class="stdd w75">{{dep.nextStageDate | date :'dd-MMM'}}</div> -->
-
-    <button class="btn fa fa-pencil fa-sm"  style="color: aliceblue;" (click)="editDep()" title="edit Deployment Transactions.  This option also provides for addition of a transaction"></button>
-    <button class="btn fa fa-upload"  style="color: aliceblue;" (click)="editAttachment()" 
-        title="upload/download attachments."></button>
+    <!--<div class="stdd w150">{{dep.nextSequence | depStatus}}</div> -->
+    <!-- <div class="stdd w75" >{{(dep.nextStageDate | date: 'dd-MMM') === '01-Jan' ? 'undefined' : dep.nextStageDate | date: 'dd-MMM'}}</div> -->
+    <div class="stdd w75 cursorPointer" (click)="displayVisaClicked()"
+        title="click to assign visa number to the candidate.  If not visa number available (undefined), this click will not work"
+        >{{dep.visaNo || 'undefined'}}</div>
+    <button class="btn" (click)="editDep()" 
+        title="edit Deployment Transactions.  This option also provides for addition of a transaction">
+        <mat-icon>edit</mat-icon>
+    </button>
+    <button class="btn" (click)="editAttachment()" title="upload/download attachments.">
+        <mat-icon>cloud_upload</mat-icon></button>
     
 
 </div>

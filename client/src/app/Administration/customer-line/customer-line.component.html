@@ -12,13 +12,16 @@
     <div class="stdd w100">{{dto.city}}</div>
     <div class="stdd w100">{{dto.country}}</div>
     <div class="stdd" *ngIf="!isPrintPDF">
-        <button class="btn w25 fa fa-pencil" style="color: aliceblue;" (click)="editClicked()" title="edit this customer" ></button>
-        <button class="btn w25 fa-regular fa-face-angry" style="color:aliceblue;"
-            (click)="displayEvaluationClicked()" title="display Evaluation of this customer" >
-            <i class="fa fa-check-circle-o" style="color: aliceblue;"></i></button>
-        <button class="btn w25 fa fa-list" (click)="feedbackFormClicked()" style="color: aliceblue;"
-            title="Feedback Form for this customer"></button>
-        <button class="btn w25 fa fa-trash red" (click)="deleteClicked()" style="color: red;"
-            title="delete this customer"></button>
+        <button class="btn" (click)="editClicked()" title="edit this customer" >
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button class="btn" (click)="displayEvaluationClicked()" title="display Evaluation of this customer" >
+            <mat-icon>sentiment_very_dissatisfied</mat-icon>
+        </button>
+        <button class="btn" (click)="feedbackFormClicked()" style="color: aliceblue;"
+            title="Feedback Form for this customer"><mat-icon>feedback</mat-icon></button>
+        <button class="btn red" (click)="deleteClicked()" title="delete this customer">
+            <mat-icon>delete</mat-icon>
+        </button>
     </div>
 </div>

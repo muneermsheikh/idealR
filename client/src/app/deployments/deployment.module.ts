@@ -15,6 +15,7 @@ import { DepAttachmentModalComponent } from './dep-attachment-modal/dep-attachme
 import { MatIconModule } from '@angular/material/icon';
 import { CandidateFlightHeaderComponent } from './candidate-flight-header/candidate-flight-header.component';
 import { CandidateFlightItemComponent } from './candidate-flight-item/candidate-flight-item.component';
+import { SuggestDeploymentModalComponent } from './suggest-deployment-modal/suggest-deployment-modal.component';
 
 
 
@@ -32,6 +33,7 @@ import { CandidateFlightItemComponent } from './candidate-flight-item/candidate-
     DepAttachmentModalComponent,
     CandidateFlightHeaderComponent,
     CandidateFlightItemComponent,
+    SuggestDeploymentModalComponent
   ],
   imports: [
     CommonModule,

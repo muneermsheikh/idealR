@@ -146,7 +146,7 @@ namespace api.Data.Repositories
                 return obj;
         }
 
-        public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams candidateParams)
+        public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams cParams)
         {
                 //check if userProfession.ProfessionName is not blanks
                 var blankProfs = await _context.UserProfessions
@@ -168,15 +168,28 @@ namespace api.Data.Repositories
                         ApplicationNo = cand.ApplicationNo, City = cand.City, Id=cand.Id,
                         CustomerId = Convert.ToInt32(cand.CustomerId), Email = cand.Email,
                         FullName = cand.FullName, KnownAs = cand.KnownAs, PpNo = cand.PpNo,
-                        Status = cand.Status, UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName).ToList(),
+                        Status = cand.Status, UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName.ToLower()).ToList(),
                         ReferredByName = cst.CustomerName
                     })
                     .OrderByDescending(x => x.ApplicationNo)
                     .AsQueryable();
                 
+                if(cParams.ApplicationNoFrom > 0) {
+                    if(cParams.ApplicationNoUpto > 0) {
+                        qry = qry.Where(x => x.ApplicationNo >= cParams.ApplicationNoFrom 
+                        && x.ApplicationNo <= cParams.ApplicationNoUpto);
+                    } else {
+                        qry = qry.Where(x => x.ApplicationNo == cParams.ApplicationNoFrom);
+                    }
+                }
+                if(!string.IsNullOrEmpty(cParams.CandidateName)) qry = qry.Where(x => x.FullName.ToLower().Contains(cParams.CandidateName.ToLower()));
+                if(!string.IsNullOrEmpty(cParams.CategoryName)) qry = qry.Where(x => 
+                    x.UserProfessions.Contains(cParams.CategoryName.ToLower()));
+
                 var pagedList = await PagedList<CandidateBriefDto>.CreateAsync(qry.AsNoTracking()
-                        , candidateParams.PageNumber, candidateParams.PageSize);
-                //var candidateids = pagedList.Select(x => x.Id).ToList();
+                        , cParams.PageNumber, cParams.PageSize);
+                
+                //update pagedList.userProfessions
                 var ups = await _context.UserProfessions.Where(x =>pagedList.Select(x => x.Id).ToList().Contains(x.CandidateId)).ToListAsync();
                 
                 foreach(var page in pagedList) {

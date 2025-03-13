@@ -18,6 +18,7 @@ export class DeployLineComponent {
   @Output() selectedEvent = new EventEmitter<IDeploymentPendingBriefDto>();
   @Output() showTicket = new EventEmitter<number>();    //emit the CVRefId, to allow calling program to display the ticket
   @Output() editAttachmentEvent = new EventEmitter<IDep>();
+  @Output() displayVisaEvent = new EventEmitter<number>();
 
   constructor(private service: DeployService, private toastr: ToastrService) { }
 
@@ -67,6 +68,15 @@ export class DeployLineComponent {
         }
       })
     }
+  }
+
+  displayVisaClicked() {
+
+    if(this.dep?.visaNo === null || this.dep?.visaNo === '') {
+      this.toastr.warning('visa number not provided to assign it to the candidate', 'Visa no not provided');
+      return;
+    }
+    this.displayVisaEvent.emit(this.dep?.cvRefId)
   }
   
 }

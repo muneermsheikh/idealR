@@ -218,7 +218,8 @@ export class OrdersListingComponent implements OnInit {
           this.toastr.warning('failed to compose message of acknowledgement');
         }
       },
-      error: err => this.toastr.error('Error in composing acknowldgement message to client', err)
+      error: (err: any) => this.toastr.error(err.error.details, 
+        'Error in composing acknowldgement message to client', {closeButton:true, extendedTimeOut:0})
     });
   }
 
@@ -228,7 +229,7 @@ export class OrdersListingComponent implements OnInit {
   }
 
   selectionRejection(event: any) {    //event.order.id
-    this.navigateByRoute(event, "/orders/selections", false);
+    this.navigateByRoute(event, "/orders/cvsreferred", false);
   }
 
   navigateByRoute(id: number, routeString: string, editable: boolean) {

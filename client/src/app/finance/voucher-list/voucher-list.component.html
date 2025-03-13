@@ -1,29 +1,34 @@
 
 <h4 style="margin-right: 15px; display: inline-block;">Voucher Lists</h4>
-	<pagination class="stdd" *ngIf="pagination !== undefined"
+	<pagination style="display: inline-block;" *ngIf="pagination !== undefined"
 		[totalItems]="pagination!.totalItems"
 		[itemsPerPage]="pagination!.itemsPerPage"
 		(pageChanged)="onPageChanged($event)"
-		[maxSize]="10"
+		[maxSize]="15"
 		previousText="&lsaquo;"
 		nextText="&rsaquo;"
 		firstText="&laquo;"
 		lastText="&raquo;">
 	</pagination>
+	
+    <label style="width: 50px;display: inline-block; font-size: large; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination?.totalItems}}</label>
 
 	<input (keyup.enter)="onSearch()" type="text" class="stdd mx-5 w200" #search placeholder="Search">
-	<button (click)="onSearch()" title="search the text entered" style="color:aliceblue;"
-		class="btn fa fa-search fa-2x mx-1"></button>
+	<button (click)="onSearch()" title="search the text entered" 
+		class="btn"><mat-icon>search</mat-icon></button>
 
-	<button class="btn fa fa-plus fa-2x mx-1" style="color:aliceblue;" title="add a new Finance Voucher" 
-		(click)="addNewFinanceTransaction()" ></button>
-	<button title="return to calling program" class="btn mx-2 fa fa-window-close fa-2x" 
-		style="color:aliceblue;" (click)="returnToCaller()" ></button>
+	<button class="btn" title="add a new Finance Voucher" (click)="addNewFinanceTransaction()" >
+		
+	</button>
+	<button title="return to calling program" class="btn" (click)="returnToCaller()" >
+		<mat-icon>cancel</mat-icon>
+	</button>
 	
 
 <hr style="padding-top: 0px;  padding-bottom:0px;margin-top:0px; margin-bottom: 0px; margin-left: 10px; padding-right: 10px;" >
 
-<div class="container displayInBlockV my-0 py-0 ml-5" >
+<div style="display: inline-block; font-size: small; font-weight:bold; margin-left: 120px;" >
 	<div class="stdd vAlignM w90 b">Voucher No</div>
 	<div class="stdd vAlignM w100 b">Dated</div>
 	<div class="stdd vAlignM mx-1 w200 b">Account Name</div>

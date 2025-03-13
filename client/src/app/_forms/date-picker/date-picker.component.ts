@@ -18,7 +18,7 @@ export class DatePickerComponent implements ControlValueAccessor{
     this.ngControl.valueAccessor = this;
     this.bsConfig = {
       containerClass: 'theme-red',
-      dateInputFormat: 'DD MMM YY',
+      dateInputFormat: 'DD MMM YYYY',
     }
   }
 

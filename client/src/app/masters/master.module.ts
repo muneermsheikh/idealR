@@ -14,6 +14,7 @@ import { CategoryEditModalComponent } from './category-edit-modal/category-edit-
 import { CategoryQBankModalComponent } from './category-qbank-modal/category-qbank-modal.component';
 import { CategoryQBankQsComponent } from './category-qbank-qs/category-qbank-qs.component';
 import { IndustryEditModalComponent } from './industry-edit-modal/industry-edit-modal.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { IndustryEditModalComponent } from './industry-edit-modal/industry-edit-
     SharedModule,
     MasterRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatIconModule
   ]
 })
 export class MasterModule { }

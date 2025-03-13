@@ -70,4 +70,9 @@ export class CvreferredLineComponent implements OnInit {
     this.cvCheckedEvent.emit(this.cv);
   }
 
+  shouldDisplayDate(dt:Date): boolean {
+    // Add your condition here
+    return new Date(dt).getFullYear() > 2000;
+  }
+
 }

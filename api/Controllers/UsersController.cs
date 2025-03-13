@@ -1,5 +1,6 @@
 using api.DTOs.Admin;
 using api.DTOs.HR;
+using api.DTOs.Process;
 using api.Entities.Identity;
 using api.Errors;
 using api.Extensions;
@@ -65,5 +66,20 @@ namespace api.Controllers
             return dtoErr;
         }
 
+        [HttpGet("getNextProcess/{passportno}")]
+        public async Task<ActionResult<NextDepDataDto>> GetNextProcessData(string passportno)
+        {
+            var dto = await _userRepository.GetNextRecruitmentProcess(passportno);
+            return dto;
+        }
+
+        [HttpGet("candidateDto/{candidateId}")]
+        public async Task<ActionResult<CandidateDto>> GetCandidateHistory(int candidateId)
+        {
+            var dto = await _userRepository.GetUserHistory(candidateId);
+
+            return dto;
+        }
+        
     }
 }

@@ -272,7 +272,7 @@ export class DeployListingComponent implements OnInit{
     }  
 
     const config = {
-        class: 'modal-dialog-centered modal-lg',
+        class: 'modal-dialog-centered modal-md',
         initialState: {
           dep,
           depStatusAndNames: this.statusNameAndSeq,
@@ -483,10 +483,10 @@ export class DeployListingComponent implements OnInit{
       
     var dt = new Date();
     dt.setDate(dt.getDate()+4);
-    var flight: IFlightdata = {eTD_Boarding:dt, eTA_Destination:dt, airlineName:"Air India", 
+    var flight: IFlightdata = {etD_Boarding:dt, etA_Destination:dt, airlineName:"Air India", 
         airportOfBoarding: "Mumbai", airportOfDestination: "Jeddah", flightNo: "AI-823",
-        eTA_Via:null, eTD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
-        eTA_DestinationString:'', eTD_BoardingString:'', eTA_ViaString: '', eTD_ViaString:''};
+        etA_Via:null, etD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
+        etA_DestinationString:'', etD_BoardingString:'', etA_ViaString: '', etD_ViaString:''};
     
     const config = {
         class: 'modal-dialog-centered modal-lg',
@@ -566,9 +566,8 @@ export class DeployListingComponent implements OnInit{
 
     this.deploysSelected.forEach(x => {
       var depitem: IDepItemToAddDto = {
-        id: 0, depId: x.depId, transactionDate : this.transDate,
-        sequenceName : this.sequenceSelected, nextSequence: 0,
-        sequence: +this.sequenceSelected, fullPath: ''};
+        depId: x.depId, transactionDate : this.transDate,
+        sequence: +this.sequenceSelected};
 
       depItemsToInsert.push(depitem);
     })
@@ -603,10 +602,10 @@ export class DeployListingComponent implements OnInit{
           //var tkt: IFlightdata|undefined;
           var dt = this.transDate;
           //dt.setDate(dt.getDate()+4);
-          var flight: IFlightdata = {eTD_Boarding:dt, eTA_Destination:dt, airlineName:"Air India", 
+          var flight: IFlightdata = {etD_Boarding:dt, etA_Destination:dt, airlineName:"Air India", 
               airportOfBoarding: "Mumbai", airportOfDestination: this.deploysSelected[0].cityOfWorking, 
-              flightNo: "AI-823", eTA_Via:null, eTD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
-              eTA_DestinationString:'', eTD_BoardingString:'', eTA_ViaString:'', eTD_ViaString:''};
+              flightNo: "AI-823", etA_Via:null, etD_Via: null, flightNoVia:"", airportVia:"", airlineVia:"",
+              etA_DestinationString:'', etD_BoardingString:'', etA_ViaString:'', etD_ViaString:''};
 
           const config = {
               class: 'modal-dialog-centered modal-lg',
@@ -623,15 +622,15 @@ export class DeployListingComponent implements OnInit{
           switchMap((tkt: IFlightdata) => {
             this.deploysSelected.forEach(x => {     //candidate flight is same, except candidate details differ with each object
               var candFlight: ICandidateFlightGrp = {
-                  id: 0, dateOfFlight: tkt!.eTD_Boarding, airlineName: tkt!.airlineName, flightNo: tkt!.flightNo, 
+                  id: 0, dateOfFlight: tkt!.etD_Boarding, airlineName: tkt!.airlineName, flightNo: tkt!.flightNo, 
                   airportOfBoarding: tkt!.airportOfBoarding, 
-                  airportOfDestination: tkt!.airportOfDestination, eTA_Destination: tkt!.eTA_Destination, 
+                  airportOfDestination: tkt!.airportOfDestination, etA_Destination: tkt!.etA_Destination, 
                   fullPath: '', fileToUpload: null, orderNo: x.orderNo, candidateFlightItems: flightItems,
                   customerId: 0, 
-                  eTD_Boarding: tkt!.eTD_Boarding, eTD_BoardingString: tkt!.eTD_BoardingString, 
-                  eTA_DestinationString: tkt!.eTA_DestinationString, flightNoVia: tkt!.flightNoVia, 
-                  airportVia: tkt!.airportVia, eTA_Via: tkt!.eTD_Via, 
-                  eTA_ViaString:tkt!.eTA_ViaString, eTD_ViaString:tkt.eTD_ViaString};
+                  etD_Boarding: tkt!.etD_Boarding, etD_BoardingString: tkt!.etD_BoardingString, 
+                  etA_DestinationString: tkt!.etA_DestinationString, flightNoVia: tkt!.flightNoVia, 
+                  airportVia: tkt!.airportVia, etA_Via: tkt!.etD_Via, 
+                  etA_ViaString:tkt!.etA_ViaString, etD_ViaString:tkt.etD_ViaString};
               this.candFlight = candFlight;
           });
 
@@ -671,6 +670,11 @@ export class DeployListingComponent implements OnInit{
 
     return "";
   }
+  
+  displayVisaTransaction(cvrefId: number) {
+    this.navigateByRoute(cvrefId, '/visas/visaTransactionByCVRefId',false, []);
+  }
+
   
   UpdateDeploymentDOM(briefDto: IDeploymentPendingBriefDto[]) {
     for(const x of briefDto) {
@@ -734,8 +738,11 @@ export class DeployListingComponent implements OnInit{
 
     this.service.housekeeping().subscribe({
       next: (response: IReturnStringsDto) => {
-        this.toastr.warning(response.errorString, 'success')
-      }
+        if(response.successString !== '') {
+          this.toastr.success(response.successString, 'Success')
+        }
+      },
+      error: (err: any) => this.toastr.error(err.error.details, 'Error')
     })
     
   }

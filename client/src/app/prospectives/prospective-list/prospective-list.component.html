@@ -1,7 +1,9 @@
 <div *ngIf="!isPrintPDF">
     <h4 style="display: inline-block; font-weight: bold;">Prospective Candidates</h4>
     <div style="display: inline-block; margin-left: 15px; vertical-align: top;">
-        <pagination class="stdd mx-2" *ngIf="pagination !== undefined"
+
+        <pagination class="mx-2" *ngIf="pagination !== undefined"
+            style = "display: inline-block;"
             [totalItems]="pagination!.totalItems"
             [itemsPerPage]="pagination!.itemsPerPage"
             (pageChanged)="onPageChanged($event)"

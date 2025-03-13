@@ -2,6 +2,7 @@
 	display: inline-block;
 	vertical-align: top;
 	word-wrap: break-word;
+	font-size: small;
 }
 
 .alignRight {text-align: right;}
@@ -35,3 +36,4 @@
 }
 
 .cursorPointer {cursor: pointer; color:yellow;}
+.btn {color:aliceblue; margin: 0 2px 0 2px; vertical-align: middle; width: 20px;}

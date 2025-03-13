@@ -62,13 +62,13 @@ export class CustomersService {
 
   }
 
-  getCustomerList(oParams: customerParams) { 
-  
-    this.customerType = oParams.customerType ?? "customer";
+  getCustomerList(custType: string) { 
     
-    return this.http.get<ICustomerBriefDto[]>(this.apiUrl + 'customers/list/' + oParams.customerType);
+    custType = custType ?? 'Customer';
+    console.log('getcustomerlist custType', custType);
+    return this.http.get<ICustomerBriefDto[]>(this.apiUrl + 'customers/list/' + custType);
     
-}
+  }
 
 
   getClientIdAndNames() {

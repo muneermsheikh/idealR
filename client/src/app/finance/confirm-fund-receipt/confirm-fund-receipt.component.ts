@@ -64,6 +64,12 @@ export class ConfirmFundReceiptComponent implements OnInit {
       }
     })
     this.pParams = new ParamsCOA();
+
+    this.activatedRoute.data.subscribe(data => {
+      this.pending = data['confirmationsPending'].result;
+      this.pagination = data['confirmationsPending'].pagination;
+      this.totalCount = data['confirmationsPending'].totalCount;
+    })
     this.getPendings();
   }
 
@@ -142,4 +148,12 @@ export class ConfirmFundReceiptComponent implements OnInit {
   close() {
     
   }
+  onPageChanged(event: any){
+
+    if (this.pParams.pageNumber !== event.page) {
+      this.pParams.pageNumber=event.page;
+     this.getPendings();
+    }
+  }
+
 }

@@ -1,7 +1,8 @@
 .stdd {
     display: inline-block;
-    vertical-align: top;
 }
+
+.vAlignTop {vertical-align: top;}
 
 .lbl {display: inline-block;
     text-align: right;
@@ -36,3 +37,5 @@
 .w160 {width: 160px;}
 .w200 {width: 200px;}
 .w300 {width: 300px;}
+
+.btn {color: aliceblue; margin: 0 2px 0 2px; size: 20px; vertical-align: middle;}

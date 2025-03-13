@@ -1,6 +1,4 @@
 
-import { IUserHistory } from "./callRecord";
-
 export interface IUserHistoryHeader
 {
 	checked: boolean;
@@ -16,5 +14,5 @@ export interface IUserHistoryHeader
 	assignedOn: Date;
 	status: string;
 	concluded: boolean;
-	userHistories: IUserHistory[];
+	//userHistories: IUserHistory[];
 }

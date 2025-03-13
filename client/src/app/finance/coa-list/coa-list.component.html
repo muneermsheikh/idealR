@@ -1,40 +1,44 @@
 <h4 class="stdd b">Chart of Account Listing</h4>
 
-<pagination class="stdd mx-3" *ngIf="pagination !== undefined"
+<pagination class="mx-1" *ngIf="pagination !== undefined"
+        style="display: inline-block;"
         [totalItems]="pagination!.totalItems"
         [itemsPerPage]="pagination!.itemsPerPage"
         (pageChanged)="onPageChanged($event)"
-        [maxSize]="10"
+        [maxSize]="20"
         previousText="&lsaquo;"
         nextText="&rsaquo;"
         firstText="&laquo;"
         lastText="&raquo;">
     ></pagination>
+    
+    <label style="width: 45px;display: inline-block; text-align: left; font-weight: bold; font-size: large; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination?.totalItems}}</label>
 
     <input (keyup.enter)="onSearch()" type="text" class="stdd w250" style="display: inline-block;" 
         #search placeholder="Search">
-    <button (click)="onSearch()" title="search the text entered" style="color: aliceblue;" 
-        class="w20 btn fa fa-filter fa-2x"></button>
-    <button (click)="addNewCOA()" title="Add a new Account" style="color: aliceblue;"
-         class="btn w20 fa fa-plus fa-2x"></button>
-    <button (click)="onReset()" title="resets search parameters" style="color:aliceblue;" 
-        class="btn w20 fa fa-refresh fa-2x"></button>
+    <button (click)="onSearch()" title="search the text entered" class="btn">
+        <mat-icon>filter_list</mat-icon></button>
+    <button (click)="addNewCOA()" title="Add a new Account" 
+         class="btn"><mat-icon>library_add</mat-icon></button>
+    <button (click)="onReset()" title="resets search parameters" 
+        class="btn"><mat-icon>refresh</mat-icon></button>
     
     <label class="lbl w80" style="text-align: right; margin-left: 15px;" >Exclude:</label>
     <input type="radio" id="none" name="none" [(ngModel)]="sParams.divisionToExclude" value=""
-        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
-        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: smaller;">None</span>
+        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: middle;"
+        class="form-check-input w20 hAlignCenter" ><span class="option">None</span>
     <input type="radio" id="candidate" name="candidate" [(ngModel)]="sParams.divisionToExclude" value="C" 
-        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
-        class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: smaller;">Candidate</span>
-    <button (click)="applyFilter()" title="Apply the filter" style="color: aliceblue;" 
-        class="btn w20 fa fa-check green fa-2x"></button>
-    <button (click)="returnToCaller()" title="close this page" style="color:aliceblue;" 
-        class="btn w20 fa fa-window-close fa-2x"></button>
+        style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: middle;"
+        class="form-check-input w20 hAlignCenter" ><span class="option">Candidate</span>
+    <button (click)="applyFilter()" title="Apply the filter"  
+        class="btn green"><mat-icon>check</mat-icon></button>
+    <button (click)="returnToCaller()" title="close this page" 
+        class="btn"><mat-icon>cancel</mat-icon></button>
     
 <hr>
-<div class="container">
-    <div class="stdd w125 b" >Section</div>    
+<div style="margin-left: 50px;">
+    <div class="stdd w125 b" >Section</div> 
     <div class="stdd w75 b" >Divn</div>    
    <div class="stdd w250 b">Account Name</div>
    <div class="stdd w40 b">Type</div>

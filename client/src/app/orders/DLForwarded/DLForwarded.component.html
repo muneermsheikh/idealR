@@ -1,10 +1,11 @@
 
 <div style="display: inline-block; margin-left: 15px;" *ngIf="pagination">
      <pagination
+        style="display: inline-block;"
         [totalItems]="pagination!.totalItems"
         [itemsPerPage]="pagination!.itemsPerPage"
         (pageChanged)="onPageChanged($event)"
-        [maxSize]="10"
+        [maxSize]="15"
         previousText="&lsaquo;"
         nextText="&rsaquo;"
         firstText="&laquo;"

@@ -5,6 +5,7 @@ using api.Helpers;
 using api.Interfaces.Finance;
 using api.Params.Finance;
 using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Data.Repositories.Finance
@@ -21,7 +22,22 @@ namespace api.Data.Repositories.Finance
             _context = context;
         }
 
-        
+        public async Task<COA> GetCOAFromApplicationNo(int applicationNo)
+        {
+            var candidate = await _context.Candidates.Where(x => x.ApplicationNo==applicationNo).FirstOrDefaultAsync();
+			if(candidate==null) return null;
+
+			var ano=Convert.ToString(applicationNo);
+			
+			var coa = await (from c in _context.COAs 
+				where c.AccountClass=="Candidate" 
+					&& c.AccountName.Contains(ano)
+					&& c.AccountType.ToLower()=="b"
+					select c).SingleOrDefaultAsync();
+            
+            return coa;
+
+        }
         public async Task<COA> SaveNewCOA(COA coa)
         {
             var ct=0;
@@ -41,31 +57,17 @@ namespace api.Data.Repositories.Finance
         }
         public async Task<COA> GetOrCreateCoaForCandidateWithNoSave(int applicationno, bool create)
         {
-            var candidate = await _context.Candidates.Where(x => x.ApplicationNo==applicationno).FirstOrDefaultAsync();
-			if(candidate==null) return null;
-
-			var ano=Convert.ToString(applicationno);
-			
-			var coa = await (from c in _context.COAs 
-				where c.AccountClass=="Candidate" 
-					&& c.AccountName.Contains(ano)
-					&& c.AccountType.ToLower()=="b"
-					select new COA {
-                        Divn="R",
-						Id=c.Id,
-						AccountClass=c.AccountClass,
-						AccountName=c.AccountName,
-						AccountType=c.AccountType,
-					}
-				).SingleOrDefaultAsync();
-
+            var coa = await GetCOAFromApplicationNo(applicationno);    
 			if(coa == null & !create) return null;
 			
 			if(coa==null && create) {
+
+                var knownAs = await _context.Candidates.Where(x => x.ApplicationNo == applicationno)
+                    .Select(x => x.KnownAs).FirstOrDefaultAsync();
 				coa = new COA{
 					Divn = "R",
 					AccountType="B",
-					AccountName = candidate.KnownAs + "- App No." + candidate.ApplicationNo,
+					AccountName = knownAs + "- App No." + applicationno,
 					AccountClass="Candidate",
 					OpBalance=0
 				};
@@ -75,6 +77,21 @@ namespace api.Data.Repositories.Finance
             }
 
 			return coa;
+        }
+
+        public async Task<long> CandidateBalance(int applicationNo)
+        {
+            var coa = await GetCOAFromApplicationNo(applicationNo);
+            if(coa == null) return 0;
+
+            var query = await _context.VoucherEntries.Where(x => x.CoaId == coa.Id)
+            .GroupBy(x => x.CoaId)
+            .Select(g => new {
+                COA = g.Key, TotalAmount=g.Sum(x => x.Dr) + g.Sum(x => x.Cr)
+            }).ToListAsync();
+
+            var amount = query.Count == 0 ? 0 : query.FirstOrDefault().TotalAmount;
+            return amount  + coa.OpBalance;
         }
 
         public async Task<bool> DeleteCOA(int id)
@@ -189,8 +206,7 @@ namespace api.Data.Repositories.Finance
 
         public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateTime fromDate, DateTime uptoDate)
         {
-           //DateTime uptoDate = UptoDate.Hour < 1 ? UptoDate.AddHours(23) : UptoDate;
-			
+           //DateTime uptoDate = UptoDate.Hour < 1 ? UptoDate.AddHours(23) : UptoDate;			
 			var trans =  await (from i in _context.VoucherEntries 
                     where i.CoaId == accountid && 
                         i.TransDate >= fromDate && 

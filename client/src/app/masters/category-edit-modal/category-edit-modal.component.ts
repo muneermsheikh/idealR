@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { IProfession } from 'src/app/_models/masters/profession';
 import { categoryRefParam } from 'src/app/_models/params/Admin/categoryRefParam';
@@ -8,15 +8,18 @@ import { categoryRefParam } from 'src/app/_models/params/Admin/categoryRefParam'
   templateUrl: './category-edit-modal.component.html',
   styleUrls: ['./category-edit-modal.component.css']
 })
-export class CategoryEditModalComponent {
+export class CategoryEditModalComponent implements OnInit{
 
-  Category: IProfession | undefined;  
+  @Input() Category: IProfession | undefined;  
   title: string='';
 
   @Output() updateEvent = new EventEmitter<IProfession>();
  
   constructor (public bsModalService: BsModalService){};
 
+  ngOnInit(): void {
+    console.log('category:', this.Category);
+  }
   UpdateClicked() {
     if(this.Category?.professionName !== '') {
       this.updateEvent.emit(this.Category);

@@ -9,16 +9,15 @@ import { CandidatesAvailableModalComponent } from './candidates-available-modal/
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavComponent } from './nav/nav.component';
 import { SharedModule } from '../_modules/shared.module';
+import { SuggestDeploymentModalComponent } from '../deployments/suggest-deployment-modal/suggest-deployment-modal.component';
 
 
 
 @NgModule({
   declarations: [
-    NavComponent,
-    
-    
-
+    NavComponent
   ],
+  
   imports: [
     CommonModule,
     FormsModule,

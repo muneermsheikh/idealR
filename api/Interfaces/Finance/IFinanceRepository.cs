@@ -33,5 +33,6 @@ namespace api.Interfaces.Finance
         Task<string> AddVoucherAttachments(ICollection<VoucherAttachment> attachments);
         Task<FinanceVoucher> UpdateFinanceVoucher(FinanceVoucher model);
         Task<bool> ApproveDrApprovals(ICollection<int> CoaIds, string username);
+        Task<long> CandidateBalance(int applicationNo);
     }
 }

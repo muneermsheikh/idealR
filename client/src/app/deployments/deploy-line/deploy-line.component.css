@@ -33,4 +33,15 @@ input[type="checkbox"] {
 	font-size: 0.8em!important;
     }
 
-.cursorPointer{cursor:pointer; }
+.cursorPointer{cursor:pointer; color: burlywood}
+
+.btn {display: inline-block; color:aliceblue; margin: 0 2px 0 2px; padding: 0px; vertical-align: top;}
+
+
+.stretched {
+	display: inline-block; 
+	width: 150px; 
+	vertical-align: top; 
+	word-wrap: break-word; 
+	font-stretch: extra-condensed;
+}

@@ -5,8 +5,8 @@
 <div *ngIf="prospective">
     <div class="stdd" style="width: max-content;">
         <div class="stdd" *ngIf="!isReport">
-            <input type="checkbox" style="margin-left: 10px;border-color: black;"
-                class="form-check-input w20 hAlignCenter"
+            <input type="checkbox" style="margin-left: 10px;"
+                class="checkbox form-check-input"
                 [(ngModel)]="prospective.checked"
                 (click)="selectedClicked()" >
         </div>

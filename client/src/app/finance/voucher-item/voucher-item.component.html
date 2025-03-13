@@ -2,7 +2,7 @@
 	No Financial tranaction on record
  </div>
  <div *ngIf="t!==null && t!==undefined" class="col-12">
-	<div class="container stdd row mb-0">
+	<div class="row" style="display: inline-block; font-size: small; margin-left: 15px;">
 		<div class="stdd w90" title="edit the transaction"  >{{t.voucherNo}}</div>
 		<div class="stdd w100">{{t.voucherDated | date: 'dd-MMM-yy'}}</div>
 		<div class="stdd w200 cursorPointer" (click)="viewTransaction(t.id)" title="view this transaction">{{t.accountName}}</div>
@@ -12,8 +12,12 @@
 		<div class="stdd w100 hM w60" style="border:aqua" >{{t.drEntryApprovedByUsername === null ? '--': t.drEntryApprovedByUsername}} </div>
 		<div class="stdd w100 hM w75" style="border:aqua" >{{t.drEntryApprovedOn===null ? '--' : t.drEntryApprovedOn | date: 'ddMMMyy'}} </div>
 	-->
-		<div class="stdd w30 mx-2 fa fa-pencil" title="edit this Voucher" (click)="editTransaction(t.id)" ></div>
-		<div class="stdd w30 mx-2 fa fa-trash red" title="delete this Voucher" (click)="deleteTransaction(t.id)" ></div>
+		<button type="button" class="btn" title="edit this Voucher" (click)="editTransaction(t.id)" >
+			<mat-icon>edit</mat-icon>
+		</button>
+		<button class="btn red" title="delete this Voucher" (click)="deleteTransaction(t.id)" >
+			<mat-icon>delete</mat-icon>
+		</button>
 	</div>
  </div>
  

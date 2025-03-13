@@ -1,16 +1,18 @@
     <pagination
         *ngIf="deploys && pagination"
-        style="margin-left: 5px;"
-        style="display: inline-block;"
-         [totalItems]="pagination!.totalItems"
-         [itemsPerPage]="pagination!.itemsPerPage"
-         (pageChanged)="onPageChanged($event)"
-         [maxSize]="10"
-         previousText="&lsaquo;"
-         nextText="&rsaquo;"
-         firstText="&laquo;"
-         lastText="&raquo;">
+            style="margin-left: 5px;"
+            style="display: inline-block;"
+            [totalItems]="pagination!.totalItems"
+            [itemsPerPage]="pagination!.itemsPerPage"
+            (pageChanged)="onPageChanged($event)"
+            [maxSize]="20"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
     ></pagination>
+    <label style="width: 50px;display: inline-block; font-size: large; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination?.totalItems}}</label>
 
     <label style="display: inline-block; vertical-align: top; font-size: small; 
         font-size: bold; margin-left: 5px;">Search:</label>
@@ -41,8 +43,7 @@
         style="margin-left: 10px;border-color: black; display: inline-block; vertical-align: top;"
         class="form-check-input w20 hAlignCenter" ><span style="vertical-align: top; font-size: small;">All</span>
 
-    <button (click)="onSearch()"  style="color: aliceblue; vertical-align: top;" 
-        class="btn mx-3 w20 fa fa-search fa-2x"></button>
+    <button type="button" (click)="onSearch()" class="btn"><mat-icon>search</mat-icon> </button>
    
     <br><label class="stdd b" style="margin-left: 30px !important;" 
         title="select a status to add new transaction for the candidates selected"
@@ -64,35 +65,36 @@
     <input class="stdd w110 mx-2" type="text" placeholder="Order Date" [(ngModel)]="transDate"
     bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
     
-    <button class="btn w20 fa fa-check fa-2x mx-1" style="display: inline-block;" 
-        (click)="applyTransactions()" title="Press to insert transactions for the items selected" ></button>
+    <button class="btn" (click)="applyTransactions()" type="button" 
+        title="Press to insert transactions for the items selected" ><mat-icon>check</mat-icon>
+    </button>
 
-    <button type="button" style="border:none" class="btn w20 fa fa-filter fa-2x mx-1" (click)="filterData()" [disabled]="sequenceSelected===''"
-        title="Filter the deployment records based on deployment status selected"></button>
-    <button (click)="onReset()"  style="margin-left: 25px;" 
+    <button type="button" class="btn" (click)="filterData()" [disabled]="sequenceSelected===''"
+        title="Filter the deployment records based on deployment status selected"><mat-icon>filter_list</mat-icon></button>
+    <button (click)="onReset()"  style="margin-left: 25px;" title="reset the data"
         class="btn w20 fa fa-refresh fa-2x"></button>
 
-    <button class="btn w20 mx-1"  title="List of deployment status" routerLink="/deployment/deployStatus" >
-        <mat-icon>receipt</mat-icon> </button>
-    <button class="btn w20 fa fa-window-close fa-2x mx-2"  style="display: inline-block;" 
-        title="return to Main Menu" routerLink="/" ></button>
-    <button class="btn w20 mx-2"  style="display: inline-block;" (click)="houseKeeping()"
+    <button class="btn" type="button"  title="List of deployment status" routerLink="/deployment/deployStatus" >
+        <mat-icon>receipt</mat-icon></button>
+    <button class="btn" title="return to Main Menu" routerLink="/" ><mat-icon>cancel</mat-icon></button>
+    <button class="btn" type="button" (click)="houseKeeping()"
         title="carries out housekeeping - corrects current status value in Deps to coincide with DepItems" 
-        routerLink="/" >HK</button>
+        routerLink="/" ><mat-icon>settings_applications</mat-icon></button>
     <h4 class="stretched" >{{title}}</h4>
     
-<div class="my-2" style="margin-left: 25px;">
-    <label class="stdd w50">Sel</label>
-    <label class="stdd w50">App#</label>
-    <label class="stdd w150">Candidate Name</label>
-    <label class="stdd w150">Customer Name</label>
+<div class="my-2" style="margin-left: 10px;">
+    <label class="stdd w30">Sel</label>
+    <label class="stdd w50" style="margin-left: 15px;" >App#</label>
+    <label class="stdd w150 stretched">Candidate Name</label>
+    <label class="stdd w150 stretched">Customer Name</label>
     <label class="stdd w50">Order#</label>
     <label class="stdd w150">Category</label>
     <label class="stdd w75">Referred On</label>
     <label class="stdd w75">Selected On</label>
-    <label class="stdd w150 mx-2">Current Dep Status</label>
-    <label class="stdd w150">Next Dep Status</label>
-    <label class="stdd w75">Estimated Dt</label>
+    <label class="stdd w100 stretched">Current Dep Status</label>
+    <label class="stdd w125">Next Dep Status</label>
+    <label class="stdd w75 stretched">Visa No</label>
+    <!-- <label class="stdd w75">Estimated Dt</label> -->
 </div>
 
 <div *ngIf="!deploys">
@@ -108,6 +110,7 @@
         (candidateFlightDeleteEvent)="candidateFlightDelete($event)"
         (candidteFlightEditEvent)="candidateFlightEdit($event)"
         (editAttachmentEvent)="editAttachmentModal($event, dep)"
+        (displayVisaEvent)="displayVisaTransaction($event)"
         >   
     </app-deploy-line>
 <!--(deleteDepEvent)="deleteDeployment($event)"-->

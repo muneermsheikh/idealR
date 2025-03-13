@@ -2,30 +2,27 @@
     No candidate detail available
 </div>
 
-<div class="stdd row" style="margin-left: 75px; margin-top: 0px; margin-bottom: 0px;" *ngIf="cv!==null && cv!==undefined">
+<div class="stdd" style="width: max-content;" *ngIf="cv">
 
      <div class="stdd" *ngIf="!isPrintPDF">
-          <input type="checkbox"
-               class="stdd form-check-input"
-               style="border-color: black ;"
-               [checked]="cv!.checked"
-               value="cv.id"
-               (change)="CVChecked(cv!)"
-          >
+          <input type="checkbox" style="margin-left: 50px;"
+               class="checkbox form-check-input"
+               [checked]="cv.checked"
+              (change)="CVChecked(cv!)" >
      </div>
-     <!-- <div class="stdd fSmall w10">{{cv.id}}</div> -->
-     <div class="stdd fSmall w25 mx-1" style="text-align: center;">{{cv.gender}}</div>
-    
-     <div class="stdd fSmall w50 mx-1" title="click to edit" mouseover="style.cursor = 'pointer'" 
+
+     <div class="stdd w40" style="text-align: center;">{{cv.gender}}</div>
+
+     <div class="stdd w50" title="click to edit" mouseover="style.cursor = 'pointer'" 
           style="margin-left: 10px;" routerLink="/candidates/edit/{{cv.candidateId}}">{{cv.applicationNo}}</div>
      
-     <div class="stdd fSmall w130 mx-1" routerLink = "/candidate/historyfromcvid/{{cv.candidateId}}" 
+     <div class="stdd w130" routerLink = "/candidate/historyfromcvid/{{cv.candidateId}}" 
           title="contact history of the candidate" >{{cv.fullName}}</div> 
 
-     <div class="stdd fSmall mx-1 w100">{{cv.city}}</div>
-     <div class="stdd fSmaller mx-1 w300" >{{cv.orderCategoryRef}}</div>
-     <div class="stdd fSmall mx-1 w100" >{{cv.assessedOn | date: 'dd-MMM-yy'}}</div>
-     <div class="stdd fSmall w50 mx-1 cursorpointer" style="text-align: center;" 
+     <div class="stdd w100">{{cv.city}}</div>
+     <div class="stdd w300" >{{cv.orderCategoryRef}}</div>
+     <div class="stdd w100" >{{cv.assessedOn | date: 'dd-MMM-yy'}}</div>
+     <div class="stdd w50 cursorpointer" style="text-align: center;" title="click to show the assessment sheet"
           (click)="displayAssessment()" >{{cv.gradeAssessed}}</div>
      
      <div class="prof" *ngFor="let item of cv.userProfessions">

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, map, of, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { ICVRefWithDepDto } from 'src/app/_dtos/admin/cvReferredDto';
 import { CVRefParams } from 'src/app/_models/params/Admin/cvRefParams';
@@ -93,6 +93,16 @@ export class CvrefService {
     getCVReferredOrderNosDto(status: string) {
       return this.http.get<IProspectiveHeaderDto[]>(this.apiUrl + 'CVRef/headers/' + status);
     }
+
+  
+    downloadCV(candidateId: number) {
+      return this.http.get(this.apiUrl + 'FileUpload/downloadcv/' + candidateId, {
+        reportProgress: true,
+        //observe: 'events',
+        responseType: 'blob',
+      });
+    }
+    
 
   setParams(params: CVRefParams) { 
     this.cvRefParams = params;

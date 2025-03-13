@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
-import { ISelDecisionDto } from 'src/app/_dtos/admin/selDecisionDto';
+import { catchError, of, switchMap, tap } from 'rxjs';
 import { ISelectionDecision } from 'src/app/_models/admin/selectionDecision';
 import { ConfirmService } from 'src/app/_services/confirm.service';
 import { SelectionService } from 'src/app/_services/hr/selection.service';

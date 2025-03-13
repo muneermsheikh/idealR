@@ -1,27 +1,6 @@
-<h4 style="display: inline-block;">Tasks assigned by/to <strong>{{user?.knownAs}}</strong></h4>
+<div style="margin-left: 15px; display: inline-block; font-size: large; font-weight: bold;">Tasks assigned by/to <strong>{{user?.knownAs}}</strong></div>
 
 <div *ngIf="tasks && pagination" style="display: inline-block;" class="mx-5">
-
-    <pagination
-        style="margin: 0 5px 0 5px; display: inline-block;"
-        [totalItems]="pagination!.totalItems"
-        [itemsPerPage]="pagination!.itemsPerPage"
-        (pageChanged)="onPageChanged($event)"
-        [maxSize]="10"
-        previousText="&lsaquo;"
-        nextText="&rsaquo;"
-        firstText="&laquo;"
-        lastText="&raquo;">
-    ></pagination>
-
-    <!-- <div class="stdd w300 mx-5">{{parameterCriteria}}</div> -->
-    <div class="stdd form-inline" >
-        <input (keyup.enter)="onSearch()" type="text" 
-            class="stdd form-control w200" #search placeholder="Search">
-        <button (click)="onSearch()" class="btn btn-outline-primary fa fa-search mx-1"></button>
-        <button (click)="onReset()" class="btn btn-outline-success fa fa-refresh mx-1"></button>
-    </div>
-    
     <label class="lbl w100 mx-2" style="text-align: right;">Choose Task Type</label>
     <ng-select 
         class="stdd w150" 
@@ -33,7 +12,7 @@
         [(ngModel)]="sParams.taskType"
     ></ng-select>
 
-    <br><label class="lbl w100 mx-2" style="text-align: right;">Choose Status</label>
+    <label class="lbl w100 mx-2" style="display: inline-block; text-align: right;">Choose Status</label>
     <ng-select 
         class="stdd w100" 
         [items]="taskStatuses"
@@ -44,12 +23,34 @@
         [(ngModel)]="sParams.taskStatus"
     ></ng-select>
 
-    <button class="btn fa fa-check fa-2x mx-2" style="display: inline-block;" 
-        title="recalculate data based on task status selected" (click)="applyStatus()" ></button>
-      
-    <button class="btn fa fa-window-close fa-2x pull-right" style="display: inline-block;" routerLink="/" ></button>
+    <button class="btn" style="display: inline-block;" 
+        title="recalculate data based on task status selected" (click)="applyStatus()" >
+        <mat-icon>check</mat-icon>
+    </button>
+    <button (click)="onReset()" class="btn"><mat-icon>refresh</mat-icon></button>
+    <button class="btn pull-right" routerLink="/" ><mat-icon>cancel</mat-icon></button>
   
 </div>
+<pagination
+        style="margin: 0 5px 0 5px; display: inline-block;"
+        [totalItems]="pagination!.totalItems"
+        [itemsPerPage]="pagination!.itemsPerPage"
+        (pageChanged)="onPageChanged($event)"
+        [maxSize]="15"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;">
+    ></pagination>
+    <label style="width: 50px;display: inline-block; font-size: medium; word-wrap: break-word; vertical-align: middle;">
+        of {{pagination!.totalItems}}</label>
+    <!-- <div class="stdd w300 mx-5">{{parameterCriteria}}</div> -->
+    <div class="stdd form-inline" >
+        <input (keyup.enter)="onSearch()" type="text" 
+            class="stdd form-control w200" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn"><mat-icon>search</mat-icon></button>
+    </div>
+
 
 <div class="container">
     <label class="lbl w100">Date</label>

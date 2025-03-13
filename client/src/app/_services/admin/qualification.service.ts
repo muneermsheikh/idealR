@@ -29,8 +29,12 @@ export class QualificationService {
     return this.http.get<IQualification>(this.apiUrl + 'Qualification/qById/' + id);
   }
 
+  insertQualification(name: string) {
+    return this.http.post<IQualification>(this.apiUrl + 'Qualification/add/' + name, {});
+  }
   updateQualification(id: number, name: string) {
-    var prof: IQualification = {id: id, qualificationName: name};
+    var prof: IQualification = {id: id, qualificationName: name, qualificationGroup: ''};
+    console.log('passed on to api-qualification', prof);
     return this.http.put<IQualification>(this.apiUrl + 'Qualification/edit', prof);
   }
 

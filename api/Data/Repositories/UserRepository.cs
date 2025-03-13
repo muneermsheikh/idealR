@@ -1,8 +1,12 @@
 using api.DTOs.Admin;
+using api.DTOs.Customer;
 using api.DTOs.HR;
+using api.DTOs.Process;
 using api.Entities.HR;
 using api.Entities.Identity;
+using api.Extensions;
 using api.Interfaces;
+using api.Interfaces.Finance;
 using api.Interfaces.HR;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +20,11 @@ namespace api.Data.Repositories
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         //private readonly IProspectiveCandidatesRepository _prospRepo;
-        public UserRepository(DataContext context, //IProspectiveCandidatesRepository prospRepo, 
+        private readonly IFinanceRepository _finRepo;
+        public UserRepository(DataContext context, IFinanceRepository finRepo,//IProspectiveCandidatesRepository prospRepo, 
             UserManager<AppUser> userManager, IMapper mapper)
         {
+            _finRepo = finRepo;
             //_prospRepo = prospRepo;
             _userManager = userManager;
             _mapper = mapper;
@@ -191,6 +197,87 @@ namespace api.Data.Repositories
             dtoErr.Username = appuser.UserName;
 
             return dtoErr;
+        }
+
+        public async Task<NextDepDataDto> GetNextRecruitmentProcess(string PPNo) 
+        {
+            var dtoRet = new NextDepDataDto();
+            
+            var candExists = await _context.Candidates.Where(x => x.PpNo.ToLower() == PPNo.ToLower())
+                .Select(x => new {FullName=x.FullName, ApplicationNo=x.ApplicationNo, Id=x.Id, PpNo=x.PpNo})
+                .FirstOrDefaultAsync();
+            
+            if(candExists == null) {
+                dtoRet.ErrorString = "Invalid Passport No";
+                return dtoRet;
+            }  
+
+            var refs = new List<Referral>();
+            
+            var cvrefs = await _context.CVRefs.Where(x => x.CandidateId==candExists.Id && x.RefStatus.ToLower() != "concluded").ToListAsync();
+            if(cvrefs.Count == 0) {
+                dtoRet.ErrorString = "Mr. " + candExists.FullName + ", PP No." + candExists.PpNo + ", application " + candExists.ApplicationNo +
+                    " is not yet referred.  Please shortlist the candidate for referral to customer, and then use the CV Referral " +
+                    "command to refer the candidate";
+                return dtoRet; 
+            }
+
+            foreach(var cvreferred in cvrefs) {
+                var query = await(from cvref in _context.CVRefs where cvref.Id == cvreferred.Id
+                    join orderitem in _context.OrderItems on cvref.OrderItemId equals orderitem.Id
+                    join order in _context.Orders on orderitem.OrderId equals order.Id
+                    join dep in _context.Deps on cvref.Id equals dep.CvRefId
+                    join item in _context.DepItems on dep.Id equals item.DepId
+                    orderby item.TransactionDate descending
+                    select new {ApplicationNo=candExists.ApplicationNo, CandidateName = candExists.FullName,
+                        CustomerName=order.Customer.CustomerName, CategoryRef = cvref.CategoryRef, 
+                        ReferredOn = cvref.ReferredOn, DepId = dep.Id, 
+                        NextSequence = item.NextSequence }
+                ).Take(1).FirstOrDefaultAsync();
+
+                if(query != null) {
+                    var nextProcessName = await _context.DeployStatuses.Where(x => x.Sequence == query.NextSequence)
+                        .Select(x => new {StatusName=x.StatusName, Period=x.WorkingDaysReqdForNextStage}).FirstOrDefaultAsync();
+
+                    var referr = new Referral{CategoryRef=query.CategoryRef,
+                        CustomerName = query.CustomerName, DepId=query.DepId, 
+                        Period=nextProcessName.Period, ReferredOn=query.ReferredOn, Sequence=query.NextSequence,
+                        SequenceName=nextProcessName.StatusName};
+
+                    refs.Add(referr);
+                }
+            }
+            
+            return new NextDepDataDto{ApplicationNo=candExists.ApplicationNo, CandidateName=candExists.FullName,
+                Referrals = refs};
+        }
+
+        public async Task<CandidateDto> GetUserHistory(int CandidateId)
+        {
+            //verify candidateId is valid
+            var Candidate = await _context.Candidates.Where(x => x.Id==CandidateId).Include(x => x.UserProfessions).FirstOrDefaultAsync();
+            
+            if(Candidate == null) return null;
+
+            var histories = new List<CandidateHistoryDto>();
+
+            var bal = await _finRepo.CandidateBalance(Candidate.ApplicationNo);
+
+            var refs = await (from cvref in _context.CVRefs where cvref.CandidateId == CandidateId
+                join dep in _context.Deps on cvref.Id equals dep.CvRefId
+                select new CandidateHistoryDto {
+                    CategoryRef=cvref.CategoryRef, ReferredOn=cvref.ReferredOn, SelectionStatus=cvref.RefStatus,
+                    OrderItemId = cvref.OrderItemId, SelectionStatusDate = cvref.RefStatusDate,
+                    CustomerName= dep.CustomerName, DeploymentStatus = dep.CurrentStatus,
+                    DeploymentStatusDate = dep.CurrentStatusDate,  }).ToListAsync();
+
+            var candidateDto = new CandidateDto {ApplicationNo = Candidate.ApplicationNo,
+                AmountDue=bal, CandidateId=Candidate.Id, CandidateName=Candidate.FullName, 
+                CoreProfession=Candidate.UserProfessions.Where(x => x.IsMain==true)
+                    .Select(x => x.ProfessionName).FirstOrDefault(), CandidateHistoriesDto=refs};
+            
+            return candidateDto;
+
         }
     }
 }

@@ -16,9 +16,12 @@
 }
 
 .w25 {width: 25px;}
+.w50 {width:50px;}
 .w75 {width: 75px;}
 .w100 {width: 100px;}
 .w120 {width: 120px;}
 .w150 {width: 150px;}
 
 .mL25 {margin-left: 25px;}
+
+.btn {color:aliceblue; vertical-align: top; margin: 0 2px 0 2px;}

@@ -1,11 +1,28 @@
-<h4 class="lbl b">Transactions pending approval</h4>
+
+<div class="caption">Transactions Pending approval</div>
 <div class="lbl w200 mx-5">Logged in User: {{user?.knownAs}}</div>
 
-<button class="btn fa fa-check fa-2x green mx-5" style="margin-left: 100px !important; color:aliceblue;" 
-    title="Confirm receipt of funds pending for acceptance" [disabled]="pendingSelected.length===0" (click)="update()" ></button>
+<br>
+<pagination style="display: inline-block; margin-left: 15px" *ngIf="pagination !== undefined"
+    [totalItems]="pagination!.totalItems"
+    [itemsPerPage]="pagination!.itemsPerPage"
+    (pageChanged)="onPageChanged($event)"
+    [maxSize]="15"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+</pagination>
 
-<button class="btn fa fa-window-close fa-2x mx-10" style="color: aliceblue;"
-    title="Confirm receipt of funds pending for acceptance" routerLink="/finance" ></button>
+<label style="width: 50px;display: inline-block; font-size: large; word-wrap: break-word; vertical-align: middle;">
+    of {{pagination?.totalItems}}</label>
+
+<button class="btn" title="Confirm receipt of funds pending for acceptance" 
+    [disabled]="pendingSelected.length===0" (click)="update()" >
+    <mat-icon>save</mat-icon>
+</button>
+
+<button style="margin-left: 25px !important;" class="btn" title="Exit this page" routerLink="/finance" ><mat-icon>cancel</mat-icon></button>
 
 <div class="container my-2">
     <label class="lbl w100">Approved</label>

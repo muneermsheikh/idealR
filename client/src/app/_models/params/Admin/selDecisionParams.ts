@@ -17,7 +17,7 @@ export class SelDecisionParams
      selectionStatus="Selected";
      
      pageNumber = 1;
-     pageSize=15;
+     pageSize=20;
      sort = "";
      search: string='';
 }

@@ -4,7 +4,7 @@
 </div>
 
 <form [formGroup]="registerForm" 
-     (ngSubmit)="registerForm.valid && savewithattachments()" 
+     (ngSubmit)="registerForm.valid " 
      autocomplete="off"
      *ngIf="candidate">
 
@@ -12,17 +12,17 @@
           {{strAddMode}}
      </div>
      <div class="my-0" style="margin-left: 225px; display: inline-block; vertical-align: top;">
-          <button class="btn btn-default fa fa-window-close" style="color: aliceblue;" type="button" (click)="cancel()"></button>
-          <button [disabled]="!registerForm.valid" title="Update" 
-               class="btn btn-success me-2 fa fa-save " type="submit"></button>
+          <button class="btn btn-default fa fa-window-close fa-2x" style="color: aliceblue;" type="button" (click)="cancel()"></button>
+          <button [disabled]="!registerForm.dirty" title="Update" (click)="savewithattachments()"
+               class="btn btn-success me-2 fa fa-save " type="button"></button>
      </div>
   
      <br>
      <div class="stdd col-5 mt-1" style="border-style: groove; margin-left: 5px;">
           <!-- <qrcode [qrdata]="qrDataPPNo" [size]="256" [level]="'M'"></qrcode> -->
           <label class="lbl">Gender: </label>
-          <input type="radio" class="inputcheck form-check-input " value="m" formControlName="gender" >Male
-          <input type="radio" class="inputcheck form-check-input " value="f" formControlName="gender" >Female
+          <input type="radio" class="inputcheck form-check-input" checked value="M" formControlName="gender" >Male
+          <input type="radio" class="inputcheck form-check-input" value="F" formControlName="gender" >Female
           
           <br>
           <label for="firstName" class="lbl">First Name</label>
@@ -42,9 +42,9 @@
           <label for="ppNo" class="lbl" style="margin-left: 5px;">Passport No</label>
           <app-text-input class="stdd w150" [label]="'Passport No'" formControlName="ppNo" ></app-text-input>
           <br><label class="lbl">ECR/ECNR: </label>
-          <input type="radio" formControlName="ecnr" value="true"  class="form-check-input inputcheck"> ECNR
-          <input type="radio" formControlName="ecnr" value="false" class="form-check-input inputcheck"> ECR
-          
+          <input type="radio" formControlName="ecnr" value="T"  class="form-check-input inputcheck"> ECNR
+          <input type="radio" formControlName="ecnr" value="F" checked class="form-check-input inputcheck"> ECR
+          <!-- <app-text-input [label]="'ECNR'" formControlName="ecnr" class="stdd w50"></app-text-input> -->
           <br><label for="dOB" class="lbl">Date of Birth</label>
           <app-date-picker  class="stdd w150" [maxDate]="maxDate" formControlName="dOB" [label]="'Date of birth'"></app-date-picker>
           
@@ -88,7 +88,7 @@
           
           
      </div>
-     <div class="stdd col-6 mt-1" style="margin-left: 5px;">
+     <div class="stdd col-5 mt-1" style="margin-left: 5px;">
            <tabset style="background-color:black; color: whitesmoke;" class="member-tabset" #memberTabs>
                <tab heading='Phones, Prof & Qualification' (selectTab)="onTabActivated($event)">
                     <h4 style="background-color: auto !important;">Phones</h4>
@@ -173,17 +173,17 @@
                          <button type="button" (click)="addUserExp()" class="my-1 fa fa-plus" style="color: blue;"></button>
                          <div *ngFor="let p of userExperiences?.controls; let i=index">
                               <div [formGroupName]="i"> 
-                                   <div class="stdd w100">
+                                   <div class="stdd w50">
                                         <app-text-input [label]="'Sr No'" formControlName="srNo" ></app-text-input>
                                    </div>
-                                   <div class="stdd w300">
+                                   <div class="stdd w250">
                                         <app-text-input [label]="'Position'" formControlName="position" ></app-text-input>
                                    </div>
-                                   <div class="stdd w400">
+                                   <div class="stdd w300">
                                         <app-text-input [label]="'Company'" formControlName="company" ></app-text-input>
                                    </div>
 
-                                   <div class="stdd w150">
+                                   <div class="stdd w100">
                                         <app-date-picker
                                              [maxDate]="maxDate"
                                              [label]="'Worked From'"
@@ -192,7 +192,7 @@
                                    </div>
                                    
                                    
-                                   <div class="stdd w150">
+                                   <div class="stdd w100">
                                         <app-date-picker
                                              [maxDate]="maxDate"
                                              [label]="'Worked Upto'"
@@ -239,7 +239,7 @@
                          </div>
                     </div>
                </tab>
-               <tab heading='QR Code' (selectTab)="onTabActivated($event)">
+               <!-- <tab heading='QR Code' (selectTab)="onTabActivated($event)">
                     <label class="lbl">QR Code</label>
                     <div *ngIf="candidate.id">
                          <qr-code value="candidate.id" 
@@ -247,11 +247,12 @@
                          errorCorrectionLevel="M" />
                     </div>
                </tab>
+          -->
           </tabset>
 
 
      </div>
-   
+ 
       <div class="row" *ngIf="validationErrors">
          <ul class="text-danger">
              <li *ngFor="let error of validationErrors">
@@ -264,5 +265,5 @@
  
  </form>
  
- <!-- <div style="font-size: x-small;">{{registerForm.value | json }}</div> -->
+ <div style="font-size: smaller;">{{registerForm.value | json }}</div>
  

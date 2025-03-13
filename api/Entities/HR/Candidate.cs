@@ -20,6 +20,7 @@ namespace api.Entities.HR
         public DateTime? DOB { get; set; }
         public string PpNo { get; set; } 
         public string AadharNo { get; set; }
+        [MaxLength(1)]
         public string Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}

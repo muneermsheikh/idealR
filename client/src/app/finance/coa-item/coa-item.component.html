@@ -2,18 +2,20 @@
 	No Chart of Accounts data on record
  </div>
  <div *ngIf="t !== null && t !== undefined" >
- 	<div class="stdd row mb-0 ">
+ 	<div>
 		<div class="stdd w125" title="view this account" >{{t.section.substring(0,12)}}</div>
 		<div class="stdd w75" title="view this account" (click)="viewCOA(t)" >{{t.divn}}</div>
 		<div class="stdd w250 cursorPointer" (click)="updateCOA(t)" title="edit this account">{{t.accountName}}</div>
 		<div class="stdd w40 alignRight"  (click)="statementOfAccount(t.id)">{{t.accountType}}</div>
 		<div class="stdd w100 alignRight"  >{{t.accountClass}}</div>
-		<div class="stdd w75 pr5 rAlign" style="border:aqua" >{{t.opBalance.toLocaleString()}} </div>
+		<div class="stdd w50 rAlign" style="border:aqua" >{{t.opBalance.toLocaleString()}} </div>
 		
-		<div class="stdd w30 fa fa-table cursorPointer" title="statement of account" (click)="statementOfAccount(t.id)" ></div>
-		<div class="stdd w30 green fa fa-pencil" *ngIf="t.accountClass==='candidate'"
+		<button class="btn" title="statement of account" title="display statements of transactions for the account"
+			(click)="statementOfAccount(t.id)" ><mat-icon> table_chart</mat-icon></button>
+
+		<button class="btn" *ngIf="t.accountClass==='candidate'"
 			title="update accountname to include application number" (click)="updateCandidateAccountName()" 
-		></div>
+		><mat-icon>edit</mat-icon></button>
 	
 	</div>
  </div>

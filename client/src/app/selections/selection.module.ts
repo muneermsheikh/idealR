@@ -10,6 +10,7 @@ import { SelectionModalComponent } from './selection-modal/selection-modal.compo
 import { SelectionPendingComponent } from './selection-pending/selection-pending.component';
 import { SelectionPendingLineComponent } from './selection-pending-line/selection-pending-line.component';
 import { SelectionsComponent } from './selections.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { SelectionsComponent } from './selections.component';
     CommonModule,
     FormsModule,
     SharedModule,
-    SelectionRoutingModule
+    SelectionRoutingModule,
+    MatIconModule
   ]
 })
 export class SelectionModule { }

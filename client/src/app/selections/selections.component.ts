@@ -172,7 +172,6 @@ export class SelectionsComponent implements OnInit {
 
   displayEmploymentModal(employment: any, empItem: ISelDecisionDto){
 
-    console.log('emplyment item', empItem);
     if(employment === null) {
       this.toastr.warning('No Employment data could be retrieved from the database');
       return;
@@ -270,7 +269,7 @@ export class SelectionsComponent implements OnInit {
 
   }
  
-  sendReminders(event: any) {     //selection.id
+  /*sendReminders(event: any) {     //selection.id
 
       var cvrefids: number[]=[];
       cvrefids.push(event);
@@ -293,6 +292,7 @@ export class SelectionsComponent implements OnInit {
         }
       })
   }
+  */
 
   onPageChanged(event: any){
     const params = this.service.getParams();
