@@ -1,0 +1,36 @@
+Certainly! Here's an example of how you can use Entity Framework Core (EF Core) to perform a GROUP BY on multiple columns, involving multiple tables with LEFT JOIN in one query. Let's assume you have two tables: Orders and Customers.
+
+Example Scenario
+Orders table has columns: OrderId, CustomerId, OrderDate, Amount
+Customers table has columns: CustomerId, Name, City
+Objective
+
+Group orders by CustomerId and City, and calculate the total amount of orders for each group.
+
+EF Core Query
+using (var context = new YourDbContext())
+{
+    var query = from order in context.Orders
+                join customer in context.Customers
+                on order.CustomerId equals customer.CustomerId into customerGroup
+                from customer in customerGroup.DefaultIfEmpty()
+                group new { order, customer } by new { order.CustomerId, customer.City } into grouped
+                select new
+                {
+                    CustomerId = grouped.Key.CustomerId,
+                    City = grouped.Key.City,
+                    TotalAmount = grouped.Sum(x => x.order.Amount)
+                };
+
+    var result = query.ToList();
+}
+
+Explanation
+Join: We perform a LEFT JOIN between Orders and Customers using join and DefaultIfEmpty().
+Group By: We group the results by CustomerId and City.
+Select: We select the CustomerId, City, and the sum of Amount for each group.
+Notes
+Ensure that your DbContext (YourDbContext) and DbSet properties (Orders, Customers) are correctly set up.
+This example assumes that City can be null if there is no matching customer, due to the LEFT JOIN.
+
+Feel free to adapt this example to fit your specific database schema and requirements. If you need further customization, let me know!
