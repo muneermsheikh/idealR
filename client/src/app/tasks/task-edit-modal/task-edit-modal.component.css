@@ -1,0 +1,32 @@
+.w25 {width: 25px;}
+.w90 {width: 80px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+.w325 {width: 325px;}
+
+.red {color: red}
+
+.stdd {
+    display: inline-block;
+    font-size: smaller;
+    vertical-align: top;
+    margin: 0 2px 0 2px;
+}
+
+.lbl {
+    display: inline-block;
+    font-size: x-small;
+    vertical-align: top;
+    margin: 0 2px 0 2px;
+    font-weight: bold;
+}
+
+.dropdown {
+    display: inline-block;
+    font-size: x-small;
+    margin: 0 2px 0 2px;
+}
+
+

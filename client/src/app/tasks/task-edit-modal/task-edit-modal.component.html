@@ -1,0 +1,111 @@
+<div class="modal-header">
+    <button class="stdd" (click)="updateTask()"> <mat-icon>save</mat-icon></button>
+    <button class="stdd" (click)="bsModalRef.hide()"> <mat-icon>cancel</mat-icon></button>
+</div>
+
+<div class="modal-body" *ngIf="task">
+    <form [formGroup]="form">
+        <label class="lbl">Task Type</label>
+        <app-text-input class="stdd w100" [label]="'Task Type'" formControlName="taskType" ></app-text-input>
+        <label class="lbl">Dated</label>
+        
+        <input class="stdd w90" type="text" placeholder="Dated" 
+            formControlName="taskDate" bsDatepicker 
+            [bsValue]="bsValueDate" 
+            [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+        >
+        <label class="lbl">Complete By</label>
+        <input class="stdd w90" type="text" placeholder="complete By" 
+            formControlName="completeBy" bsDatepicker 
+            [bsValue]="bsValueDate" 
+            [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+        >
+        <br>
+        <label class="lbl w100">Assigned By</label>
+        <ng-select
+            class="dropdown w150"
+            style="height: fit-content; border-color: black;"
+            [items]="empIdAndNames"
+            bindLabel="knownAs"
+            bindValue="knownAs"
+            labelForId="knownAs"
+            formControlName="assignedByUsername"
+        ></ng-select>
+        <label class="lbl w100">Assigned To</label>
+        <ng-select
+            class="dropdown w150"
+            style="height: fit-content; border-color: black;"
+            [items]="empIdAndNames"
+            bindLabel="knownAs"
+            bindValue="knownAs"
+            labelForId="knownAs"
+            formControlName="assignedToUsername"
+        ></ng-select>
+        <label class="lbl w100">Status</label>
+        <ng-select
+            class="dropdown w150"
+            style="height: fit-content; border-color: black;"
+            [items]="taskStatuses"
+            bindLabel="Value"
+            bindValue="Value"
+            labelForId="Value"
+            formControlName="taskStatus"
+        ></ng-select>
+        
+        <label class="lbl">Description</label>
+        <app-text-input [label]="'Description'" formControlName="taskDescription" 
+            class="stdd" style="width: 650px;" ></app-text-input>
+        <hr>
+        <label class="lbl w80">Dated</label>
+        <label class="lbl w325">Description</label>
+        <label class="dropdown w100">User</label>
+        <label class="dropdown w125">Status</label>
+        <label class="lbl w80">Followup</label>
+        <button class="btn w25 fa fa-plus" (click)="AddNewTaskItem()"></button>
+        <br>
+        <div formArrayName="taskItems">
+            <div *ngFor="let item of taskItems.controls; let i=index;">
+                <div [formGroupName]="i">
+                    <input class="stdd w80" type="text" placeholder="dated" 
+                        formControlName="transactionDate" 
+                        bsDatepicker 
+                        [bsValue]="bsValueDate" 
+                        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                    >
+                    <app-text-input [label]="'Description'" formControlName="taskItemDescription" class="stdd w325" ></app-text-input>
+                    <ng-select
+                        class="dropdown w100"
+                        style="height: fit-content; border-color: black;"
+                        [items]="empIdAndNames"
+                        bindLabel="knownAs"
+                        bindValue="knownAs"
+                        labelForId="knownAs"
+                        formControlName="userName"
+                    ></ng-select>
+                    <ng-select
+                        class="dropdown w125"
+                        style="height: fit-content; border-color: black;"
+                        [items]="taskStatuses"
+                        bindLabel="Value"
+                        bindValue="Value"
+                        labelForId="Value"
+                        formControlName="taskStatus"
+                    ></ng-select>
+                    
+                    <input class="stdd w80" type="text" placeholder="Followup on" 
+                        formControlName="nextFollowupOn" bsDatepicker 
+                        [bsValue]="bsValueDate" 
+                        [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                    >
+                    <button class="btn w25 fa fa-trash fa-sm red" (click)="removeItem(i)" ></button>
+                </div>
+                
+            </div>
+        </div>
+    </form>
+    
+</div>
+
+<div class="modal-footer">
+
+</div>

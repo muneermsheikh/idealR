@@ -15,5 +15,6 @@ namespace api.DTOs.HR
         public string City {get; set;}
         public string Source {get; set;}
         public int ProspectiveCandidateId { get; set; }
+        public string Status {get; set;}
     }
 }

@@ -13,7 +13,7 @@ using api.Params.Admin;
 using api.Params.HR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
+
 
 namespace api.Controllers
 {
@@ -88,6 +88,12 @@ namespace api.Controllers
 
         }
 
+        [HttpDelete("deleteinterviewItem/{interviewItemId}")]
+        public async Task<ActionResult<bool>> DeleteInterviewItem(int interviewItemId)
+        {
+            return Ok(await _repo.DeleteInterviewItem(interviewItemId)==true);
+        }
+
         [HttpDelete("deleteinterviewItemCandidate/{interviewItemCandidateId}")]
         public async Task<ActionResult<bool>> DeleteInterviewItemCandidate(int interviewItemCandidateId)
         {
@@ -150,7 +156,7 @@ namespace api.Controllers
         }
         
         
-        [HttpPost("intervwitemWithFiles")]
+        [HttpPost("intervwitemWithoutFiles")]
         public async Task<ActionResult<Intervw>> SaveNewInterviewItemWithFiles(IntervwItem interviewitem)
         {
             var obj = await _repo.SaveNewInterviewItem(interviewitem, User.GetUsername());

@@ -224,11 +224,11 @@ namespace api.Data.Repositories.Admin
                     var itemToInsert = new TaskItem
                     {
                         AppTaskId = existing.Id,
-                        TransactionDate=newItem.TransactionDate,
+                        TransactionDate= newItem.TransactionDate.AddHours(7),
                         TaskStatus = newItem.TaskStatus,
                         TaskItemDescription = newItem.TaskItemDescription,
                         UserName=newItem.UserName,
-                        NextFollowupOn=newItem.NextFollowupOn,
+                        NextFollowupOn= newItem.NextFollowupOn !=null ? Convert.ToDateTime(newItem.NextFollowupOn).AddHours(7) : null,
                         NextFollowupByName=newItem.NextFollowupByName
                     };
 

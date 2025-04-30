@@ -1,10 +1,13 @@
 
+using System.ComponentModel.DataAnnotations;
 using api.Entities.Admin.Client;
 
 namespace api.Entities.Admin.Order
 {
     public class Order: BaseEntity
     {
+        [MaxLength(1), Required, RegularExpression(@"^[DdIi]*$", ErrorMessage ="Destination value should be either d or D (for domestic recruitment), or I or i (for international recruitments)")]
+        public string Destination {get; set;}   //domestic or international
         public int OrderNo { get; set; }
         public DateTime OrderDate { get; set; }=DateTime.UtcNow;
         public int CustomerId { get; set; }

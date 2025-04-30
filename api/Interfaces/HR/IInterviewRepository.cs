@@ -18,6 +18,7 @@ namespace api.Interfaces.HR
          Task<bool> DeleteInterview(int InterviewId);
          Task<Intervw> EditInterview(Intervw interview);
          Task<InterviewItemWithErrDto> EditInterviewItem(IntervwItem interviewItem, string Username);
+         Task<bool>DeleteInterviewItem(int InterviewItemId);
          Task<PagedList<InterviewAttendanceDto>> GetInterviewAttendancePagedList(AttendanceParams aParams);
          Task<ICollection<InterviewAttendanceToUpdateDto>> UpdateInterviewAttendance(ICollection<InterviewAttendanceToUpdateDto> attendanceDtos);
          Task<ICollection<IntervwAttendance>> GetAttendanceOfACandidate(int interviewCandidateId);

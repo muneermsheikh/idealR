@@ -4,12 +4,14 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
+import { filter, switchMap } from 'rxjs';
 import { IInterviewItemWithErrDto } from 'src/app/_dtos/admin/interviewItemWithErrDto';
 import { CvsMatchingProfAvailableDto } from 'src/app/_dtos/hr/cvsMatchingProfAvailableDto';
 import { defaultInterviewAddress } from 'src/app/_dtos/hr/defaultInterviewAddress';
 import { IntervwCandAttachment } from 'src/app/_models/hr/intervwCandAttachment';
 import { IIntervwItem } from 'src/app/_models/hr/intervwItem';
 import { IntervwItemCandidate } from 'src/app/_models/hr/intervwItemCandidate';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 import { InterviewService } from 'src/app/_services/hr/interview.service';
 import { CandidatesAvailableModalComponent } from 'src/app/modals/candidates-available-modal/candidates-available-modal.component';
 import { DisplayTextModalComponent } from 'src/app/modals/display-text-modal/display-text-modal.component';
@@ -32,6 +34,7 @@ export class EditScheduleComponent implements OnInit{
   attachment: IntervwCandAttachment | undefined;
   selectedIndex: number=0;
   
+  matchingCVs:CvsMatchingProfAvailableDto[]=[];
 
   upload=false;
   itemCandidateSelected: IntervwItemCandidate|undefined;
@@ -44,7 +47,7 @@ export class EditScheduleComponent implements OnInit{
       {result: 'Rejected-No communication'}, {result: 'Rejected-other reasons'}, {result: 'Shortlisted'}];
 
   constructor(private fb: FormBuilder, private activatedRoute: ActivatedRoute, 
-      private router: Router,
+      private router: Router, private confirm: ConfirmService,
       private service: InterviewService, private toastr: ToastrService, private bsModalService: BsModalService) {}
   
   bsValueDate = new Date();
@@ -76,6 +79,7 @@ export class EditScheduleComponent implements OnInit{
           venueCityAndPIN: [item.venueCityAndPIN],
           siteRepName: [item.siteRepName],
           sitePhoneNo: [item.sitePhoneNo],
+          interviewScheduledFrom: [item.interviewScheduledFrom],
 
           interviewItemCandidates: this.fb.array(
           item.interviewItemCandidates.map(cand => (
@@ -104,10 +108,33 @@ export class EditScheduleComponent implements OnInit{
     return this.interviewItemCandidates.at(index).get('candidateId')?.value;
   }
 
-  findIntervwItemCandidateId(index: number) {
+   findIntervwItemCandidateId(index: number) {
     return  this.interviewItemCandidates.at(index).get('id')?.value ?? 0;
   }
 
+  deleteInterviewCategory() {
+
+      var confirmMsg = 'confirm delete this Interview Item?. WARNING: this cannot be undone';
+
+      const observableInner = this.service.deleteInterviewItem(this.interviewItem!.id);
+      const observableOuter = this.confirm.confirm('confirm Delete', confirmMsg);
+
+      observableOuter.pipe(
+          filter((confirmed) => confirmed),
+          switchMap((confirmed) => {
+            return observableInner
+          })
+      ).subscribe(response => {
+        if(response) {
+          this.form.disable();      
+          this.toastr.success('Interview item deleted', 'deletion successful');
+        } else {
+          this.toastr.error('Error in deleting the Feedback', 'failed to delete')
+        }
+        
+      });
+
+  }
 
   findCandidateStatus(index: number): string {
     return this.interviewItemCandidates.at(index).get('interviewStatus')?.value ?? '';
@@ -115,6 +142,11 @@ export class EditScheduleComponent implements OnInit{
 
   get interviewItemCandidates(): FormArray {
     return this.form.get('interviewItemCandidates') as FormArray
+  }
+
+  copyInterviewDate() {
+    var dt = this.form.get('interviewScheduledFrom')!.value;
+    if(dt.getFullYear < 2000) this.form.get('interviewScheduledFrom')?.setValue(this.interviewDateFrom);
   }
 
   newInterviewItemCandidate(): FormGroup{
@@ -125,7 +157,7 @@ export class EditScheduleComponent implements OnInit{
         applicationNo: 0,
         candidateName: ['', Validators.required],
         passportNo: '',
-        scheduledFrom: ['', Validators.required],
+        scheduledFrom: [this.form.get('interviewScheduledFrom')?.value, Validators.required],
         reportedAt: '',
         interviewedAt: '',
         interviewStatus: ['', Validators.required],
@@ -139,7 +171,7 @@ export class EditScheduleComponent implements OnInit{
     this.interviewItemCandidates.push(this.newInterviewItemCandidate())
   }
 
-  removeInterviewItem(itemIndex: number) {
+  removeInterviewItemCandidate(itemIndex: number) {
     this.interviewItemCandidates.removeAt(itemIndex);
     this.interviewItemCandidates.markAsDirty;
   }
@@ -290,70 +322,72 @@ export class EditScheduleComponent implements OnInit{
   getMatchingCVs(item:IIntervwItem) {
 
     var profid=item.professionId;
-
-    if(profid === 0) {
-      this.toastr.warning('No Task object returned from Task line');
-      return;
-    }  
-
+   
     if(this.interviewDateFrom === undefined || new Date(this.interviewDateFrom).getFullYear() < 2000) {
         this.toastr.warning('Interview Begin and End Dates not defined', 'Interview dates not defined');
         return;
     }
 
-    var venue = this.form.get('interviewVenue')?.value;
-    var interviewer = this.form.get('interviewerName')?.value;
-    if(venue === '' || venue === 'To Be Annoounced'|| interviewer === '' || interviewer === 'To Be Announced') {
-      this.toastr.warning('Interview Venue and Interviewer Name not provided');
-      return;
-    }
-    
-    var interviewBeginDateTime = this.interviewItemCandidates.length === 0 ? this.interviewDateFrom 
-      : this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value;
+    this.service.getMatchingCandidates(profid).subscribe({
+      next: (response: CvsMatchingProfAvailableDto[]) => {
+        this.matchingCVs=response;
+        if(response===null || response.length === 0) {
+            this.toastr.warning('No CVs on record that match the interview profession', 'No Matching CVs', 
+              {closeButton:true, timeOut:15000});
+        } else {
+          var interviewBeginDateTime = this.interviewItemCandidates.length === 0 ? this.interviewDateFrom 
+            : this.interviewItemCandidates.at(this.interviewItemCandidates.length - 1).get('scheduledFrom')?.value;
 
-    //interviewBeginDateTime=addHours(interviewBeginDateTime, 10);
-    //**todo** instead of last index, find max value of the scheduledFrom column
-    var interviewDuration=30; //minutes
+          //interviewBeginDateTime=addHours(interviewBeginDateTime, 10);
+          //**todo** instead of last index, find max value of the scheduledFrom column
+          var interviewDuration=30; //minutes
 
-    const config = {
-        class: 'modal-dialog-centered modal-lg',
-        initialState: {
-          professionid: profid
+          const config = {
+              class: 'modal-dialog-centered modal-lg',
+              initialState: {
+                professionid: profid,
+                cvs: this.matchingCVs
+              }
+            }
+        
+            this.bsModalRef = this.bsModalService.show(CandidatesAvailableModalComponent, config);
+
+            this.bsModalRef.content.emittedEvent.subscribe({      //calls interview.service.getMatchingCandidates based on profession selected
+              next: (response: CvsMatchingProfAvailableDto[]) => {
+                if(response !== null) {
+                    response.forEach(x => {
+                      
+                      this.interviewItemCandidates.push(
+                      this.fb.group({
+                        id: 0,
+                        intervwItemId: this.interviewItem?.id ?? 0,
+                        candidateId: [x.candidateId ?? 0, Validators.required],
+                        applicationNo: x.applicationNo,
+                        candidateName: [x.fullName, Validators.required],
+                        passportNo: '',
+                        scheduledFrom: [interviewBeginDateTime, Validators.required],
+                        reportedAt: null,
+                        interviewedAt: null,
+                        interviewStatus: ['Not Interviewed', Validators.required],
+                        interviewerRemarks: '',
+                        prospectiveCandidateId: [x.prospectiveCandidateId]
+                      }))
+                      interviewBeginDateTime = addMinutes(interviewBeginDateTime, interviewDuration);
+                    })
+                    this.toastr.success(response.length + 
+                        ' candidates assigned.  Pl note the form needs to be saved for changes to take effect', 'Success', {closeButton:true, timeOut:10000});
+                        this.form.markAsDirty();
+                } else {
+                  this.toastr.warning('No candidates found - either registered or in prospective list - matching the profession ' + item.professionName, 'Not Found')
+                }
+              },
+              error: (err: any) => this.toastr.error(err.error.details, 'error encountered')
+            
+            })
+            
         }
       }
-  
-      this.bsModalRef = this.bsModalService.show(CandidatesAvailableModalComponent, config);
-
-      this.bsModalRef.content.emittedEvent.subscribe({      //calls interview.service.getMatchingCandidates based on profession selected
-        next: (response: CvsMatchingProfAvailableDto[]) => {
-          if(response !== null) {
-              response.forEach(x => {
-                
-                this.interviewItemCandidates.push(
-                this.fb.group({
-                  id: 0,
-                  intervwItemId: this.interviewItem?.id ?? 0,
-                  candidateId: [x.candidateId ?? 0, Validators.required],
-                  applicationNo: x.applicationNo,
-                  candidateName: [x.fullName, Validators.required],
-                  passportNo: '',
-                  scheduledFrom: [interviewBeginDateTime, Validators.required],
-                  reportedAt: null,
-                  interviewedAt: null,
-                  interviewStatus: ['Not Interviewed', Validators.required],
-                  interviewerRemarks: '',
-                  prospectiveCandidateId: [x.prospectiveCandidateId]
-                }))
-                interviewBeginDateTime = addMinutes(interviewBeginDateTime, interviewDuration);
-              })
-              this.toastr.success(response.length + ' candidates assigned.  Pl note the form needs to be saved for changes to take effect', 'Success');
-          } else {
-            this.toastr.warning('No candidates found - either registered or in prospective list - matching the profession ' + item.professionName, 'Not Found')
-          }
-        },
-        error: (err: any) => this.toastr.error(err.error.details, 'error encountered')
-      
-      })
+    })
     }
   
     copyDefaultVenueAddress() {

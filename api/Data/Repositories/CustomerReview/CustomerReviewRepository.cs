@@ -2,7 +2,7 @@ using api.Entities.Admin.Client;
 using api.Extensions;
 using api.Interfaces.Customers;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
+
 
 namespace api.Data.Repositories.Customer
 {

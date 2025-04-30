@@ -37,6 +37,8 @@ import { CandidatesAvailableModalComponent } from './modals/candidates-available
 import { CvAssessModalComponent } from './hr/cv-assess-modal/cv-assess-modal.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { MatMenuModule} from '@angular/material/menu';
+import { AboutComponent } from './about/about.component';
+import { TrialExpiredComponent } from './errors/trial-expired/trial-expired.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,8 @@ import { MatMenuModule} from '@angular/material/menu';
     DisplayTextModalComponent,
     DateInputRangeModalComponent,
     CandidatesAvailableModalComponent,
-    
+    AboutComponent,
+    TrialExpiredComponent    
   ],
   imports: [
     BrowserModule,

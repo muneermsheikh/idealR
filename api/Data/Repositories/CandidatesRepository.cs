@@ -1,3 +1,4 @@
+using System;
 using System.Data.Common;
 using api.DTOs;
 using api.DTOs.Admin;
@@ -148,6 +149,21 @@ namespace api.Data.Repositories
 
         public async Task<PagedList<CandidateBriefDto>> GetCandidates(CandidateParams cParams)
         {
+                if(!await _context.UserProfessions.AnyAsync()) {
+                    var maxCandId = Convert.ToInt32(await _context.Candidates.MaxAsync(x => (int?)x.Id));
+                    var profIds = await _context.Professions.Select(x => new {x.Id, x.ProfessionName}).ToListAsync();
+                    var candidateIds = await _context.Candidates.Select(x => x.Id).ToListAsync();
+                    foreach(var id in candidateIds) {
+                        Random random = new();
+                        int index = random.Next(1,profIds.Count);
+                        var profId = profIds[index].Id;
+                        var profName = profIds[index].ProfessionName;
+                        var userProf = new UserProfession{CandidateId=id, ProfessionId=profId, ProfessionName=profName};
+                        _context.UserProfessions.Add(userProf);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                
                 //check if userProfession.ProfessionName is not blanks
                 var blankProfs = await _context.UserProfessions
                     .Where(x => x.ProfessionName==null || x.ProfessionName == "").ToListAsync();
@@ -168,7 +184,8 @@ namespace api.Data.Repositories
                         ApplicationNo = cand.ApplicationNo, City = cand.City, Id=cand.Id,
                         CustomerId = Convert.ToInt32(cand.CustomerId), Email = cand.Email,
                         FullName = cand.FullName, KnownAs = cand.KnownAs, PpNo = cand.PpNo,
-                        Status = cand.Status, UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName.ToLower()).ToList(),
+                        Status = cand.Status, 
+                        UserProfessions = cand.UserProfessions.Select(x => x.ProfessionName.ToLower()).ToList(),
                         ReferredByName = cst.CustomerName
                     })
                     .OrderByDescending(x => x.ApplicationNo)

@@ -30,15 +30,7 @@ namespace api.Controllers
             return Ok(obj);
         }
 
-        [HttpGet("industrylist")]
-        public async Task<ActionResult<ICollection<Industry>>> GetIndustriesList()
-        {
-            var obj = await _indRepo.GetIndustriesList();
-
-            if(obj == null) return BadRequest(new ApiException(400, "Bad Request", "Your instructions did not produce any data"));
-
-            return Ok(obj);
-        }
+ 
 
         [HttpGet("industrybyid/{id}")]
         public async Task<ActionResult<Industry>> GetIndustryById(int id)

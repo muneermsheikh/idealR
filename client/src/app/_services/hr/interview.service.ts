@@ -112,7 +112,7 @@ export class InterviewService {
     }
 
     deleteInterviewItem(interviewitemid: number) {
-      return this.http.delete<boolean>(this.apiUrl + 'interview/deleteinterviewitem/' + interviewitemid);
+      return this.http.delete<boolean>(this.apiUrl + 'interview/deleteinterviewItem/' + interviewitemid);
     }
 
     deleteInterviewItemCandidate(interviewitemcandidateid: number) {

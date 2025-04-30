@@ -5,6 +5,7 @@ export interface IIntervwItem {
      id: number;
      intervwId: number;
      interviewVenue: string;
+     interviewScheduledFrom: Date;
      venueAddress: string;
      venueAddress2: string;
      venueCityAndPIN: string;

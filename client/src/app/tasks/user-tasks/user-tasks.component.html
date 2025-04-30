@@ -30,20 +30,21 @@
     <button (click)="onReset()" class="btn"><mat-icon>refresh</mat-icon></button>
     <button class="btn pull-right" routerLink="/" ><mat-icon>cancel</mat-icon></button>
   
-</div>
-<pagination
-        style="margin: 0 5px 0 5px; display: inline-block;"
-        [totalItems]="pagination!.totalItems"
-        [itemsPerPage]="pagination!.itemsPerPage"
-        (pageChanged)="onPageChanged($event)"
-        [maxSize]="15"
-        previousText="&lsaquo;"
-        nextText="&rsaquo;"
-        firstText="&laquo;"
-        lastText="&raquo;">
+    <pagination
+            style="margin: 0 5px 0 5px; display: inline-block;"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            (pageChanged)="onPageChanged($event)"
+            [maxSize]="15"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
     ></pagination>
+
     <label style="width: 50px;display: inline-block; font-size: medium; word-wrap: break-word; vertical-align: middle;">
-        of {{pagination!.totalItems}}</label>
+            of {{pagination!.totalItems}}</label>
+</div>
     <!-- <div class="stdd w300 mx-5">{{parameterCriteria}}</div> -->
     <div class="stdd form-inline" >
         <input (keyup.enter)="onSearch()" type="text" 
@@ -70,7 +71,7 @@
                 [task]="t"
                 (completedEvent)="markAsCompleted($event)"
                 (deleteEvent)="removeTask($event)"
-                (editEvent)="editDeploymentModal($event)"
+                (editEvent)="editTaskModal($event)"
             ></app-task-line>
         </div>
     </div>

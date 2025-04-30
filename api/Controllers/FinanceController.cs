@@ -9,7 +9,6 @@ using api.Interfaces.Finance;
 using api.Params.Finance;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
 
 namespace api.Controllers
 {

@@ -4,6 +4,7 @@ import { BehaviorSubject, map, take } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment.development';
 import { IReturnStringsDto } from '../_dtos/admin/returnStringsDto';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,11 @@ export class AccountService {
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
   
   login(model: any) {
+
+    
     
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map((response: User) => {

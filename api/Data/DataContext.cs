@@ -225,6 +225,7 @@ namespace api.Data
             
             builder.Entity<Order>().HasOne(x => x.ContractReview).WithOne(e => e.Order)
                 .HasForeignKey<ContractReview>(x => x.OrderId);
+            builder.Entity<Order>().HasIndex(x => x.Destination);
             builder.Entity<Order>().HasIndex(x => new {
                 x.CustomerId, x.OrderDate, x.CityOfWorking}).IsUnique();
             builder.Entity<OrderExtn>().HasIndex(x => x.OrderId).IsUnique();

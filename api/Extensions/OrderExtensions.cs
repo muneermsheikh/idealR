@@ -6,7 +6,6 @@ using api.Entities.Admin.Order;
 using api.Entities.HR;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 
 namespace api.Extensions
 {

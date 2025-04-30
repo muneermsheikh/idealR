@@ -11,6 +11,7 @@ import { INextDepDataDto } from './_dtos/process/nextDepDataDto';
 import { IDepItemToAddDto } from './_dtos/process/depItemToAddDto';
 import { SuggestDeploymentModalComponent } from './deployments/suggest-deployment-modal/suggest-deployment-modal.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { AboutComponent } from './about/about.component';
 
 @Component({
   selector: 'app-root',
@@ -47,10 +48,24 @@ export class AppComponent implements OnInit {
   }
 
   
-  login() {
-    this.accountService.login(this.model).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/members');
+  login(): void {
+
+    var currentDate = new Date();
+        var expiryDate = new Date('2024-04-27');
+    
+        console.log('currentDate', currentDate, 'expiryDate', expiryDate, currentDate > expiryDate);
+    
+        if(currentDate > expiryDate) {
+          this.toastr.warning('Your trial period expired on 27-April-2025.  Please escalate the issue with your Vendor for resolution', 
+              'Trial Period Expired', {closeButton: true, timeOut:15000});
+          localStorage.setItem('user', JSON.stringify(null));
+          this.router.navigateByUrl('/activation-error');
+          return;
+        }
+        
+      this.accountService.login(this.model).subscribe({
+      next: (response: any) => {
+        //this.router.navigateByUrl('/members');
         this.toastr.success('logged in successfully');
         this.model = {};
       }
@@ -91,8 +106,7 @@ export class AppComponent implements OnInit {
      })
   }
 
-
-    
+ 
   navigateByRoute(id: string, routeString: string, object: Member) {
     let route =  routeString + '/' + id;
 
@@ -124,6 +138,32 @@ export class AppComponent implements OnInit {
           }
         })
   }
+
+  displayAbout() {
+    this.displayAboutModal(this.user!);
+    
+  }
+  
+  displayAboutModal(user: User) {
+ 
+      const config = {
+        class: 'modal-dialog-centered',
+        initialState: {
+          copyright: 'Ideal Solutions (' + new Date().getUTCFullYear(),
+          email: 'idealsoln55@gmail.com',
+          licensedTo: user.employer
+        }
+      }
+
+      this.bsModalRef = this.bsModalService.show(AboutComponent, config);
+
+      this.bsModalRef.onHide?.subscribe({
+        next: () => {
+         this.bsModalRef?.hide()
+        }
+      })      
+  
+    }
 
   showCustomAssessmentQuestions() {
     this.toastr.info('Custom Assessment Questions are avaiable in Category Listing.  Press the Assessment Question button to display assessment questions for that category', 

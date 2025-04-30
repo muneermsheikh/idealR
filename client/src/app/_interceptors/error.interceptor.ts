@@ -43,12 +43,15 @@ export class ErrorInterceptor implements HttpInterceptor {
                   }
                   throw modalStateErrors.flat();
                 } else {
-                  this.toastr.error(error.error, error.status.toString());
+                  this.toastr.error(error.error, error.status.toString(), {closeButton: true, timeOut:15000});
                 }
                 break;
               case 401:
                 this.toastr.error('Unauthorized', error.status.toString());
                 break;
+              case 402:
+                  this.toastr.error('Record not found', error?.statusText.toString());
+                  break;
               case 403:
                 this.toastr.error('Access Not Authorized', error.status.toString());
                 break;
@@ -60,7 +63,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 this.router.navigateByUrl('/server-error', navigationExtras);
                 break;
               default:
-                this.toastr.error('something unexpected went wrong');
+                this.toastr.error('Error ' + error.status + ' - something unexpected went wrong');
                 console.log(error.error);
                 break;
             }

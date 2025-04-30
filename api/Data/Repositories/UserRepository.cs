@@ -41,18 +41,24 @@ namespace api.Data.Repositories
 
         public async Task<ICollection<CVsMatchingProfAvailableDto>> GetMatchingCandidatesAvailable(int professionid)
         {
+            var statuses="traveledcanceledselectedblacklisted";
+
             var query2 = await (from prof in _context.UserProfessions where prof.ProfessionId == professionid
-                    join cv in _context.Candidates on prof.CandidateId equals cv.Id where
-                        "!traveledcanceledselectedblacklisted".Contains(cv.Status.ToLower())
-                    join ph in _context.UserPhones on cv.Id equals ph.CandidateId where ph.IsValid
-                    orderby cv.ApplicationNo
+                    join cv in _context.Candidates on prof.CandidateId equals cv.Id
+                        //where !statuses.Contains(cv.Status)
+                                //where !"traveledcanceledselectedblacklisted".Contains(cv.Status, StringComparison.CurrentCultureIgnoreCase)
+                                /*join phn in _context.UserPhones on cv.Id equals phn.CandidateId into phones
+                                    from ph in phones.DefaultIfEmpty() */
+                        orderby cv.ApplicationNo
                     select new CVsMatchingProfAvailableDto {
                         ApplicationNo = cv.ApplicationNo, City = cv.City, FullName = cv.FullName, 
                         PersonId = "", CandidateId = cv.Id, Gender=  cv.Gender, Checked = false, 
-                        ProfessionName = prof.ProfessionName, Source="Candidates", MobileNo=ph.MobileNo,
-                        ProspectiveCandidateId = 0
-                    }).ToListAsync();
+                        ProfessionName = prof.ProfessionName, Source="Candidates", Status=cv.Status
+                        //, MobileNo= ph == null ? "" : ph.MobileNo, ProspectiveCandidateId = 0
+                    })
+                    .ToListAsync();
 
+            query2 = query2.Where(x => !statuses.Contains(x.Status)).ToList();
             var query = await (from prosp in _context.ProspectiveCandidates where prosp.ProfessionId==professionid
                 select new CVsMatchingProfAvailableDto {
                     PersonId = prosp.PersonId, City = prosp.CurrentLocation, FullName = prosp.CandidateName,

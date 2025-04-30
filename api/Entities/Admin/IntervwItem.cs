@@ -6,6 +6,7 @@ namespace api.Entities.Admin
     {
         public int IntervwId { get; set; }
         public string InterviewVenue { get; set; }
+        public DateTime InterviewScheduledFrom {get; set;}
         public string VenueAddress { get; set; }
         public string VenueAddress2 { get; set; }
         public string VenueCityAndPIN { get; set; }

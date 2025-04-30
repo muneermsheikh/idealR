@@ -353,7 +353,8 @@ namespace api.Data.Repositories.HR
                 if(orderitemsMissing.Count > 0) {
                     foreach(var item in orderitemsMissing) {
                         var itemToInsert = new IntervwItem{EstimatedMinsToInterviewEachCandidate=25, 
-                            InterviewerName="To Be Announced", InterviewItemCandidates=new List<IntervwItemCandidate>(), 
+                            InterviewerName="To Be Announced", InterviewItemCandidates=[], 
+                            InterviewScheduledFrom = interview.InterviewDateFrom,
                             InterviewMode="Personal", InterviewVenue="To Be Announced", IntervwId=interview.Id, 
                             OrderItemId=item.Id, ProfessionId=item.ProfessionId, ProfessionName=item.ProfessionName,
                             CategoryRef = item.CategoryRef};
@@ -374,8 +375,8 @@ namespace api.Data.Repositories.HR
             interview = await (from order in _context.Orders where order.OrderNo==OrderNo
                 select new Intervw{OrderDate=order.OrderDate, OrderId=order.Id,
                     OrderNo=order.OrderNo, CustomerId=order.CustomerId, CustomerName=order.Customer.CustomerName,
-                    InterviewDateFrom=DateTime.UtcNow, InterviewDateUpto=DateTime.UtcNow, InterviewStatus="Not Started",
-                    InterviewVenues="To Be Announced"})
+                    InterviewDateFrom=DateTime.UtcNow.AddDays(interwFrom), InterviewDateUpto=DateTime.UtcNow.AddDays(interwFrom), 
+                    InterviewStatus="Not Started", InterviewVenues="To Be Announced"})
             .FirstOrDefaultAsync();
             
             var items = await(from item in _context.OrderItems 
@@ -386,7 +387,7 @@ namespace api.Data.Repositories.HR
                 IntervwId = interview.Id, ProfessionName = cat.ProfessionName,
                 InterviewMode = "Personal", InterviewVenue="To be announced", 
                 InterviewerName="To be announced", CategoryRef = OrderNo + "-" + item.SrNo, 
-                InterviewItemCandidates =candidates
+                InterviewItemCandidates =candidates, InterviewScheduledFrom=interview.InterviewDateFrom.AddHours(0.5),
             }).ToListAsync();
 
             if(items.Count > 0) {
@@ -626,5 +627,18 @@ namespace api.Data.Repositories.HR
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> DeleteInterviewItem(int InterviewItemId)
+        {
+            var item = await _context.IntervwItems.FindAsync(InterviewItemId);
+            if(item==null) return false;
+
+            _context.Entry(item).State = EntityState.Deleted;;
+
+            var deleted = await _context.SaveChangesAsync() > 0;
+
+            return deleted;
+        }
+
     }
 }

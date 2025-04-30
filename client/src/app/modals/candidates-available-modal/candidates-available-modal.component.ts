@@ -14,18 +14,12 @@ export class CandidatesAvailableModalComponent implements OnInit{
   
   professionid: number = 0;
 
-  cvs: CvsMatchingProfAvailableDto[]=[];
+  @Input() cvs: CvsMatchingProfAvailableDto[]=[];
   cvsSelected: CvsMatchingProfAvailableDto[]=[];
 
   constructor(private service: InterviewService, public bsModalRef: BsModalRef){}
 
-  ngOnInit(): void {
-    
-    this.service.getMatchingCandidates(this.professionid).subscribe({
-      next: response => this.cvs=response
-    })
-
-  }
+  ngOnInit(): void {}
 
   SelectCVs(cv: CvsMatchingProfAvailableDto) {
  

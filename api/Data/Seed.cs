@@ -484,10 +484,16 @@ namespace api.Data
                 await context.SaveChangesAsync();
             }
 
-            var maxCandId = Convert.ToInt32(await context.Candidates.MaxAsync(x => (int?)x.Id));
-            var candidateIds = await context.Candidates.Select(x => x.Id).ToListAsync();
-         
-            await context.SaveChangesAsync();
+            if(!await context.UserProfessions.AnyAsync()) {
+                var data = await File.ReadAllTextAsync("Data/SeedData/UserProfessionsSeedData.json");
+                _ = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var dbData = JsonSerializer.Deserialize<List<UserProfession>>(data);
+                foreach(var item in dbData) 
+                {
+                    context.UserProfessions.Add(item);
+                }
+                await context.SaveChangesAsync();
+            }
 
             if(!await context.Orders.AnyAsync()) {
                 var nextOrderNo = Convert.ToInt32(await context.Orders.MaxAsync(x => (int?) x.OrderNo) ?? 1000);
@@ -603,7 +609,7 @@ namespace api.Data
                     var oitems = orderitems.Where(x => x.OrderId==rvw.OrderId).ToList();
                     reviewItems=new List<ContractReviewItem>();
 
-                    var hrexecnames = await context.Employees.Where(x => x.Department=="HR").SelectMany(x => x.UserName).ToListAsync();
+                    var hrexecnames = await context.Employees.Where(x => x.Department=="HR").Select(x => x.UserName).ToListAsync();
                     foreach(var item in oitems) {
                         foreach(var q in reviewItemQs) {q.OrderItemId=item.Id; }
                             

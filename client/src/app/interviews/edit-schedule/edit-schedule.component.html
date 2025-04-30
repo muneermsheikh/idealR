@@ -1,27 +1,44 @@
 
 <div *ngIf="interviewItem" style="margin-left: 5px;">
+    <div class="text mat-typography" style="width:750px; height: 8px; margin: 0 4px 0 5px;" ></div>
     <form [formGroup]="form" (change)="formChanged()">
 
-        <h4 class="stdd">Interview Category details</h4>
-        <hr style="margin: 0; border-width: 2px; border-color: aqua;">
-        <label class="lbl w75">Category:</label> <div class="stdd w250 mx-3">{{interviewItem.professionName}}</div>
-        <label class="lbl w100">Intervw Mode:</label> <div class="stdd w75 mx-3">{{interviewItem.interviewMode}} </div>
-        <label class="lbl w75 mx-2">Venue: </label>
+        <h3 class="stdd my-0 py-0">Interview Category details</h3>
+        <hr class="my-0 py-0" style="margin: 0; border-width: 2px; border-color: aqua;">
+        <label class="lbl w60">Category:</label> <div class="stdd w250 mx-1">{{interviewItem.professionName}}</div>
+            <div class="stdd w60 mx-1">({{interviewItem.categoryRef}})</div>
+        <label class="lbl w100">Intervw Mode:</label> <div class="stdd w75 mx-1">{{interviewItem.interviewMode}} </div>
+        <label class="lbl w100">Scheduled On:</label>
+            <input name="scheduledFrom" class="stdd w90" type="text" placeholder="Scheduled" 
+                formControlName="interviewScheduledFrom" (dblclick)="copyInterviewDate()"
+                bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD HH:mm' }">
+
+        <label class="lbl w60 mx-2">Venue: </label>
         <app-text-input [label]="'Venue'" formControlName="interviewVenue" title="double click to copy default venue address"
-            class="stdd w100" (dblclick)="copyDefaultVenueAddress()" ></app-text-input>
-        <label class="lbl w75 mx-2">Address: </label>
+            class="stdd w125" (dblclick)="copyDefaultVenueAddress()" ></app-text-input>
+        <label class="lbl w125 mx-2">Interviewer Name:</label>
+        <app-text-input [label]="'Interviewer Name'" formControlName="interviewerName" class="stdd w150" ></app-text-input>
+        <div class="pull-right" style="margin-right: 20px; border-style: inset;">
+            <button type="button" class="btn" (click)="savewithattachments()" 
+                title="saves the interview item with assignments, along with attachments" 
+                [disabled]="!form.dirty" > <mat-icon>save</mat-icon> </button>
+            <button type="button" class="btn" (click)="deleteInterviewCategory()" 
+                title="delete the Interview Category, along with candidate assignments, if any" > 
+                <mat-icon>delete</mat-icon> 
+            </button>            
+            <button class="btn" type="button" (click)="getMatchingCVs(interviewItem)"
+                title="gets candidates available and matching this profession. Sources from candidates as well as prospective candidates">
+                <mat-icon>supervisor_account</mat-icon>
+            </button>
+      
+        </div>
+        
+        <br>  
+        <label class="lbl w60 mx-2">Address: </label>
         <app-text-input [label]="'Venue Address'" formControlName="venueAddress" 
             class="stdd w300" ></app-text-input>
-        <button class="btn green" style="margin-left:250px" (click)="savewithattachments()" 
-            title="saves the interview item with assignments, along with attachments" 
-            [disabled]="!form.dirty" > <mat-icon>save</mat-icon> </button>
-            
-        <button class="btn" style="color: aliceblue;"  (click)="getMatchingCVs(interviewItem)"
-            title="gets candidates available and matching this profession. Sources from candidates as well as prospective candidates">
-            <mat-icon>settings_input_component</mat-icon>
-        </button>
-      
-        <br><label class="lbl w75 mx-2">Address2: </label>
+        
+        <label class="lbl w75 mx-2">Address2: </label>
         <app-text-input [label]="'Address2'" formControlName="venueAddress2" 
             class="stdd w200" ></app-text-input>
         <label class="lbl w50 mx-2">City: </label>
@@ -30,13 +47,11 @@
         <app-text-input [label]="'Site Rep Name'" formControlName="siteRepName" class="stdd w100" ></app-text-input>
         <label class="lbl w100 mx-2">Site Phone No: </label>
         <app-text-input [label]="'Site Phone No'" formControlName="sitePhoneNo" class="stdd w100" ></app-text-input>
-        <label class="lbl w125 mx-2">Interviewer Name:</label>
-        <app-text-input [label]="'Interviewer Name'" formControlName="interviewerName" class="stdd w150" ></app-text-input>
         
-        <div (click)="interviewItem.visible=!interviewItem.visible" class="cursor" > 
+        <div (click)="interviewItem.visible=!interviewItem.visible" class="cursor" *ngIf="interviewItemCandidates.length>0" > 
+            <div class="my-0 py-0">Candidates scheduled to attend</div>        
             <div style="margin: 0 0 0 10px" >
-                <hr style="margin: 0 0 0 0;">
-                <br><label class="lbl w75" style="margin-left: 25px;">App No</label>
+                <label class="lbl w75" style="margin-left: 25px;">App No</label>
                 <label class="lbl w150">Candidate Name</label>
                 <label class="dt">Scheduled From</label>
                 <label class="dt">Reported At</label>
@@ -86,7 +101,7 @@
                                 title="upload a new interviewer comment.  Any existing attachment will be REPLACED" 
                                 (click)="uploadattachment(i)" ></button>
                         
-                            <button class="btn w15 fa fa-trash red" (click)="removeInterviewItem(i)" ></button>
+                            <button class="btn w15 fa fa-trash red" (click)="removeInterviewItemCandidate(i)" ></button>
                             <div class="cursor" (click)="displayHistory=!displayHistory" >{{displayHistory ? 'hide Sel Progress': 'display Sel Progress'}}</div>
                             
                             <app-register-call-records

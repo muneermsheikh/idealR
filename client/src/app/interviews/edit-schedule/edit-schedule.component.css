@@ -3,6 +3,7 @@
     font-size: smaller;
     font-weight: bold;
     margin: 0 2px 0 2px;
+    padding:0;
     vertical-align: top;
 }
 
@@ -37,6 +38,7 @@
 .w15 {width: 15px;}
 .w35 {width: 35px;}
 .w50 {width: 50px;}
+.w60 {width: 60px;}
 .w75 {width: 75px;}
 .w100 {width: 100px;}
 .w125 {width:125px;}

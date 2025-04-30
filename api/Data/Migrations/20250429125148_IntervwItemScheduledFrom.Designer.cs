@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250429125148_IntervwItemScheduledFrom")]
+    partial class IntervwItemScheduledFrom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1182,9 +1185,6 @@ namespace api.Data.Migrations
                     b.Property<string>("InterviewMode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("InterviewScheduledFrom")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("InterviewVenue")
                         .HasColumnType("nvarchar(max)");
 
@@ -1202,6 +1202,9 @@ namespace api.Data.Migrations
 
                     b.Property<string>("ProfessionName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ScheduledOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SitePhoneNo")
                         .HasColumnType("nvarchar(max)");

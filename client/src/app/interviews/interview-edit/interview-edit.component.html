@@ -16,10 +16,10 @@
         <div class="stdd w100">{{interview.orderDate | date: 'dd-MMM-yy'}}</div> 
     <label class="lbl w75">From: </label>
     <input name="interviewDateFrom" class="stdd w100" type="text" placeholder="Date From" [(ngModel)]="interview.interviewDateFrom" 
-        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD HH:mm' }">
     <label class="lbl w75 mx-2">Upto:</label>
     <input name="interviewDateUpto" class="stdd w100" type="text" placeholder="Date Upto" [(ngModel)]="interview.interviewDateUpto" 
-        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }">
+        bsDatepicker [bsValue]="bsValueDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD HH:mm' }">
     <hr style="margin: 0; padding: 0; border-width: thick; border-color: darkturquoise;">
     
     <div *ngFor="let intw of interview.interviewItems">

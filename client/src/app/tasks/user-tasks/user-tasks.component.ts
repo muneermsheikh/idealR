@@ -10,9 +10,8 @@ import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { TaskService } from 'src/app/_services/admin/task.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { EditModalComponent } from '../edit-modal/edit-modal.component';
-import { values } from 'lodash-es';
 import { ConfirmService } from 'src/app/_services/confirm.service';
+import { TaskEditModalComponent } from '../task-edit-modal/task-edit-modal.component';
 
 @Component({
   selector: 'app-user-tasks',
@@ -47,8 +46,9 @@ export class UserTasksComponent implements OnInit {
 
   parameterCriteria='';
 
-  taskStatuses = [{"status": "All Status", "Value": "allstatus"}, {"status": "Pending", "Value": "pending"},
-    {"status": "Canceled", "Value": "canceled"}, {"status": "All Users", "Value": "allusers"}, {"status": "only Admin", "Value": "admin"}];
+  taskStatuses = [{"status": "Pending", "Value": "pending"},
+    {"status": "Canceled", "Value": "canceled"}, {"status": "All Users", "Value": "allusers"}, 
+    {"status": "only Admin", "Value": "admin"}];
   
   taskTypes = [{"type": "Customer Feedback", "Value": "CustomerFeedbackResponse"},
     {"type": "CV Forward", "Value": "CVFwdTask"},
@@ -157,7 +157,7 @@ export class UserTasksComponent implements OnInit {
   }
 
   applyStatus() {
-    console.log('sParams.Status', this.sParams.taskStatus, 'laststatus:', this.lastStatus);
+    //console.log('sParams.Status', this.sParams.taskStatus, 'laststatus:', this.lastStatus);
     if(this.sParams.taskStatus===null || (this.lastStatus !== this.sParams.taskStatus)) {
       this.lastStatus = this.sParams.taskStatus || "pending";
       this.sParams.pageNumber=1;
@@ -166,7 +166,7 @@ export class UserTasksComponent implements OnInit {
   }
 
   
- editDeploymentModal(task: IApplicationTask){
+ editTaskModal(task: IApplicationTask){
 
   if(task === null) {
     this.toastr.warning('No Task object returned from Task line');
@@ -181,9 +181,9 @@ export class UserTasksComponent implements OnInit {
       }
     }
 
-    this.bsModalRef = this.bsModalService.show(EditModalComponent, config);
+    this.bsModalRef = this.bsModalService.show(TaskEditModalComponent, config);
 
-    const observableOuter =  this.bsModalRef.content.updateEvent;
+    const observableOuter =  this.bsModalRef.content.updateTaskEvent;
     
     observableOuter.pipe(
       filter((response: IApplicationTask) => response !==null),
@@ -193,7 +193,7 @@ export class UserTasksComponent implements OnInit {
     ).subscribe((response: IApplicationTask) => {
 
       if(response !== null) {
-        this.toastr.success('Deployment updated', 'Success');
+        this.toastr.success('Task updated', 'Success');
         //**TODO- Update DOM with new values */
       } else {
         this.toastr.warning(response, 'Failure');

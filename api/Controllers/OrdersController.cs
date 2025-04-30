@@ -107,7 +107,8 @@ namespace api.Controllers
         {
             var obj = await _repo.GetOpenItemCategoryList();
 
-            if(obj.Count == 0) return BadRequest("No order items on record matching the criteria");
+            if(obj.Count == 0) return BadRequest("CVs can be assessed for order categories that match the candidate profile.  " +
+                "No such order items are on record that match the candidate's professions");
 
             return Ok(obj);
         }

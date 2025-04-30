@@ -5,8 +5,10 @@ import { UserTaskRoutingModule } from './user-task-routing.module';
 import { SharedModule } from '../_modules/shared.module';
 import { TaskMenuComponent } from './task-menu/task-menu.component';
 import { TaskLineComponent } from './task-line/task-line.component';
-import { EditModalComponent } from './edit-modal/edit-modal.component';
+
 import { MatIconModule } from '@angular/material/icon';
+import { TaskEditModalComponent } from './task-edit-modal/task-edit-modal.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -14,11 +16,13 @@ import { MatIconModule } from '@angular/material/icon';
     UserTasksComponent,
     TaskMenuComponent,
     TaskLineComponent,
-    EditModalComponent,
+    TaskEditModalComponent
   ],
   imports: [
     CommonModule,
     UserTaskRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     MatIconModule
   ]

@@ -149,7 +149,6 @@
                            
                         </mat-nav-list>
                     </mat-expansion-panel>
-
         
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header>Administration 
@@ -247,6 +246,7 @@
                             ></a>
                         </mat-nav-list>
                     </mat-expansion-panel>
+
                     <mat-expansion-panel [class.mat-elevation-z0]="true">
                         <mat-expansion-panel-header class="fa fa-inr">Finance</mat-expansion-panel-header>
                         <mat-nav-list style="font-size: smaller;">
@@ -337,6 +337,10 @@
                             </a>
                         </mat-nav-list>
                     </mat-expansion-panel>
+
+                    <button mat-icon-button (click)="displayAbout()" matTooltip="Menu">
+                        About
+                    </button>
 
                   </div>
             </mat-nav-list>
