@@ -1,0 +1,20 @@
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div *ngIf="subscription">
+  <h2>Subscription Status</h2>
+  <p><strong>Type:</strong> {{ subscription.subscriptionType }}</p>
+  <p><strong>Start Date:</strong> {{ subscription.startDate | date }}</p>
+  <p><strong>End Date:</strong> {{ subscription.endDate | date }}</p>
+  <p><strong>Status:</strong> {{ subscription.status }}</p>
+  <p><strong>Active:</strong> {{ subscription.isActive ? 'Yes' : 'No' }}</p>
+
+  <div *ngIf="subscription.subscriptionType === 'Trial'">
+    <label for="additionalDays">Extend Trial (Days):</label>
+    <app-text-input [label]="'days'" type="number" [(ngModel)]="additionalDays" min="1"></app-text-input>
+    <button (click)="extendTrial()" [disabled]="!subscription.isActive">Extend Trial</button>
+  </div>
+
+  <button (click)="initiatePayment()" *ngIf="!subscription.isActive || subscription.status === 'Expired'">
+    Upgrade to Paid
+  </button>
+</div>

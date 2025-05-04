@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -43,6 +42,11 @@ using var scope = app.Services.CreateScope();
 
 var services = scope.ServiceProvider;
 
+/*app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "wwwroot";
+});*/
+
 try {
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
@@ -56,4 +60,11 @@ try {
     logger.LogError(ex, "Error occured during migration");
 }
 
+
 app.Run();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"Connection String: {connectionString}");
+
+// Log configuration
+Console.WriteLine($"Kestrel Endpoints: {builder.Configuration.GetSection("Kestrel:Endpoints").GetChildren().Aggregate("", (current, child) => current + child.Key + ": " + child["Url"] + "; ")}");

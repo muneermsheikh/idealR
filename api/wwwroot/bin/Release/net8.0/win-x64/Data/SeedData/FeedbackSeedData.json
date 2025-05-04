@@ -1,0 +1,36 @@
+[
+    {
+        "CustomerId": 1, "CustomerName": "Saudi Gulf Heavy Industries", "dateIssued": "2020-11-15T12:00:00",
+        "City": "Dammam", "OfficialName": "Rahamatullah", "Designation": "HR Manager",
+        "Email": "rahamatullah@ssgf.com", "PhoneNo":"00966-2-359340234",
+        "DateReceived": "2010-01-01T00:00:00", "HowReceived": null, "FeedbackInputs": [
+            {"FeedbackGroup": "documentation", "Question": 1, 
+                "Parameter": "How satisfied you are with our documentations",
+                "Response": "Excellent"
+            },
+            {"FeedbackGroup": "Response To Queries", "Question": 2, "Response": null,
+                "Parameter": "How satisfied are you with our response to your queries"},
+               
+            {"FeedbackGroup": "Response Time To Queries", "Question": 3, 
+                "Parameter": "How fast was our response time to your queries",
+                "Response": "Very fast"},
+            {"FeedbackGroup": "Interview arrangements", "Question": 4, "Response": null,
+                "Parameter": "How good were our interview arrangements"},
+            {"FeedbackGroup": "Candidate Skills", "Question": 5, 
+                "Parameter": "How satisfied are you with the skills of candidates presented to you",
+                "Response": "Very satisfied"},
+            {"FeedbackGroup": "Processing time", "Question": 6, 
+                "Parameter": "How fast did we deploy your selected candidates",
+                "Response": "Very fast"},
+            {"FeedbackGroup": "Marketing Services", "Question": 7, 
+                "Parameter": "How satisfied are you with the services of our marketing personnel",
+                "Response": "Very satisfied"},
+            {"FeedbackGroup": "Overall", "Question": 8, 
+                "Parameter": "How satisfied are you with our overall services",
+                "Response": "Very satisfied"},
+            {"FeedbackGroup": "Recommendation to others", "Question": 9, 
+                "Parameter": "Would you recommend us to your other associates for availing recruitment services from us?",
+                "Response": "Yes"}
+        ]
+    }
+]

@@ -17,9 +17,7 @@ export class AccountService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
   
-  login(model: any) {
-
-    
+  login(model: any) {    
     
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map((response: User) => {

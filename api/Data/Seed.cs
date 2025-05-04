@@ -21,7 +21,7 @@ namespace api.Data
             RoleManager<AppRole> roleManager, DataContext context) 
         {
             Random random = new();
-            string[] usernames = {"Sanjay", "Kadir", "Dutta", "Munir" };
+            string[] usernames = ["Sanjay", "Kadir", "Dutta", "Munir"];
             
             //identity
             if (!await userManager.Users.AnyAsync()) 
@@ -66,13 +66,14 @@ namespace api.Data
                     new() {Name = "Selection"},
                     new() {Name = "CVRefer"},
                     new() {Name = "VisaEdit"},
-                    new() {Name = "VisaView"}
+                    new() {Name = "VisaView"},
+                    new() {Name = "Vendor"}
                 };
 
                 foreach(var role in roles) {
                     await roleManager.CreateAsync(role);
                 }
-                
+            
                 int counter  =4;
                 foreach(var user in users) {
 

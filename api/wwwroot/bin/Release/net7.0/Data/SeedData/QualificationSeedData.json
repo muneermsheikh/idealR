@@ -1,0 +1,13 @@
+[
+    {"id": 1, "QualificationName": "Illiterate"},
+    {"id": 2, "QualificationName": "SSC"},
+    {"id": 3, "QualificationName": "HSC"},
+    {"id": 4, "QualificationName": "Non-Matric"},
+    {"id": 5, "QualificationName": "B.Sc."},
+    {"id": 6, "QualificationName": "B.Com."},
+    {"id": 7, "QualificationName": "B.A."},
+    {"id": 8, "QualificationName": "M.Sc"},
+    {"id": 6, "QualificationName": "M.Com."},
+    {"id": 7, "QualificationName": "M.A."},
+    {"id": 8, "QualificationName": "B.B.M."}
+]

@@ -48,7 +48,7 @@
         <label class="lbl w100 mx-2">Site Phone No: </label>
         <app-text-input [label]="'Site Phone No'" formControlName="sitePhoneNo" class="stdd w100" ></app-text-input>
         
-        <div (click)="interviewItem.visible=!interviewItem.visible" class="cursor" *ngIf="interviewItemCandidates.length>0" > 
+        <div (click)="interviewItem.visible=!interviewItem.visible" class="cursor" *ngIf="interviewItem.interviewItemCandidates.length>0" > 
             <div class="my-0 py-0">Candidates scheduled to attend</div>        
             <div style="margin: 0 0 0 10px" >
                 <label class="lbl w75" style="margin-left: 25px;">App No</label>

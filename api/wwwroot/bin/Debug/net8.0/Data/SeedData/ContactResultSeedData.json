@@ -1,0 +1,12 @@
+[
+    {"Status": "Wrong Number", "IsActive": "Yes"}, 
+    {"Status": "Not Responding", "IsActive": "Yes"},
+    {"Status": "Will revert later", "IsActive": "Yes"}, 
+    {"Status": "Interested, but negotiate salary", "IsActive": "Positive"},
+    {"Status": "Interested, and keen", "IsActive": "Positive"}, 
+    {"Status": "Interested, but doubtful", "IsActive": "Positive"},
+    {"Status": "Declined-not interested for overseas", "IsActive": "Negative"}, 
+    {"Status": "Declined-Family Issues", "IsActive": "Negative"},
+    {"Status": "Declined-Low Remuneration", "IsActive": "Negative"}, {"Status": "Not Responding"},
+    {"Status": "Declined-SC Not accepted"}, {"Status": "Negative"}
+]

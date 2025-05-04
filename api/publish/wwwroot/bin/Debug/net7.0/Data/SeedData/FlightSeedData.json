@@ -1,0 +1,26 @@
+[
+    {"FlightNo": "AI2034", "AirportOfBoarding": "Mumbai", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "23:30:00", "ETA_Destination": "02:35:00", "Airline": "Air India"},
+    {"FlightNo": "AI201", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "22:00:00", "ETA_Destination": "01:35:00", "Airline":"Air India"},
+    {"FlightNo": "AI234", "AirportOfBoarding": "Mumbai", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "11:20:00", "ETA_Destination": "14:35:00", "Airline":"Air India"},
+    {"FlightNo": "AI354", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "15:00:00", "ETA_Destination": "22:35:00", "Airline":"Air India"},
+    {"FlightNo": "SV757", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "11:50:00", "ETA_Destination": "14:50:00", "Airline":"Saudia"},
+    {"FlightNo": "6E449", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "16:15:00", "ETA_Destination": "18:20:00*", "Airline":"Indigo",
+        "AirportVia": "", "FlightNoVia": "", "ETA_Via": "", "ETD_Via": ""},
+    {"FlightNo": "6E6328", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah",
+        "ETD_Boarding": "10:00:00", "ETA_Destination": "04:30:00*", "Airline":"Indigo", "AirportVia": "Mumbai", 
+        "AirlineVia": "Indigo", "FlightNoVia": "6E57", "ETA_Via": "12:15:00:", "ETD_Via": "02:05:00*"},
+    {"FlightNo": "GF131", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah", 
+        "ETD_Boarding": "04:55:00", "ETA_Destination": "06:40:00*", "Airline":"Gulf Air", "AirportVia": "Manama", "AirlineVia": "Gulf Air", 
+        "FlightNoVia": "GF183", "ETA_Via": "13:25:00:", "ETD_Via": "15:40:00*"},
+    {"FlightNo": "6E6107", "AirportOfBoarding": "New Delhi", "AirportOfDestination": "Jeddah", 
+        "ETD_Boarding": "09:00:00", "ETA_Destination": "04:30:00*", "Airline":"Indigo", "AirportVia": "Mumbai", "AirlineVia": "Indigo", 
+        "FlightNoVia": "6E57", "ETA_Via": "02:05:00*", "ETD_Via": "02:05:00*"}
+]
+
+

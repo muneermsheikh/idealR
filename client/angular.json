@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../api/wwwroot",
+            "outputPath": "./dist/client",
          
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -43,10 +43,12 @@
           },
           "configurations": {
             "production": {
+              "aot": true,
+              "optimization": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5mb",
+                  "maximumWarning": "2mb",
                   "maximumError": "2mb"
                 },
                 {

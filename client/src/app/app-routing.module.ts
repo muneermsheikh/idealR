@@ -10,6 +10,8 @@ import { UsersWithRolesResolver } from './_resolvers/usersWithRolesResolver';
 import { HrGuard } from './_guards/hr.guard';
 import { RolesResolver } from './_resolvers/identity/roles.resolver';
 import { TrialExpiredComponent } from './errors/trial-expired/trial-expired.component';
+import { vendorGuard } from './_guards/vendor.guard';
+import { SubscriptionComponent } from './subscription/subscription/subscription.component';
 
 
 const routes: Routes = [
@@ -66,9 +68,13 @@ const routes: Routes = [
         }
         //, canActivate: [adminGuard]
       },
-      
+
     ]
   },
+  {path: 'vendor', canActivate: [vendorGuard],
+    component: SubscriptionComponent
+  },
+  
   {path: 'errors', component: TestErrorComponent},
   {path: 'not-found', component: NotFoundComponent},
   {path: 'server-error', component: ServerErrorComponent},

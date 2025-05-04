@@ -1,0 +1,10 @@
+[
+    {"StatusId": 1, "Status":"Internally Shortlisted"},
+    {"StatusId": 2, "Status":"Interview Scheduled"},
+    {"StatusId": 3, "Status":"Shortlisted"},
+    {"StatusId": 4, "Status":"Selected"},
+    {"StatusId": 5, "Status":"Rejected-High Salary Expectation"},
+    {"StatusId": 6, "Status":"Rejected-Exp irrelevant"},
+    {"StatusId": 7, "Status":"Rejected-Low Exp"},
+    {"StatusId": 8, "Status":"Rejected-other reasons"}
+]

@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "gQE9teSEuCgLraezmE5cINi8PIHHP0fkuGzBABh1NcQ=",
+  "Source": "api",
+  "BasePath": "_content/api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "api\\wwwroot",
+      "Source": "api",
+      "ContentRoot": "C:\\idealR\\api\\wwwroot\\",
+      "BasePath": "_content/api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

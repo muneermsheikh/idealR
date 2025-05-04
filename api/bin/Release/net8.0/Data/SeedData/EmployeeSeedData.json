@@ -1,0 +1,148 @@
+[
+    {"FirstName": "Abdul Mateen", "SecondName":"Abdul Waheed", "FamilyName": "Khan",
+     "KnownAs": "Mateen", "PlaceOfBirth": "Lucknow", "AadharNo": "293824334560", 
+          "Position": "HR Executive", "DisplayName": "Abdul Mateen",
+         "Gender": "M", "DateOfBirth": "1985-12-15T10:00:10", "DateOfJoining": "2018-01-15T10:00:00",
+         "Nationality": "Indian", "Email": "mateen@gmail.com",  "UserName":"AbdulMateen",
+         "Qualifications": "B.Com, DME", "Department": "Processing",
+         "PhoneNo": "986375089", "Qualification": "B.Sc.",
+         "HRSkills": [
+              {"ProfessionId": 1, "IndustryId": 1, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 2, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "Address":"25, 32 raman raghav road", 
+         "Address2":"opposite national bank",
+         "City": "Bangalore",
+         "Country": "India"
+    },
+    {"FirstName": "Sanjay", "SecondName":"Rajaram", "FamilyName": "Patil","KnownAs": "Sanjay", 
+         "PlaceOfBirth": "Kolhapur", "AadharNo": "233852334560", "Position": "Document Controller-Admin",
+         "Gender": "M", "DateOfBirth": "1985-12-16T10:00:10", "DateOfJoining": "2019-02-15T00:00:00",
+         "Nationality": "Indian", "Email": "sanjaypatil@gmail.com",  "UserName":"Sanjay",
+         "Qualification": "SSC", "Department": "Administration",
+         "PhoneNo": "776375089", "DisplayName": "Sanjay Rajaram",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 2, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "Address":"12/56 BD Chawls", 
+         "Address2":"worli",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Shahid", "SecondName":"Mohammed Yusuf", "FamilyName": "Khan","KnownAs": "Mateen", 
+         "PlaceOfBirth": "Patna", "AadharNo": "293824032560", "Position": "Administration Manager",
+         "Gender": "M", "DateOfBirth": "1990-12-15T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "shahid@gmail.com",  "UserName":"ShahidAnsari",
+         "Qualification": "8th", "Department": "HR",
+         "PhoneNo": "9820069266", "DisplayName": "Shahid Yusuf",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": true}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": false}
+         ],
+         "Address":"Plot No.39485, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Chennai",
+         "Country": "India"
+    },
+    {"FirstName": "Kadir", "SecondName":"Abdul Wahab", "FamilyName": "Khan","KnownAs": "Kadir", 
+         "PlaceOfBirth": "Patna", "AadharNo": "293824032560", "Position": "HR Executive",
+         "Gender": "M", "DateOfBirth": "1990-12-15T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "kadirkhan@gmail.com",  "UserName":"KadirKhan",
+         "Qualification": "HSC, ITI(Mech)", "Department": "HR",
+         "PhoneNo": "986375089", "DisplayName": "Kadir Khan",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": false}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": true}
+         ],
+         "Address":"Plot No.3332, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Munir", "SecondName":"Maheboob", "FamilyName": "Shaikh","KnownAs": "Munir", 
+         "PlaceOfBirth": "Latur", "AadharNo": "242332560", "Position": "Operations Manager",
+         "Gender": "M", "DateOfBirth": "1955-08-05T10:11:11", "DateOfJoining": "2018-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "shahid@gmail.com",  "UserName":"MunirSheikh",
+         "Qualification": "B.Sc., DME", "Department": "Administration",
+         "PhoneNo": "335221089", "DisplayName": "Munir Shaikh",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": true}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": false}
+         ],
+         "Address":"Plot No.39485, jhumritalaiyya", 
+         "Address2":"opposite national bank",
+         "City": "Chennai",
+         "Country": "India"
+    },
+    {"FirstName": "Abdul Rahim", "FamilyName": "Patel","KnownAs": "AbdulRahim", 
+         "PlaceOfBirth": "Jalgaon", "AadharNo": "212334560", "Position": "Technical Consultant",
+         "Gender": "M", "DateOfBirth": "1986-08-05T10:11:11", "DateOfJoining": "2020-01-25T11:00:00",
+         "Nationality": "Indian", "Email": "arpatel25@gmail.com",  "UserName":"MunirSheikh",
+         "Qualification": "B.E.-mech", "Department": "Engineering",
+         "PhoneNo": "323411235", "DisplayName": "Abdul Rahim",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": true}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": false}
+         ],
+         "Address":"Plot No.3495899, Rajeshwar Nagar", 
+         "Address2":"Kotak Bank Road",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Sufiyan", "SecondName": "Abbdul Yusuf", "FamilyName": "Ansari","KnownAs": "Sufiyan Ansari", 
+         "PlaceOfBirth": "Mumbai", "AadharNo": "2345111234", "Position": "Accountant",
+         "Gender": "M", "DateOfBirth": "1982-09-05T10:11:11", "DateOfJoining": "2021-11-25T11:00:00",
+         "Nationality": "Indian", "Email": "sufiyanansari@gmail.com",  "UserName":"SufiyanAnsari",
+         "Qualification": "B.Com.", "Department": "Accounts",
+         "PhoneNo": "345201002341", "DisplayName": "Sufiyan Ansari",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": true}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": false}
+         ],
+         "Address":"Building B6, Rajguru Road, Kotak Street", 
+         "Address2":"Jhunjhunwalla Park",
+         "City": "Mumbai",
+         "Country": "India"
+    },
+    {"FirstName": "Pratibha", "FamilyName": "Patil","KnownAs": "PratibhaPatil", 
+         "PlaceOfBirth": "Jalgaon", "AadharNo": "212334560", "Position": "Document Controller-Processing",
+         "Gender": "F", "DateOfBirth": "1985-08-05T10:11:11", "DateOfJoining": "2011-02-25T11:00:00",
+         "Nationality": "Indian", "Email": "pratibhapatil22@gmail.com",  "UserName":"PratibhaPatil",
+         "Qualification": "HSC", "Department": "Processing",
+         "PhoneNo": "34510099348", "DisplayName": "Pratibha",
+         "HRSkills": [
+              {"ProfessionId": 3, "IndustryId": 2, "SkillLevelName": "Proficient"}, 
+              {"ProfessionId": 4, "IndustryId": 1, "SkillLevelName": "Good"}
+         ],
+         "EmployeeOtherSkills": [
+              {"SkillDataId": 1, "SkillLevelName": "Proficient", "IsMain": true}, 
+              {"SkillDataId": 2, "SkillLevelName": "Proficient", "IsMain": false}
+         ],
+         "Address":"Bldg P-245, 2nd floor, B Wing", 
+         "Address2":"Poonam Sagar Road, Poonam Nagar",
+         "City": "Mira Road",
+         "Country": "India"
+    }
+]
+

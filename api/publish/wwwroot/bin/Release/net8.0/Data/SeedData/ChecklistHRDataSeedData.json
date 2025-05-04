@@ -1,0 +1,10 @@
+[
+    {"SrNo": 1, "Parameter" : "is seriously interested", "IsMandatory": true},
+    {"SrNo": 2, "Parameter" : "has original Passport in his possession", "IsMandatory": false},
+    {"SrNo": 3, "Parameter" : "Willing to pay service charges", "IsMandatory": false},
+    {"SrNo": 4, "Parameter" : "Willing to travel as scheduled", "IsMandatory": false},
+    {"SrNo": 5, "Parameter" : "If ECNR required, candidate has ECNR PP", "IsMandatory": false},
+    {"SrNo": 6, "Parameter" : "Accepts to do assigned work", "IsMandatory": true},
+    {"SrNo": 7, "Parameter" : "If Trade Test reqd, verified that it conducted on same person as the PP", "IsMandatory": true}
+
+]

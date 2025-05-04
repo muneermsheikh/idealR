@@ -1,0 +1,14 @@
+[
+    {"QuestionNo": 1, "Question": "Qualification relevant to the job", 
+         "Subject":"Qualification", "MaxPoints": 10, "isMandatory": true},
+    {"QuestionNo": 2, "Question": "Technical Certification required", 
+         "Subject":"Tech Qualification", "MaxPoints": 10, "isMandatory": true},
+    {"QuestionNo": 3, "Question": "Experience Relevant to the job", 
+    "Subject":"Experience", "MaxPoints": 10, "isMandatory": true},
+    {"QuestionNo": 4,  "Question": "Fluent Communication in English - written and oral", 
+    "Subject":"Communication", "MaxPoints": 10, "isMandatory": true},
+    {"QuestionNo": 5, "Question": "Good team work and able to lead his team, delegates work and is instrumental in creating leaders", 
+    "Subject":"Leadership", "MaxPoints": 10, "isMandatory": true},
+    {"QuestionNo": 6, "Question": "How much overall the candidate will be able to contribute to his role", 
+         "Subject":"Overall", "MaxPoints": 10, "isMandatory": true}
+]

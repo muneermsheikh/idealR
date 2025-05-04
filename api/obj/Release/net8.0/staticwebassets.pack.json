@@ -1,0 +1,3281 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\1.6c9c0ca425eabe2d.js",
+      "PackagePath": "staticwebassets\\1.6c9c0ca425eabe2d.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\141.56fab7c1d7194885.js",
+      "PackagePath": "staticwebassets\\141.56fab7c1d7194885.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\221.6695ab69b0830c89.js",
+      "PackagePath": "staticwebassets\\221.6695ab69b0830c89.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\265.07a102f9bd3f9740.js",
+      "PackagePath": "staticwebassets\\265.07a102f9bd3f9740.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\27.01b4597d1221d844.js",
+      "PackagePath": "staticwebassets\\27.01b4597d1221d844.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\3rdpartylicenses.txt",
+      "PackagePath": "staticwebassets\\3rdpartylicenses.txt"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\499.4ec547aad7e85cc3.js",
+      "PackagePath": "staticwebassets\\499.4ec547aad7e85cc3.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\517.d3761c428564e4cb.js",
+      "PackagePath": "staticwebassets\\517.d3761c428564e4cb.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\608.1371de3239afc574.js",
+      "PackagePath": "staticwebassets\\608.1371de3239afc574.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\62.5c9cd0f9629f8356.js",
+      "PackagePath": "staticwebassets\\62.5c9cd0f9629f8356.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\639.47a877f70fdd13c3.js",
+      "PackagePath": "staticwebassets\\639.47a877f70fdd13c3.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\667.b0785b4f468c2746.js",
+      "PackagePath": "staticwebassets\\667.b0785b4f468c2746.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\675.266dc48da22b55b3.js",
+      "PackagePath": "staticwebassets\\675.266dc48da22b55b3.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\691.7c15075778f1e752.js",
+      "PackagePath": "staticwebassets\\691.7c15075778f1e752.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\692.5bfbb8636e0547b9.js",
+      "PackagePath": "staticwebassets\\692.5bfbb8636e0547b9.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\727.6aea60d7ca89fc27.js",
+      "PackagePath": "staticwebassets\\727.6aea60d7ca89fc27.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\750.411764f2981483dc.js",
+      "PackagePath": "staticwebassets\\750.411764f2981483dc.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\767.fa892719901e311e.js",
+      "PackagePath": "staticwebassets\\767.fa892719901e311e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\777.ffc098617d0ddbd0.js",
+      "PackagePath": "staticwebassets\\777.ffc098617d0ddbd0.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\794.f32182dac639ebdc.js",
+      "PackagePath": "staticwebassets\\794.f32182dac639ebdc.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\80.517d9b4baa1abcb0.js",
+      "PackagePath": "staticwebassets\\80.517d9b4baa1abcb0.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\812.4d53fc0bc833fe4a.js",
+      "PackagePath": "staticwebassets\\812.4d53fc0bc833fe4a.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\99.5cafccfba9a5bb8e.js",
+      "PackagePath": "staticwebassets\\99.5cafccfba9a5bb8e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\996.e6da6d1bc5d1ad3b.js",
+      "PackagePath": "staticwebassets\\996.e6da6d1bc5d1ad3b.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-128x128.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-128x128.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-144x144.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-144x144.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-152x152.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-152x152.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-192x192.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-192x192.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-384x384.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-384x384.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-512x512.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-512x512.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-72x72.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-72x72.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\icons\\icon-96x96.png",
+      "PackagePath": "staticwebassets\\assets\\icons\\icon-96x96.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\assets\\user.png",
+      "PackagePath": "staticwebassets\\assets\\user.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\VisaTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\VisaTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Humanizer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Humanizer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Cryptography.Internal.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Cryptography.Internal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Data.Sqlite.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Data.Sqlite.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Design.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Design.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Sqlite.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.Sqlite.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Extensions.DependencyModel.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Extensions.DependencyModel.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Extensions.Identity.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Extensions.Identity.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Extensions.Identity.Stores.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Extensions.Identity.Stores.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Extensions.Options.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Extensions.Options.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\Mono.TextTemplating.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\Mono.TextTemplating.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\SQLitePCLRaw.batteries_v2.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\SQLitePCLRaw.batteries_v2.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\SQLitePCLRaw.core.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\SQLitePCLRaw.core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\SQLitePCLRaw.provider.e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\SQLitePCLRaw.provider.e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.CodeDom.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.CodeDom.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Security.Cryptography.Pkcs.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Security.Cryptography.Pkcs.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\api.staticwebassets.runtime.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\api.staticwebassets.runtime.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\alpine-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\alpine-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\alpine-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\alpine-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\alpine-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\alpine-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\browser-wasm\\nativeassets\\net7.0\\e_sqlite3.a",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\browser-wasm\\nativeassets\\net7.0\\e_sqlite3.a"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-armel\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-armel\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-mips64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-mips64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-s390x\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-s390x\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\linux-x86\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\linux-x86\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-arm64\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-arm64\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-arm\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-arm\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-x64\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-x64\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win-x86\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win-x86\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Security.Cryptography.Pkcs.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Security.Cryptography.Pkcs.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\VisaTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\VisaTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Humanizer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Humanizer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Design.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Design.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Extensions.DependencyModel.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Extensions.DependencyModel.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\Mono.TextTemplating.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\Mono.TextTemplating.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.CodeDom.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.CodeDom.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\api.staticwebassets.runtime.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\api.staticwebassets.runtime.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\appsettings.json",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\appsettings.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Debug\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Humanizer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Humanizer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Cryptography.Internal.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Cryptography.Internal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Data.Sqlite.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Data.Sqlite.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Design.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Design.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Sqlite.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.Sqlite.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Extensions.DependencyModel.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Extensions.DependencyModel.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Extensions.Identity.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Extensions.Identity.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Extensions.Identity.Stores.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Extensions.Identity.Stores.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Extensions.Options.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Extensions.Options.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\Mono.TextTemplating.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\Mono.TextTemplating.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\SQLitePCLRaw.batteries_v2.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\SQLitePCLRaw.batteries_v2.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\SQLitePCLRaw.core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\SQLitePCLRaw.core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\SQLitePCLRaw.provider.e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\SQLitePCLRaw.provider.e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.CodeDom.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.CodeDom.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Security.Cryptography.Pkcs.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Security.Cryptography.Pkcs.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\api.staticwebassets.runtime.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\api.staticwebassets.runtime.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\alpine-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\alpine-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\alpine-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\alpine-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\alpine-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\alpine-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\browser-wasm\\nativeassets\\net7.0\\e_sqlite3.a",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\browser-wasm\\nativeassets\\net7.0\\e_sqlite3.a"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-armel\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-armel\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-mips64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-mips64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-musl-arm64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-musl-arm\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-musl-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-ppc64le\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-s390x\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-s390x\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-x64\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-x64\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\linux-x86\\native\\libe_sqlite3.so",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\linux-x86\\native\\libe_sqlite3.so"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\maccatalyst-arm64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\maccatalyst-x64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\osx-arm64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\osx-x64\\native\\libe_sqlite3.dylib"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-arm64\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-arm64\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-arm\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-arm\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-x64\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-x64\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win-x86\\native\\e_sqlite3.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win-x86\\native\\e_sqlite3.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Security.Cryptography.Pkcs.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\net7.0\\System.Security.Cryptography.Pkcs.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net7.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\VisaTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\VisaTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Humanizer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Humanizer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Design.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Design.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Extensions.DependencyModel.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Extensions.DependencyModel.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\Mono.TextTemplating.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\Mono.TextTemplating.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.CodeDom.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.CodeDom.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\api.staticwebassets.runtime.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\api.staticwebassets.runtime.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\appsettings.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\appsettings.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\unix\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win-arm64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win-arm\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win-x64\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win-x86\\native\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\net7.0\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\net7.0\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netcoreapp3.0\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netcoreapp3.1\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\runtimes\\win\\lib\\netstandard2.0\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\VisaTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\VisaTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Humanizer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Humanizer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Design.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Design.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Extensions.DependencyModel.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Extensions.DependencyModel.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\Mono.TextTemplating.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\Mono.TextTemplating.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.CodeDom.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.CodeDom.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\api.staticwebassets.runtime.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\api.staticwebassets.runtime.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\appsettings.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\appsettings.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\AutoMapper.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\AutoMapper.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Azure.Core.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Azure.Core.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Azure.Identity.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Azure.Identity.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\BouncyCastle.Crypto.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\BouncyCastle.Crypto.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AssessmentQBankSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AssessmentQBankSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AssessmentQStddSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AssessmentQStddSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AttendanceStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\AttendanceStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\COASeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\COASeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CVRefSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CVRefSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateAssessmentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateAssessmentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateJsonSeed.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateJsonSeed.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CandidateSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ChecklistHRDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ChecklistHRDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ChecklistSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ChecklistSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContactResultSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContactResultSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContractReviewItemStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContractReviewItemStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContractReviewSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ContractReviewSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CustomerOfficialSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CustomerOfficialSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CustomerSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\CustomerSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\DeploySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\DeploySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\DeployStatusSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\DeployStatusSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\EmployeeSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\EmployeeSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\EmploymentSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\EmploymentSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FeedbackStddQSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FeedbackStddQSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FinanceTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FinanceTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FinanceVoucherSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FinanceVoucherSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FlightSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\FlightSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\HelpSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\HelpSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\IndustrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\IndustrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\JobDescriptionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\JobDescriptionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\MessageComposeSourceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\MessageComposeSourceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderAndOrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderAndOrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderItemSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderItemSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\OrderSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ProfessionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ProfessionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\QualificationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\QualificationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\RemunerationSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\RemunerationSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ReviewItemDataSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\ReviewItemDataSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\SelectionDecisionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\SelectionDecisionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\SkillSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\SkillSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\TaskAfterCustFeedbackSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\UpdateSelectionDecisionData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\UpdateSelectionDecisionData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\UserSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\UserSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\VisaTransactionSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\VisaTransactionSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\VoucherEntrySeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\VoucherEntrySeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\attendanceSeedData.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\SeedData\\attendanceSeedData.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\UserSeedData2.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Data\\UserSeedData2.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\DocumentFormat.OpenXml.Framework.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\DocumentFormat.OpenXml.Framework.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\DocumentFormat.OpenXml.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\DocumentFormat.OpenXml.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.Interfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.Interfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.System.Drawing.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.System.Drawing.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\EPPlus.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\MailKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\MailKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.AspNetCore.Authentication.JwtBearer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Bcl.AsyncInterfaces.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Bcl.AsyncInterfaces.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Data.SqlClient.SNI.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Data.SqlClient.SNI.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Data.SqlClient.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Data.SqlClient.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.Relational.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.Relational.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.SqlServer.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.EntityFrameworkCore.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IO.RecyclableMemoryStream.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Identity.Client.Extensions.Msal.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Identity.Client.Extensions.Msal.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Identity.Client.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Identity.Client.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Abstractions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Abstractions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.JsonWebTokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.JsonWebTokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Logging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Logging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Protocols.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Protocols.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Tokens.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.IdentityModel.Tokens.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.SqlServer.Server.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.SqlServer.Server.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Win32.SystemEvents.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\Microsoft.Win32.SystemEvents.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\MimeKit.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\MimeKit.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Configuration.ConfigurationManager.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Configuration.ConfigurationManager.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Drawing.Common.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Drawing.Common.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.IO.Packaging.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.IO.Packaging.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.IdentityModel.Tokens.Jwt.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.IdentityModel.Tokens.Jwt.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Memory.Data.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Memory.Data.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Runtime.Caching.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Runtime.Caching.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Security.Cryptography.ProtectedData.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Security.Cryptography.ProtectedData.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Security.Permissions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Security.Permissions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\System.Windows.Extensions.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\System.Windows.Extensions.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\api.deps.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\api.deps.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\api.dll",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\api.dll"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\api.exe",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\api.exe"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\api.pdb",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\api.pdb"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\api.runtimeconfig.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\api.runtimeconfig.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\appsettings.Development.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\appsettings.Development.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\appsettings.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\appsettings.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\web.config",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\web.config"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\1.6c9c0ca425eabe2d.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\1.6c9c0ca425eabe2d.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\101.06c9b90c2cd2864e.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\101.06c9b90c2cd2864e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\141.a742457c6ed6386e.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\141.a742457c6ed6386e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\190.f30516a334c94271.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\190.f30516a334c94271.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\221.6695ab69b0830c89.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\221.6695ab69b0830c89.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\230.70148ff83e8465a1.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\230.70148ff83e8465a1.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\265.07a102f9bd3f9740.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\265.07a102f9bd3f9740.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\274.6230f5fe0707c26d.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\274.6230f5fe0707c26d.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\303.adb98032bf2c6e07.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\303.adb98032bf2c6e07.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\323.7bbc10c3b7442a87.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\323.7bbc10c3b7442a87.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\330.06cd5ef95f4e212e.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\330.06cd5ef95f4e212e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\359.589004fc21ad5d83.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\359.589004fc21ad5d83.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\369.1680cb7a60c851c1.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\369.1680cb7a60c851c1.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\3rdpartylicenses.txt",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\3rdpartylicenses.txt"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\402.684f265ba8b95aa0.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\402.684f265ba8b95aa0.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\417.97c3801b8b9cce73.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\417.97c3801b8b9cce73.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\427.dd939bb3a7a6404c.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\427.dd939bb3a7a6404c.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\516.3f3fbbbe60908b89.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\516.3f3fbbbe60908b89.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\56.202690971c7cae42.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\56.202690971c7cae42.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\561.4cffb8d0b71f2b00.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\561.4cffb8d0b71f2b00.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\583.ffd4af4999439eb1.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\583.ffd4af4999439eb1.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\587.393a284ae0a99ae3.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\587.393a284ae0a99ae3.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\606.0ea746df02338bfb.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\606.0ea746df02338bfb.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\608.1371de3239afc574.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\608.1371de3239afc574.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\62.5c9cd0f9629f8356.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\62.5c9cd0f9629f8356.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\639.dcbf3589b0fe8df8.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\639.dcbf3589b0fe8df8.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\667.96647f8acba789a6.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\667.96647f8acba789a6.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\675.2b56b09b9cb4eaa7.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\675.2b56b09b9cb4eaa7.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\691.4f32205724672c94.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\691.4f32205724672c94.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\727.6aea60d7ca89fc27.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\727.6aea60d7ca89fc27.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\750.b7f8aa62d636fc4a.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\750.b7f8aa62d636fc4a.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\767.3bb5dbbbfa90a5af.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\767.3bb5dbbbfa90a5af.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\777.ffc098617d0ddbd0.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\777.ffc098617d0ddbd0.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\785.a9ba83b13c62c0c5.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\785.a9ba83b13c62c0c5.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\794.f2cee53f8753ed59.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\794.f2cee53f8753ed59.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\80.87de680b371e7ff4.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\80.87de680b371e7ff4.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\802.32813fb9626b2823.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\802.32813fb9626b2823.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\812.4d53fc0bc833fe4a.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\812.4d53fc0bc833fe4a.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\828.53f4a01233ce0cab.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\828.53f4a01233ce0cab.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\846.8ee9dcb4fec60d7a.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\846.8ee9dcb4fec60d7a.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\865.445bdaabc6024e81.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\865.445bdaabc6024e81.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\872.bde5b4e7cf05e23b.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\872.bde5b4e7cf05e23b.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\941.ea70133933503d74.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\941.ea70133933503d74.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\981.77d6e169ee1041e7.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\981.77d6e169ee1041e7.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\99.5cafccfba9a5bb8e.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\99.5cafccfba9a5bb8e.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-128x128.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-128x128.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-144x144.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-144x144.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-152x152.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-152x152.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-192x192.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-192x192.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-384x384.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-384x384.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-512x512.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-512x512.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-72x72.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-72x72.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-96x96.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\icons\\icon-96x96.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\user.png",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\assets\\user.png"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\common.31050586fbba57e4.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\common.31050586fbba57e4.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\common.c7e032f119364e64.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\common.c7e032f119364e64.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\favicon.ico"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.2b13baa7dd4f54c9.eot",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.2b13baa7dd4f54c9.eot"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.8a7cb27d142e3e19.ttf",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.8a7cb27d142e3e19.ttf"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.cf011583fb81df9f.woff",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.cf011583fb81df9f.woff"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.da909aa098b0ee2d.svg",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.da909aa098b0ee2d.svg"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.e9955780856cf8aa.woff2",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\fontawesome-webfont.e9955780856cf8aa.woff2"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\index.html"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\main.c357ec76270efe04.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\main.c357ec76270efe04.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\main.ee1c30c69f9f6f60.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\main.ee1c30c69f9f6f60.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\manifest.webmanifest",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\manifest.webmanifest"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\ngsw-worker.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\ngsw-worker.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\ngsw.json",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\ngsw.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\polyfills.146900e00815fa5f.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\polyfills.146900e00815fa5f.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\polyfills.357f06c00ac6e6f4.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\polyfills.357f06c00ac6e6f4.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\runtime.afc00d7a90af9598.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\runtime.afc00d7a90af9598.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\runtime.e9438801871138e8.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\runtime.e9438801871138e8.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\safety-worker.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\safety-worker.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\styles.5df27c5cd54a0729.css",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\styles.5df27c5cd54a0729.css"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\worker-basic.min.js",
+      "PackagePath": "staticwebassets\\bin\\Release\\net8.0\\win-x64\\publish\\wwwroot\\worker-basic.min.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\common.31050586fbba57e4.js",
+      "PackagePath": "staticwebassets\\common.31050586fbba57e4.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\fontawesome-webfont.2b13baa7dd4f54c9.eot",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.2b13baa7dd4f54c9.eot"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\fontawesome-webfont.8a7cb27d142e3e19.ttf",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.8a7cb27d142e3e19.ttf"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\fontawesome-webfont.cf011583fb81df9f.woff",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.cf011583fb81df9f.woff"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\fontawesome-webfont.da909aa098b0ee2d.svg",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.da909aa098b0ee2d.svg"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\fontawesome-webfont.e9955780856cf8aa.woff2",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.e9955780856cf8aa.woff2"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\main.ad027b491cff8bff.js",
+      "PackagePath": "staticwebassets\\main.ad027b491cff8bff.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\manifest.webmanifest",
+      "PackagePath": "staticwebassets\\manifest.webmanifest"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\ngsw-worker.js",
+      "PackagePath": "staticwebassets\\ngsw-worker.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\ngsw.json",
+      "PackagePath": "staticwebassets\\ngsw.json"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\polyfills.357f06c00ac6e6f4.js",
+      "PackagePath": "staticwebassets\\polyfills.357f06c00ac6e6f4.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\runtime.1274bc0189ad97f2.js",
+      "PackagePath": "staticwebassets\\runtime.1274bc0189ad97f2.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\safety-worker.js",
+      "PackagePath": "staticwebassets\\safety-worker.js"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\styles.5df27c5cd54a0729.css",
+      "PackagePath": "staticwebassets\\styles.5df27c5cd54a0729.css"
+    },
+    {
+      "Id": "C:\\idealR\\api\\wwwroot\\worker-basic.min.js",
+      "PackagePath": "staticwebassets\\worker-basic.min.js"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.api.props",
+      "PackagePath": "build\\api.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.api.props",
+      "PackagePath": "buildMultiTargeting\\api.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.api.props",
+      "PackagePath": "buildTransitive\\api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

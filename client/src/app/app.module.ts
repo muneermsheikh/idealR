@@ -39,6 +39,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { MatMenuModule} from '@angular/material/menu';
 import { AboutComponent } from './about/about.component';
 import { TrialExpiredComponent } from './errors/trial-expired/trial-expired.component';
+import { SubscriptionComponent } from './subscription/subscription/subscription.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { TrialExpiredComponent } from './errors/trial-expired/trial-expired.comp
     DateInputRangeModalComponent,
     CandidatesAvailableModalComponent,
     AboutComponent,
-    TrialExpiredComponent    
+    TrialExpiredComponent,
+    SubscriptionComponent    
   ],
   imports: [
     BrowserModule,

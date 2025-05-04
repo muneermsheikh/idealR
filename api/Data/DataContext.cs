@@ -8,6 +8,7 @@ using api.Entities.HR;
 using api.Entities.Identity;
 using api.Entities.Master;
 using api.Entities.Messages;
+using api.Entities.Subscriptions;
 using api.Entities.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -150,6 +151,9 @@ namespace api.Data
         public DbSet<VisaTransaction> VisaTransactions {get; set;}
         public DbSet<VisaAssignment> VisaAssignments { get; set; }
         //public DbSet<RADetail> RADetails {get; set;}
+
+        public DbSet<Subscription> Subscriptions {get; set;}
+        public DbSet<Payment> Payments {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -339,6 +343,7 @@ namespace api.Data
                 .OnDelete(DeleteBehavior.Restrict);
             */
             //builder.Entity<RADetail>().HasIndex(x => new {x.RAName, x.City}).IsUnique();
+
         }
     }
 }

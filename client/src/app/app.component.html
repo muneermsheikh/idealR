@@ -342,6 +342,16 @@
                         About
                     </button>
 
+                    <mat-expansion-panel [class.mat-elevation-z0]="true">
+                        <mat-expansion-panel-header>Vendor</mat-expansion-panel-header>
+                        <mat-nav-list style="font-size: smaller;" >
+                            <a mat-list-item routerLink="/vendor" 
+                                matTooltip="Only for Vendors" >
+                                <span class="sidenav">Contract Renewal</span>
+                            </a>
+                            
+                        </mat-nav-list>
+                    </mat-expansion-panel>
                   </div>
             </mat-nav-list>
         </div>

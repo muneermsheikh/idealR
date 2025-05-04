@@ -1,0 +1,152 @@
+[
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "customer",
+        "CustomerName": "Reliance Industries Limited",
+        "KnownAs": "Reliance Inds",
+        "Add": "12, bawakaar bhavan",
+        "Add2": "Nariman Point, V.S. Road",
+        "City": "Mumbai", "Pin": "400020", "State": "Maharashtra",
+        "Email": "relianceind@reliance.com",
+        "Phone": "00966223456789",
+        "CustomerIndustries": [{"IndustryId": 1}, {"IndustryId":2}, {"IndustryId": 3}],
+        "CustomerOfficials": [{"Gender": "M", "Title": "Mr.", "OfficialName": "Rajesh Pujari", 
+            "Designation": "Personal Manager","PhoneNo": "0203452345", "Mobile": "9858593845", "Divn": "HR",
+            "Email": "personal@gmail.com", "Status": "Active", "UserName":"RajeshPujari", "KnownAs": "Rajesh"}]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "customer",
+        "CustomerName": "Saudi Gulf Heavy Industries Limited",
+        "KnownAs": "Saudi Gulf",
+        "Add": "2, Saudi Gulf Center",
+        "Add2": "Makkah Road",
+        "City": "Doha", "Pin": "38593", "Country": "Qatar",
+        "Email": "sghi@sgulf.com",
+        "Phone": "00966126375089",
+        "CustomerIndustries": [{"IndustryId": 4}, {"IndustryId":3}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Mohammed Nooruddin", 
+            "Designation": "HR Officer","PhoneNo": "3452345", "Mobile": "913453345", "Divn":"HR",
+            "Email": "nuruddin@saudigulf.qa", "Status": "Active", "UserName":"MohammedNooruddin", "KnownAs": "Nuruddin"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "customer",
+        "CustomerName": "Saudi Binladen Group",
+        "KnownAs": "Saudi Binladen",
+        "Add": "K8, Makkah Road",
+        "Add2": "PO Box 958",
+        "City": "Jeddah", "Pin": "31542",
+        "Country": "Saudi Arabia",
+        "Email": "sbg@sbg.com",
+        "Phone": "009663426579944",
+        "CustomerIndustries": [{"IndustryId": 1}, {"IndustryId":2}, {"IndustryId": 3}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Abdullah Zain", "Designation": "HR Officer",  
+                "UserName":"AbdullahZain", "Divn":"HR",
+		        "PhoneNo": "8392384435", "Mobile": "9134544334", "Email": "zain@sbg.com", "Status": "Active", "KnownAs": "Zain"},
+	        {"Gender": "M", "Title": "Mr.", "OfficialName": "Hussain Zahrani", "Designation": "HR Manager",  
+                "UserName":"HussainZahrani", "Divn": "Accounts",
+	            "PhoneNo": "83922335", "Mobile": "913434334", "Email": "zahrani@sbg.com", "Status": "Active", "KnownAs": "Hussain"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "customer",
+        "CustomerName": "Binladen Industrial Co Ltd",
+        "KnownAs": "BICL",
+        "Add": "phase 2, industrial sector",
+        "Add2": "",
+        "City": "Jeddah", "Pin": "31542", "Country": "Saudi Arabia",
+        "Email" : "bicl@bicl.sa.com",
+        "Phone": "00966267633552",
+        "CustomerIndustries": [{"IndustryId": 2}, {"IndustryId":5}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Vasant Patel", "Designation": "Works Manager",  
+                "UserName":"VasantPatel", "Divn":"Accounts",
+		        "PhoneNo": "126375089", "Mobile": "93444112845", "Email": "admin@bicl.com", "Status": "Active", "KnownAs": "Vasant"},
+	        {"Gender": "M", "Title": "Mr.", "OfficialName": "Parvez Khan", "Designation": "Production Manager", 
+                "UserName":"ParvezKhan", "Divn":"HR",
+	            "PhoneNo": "839212334", "Mobile": "93842123", "Email": "production@bicl.com", "Status": "Active", "KnownAs": "Parvez"},
+	        {"Gender": "M", "Title": "Mr.", "OfficialName": "Mohammed AlTuwaijri", "Designation": "Personal Manager", 
+                "UserName":"MohammedAlTuwaijri", "Divn":"HR",
+	            "PhoneNo": "02134144", "Mobile": "9834949445", "Email": "tuwaijri@tuwaijri.com", "Status": "Active", "KnownAs": "Tuwaijri"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "customer",
+        "CustomerName": "Tuwaijri Investment Corporation",
+        "KnownAs": "Tuwaijri",
+        "Add": "PO Box 1030405",
+        "Add2": "Industrial Phase",
+        "City": "Riyadh", "Pin": "31542", "Country":"Saudi Arabia",
+        "Email" : "tuwaijri@gmail.com",
+        "Phone": "009663223452345",
+        "CustomerIndustries": [{"IndustryId": 2}, {"IndustryId":1}, {"IndustryId": 5}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Abdul Shaikh", "Designation": "HR Officer", 
+                "UserName":"AbdulShaikh", "Divn":"HR",
+	            "PhoneNo": "23412235", "Mobile": "93844544334", "Email": "abdul@lucknow.com", "Status": "Active", "KnownAs": "Abdul"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "associate",
+        "CustomerName": "Lucknow Manpower Services",
+        "KnownAs": "Lknw Manpower",
+        "Add": "Lucknow Terrrace Center",
+        "Add2": "Abdullh Zafar Road",
+        "City": "Lucknow", "Pin": "221542", "State": "Uttar Pradesh",
+        "Email": "lucknowmanpower@live.com",
+        "Phone": "345222345221",
+        "AgencySpecialties": [{"ProfessionId": 1, "IndustryId": 2}, {"ProfessionId":2, "IndustryId": 3}, 
+            {"ProfessionId": 5, "IndustryId": 4}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Salim Khan", "Designation": "HR Manager", 
+                "UserName":"SalimKhan", "Divn": "HR",
+		        "PhoneNo": "20987335", "Mobile": "9223424", "Email": "salim@sbg.com", "Status": "Active", "KnownAs": "Salim"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "associate",
+        "CustomerName": "Prince Services",
+        "KnownAs": "Prince",
+        "Add": "Prince Building basement",
+        "Add2": "Gemini Enclave",
+        "City": "Chennai", "Pin": "70034842", "State": "Tamil Nadu",
+        "Email": "prince@prince.com",
+        "Phone": "33452255111",
+        "AgencySpecialties": [{"ProfessionId": 3, "IndustryId": 2}, {"ProfessionId":4, "IndustryId": 3}, 
+            {"ProfessionId": 1, "IndustryId": 5}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Abdul Majeed", "Designation": "Commercial Officer", 
+                "UserName":"AbdulMajeed", "Divn": "HR",
+		        "PhoneNo": "3263759", "Mobile": "923412845", "Email": "majee@bicl.com", "Status": "Active", "KnownAs": "Majeed"}
+        ]
+    },
+    {
+        "CreatedOn": "2022-09-02",
+        "CustomerType": "associate",
+        "CustomerName": "Shaheen International Manpower",
+        "KnownAs": "Shaheen",
+        "Add": "B2, 2nd floor",
+        "Add2": "Shaheen Towers Enclave",
+        "City": "Mumbai", "Pin": "400102", "State":"Maharashtra",
+        "Email": "shaheenintl@gmail.com",
+        "Phone": "345222110034",
+        "AgencySpecialties": [{"ProfessionId": 3, "IndustryId": 2}, {"ProfessionId":4, "IndustryId": 3}, 
+            {"ProfessionId": 1, "IndustryId": 5}],
+        "CustomerOfficials": [
+            {"Gender": "M", "Title": "Mr.", "OfficialName": "Rahil Shaikh", "Designation": "HR Officer", 
+                "UserName":"RahilShaikh", "Divn": "Accounts",
+		        "PhoneNo": "8323424", "Mobile": "933222123", "Email": "rahiln@prince.com", "Status": "Active", "KnownAs": "Rahil"},
+	        {"Gender": "M", "Title": "Mr.", "OfficialName": "Abdul Rauf", "Designation": "Personal Officer", 
+                "UserName":"AbdulRauf", "Divn": "HR",
+		        "PhoneNo": "6375089", "Mobile": "983445", "Email": "rauf@shaheen.com", "Status": "Active", "KnownAs": "Rauf"}
+        ]
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {"ProfessionName": "Production Supervisor"},
+    {"ProfessionName": "Production Manager"},
+    {"ProfessionName": "QA Engineer"},
+    {"ProfessionName": "Laboratory Technician"},
+    {"ProfessionName": "QC Inspector"}, 
+    {"ProfessionName": "Driver-Light"},
+    {"ProfessionName": "QC Supervisor"}, 
+    {"ProfessionName": "Finance Manager"},
+    {"ProfessionName": "Operations Manager"}, 
+    {"ProfessionName": "Accounts Manager"},
+    {"ProfessionName": "Administration Manager"}, 
+    {"ProfessionName": "Accountant"},
+    {"ProfessionName": "Driver-Heavy"}, 
+    {"ProfessionName": "Cashier"}
+]

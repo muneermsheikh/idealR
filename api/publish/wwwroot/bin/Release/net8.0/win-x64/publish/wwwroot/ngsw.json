@@ -1,0 +1,139 @@
+{
+  "configVersion": 1,
+  "timestamp": 1746097094743,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/1.6c9c0ca425eabe2d.js",
+        "/141.a742457c6ed6386e.js",
+        "/221.6695ab69b0830c89.js",
+        "/265.07a102f9bd3f9740.js",
+        "/359.589004fc21ad5d83.js",
+        "/56.202690971c7cae42.js",
+        "/561.4cffb8d0b71f2b00.js",
+        "/608.1371de3239afc574.js",
+        "/62.5c9cd0f9629f8356.js",
+        "/639.dcbf3589b0fe8df8.js",
+        "/667.96647f8acba789a6.js",
+        "/675.2b56b09b9cb4eaa7.js",
+        "/691.4f32205724672c94.js",
+        "/727.6aea60d7ca89fc27.js",
+        "/750.b7f8aa62d636fc4a.js",
+        "/767.3bb5dbbbfa90a5af.js",
+        "/777.ffc098617d0ddbd0.js",
+        "/794.f2cee53f8753ed59.js",
+        "/80.87de680b371e7ff4.js",
+        "/812.4d53fc0bc833fe4a.js",
+        "/865.445bdaabc6024e81.js",
+        "/872.bde5b4e7cf05e23b.js",
+        "/99.5cafccfba9a5bb8e.js",
+        "/common.31050586fbba57e4.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main.ee1c30c69f9f6f60.js",
+        "/manifest.webmanifest",
+        "/polyfills.357f06c00ac6e6f4.js",
+        "/runtime.afc00d7a90af9598.js",
+        "/styles.5df27c5cd54a0729.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/user.png",
+        "/fontawesome-webfont.8a7cb27d142e3e19.ttf",
+        "/fontawesome-webfont.cf011583fb81df9f.woff",
+        "/fontawesome-webfont.da909aa098b0ee2d.svg",
+        "/fontawesome-webfont.e9955780856cf8aa.woff2"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/1.6c9c0ca425eabe2d.js": "a0312170388e9e41bde7a6e0915cdff5b5a67eb4",
+    "/141.a742457c6ed6386e.js": "30a21034aa86ec41b9203c6fd868942fe17a1f92",
+    "/221.6695ab69b0830c89.js": "43cd1d523b0b7248d56f8868cac8204b5347100a",
+    "/265.07a102f9bd3f9740.js": "090474e8593d7e195d87e1669a8da2ee30849666",
+    "/359.589004fc21ad5d83.js": "f5fd01db4c04755f43ae616c99c6d0b1ef940312",
+    "/56.202690971c7cae42.js": "34dde271cd06fee55922b6e0dccf35d273c92721",
+    "/561.4cffb8d0b71f2b00.js": "cbb660447b9fa44645c68e6a7fe0f2f099eb2b97",
+    "/608.1371de3239afc574.js": "2d40585f6793d6eb3ebdd5b2bff1279ab13edd33",
+    "/62.5c9cd0f9629f8356.js": "bf735b1000f86d48bdf726794fbef0a2a2498e45",
+    "/639.dcbf3589b0fe8df8.js": "95cdaf3c5a4986a5ed0e51b2914e82320f0c756e",
+    "/667.96647f8acba789a6.js": "c39e70bc1487b0a0cf2c13a693491b25720d61fd",
+    "/675.2b56b09b9cb4eaa7.js": "1927c899e4496d7061b62c6d79ffff79dc82cb81",
+    "/691.4f32205724672c94.js": "14f75d30b6c87733c06f44f7f6131ff95d86d197",
+    "/727.6aea60d7ca89fc27.js": "4f4376500acdb99d812d156df94b2755c0263202",
+    "/750.b7f8aa62d636fc4a.js": "3e1eded254ef6dbd36602e1ff80523bd15efbe50",
+    "/767.3bb5dbbbfa90a5af.js": "63dcc4169d84eba5108721b96d93a9d586d60d1b",
+    "/777.ffc098617d0ddbd0.js": "06aea9aead19856d3dded01639daf99aa6655c19",
+    "/794.f2cee53f8753ed59.js": "f33200a99990bcec10492aad50e55a93113649be",
+    "/80.87de680b371e7ff4.js": "6b9d58877b06d2f60d51f0586536a52132d3794d",
+    "/812.4d53fc0bc833fe4a.js": "98986cd046986265ce2d4741fbc415458023b13c",
+    "/865.445bdaabc6024e81.js": "31fcdfcdfaa48808a8190735a9d93f65cf457fa3",
+    "/872.bde5b4e7cf05e23b.js": "9b1b452c60ff757d4af527c1d03a3923c077c5a6",
+    "/99.5cafccfba9a5bb8e.js": "29b1fa57b4b0a6d301c8cde55d0a4027163f565c",
+    "/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
+    "/assets/icons/icon-144x144.png": "96a0d629765c1bc85d9263c6bc83094ca776d267",
+    "/assets/icons/icon-152x152.png": "b1fbbee3902eb96a7658e3bb006f31f78ca5a44c",
+    "/assets/icons/icon-192x192.png": "e4211163bf0911688fbfb80278d8ff4d2f77691d",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "279825a1ac4377032ae996a1832c641e33ccf1b6",
+    "/assets/icons/icon-96x96.png": "592885efcbfee27e5e20be4fa3043589390d2740",
+    "/assets/user.png": "f8e897fbf6ccda288d7982d9e85b6399d88cc91f",
+    "/common.31050586fbba57e4.js": "8ab12735ec1f4b8b047261dfac6008784ab94f93",
+    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/fontawesome-webfont.8a7cb27d142e3e19.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
+    "/fontawesome-webfont.cf011583fb81df9f.woff": "28b782240b3e76db824e12c02754a9731a167527",
+    "/fontawesome-webfont.da909aa098b0ee2d.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
+    "/fontawesome-webfont.e9955780856cf8aa.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
+    "/index.html": "1ef6982331ba8c7fd1f77f9f701f0b7f4a540cef",
+    "/main.ee1c30c69f9f6f60.js": "306007f522b99cac2671ab3501181ce9b8e3c9f6",
+    "/manifest.webmanifest": "6bd446cf481e91dc7da6926e0d9b5fb2029c63fa",
+    "/polyfills.357f06c00ac6e6f4.js": "21f6beaa9a12ee7a43a1011b43dfadf801c1791d",
+    "/runtime.afc00d7a90af9598.js": "5d1ee639bb96520326b00b3476dafa1971d0c524",
+    "/styles.5df27c5cd54a0729.css": "741871455251a52c8f146c34d649bc00eebef449"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

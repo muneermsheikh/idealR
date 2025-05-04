@@ -1,0 +1,12 @@
+[
+    {"Topic": "Candidate Assessment", 
+    "HelpItems": [{"Sequence": 100, "HelpSubTopic": "Initiate", 
+        "HelpSubItems": [
+            {"Sequence": 100, "HelpText": "Assessment of a Candidate is initiated from the 'Candidate Index List'.  Clicking the 'Balance icon' brings up the 'CV Assessment' Form. "},
+            {"Sequence": 100, "HelpText": "The first stage of Candidate Assessment is choosing the Demand Letter Category for which the candidate is being assessed. This category is selected from a drop-down"},
+            {"Sequence": 120, "HelpText": "Candidate Checklist : If the candidate has already been assessed earlier for the same category, all relevant details will be displayed on the screen -There are 2 relevant details: 1st, the 'Candidate Checklist' data, and the candidate assessment data, if required and available."}, 
+            {"Sequence": 130, "HelpText": "If the candidate has not been assessed earier, then you can complete the Candidate Interest data by pressing the 'Show Checklist' will present a modal form with all the questions of relevance to the candidate.  The logged-in user is the owner of this checklist, and is responsible for all the contents therein."},
+            {"Sequence": 140, "HelpText": "if the Demand Letter Category has been marked as 'Require Assessment', then a blank form for the assessment is presented.  This assessment form contains the Assessment Parameters defined for the Order Category"}
+        ]}]
+    }
+]

@@ -1,0 +1,157 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\101.9954a0f770e9776d.js",
+      "PackagePath": "staticwebassets\\101.9954a0f770e9776d.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\15.5403ae98816afe71.js",
+      "PackagePath": "staticwebassets\\15.5403ae98816afe71.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\190.f7ecffd5432c06cb.js",
+      "PackagePath": "staticwebassets\\190.f7ecffd5432c06cb.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\274.6c133fab48275356.js",
+      "PackagePath": "staticwebassets\\274.6c133fab48275356.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\303.85eaa4ded96670f6.js",
+      "PackagePath": "staticwebassets\\303.85eaa4ded96670f6.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\323.2ae3507be753e354.js",
+      "PackagePath": "staticwebassets\\323.2ae3507be753e354.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\330.9cb594d9671af50a.js",
+      "PackagePath": "staticwebassets\\330.9cb594d9671af50a.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\369.1680cb7a60c851c1.js",
+      "PackagePath": "staticwebassets\\369.1680cb7a60c851c1.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\3rdpartylicenses.txt",
+      "PackagePath": "staticwebassets\\3rdpartylicenses.txt"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\402.5d299319150d6975.js",
+      "PackagePath": "staticwebassets\\402.5d299319150d6975.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\417.fea1043dd313370e.js",
+      "PackagePath": "staticwebassets\\417.fea1043dd313370e.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\427.bc8bf05700a7a70d.js",
+      "PackagePath": "staticwebassets\\427.bc8bf05700a7a70d.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\516.fd81ffab9a70467d.js",
+      "PackagePath": "staticwebassets\\516.fd81ffab9a70467d.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\583.7ad08c5b46587aad.js",
+      "PackagePath": "staticwebassets\\583.7ad08c5b46587aad.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\587.1f460c6d88199a4b.js",
+      "PackagePath": "staticwebassets\\587.1f460c6d88199a4b.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\606.423e4287443da15d.js",
+      "PackagePath": "staticwebassets\\606.423e4287443da15d.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\678.356b8ee73beb47ba.js",
+      "PackagePath": "staticwebassets\\678.356b8ee73beb47ba.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\828.ede7380b35be6cf3.js",
+      "PackagePath": "staticwebassets\\828.ede7380b35be6cf3.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\846.018046d0fe8dec92.js",
+      "PackagePath": "staticwebassets\\846.018046d0fe8dec92.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\941.ea70133933503d74.js",
+      "PackagePath": "staticwebassets\\941.ea70133933503d74.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\981.9578f9c58d49b118.js",
+      "PackagePath": "staticwebassets\\981.9578f9c58d49b118.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\assets\\user.png",
+      "PackagePath": "staticwebassets\\assets\\user.png"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\common.d12b74316514b6bc.js",
+      "PackagePath": "staticwebassets\\common.d12b74316514b6bc.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\fontawesome-webfont.2b13baa7dd4f54c9.eot",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.2b13baa7dd4f54c9.eot"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\fontawesome-webfont.8a7cb27d142e3e19.ttf",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.8a7cb27d142e3e19.ttf"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\fontawesome-webfont.cf011583fb81df9f.woff",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.cf011583fb81df9f.woff"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\fontawesome-webfont.da909aa098b0ee2d.svg",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.da909aa098b0ee2d.svg"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\fontawesome-webfont.e9955780856cf8aa.woff2",
+      "PackagePath": "staticwebassets\\fontawesome-webfont.e9955780856cf8aa.woff2"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\main.e5195d20c9eb1037.js",
+      "PackagePath": "staticwebassets\\main.e5195d20c9eb1037.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\polyfills.146900e00815fa5f.js",
+      "PackagePath": "staticwebassets\\polyfills.146900e00815fa5f.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\runtime.e5ede3805eceeabb.js",
+      "PackagePath": "staticwebassets\\runtime.e5ede3805eceeabb.js"
+    },
+    {
+      "Id": "D:\\IdealR_\\idealR\\api\\wwwroot\\styles.5df27c5cd54a0729.css",
+      "PackagePath": "staticwebassets\\styles.5df27c5cd54a0729.css"
+    },
+    {
+      "Id": "obj\\release\\net7.0\\staticwebassets\\msbuild.api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\release\\net7.0\\staticwebassets\\msbuild.build.api.props",
+      "PackagePath": "build\\api.props"
+    },
+    {
+      "Id": "obj\\release\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.api.props",
+      "PackagePath": "buildMultiTargeting\\api.props"
+    },
+    {
+      "Id": "obj\\release\\net7.0\\staticwebassets\\msbuild.buildTransitive.api.props",
+      "PackagePath": "buildTransitive\\api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,37 @@
+[
+    {  
+        "OrderId": 1, "SrNo": 1, "CategoryId": 1, "SourceFrom": "India", "Quantity": 15, "MinCVs": 30, "MaxCVs": 60,
+        "Ecnr": false, "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, 
+        "Charges": 25000
+    },
+    {
+        "OrderId": 1, "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, 
+        "Ecnr": false, "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, 
+        "Charges": 25500
+    },
+    {
+        "OrderId": 2, "SrNo": 1, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15, "MaxCVs": 20,
+        "Ecnr": false, "RequireAssess": false, "HrExecId": 1, "HrSupId": 2, "HrmId": 3, "AssignedId": null, 
+        "Charges": 35000
+    },
+    {
+        "OrderId": 2, "SrNo": 2, "CategoryId": 3, "SourceFrom": "India", "Quantity": 4, "MinCVs": 8,"MaxCVs": 12, 
+        "Ecnr": true, "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 45500
+    },
+    {
+        "OrderId": 3,  "SrNo": 1, "CategoryId": 4, "SourceFrom": "India", "Quantity": 1, "MinCVs": 3, "MaxCVs": 6,"Ecnr": false, 
+        "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, "Charges": 25500 
+    },
+    {
+        "OrderId": 3, "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, 
+        "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 15000
+    },
+    {
+        "OrderId": 4, "SrNo": 1, "CategoryId": 1, "SourceFrom": "India", "Quantity": 15, "MinCVs": 30, "MaxCVs": 60, "Ecnr": false, 
+        "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, "Charges": 0
+    },
+    {
+        "OrderId": 4, "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, 
+        "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 12500
+    }
+]
